@@ -8,33 +8,28 @@
 
 ## 👋 팀원 소개
 
-<details>
-	<summary> <h3> 🐧 김찬우 </h3> </summary>
-  <img style="width: 400px" src="https://avatars.githubusercontent.com/u/65532873?v=4"/> 
-  
-  > '함께 자라는 개발도 잘하는 사람'이 되고 싶은 그저 프로그래밍이 재밌는 사람입니다. 펭귄처럼 바보라도 당당하게 호기심 있게 되고 싶습니다!
-</details>
+|김찬우|서정우|송수민|이승윤|
+|:---:|:---:|:---:|:---:|
+|<img src="https://avatars.githubusercontent.com/u/65532873?v=4"/>|<img src="https://avatars.githubusercontent.com/u/98446924?v=4"/>|<img src="https://github.com/user-attachments/assets/71176cea-caf4-4b00-816f-ba83ec9bf45d"/>|<img style="width: 84%" src="https://github.com/user-attachments/assets/85d13af3-91b4-4225-bc2f-3f83e9883a02"/>|
+|WEB BE|WEB FE|WEB BE|WEB FE|
 
-<details>
-	<summary> <h3> 💣 서정우 </h3> </summary>
-  <img style="width: 400px" src="https://avatars.githubusercontent.com/u/98446924?v=4"/> 
-  
-  > 멈추지 않는 개발자가 되고 싶습니다.
-</details>
+<br/>
 
-<details>
-	<summary> <h3> 🐬 송수민 </h3> </summary>
-  <img style="width: 400px" src="https://github.com/user-attachments/assets/71176cea-caf4-4b00-816f-ba83ec9bf45d"/> 
-  
-  > 안녕하세요! 저는 수영장에 가거나 차 마시는 것을 좋아하는 백엔드 개발자 송수민입니다.
-</details>
+> 🐧 **김찬우**
+> 
+> '함께 자라는 개발도 잘하는 사람'이 되고 싶은 그저 프로그래밍이 재밌는 사람입니다. 펭귄처럼 바보라도 당당하게 호기심 있게 되고 싶습니다!
 
-<details>
-	<summary> <h3> 🦄 이승윤 </h3> </summary>
-  <img style="width: 400px" src="https://github.com/user-attachments/assets/85d13af3-91b4-4225-bc2f-3f83e9883a02"/> 
-  
-  > 안녕하십니까마귀. 저는 즐겁게 개발하는 걸 좋아합니다! 🎉
-</details>
+> 💣 **서정우**
+>
+> 멈추지 않는 개발자가 되고 싶습니다.
+
+> 🐬 **송수민**
+>
+> 안녕하세요! 저는 수영장에 가거나 차 마시는 것을 좋아하는 백엔드 개발자 송수민입니다.
+
+> 🦄 **이승윤**
+>
+> 안녕하십니까마귀. 저는 즐겁게 개발하는 걸 좋아합니다! 🎉
 
 <br>   
 
