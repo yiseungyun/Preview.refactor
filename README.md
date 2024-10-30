@@ -10,7 +10,7 @@
 
 |김찬우|서정우|송수민|이승윤|
 |:---:|:---:|:---:|:---:|
-|<img src="https://avatars.githubusercontent.com/u/65532873?v=4"/>|<img src="https://avatars.githubusercontent.com/u/98446924?v=4"/>|<img src="https://github.com/user-attachments/assets/71176cea-caf4-4b00-816f-ba83ec9bf45d"/>|<img style="width: 84%" src="https://github.com/user-attachments/assets/85d13af3-91b4-4225-bc2f-3f83e9883a02"/>|
+|<img style="width: 400px" src="https://avatars.githubusercontent.com/u/65532873?v=4"/>|<img style="width: 400px" src="https://avatars.githubusercontent.com/u/98446924?v=4"/>|<img style="width: 400px" src="https://github.com/user-attachments/assets/71176cea-caf4-4b00-816f-ba83ec9bf45d"/>|<img style="width: 400px" src="https://github.com/user-attachments/assets/85d13af3-91b4-4225-bc2f-3f83e9883a02"/>|
 |WEB BE|WEB FE|WEB BE|WEB FE|
 
 <br/>
