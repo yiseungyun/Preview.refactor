@@ -1,0 +1,57 @@
+{
+  // 파서 옵션
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  // 환경 설정
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  // 확장 설정
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  // 글로벌 변수 설정
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  // 플러그인 설정
+  "plugins": [
+    "react",
+    "@typescript-eslint"
+  ],
+  // 개별 규칙 설정
+  "rules": {
+    "no-console": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error"
+    ],
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off"
+  },
+  // 특정 파일에 대한 규칙 오버라이드
+  "overrides": [
+    {
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": [
+          "error"
+        ]
+      }
+    }
+  ]
+}

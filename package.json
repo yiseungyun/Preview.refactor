@@ -1,0 +1,16 @@
+{
+  "name": "web27",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0",
+    "prepare": "husky"
+  },
+  "author": "boostcampwm2024/web27",
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "husky": "^9.1.6"
+  }
+}

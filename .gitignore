@@ -1,0 +1,10 @@
+# intellij idea, vscode 로 진행합니다.
+.idea
+.vscode
+
+# node_modules
+node_modules
+
+# husky 관련
+.husky/_
+.husky/.gitignore
