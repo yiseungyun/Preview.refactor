@@ -1,35 +1,111 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useRef, useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const [callButtonActive, setCallButtonActive] = useState(false);
+  const [hangupButtonActive, setHangupButtonActive] = useState(false);
+  const [startButtonActive, setStartButtonActive] = useState(true);
+  const [status, setStatus] = useState("연결 대기중");
+
+  const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  // WebRTC 설정
+  const configuration = {
+    iceServers: [
+      {
+        urls: "stun:stun.l.google.com:19302",
+      },
+    ],
+  };
+
+  // 변수 선언
+
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [peerConnection, setPeerConnection] =
+    useState<RTCPeerConnection | null>(null);
+
+  // 미디어 스트림 시작
+  async function startCall() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
+
+      if (localVideoRef.current) {
+        localVideoRef.current!.srcObject = stream;
+        setLocalStream(stream);
+      }
+
+      setCallButtonActive(true);
+      setStatus("비디오 켜는 중...");
+    } catch (e) {
+      console.error("미디어 스트림 획득 실패:", e);
+      setStatus("카메라/마이크 접근 실패");
+    }
+  }
+
+  async function stopVideo() {
+    try {
+      if (localStream) {
+        localStream.getTracks().forEach((track) => {
+          track.stop();
+        });
+        setLocalStream(null);
+      }
+    } catch (e) {
+      console.error("비디오 중지 실패:", e);
+    }
+  }
 
   return (
-    <>
+    <section className={"flex flex-col gap-3"}>
+      <div className="flex gap-3 justify-center">
+        <video
+          className={"w-80 aspect-video object-cover rounded-md bg-black"}
+          ref={localVideoRef}
+          id="localVideo"
+          autoPlay
+          playsInline
+          muted
+        ></video>
+        <video
+          className={"w-80 aspect-video rounded-md bg-black"}
+          ref={remoteVideoRef}
+          id="remoteVideo"
+          autoPlay
+          playsInline
+        ></video>
+      </div>
+      <div className="flex gap-3 justify-center">
+        <video
+          className={"w-80 aspect-video object-cover rounded-md bg-black"}
+          id="localVideo"
+          autoPlay
+          playsInline
+          muted
+        ></video>
+        <video
+          className={"w-80 aspect-video rounded-md bg-black"}
+          id="remoteVideo"
+          autoPlay
+          playsInline
+        ></video>
+      </div>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>27팀 아자아자 화이팅</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button
+          onClick={!localStream ? startCall : stopVideo}
+          disabled={!startButtonActive}
+        >
+          {!localStream ? "비디오 켜기" : "비디오 끄기"}
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <div id="connectionStatus">{status}</div>
+    </section>
+  );
 }
 
-export default App
+export default App;
