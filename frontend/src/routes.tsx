@@ -1,5 +1,5 @@
 import App from "./App.tsx";
-import SessionListPage from "../pages/SessionListPage.tsx";
+import SessionListPage from "./pages/SessionListPage.tsx";
 export const routes = [
   {
     element: <App />,

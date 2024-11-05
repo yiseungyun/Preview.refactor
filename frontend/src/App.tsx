@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 
-
 function App() {
   const [startButtonActive, setStartButtonActive] = useState(true);
   const [status, setStatus] = useState("연결 대기중");
