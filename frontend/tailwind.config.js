@@ -34,6 +34,11 @@ export default {
           },
           darker: '#004327',       // rgb(0, 67, 39)
         },
+        accent: {
+          gray: {
+            DEFAULT: '#dfddd5'
+          }
+        }
       },
       borderColor: {
         skin: {
