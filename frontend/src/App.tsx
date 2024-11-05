@@ -1,12 +1,7 @@
 import { useRef, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [callButtonActive, setCallButtonActive] = useState(false);
-  const [hangupButtonActive, setHangupButtonActive] = useState(false);
   const [startButtonActive, setStartButtonActive] = useState(true);
   const [status, setStatus] = useState("연결 대기중");
 
@@ -16,7 +11,7 @@ function App() {
   const configuration = {
     iceServers: [
       {
-        urls: "stun:stun.l.google.com:19302",
+        urls: process.env.REACT_STUN_SERVER ?? "stun:stun.l.google.com:19302",
       },
     ],
   };
@@ -24,9 +19,9 @@ function App() {
   // 변수 선언
 
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-  const [peerConnection, setPeerConnection] =
-    useState<RTCPeerConnection | null>(null);
+  // const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  // const [peerConnection, setPeerConnection] =
+  //   useState<RTCPeerConnection | null>(null);
 
   // 미디어 스트림 시작
   async function startCall() {
@@ -40,7 +35,6 @@ function App() {
         setLocalStream(stream);
       }
 
-      setCallButtonActive(true);
       setStatus("비디오 켜는 중...");
     } catch (e) {
       console.error("미디어 스트림 획득 실패:", e);
