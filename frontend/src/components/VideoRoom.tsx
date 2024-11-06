@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Socket, io } from "socket.io-client";
 import VideoContainer from "./VideoContainer.tsx";
+import {
+  BsMic,
+  BsMicMute,
+  BsCameraVideo,
+  BsCameraVideoOff,
+} from "react-icons/bs";
 
 interface User {
   id: string;
@@ -92,8 +98,8 @@ const VideoRoom = () => {
         myStream.getVideoTracks().forEach((videoTrack) => {
           videoTrack.enabled = !videoTrack.enabled;
         });
-        setIsVideoOn((prev) => !prev);
       }
+      setIsVideoOn((prev) => !prev);
     } catch (error) {
       console.error("Error stopping video stream", error);
     }
@@ -105,8 +111,8 @@ const VideoRoom = () => {
         myStream.getAudioTracks().forEach((audioTrack) => {
           audioTrack.enabled = !audioTrack.enabled;
         });
-        setIsMicOn((prev) => !prev);
       }
+      setIsMicOn((prev) => !prev);
     } catch (error) {
       console.error("Error stopping mic stream", error);
     }
@@ -245,11 +251,11 @@ const VideoRoom = () => {
 
       // 연결 상태 모니터링
       // 새로운 연결/연결 시도/연결 완료/연결 끊김/연결 실패/연결 종료
-      pc.onconnectionstatechange = (e) => {
+      pc.onconnectionstatechange = () => {
         console.log("연결 상태 변경:", pc.connectionState);
       };
       // ICE 연결 상태 모니터링
-      pc.oniceconnectionstatechange = (e) => {
+      pc.oniceconnectionstatechange = () => {
         console.log("ICE 연결 상태 변경:", pc.iceConnectionState);
       };
 
@@ -307,7 +313,7 @@ const VideoRoom = () => {
 
   return (
     <div className="p-4">
-      <div className="mb-4 space-y-2">
+      <div className="flex gap-2 mb-4 space-y-2">
         <input
           type="text"
           placeholder="Room ID"
@@ -328,14 +334,26 @@ const VideoRoom = () => {
         >
           Join Room
         </button>
+        <button
+          onClick={handleVideoToggle}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          {isVideoOn ? <BsCameraVideo /> : <BsCameraVideoOff />}
+        </button>
+        <button
+          onClick={handleMicToggle}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          {isMicOn ? <BsMic /> : <BsMicMute />}
+        </button>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <VideoContainer
           ref={myVideoRef}
           nickname={nickname}
-          isMicOn={true}
-          isVideoOn={false}
+          isMicOn={isMicOn}
+          isVideoOn={isVideoOn}
         />
 
         {
