@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import { Socket, io } from 'socket.io-client';
+import { useEffect, useRef, useState } from "react";
+import { Socket, io } from "socket.io-client";
+import VideoContainer from "./VideoContainer.tsx";
 
 interface User {
   id: string;
@@ -18,8 +19,8 @@ const VideoRoom = () => {
   const [peers, setPeers] = useState<PeerConnection[]>([]); // 연결 관리
   const [roomId, setRoomId] = useState<string>("");
   const [nickname, setNickname] = useState<string>("");
-  const [isVideoOn, setIsVideoOn] = useState<boolean>(false)
-  const [isMicOn, setIsMicOn] = useState<boolean>(false)
+  const [isVideoOn, setIsVideoOn] = useState<boolean>(false);
+  const [isMicOn, setIsMicOn] = useState<boolean>(false);
 
   const myVideoRef = useRef<HTMLVideoElement>(null);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
@@ -29,23 +30,23 @@ const VideoRoom = () => {
   const pcConfig = {
     iceServers: [
       {
-        urls: import.meta.env.STUN_SERVER_URL,
-        username: import.meta.env.STUN_USER_NAME,
-        credential: import.meta.env.STUN_CREDENTIAL
-      }
-    ]
+        urls: import.meta.env.VITE_STUN_SERVER_URL,
+        username: import.meta.env.VITE_STUN_USER_NAME,
+        credential: import.meta.env.VITE_STUN_CREDENTIAL,
+      },
+    ],
   };
 
   useEffect(() => {
     // 소켓 연결
-    const newSocket = io('http://localhost:3000');
+    const newSocket = io("http://localhost:3000");
     setSocket(newSocket);
 
     // 컴포넌트 언마운트 시 정리
     return () => {
       Object.values(peerConnections.current).forEach((pc) => pc.close());
       if (myStream) {
-        myStream.getTracks().forEach(track => track.stop());
+        myStream.getTracks().forEach((track) => track.stop());
       }
       newSocket.close();
     };
@@ -62,7 +63,7 @@ const VideoRoom = () => {
         socket.off("getCandidate");
         socket.off("user_exit");
       }
-    }
+    };
   }, [socket]);
 
   // 미디어 스트림 가져오기: 자신의 스트림을 가져옴
@@ -79,7 +80,7 @@ const VideoRoom = () => {
       setMyStream(stream);
       return stream;
     } catch (error) {
-      console.error('Error accessing media devices:', error);
+      console.error("Error accessing media devices:", error);
     }
   };
 
@@ -88,32 +89,28 @@ const VideoRoom = () => {
     try {
       // 비디오 껐다키기
       if (myStream) {
-        myStream
-          .getVideoTracks()
-          .forEach(videoTrack => {
-            videoTrack.enabled = !videoTrack.enabled
-          })
-        setIsVideoOn(prev => !prev);
+        myStream.getVideoTracks().forEach((videoTrack) => {
+          videoTrack.enabled = !videoTrack.enabled;
+        });
+        setIsVideoOn((prev) => !prev);
       }
     } catch (error) {
-      console.error('Error stopping video stream', error)
+      console.error("Error stopping video stream", error);
     }
-  }
+  };
 
   const handleMicToggle = () => {
     try {
       if (myStream) {
-        myStream.getAudioTracks()
-          .forEach(audioTrack => {
-            audioTrack.enabled = !audioTrack.enabled
-          })
-        setIsMicOn(prev => !prev)
+        myStream.getAudioTracks().forEach((audioTrack) => {
+          audioTrack.enabled = !audioTrack.enabled;
+        });
+        setIsMicOn((prev) => !prev);
       }
     } catch (error) {
-      console.error('Error stopping mic stream', error)
+      console.error("Error stopping mic stream", error);
     }
-  }
-
+  };
 
   // 방 입장 처리: 사용자가 join room 버튼을 클릭할 때
   const joinRoom = async () => {
@@ -122,88 +119,106 @@ const VideoRoom = () => {
     const stream = await getMedia();
     if (!stream) return;
 
-    socket.emit('join_room', { room: roomId, nickname });
+    socket.emit("join_room", { room: roomId, nickname });
 
     // 기존 사용자들의 정보 수신: 방에 있던 사용자들과 createPeerConnection 생성
-    socket.on('all_users', (users: User[]) => {
-      users.forEach(user => {
+    socket.on("all_users", (users: User[]) => {
+      users.forEach((user) => {
         createPeerConnection(user.id, user.nickname, stream, true);
       });
     });
 
     // 새로운 Offer 수신: 상대가 통화 요청
     // 발생 시점: 새로운 사용자가 방에 입장했을 때, 기존 사용자가 createOffer를 호출하고 emit했을 때
-    socket.on('getOffer', async (data: { sdp: RTCSessionDescription; offerSendID: string; offerSendNickname: string }) => {
-      // 연결 생성
-      const pc = createPeerConnection(
-        data.offerSendID,
-        data.offerSendNickname,
-        stream,
-        false
-      );
-      if (!pc) return;
+    socket.on(
+      "getOffer",
+      async (data: {
+        sdp: RTCSessionDescription;
+        offerSendID: string;
+        offerSendNickname: string;
+      }) => {
+        // 연결 생성
+        const pc = createPeerConnection(
+          data.offerSendID,
+          data.offerSendNickname,
+          stream,
+          false
+        );
+        if (!pc) return;
 
-      try {
-        // 상대의 설정 확인하기: 상대의 미디어 형식, 코덱, 해상도 확인
-        await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-        // Answer 생성: 수락 응답 만들기 - 내 미디어 설정 정보 생성, 상대 설정과 호환되는 형태로 생성
-        const answer = await pc.createAnswer();
-        // 로컬 설명 설정: 생성한 Answer 정보를 내 연결에 적용, 실제 통신 준비
-        await pc.setLocalDescription(answer);
+        try {
+          // 상대의 설정 확인하기: 상대의 미디어 형식, 코덱, 해상도 확인
+          await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+          // Answer 생성: 수락 응답 만들기 - 내 미디어 설정 정보 생성, 상대 설정과 호환되는 형태로 생성
+          const answer = await pc.createAnswer();
+          // 로컬 설명 설정: 생성한 Answer 정보를 내 연결에 적용, 실제 통신 준비
+          await pc.setLocalDescription(answer);
 
-        // Answer 전송: 생성한 Answer를 상대에게 전송, 실제 연결 수립 시작
-        // emit: 서버로 이벤트 전송
-        socket.emit('answer', {
-          answerReceiveID: data.offerSendID,
-          sdp: answer,
-          answerSendID: socket.id,
-        });
-      } catch (error) {
-        console.error('Error handling offer:', error);
+          // Answer 전송: 생성한 Answer를 상대에게 전송, 실제 연결 수립 시작
+          // emit: 서버로 이벤트 전송
+          socket.emit("answer", {
+            answerReceiveID: data.offerSendID,
+            sdp: answer,
+            answerSendID: socket.id,
+          });
+        } catch (error) {
+          console.error("Error handling offer:", error);
+        }
       }
-    });
+    );
 
     // Answer 수신: 상대방이 보낸 응답 수신, 연결 정보 설정, 실제 통신 준비 완료
-    socket.on('getAnswer', async (data: { sdp: RTCSessionDescription; answerSendID: string }) => {
-      // 상대방과의 연결 정보 찾기
-      const pc = peerConnections.current[data.answerSendID];
-      if (!pc) return;
-      try {
-        // 상대방의 연결 정보 설정
-        await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-      } catch (error) {
-        console.error('Error handling answer:', error);
+    socket.on(
+      "getAnswer",
+      async (data: { sdp: RTCSessionDescription; answerSendID: string }) => {
+        // 상대방과의 연결 정보 찾기
+        const pc = peerConnections.current[data.answerSendID];
+        if (!pc) return;
+        try {
+          // 상대방의 연결 정보 설정
+          await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+        } catch (error) {
+          console.error("Error handling answer:", error);
+        }
       }
-    });
+    );
 
     // ICE candidate 수신: 새로운 연결 경로 정보 수신, 가능한 연결 경로 목록에 추가, 최적의 경로로 자동 전환
-    socket.on('getCandidate', async (data: { candidate: RTCIceCandidate; candidateSendID: string }) => {
-      // 상대방과의 연결 찾기
-      const pc = peerConnections.current[data.candidateSendID];
-      if (!pc) return;
-      try {
-        // 새로운 연결 경로 추가
-        await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-      } catch (error) {
-        console.error('Error handling ICE candidate:', error);
+    socket.on(
+      "getCandidate",
+      async (data: { candidate: RTCIceCandidate; candidateSendID: string }) => {
+        // 상대방과의 연결 찾기
+        const pc = peerConnections.current[data.candidateSendID];
+        if (!pc) return;
+        try {
+          // 새로운 연결 경로 추가
+          await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+        } catch (error) {
+          console.error("Error handling ICE candidate:", error);
+        }
       }
-    });
+    );
 
     // 사용자 퇴장 처리
-    socket.on('user_exit', ({ id }: { id: string }) => {
+    socket.on("user_exit", ({ id }: { id: string }) => {
       if (peerConnections.current[id]) {
         // 연결 종료
         peerConnections.current[id].close();
         // 연결 객체 제거
         delete peerConnections.current[id];
         // UI에서 사용자 제거
-        setPeers(prev => prev.filter(peer => peer.peerId !== id));
+        setPeers((prev) => prev.filter((peer) => peer.peerId !== id));
       }
     });
   };
 
   // Peer Connection 생성
-  const createPeerConnection = (peerSocketId: string, peerNickname: string, stream: MediaStream, isOffer: boolean) => {
+  const createPeerConnection = (
+    peerSocketId: string,
+    peerNickname: string,
+    stream: MediaStream,
+    isOffer: boolean
+  ) => {
     try {
       // 유저 사이의 통신 선로를 생성
       // STUN: 공개 주소를 알려주는 서버
@@ -212,7 +227,7 @@ const VideoRoom = () => {
 
       // 로컬 스트림 추가: 내 카메라/마이크를 통신 선로(pc)에 연결
       // 상대방에게 나의 비디오/오디오를 전송할 준비
-      stream.getTracks().forEach(track => {
+      stream.getTracks().forEach((track) => {
         pc.addTrack(track, stream);
       });
 
@@ -220,7 +235,7 @@ const VideoRoom = () => {
       // 가능한 연결 경로를 찾을 때마다 상대에게 알려줌
       pc.onicecandidate = (e) => {
         if (e.candidate && socket) {
-          socket.emit('candidate', {
+          socket.emit("candidate", {
             candidateReceiveID: peerSocketId,
             candidate: e.candidate,
             candidateSendID: socket.id,
@@ -232,34 +247,35 @@ const VideoRoom = () => {
       // 새로운 연결/연결 시도/연결 완료/연결 끊김/연결 실패/연결 종료
       pc.onconnectionstatechange = (e) => {
         console.log("연결 상태 변경:", pc.connectionState);
-      }
+      };
       // ICE 연결 상태 모니터링
       pc.oniceconnectionstatechange = (e) => {
         console.log("ICE 연결 상태 변경:", pc.iceConnectionState);
-      }
+      };
 
       // 원격 스트림 처리(상대가 addTrack을 호출할 때)
       // 상대의 비디오/오디오 신호를 받아 연결하는 과정
       // 상대방 스트림 수신 -> 기존 연결인지 확인 -> 스트림 정보 업데이트/추가
       pc.ontrack = (e) => {
-        console.log('Received remote track:', e.streams[0]);
-        setPeers(prev => {
+        console.log("Received remote track:", e.streams[0]);
+        setPeers((prev) => {
           // 이미 존재하는 피어인지 확인
-          const exists = prev.find(p => p.peerId === peerSocketId);
+          const exists = prev.find((p) => p.peerId === peerSocketId);
           if (exists) {
             // 기존 피어의 스트림 업데이트
-            return prev.map(p =>
-              p.peerId === peerSocketId
-                ? { ...p, stream: e.streams[0] }
-                : p
+            return prev.map((p) =>
+              p.peerId === peerSocketId ? { ...p, stream: e.streams[0] } : p
             );
           }
           // 새로운 피어 추가
-          return [...prev, {
-            peerId: peerSocketId,
-            peerNickname,
-            stream: e.streams[0]
-          }];
+          return [
+            ...prev,
+            {
+              peerId: peerSocketId,
+              peerNickname,
+              stream: e.streams[0],
+            },
+          ];
         });
       };
 
@@ -267,10 +283,10 @@ const VideoRoom = () => {
       // Offer: 초대 - Offer 생성 -> 자신의 설정 저장 -> 상대에게 전송
       if (isOffer) {
         pc.createOffer()
-          .then(offer => pc.setLocalDescription(offer))
+          .then((offer) => pc.setLocalDescription(offer))
           .then(() => {
             if (socket && pc.localDescription) {
-              socket.emit('offer', {
+              socket.emit("offer", {
                 offerReceiveID: peerSocketId,
                 sdp: pc.localDescription,
                 offerSendID: socket.id,
@@ -278,13 +294,13 @@ const VideoRoom = () => {
               });
             }
           })
-          .catch(error => console.error('Error creating offer:', error));
+          .catch((error) => console.error("Error creating offer:", error));
       }
 
       peerConnections.current[peerSocketId] = pc;
       return pc;
     } catch (error) {
-      console.error('Error creating peer connection:', error);
+      console.error("Error creating peer connection:", error);
       return null;
     }
   };
@@ -315,39 +331,28 @@ const VideoRoom = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="relative">
-          <video
-            ref={myVideoRef}
-            autoPlay
-            playsInline
-            muted
-            className="w-full"
-          />
-          <p className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
-            Me ({nickname})
-          </p>
-        </div>
+        <VideoContainer
+          ref={myVideoRef}
+          nickname={nickname}
+          isMicOn={true}
+          isVideoOn={false}
+        />
 
         {
           // 상대방의 비디오 표시
           peers.map((peer) => (
-            <div key={peer.peerId} className="relative">
-              <video
-                autoPlay
-                playsInline
-                ref={el => {
-                  // 비디오 엘리먼트가 있고, 스트림이 있을 때
-                  if (el && peer.stream) {
-                    el.srcObject = peer.stream;
-                  }
-                  peerVideoRefs.current[peer.peerId] = el;
-                }}
-                className="w-full h-[300px] bg-gray-200"
-              />
-              <p className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
-                {peer.peerNickname}
-              </p>
-            </div>
+            <VideoContainer
+              ref={(el) => {
+                // 비디오 엘리먼트가 있고, 스트림이 있을 때
+                if (el && peer.stream) {
+                  el.srcObject = peer.stream;
+                }
+                peerVideoRefs.current[peer.peerId] = el;
+              }}
+              nickname={peer.peerNickname}
+              isMicOn={true}
+              isVideoOn={true}
+            />
           ))
         }
       </div>
