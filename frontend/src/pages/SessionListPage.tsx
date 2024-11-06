@@ -13,6 +13,11 @@ interface Session {
   participant: number;
   maxParticipant: number;
 }
+enum SessionStatus {
+  OPEN = "open",
+  CLOSE = "close",
+}
+
 const SessionListPage = () => {
   const [sessionList, setSessionList] = useState<Session[]>([
     {
@@ -39,6 +44,25 @@ const SessionListPage = () => {
     },
   ]);
   const [listLoading, setListLoading] = useState(false);
+
+  const renderSessionList = (sessionStatus: SessionStatus) => {
+    return sessionList.map((session) => {
+      return (
+        session.sessionStatus === sessionStatus && (
+          <SessionCard
+            key={session.id}
+            sessionStatus={session.sessionStatus}
+            category={session.category}
+            title={session.title}
+            host={session.host.nickname}
+            questionListId={1}
+            participant={session.participant}
+            maxParticipant={session.maxParticipant}
+          />
+        )
+      );
+    });
+  };
 
   return (
     <section
@@ -76,22 +100,7 @@ const SessionListPage = () => {
               {sessionList.length <= 0 ? (
                 <li>아직 아무도 세션을 열지 않았어요..!</li>
               ) : (
-                sessionList.map((session) => {
-                  return (
-                    session.sessionStatus === "open" && (
-                      <SessionCard
-                        key={session.id}
-                        sessionStatus={session.sessionStatus}
-                        category={session.category}
-                        title={session.title}
-                        host={session.host.nickname}
-                        questionListId={1}
-                        participant={session.participant}
-                        maxParticipant={session.maxParticipant}
-                      />
-                    )
-                  );
-                })
+                renderSessionList(SessionStatus.OPEN)
               )}
             </>
           )}
@@ -107,22 +116,7 @@ const SessionListPage = () => {
               {sessionList.length <= 0 ? (
                 <li>아직 아무도 세션을 열지 않았어요..!</li>
               ) : (
-                sessionList.map((session) => {
-                  return (
-                    session.sessionStatus === "close" && (
-                      <SessionCard
-                        key={session.id}
-                        sessionStatus={session.sessionStatus}
-                        category={session.category}
-                        title={session.title}
-                        host={session.host.nickname}
-                        questionListId={1}
-                        participant={session.participant}
-                        maxParticipant={session.maxParticipant}
-                      />
-                    )
-                  );
-                })
+                renderSessionList(SessionStatus.CLOSE)
               )}
             </>
           )}
