@@ -1,4 +1,5 @@
 import App from "./App.tsx";
+import SessionListPage from "./pages/SessionListPage.tsx";
 export const routes = [
   {
     element: <App />,
@@ -9,7 +10,7 @@ export const routes = [
     path: '/session/:sessionId'
   },
   {
-    element: <>세션 리스트 페이지</>,
+    element: <SessionListPage/>,
     path: '/sessions'
   },
   {
