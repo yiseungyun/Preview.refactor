@@ -1,16 +1,19 @@
 import App from "./App.tsx";
+import VideoContainer from "./components/VideoContainer.tsx";
 import SessionListPage from "./pages/SessionListPage.tsx";
+import SessionPage from './pages/SessionPage'
+
 export const routes = [
   {
     element: <App />,
     path: "/",
   },
   {
-    element: <>화상회의 페이지</>,
+    element: <SessionPage />,
     path: '/session/:sessionId'
   },
   {
-    element: <SessionListPage/>,
+    element: <SessionListPage />,
     path: '/sessions'
   },
   {

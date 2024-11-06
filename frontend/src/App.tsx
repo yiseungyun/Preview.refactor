@@ -7,13 +7,7 @@ function App() {
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   // WebRTC 설정
-  const configuration = {
-    iceServers: [
-      {
-        urls: process.env.REACT_STUN_SERVER ?? "stun:stun.l.google.com:19302",
-      },
-    ],
-  };
+
 
   // 변수 선언
 
