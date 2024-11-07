@@ -28,7 +28,7 @@ const VideoContainer = forwardRef(
           className="w-full"
         />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
-          <p className="bg-accent-gray  bg-opacity-50 text-white px-2 py-0.5 rounded">
+          <p className="bg-grayscale-500  bg-opacity-50 text-white px-2 py-0.5 rounded">
             {isLocal && "Me"} {nickname}
           </p>
           <div className={"inline-flex gap-4 px-2 items-center"}>

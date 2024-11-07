@@ -7,6 +7,8 @@ import {
   BsCameraVideo,
   BsCameraVideoOff,
 } from "react-icons/bs";
+import { FaAngleLeft, FaAngleRight, FaUserGroup } from "react-icons/fa6";
+import { FaClipboardList } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 interface User {
@@ -90,7 +92,7 @@ const SessionPage = () => {
   useEffect(() => {
     // 소켓 연결
     const newSocket = io(
-      import.meta.env.SIGNALING_SERVER_URL || "https://localhost"
+      import.meta.env.VITE_SIGNALING_SERVER_URL || "http://localhost:3000"
     );
     setSocket(newSocket);
 
@@ -415,62 +417,189 @@ const SessionPage = () => {
         >
           Join Room
         </button>
-        <button
-          onClick={handleVideoToggle}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          {isVideoOn ? <BsCameraVideo /> : <BsCameraVideoOff />}
-        </button>
-        <button
-          onClick={handleMicToggle}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          {isMicOn ? <BsMic /> : <BsMicMute />}
-        </button>
-        <select onChange={(e) => setSelectedVideoDeviceId(e.target.value)}>
-          {userVideoDevices.map((device) => (
-            <option key={device.deviceId} value={device.deviceId}>
-              {device.label}
-            </option>
-          ))}
-        </select>
-        <select onChange={(e) => setSelectedAudioDeviceId(e.target.value)}>
-          {userAudioDevices.map((device) => (
-            <option key={device.deviceId} value={device.deviceId}>
-              {device.label}
-            </option>
-          ))}
-        </select>
+        {/*  <button*/}
+        {/*    onClick={handleVideoToggle}*/}
+        {/*    className="bg-blue-500 text-white px-4 py-2 rounded"*/}
+        {/*  >*/}
+        {/*    {isVideoOn ? <BsCameraVideo /> : <BsCameraVideoOff />}*/}
+        {/*  </button>*/}
+        {/*  <button*/}
+        {/*    onClick={handleMicToggle}*/}
+        {/*    className="bg-blue-500 text-white px-4 py-2 rounded"*/}
+        {/*  >*/}
+        {/*    {isMicOn ? <BsMic /> : <BsMicMute />}*/}
+        {/*  </button>*/}
+        {/*  <select onChange={(e) => setSelectedVideoDeviceId(e.target.value)}>*/}
+        {/*    {userVideoDevices.map((device) => (*/}
+        {/*      <option key={device.deviceId} value={device.deviceId}>*/}
+        {/*        {device.label}*/}
+        {/*      </option>*/}
+        {/*    ))}*/}
+        {/*  </select>*/}
+        {/*  <select onChange={(e) => setSelectedAudioDeviceId(e.target.value)}>*/}
+        {/*    {userAudioDevices.map((device) => (*/}
+        {/*      <option key={device.deviceId} value={device.deviceId}>*/}
+        {/*        {device.label}*/}
+        {/*      </option>*/}
+        {/*    ))}*/}
+        {/*  </select>*/}
+        {/*</div>*/}
+
+        {/*<div className="grid grid-cols-2 gap-4">*/}
+        {/*  <VideoContainer*/}
+        {/*    ref={myVideoRef}*/}
+        {/*    nickname={nickname}*/}
+        {/*    isMicOn={isMicOn}*/}
+        {/*    isVideoOn={isVideoOn}*/}
+        {/*    isLocal={true}*/}
+        {/*  />*/}
+
+        {/*  {*/}
+        {/*    // 상대방의 비디오 표시*/}
+        {/*    peers.map((peer) => (*/}
+        {/*      <VideoContainer*/}
+        {/*        ref={(el) => {*/}
+        {/*          // 비디오 엘리먼트가 있고, 스트림이 있을 때*/}
+        {/*          if (el && peer.stream) {*/}
+        {/*            el.srcObject = peer.stream;*/}
+        {/*          }*/}
+        {/*          peerVideoRefs.current[peer.peerId] = el;*/}
+        {/*        }}*/}
+        {/*        nickname={peer.peerNickname}*/}
+        {/*        isMicOn={true}*/}
+        {/*        isVideoOn={true}*/}
+        {/*        isLocal={false}*/}
+        {/*      />*/}
+        {/*    ))*/}
+        {/*  }*/}
       </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <VideoContainer
-          ref={myVideoRef}
-          nickname={nickname}
-          isMicOn={isMicOn}
-          isVideoOn={isVideoOn}
-          isLocal={true}
-        />
-
-        {
-          // 상대방의 비디오 표시
-          peers.map((peer) => (
-            <VideoContainer
-              ref={(el) => {
-                // 비디오 엘리먼트가 있고, 스트림이 있을 때
-                if (el && peer.stream) {
-                  el.srcObject = peer.stream;
+      <section className={"w-screen h-screen max-w-7xl flex"}>
+        <div
+          className={
+            "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r"
+          }
+        >
+          <div className={"flex flex-col gap-4 justify-between"}>
+            <h1 className={"text-center text-medium-xl font-bold w-full py-4"}>
+              프론트엔드 초보자 면접 스터디
+            </h1>
+            <div className={"speaker w-full px-6"}>
+              <VideoContainer
+                ref={myVideoRef}
+                nickname={nickname}
+                isMicOn={isMicOn}
+                isVideoOn={isVideoOn}
+                isLocal={true}
+              />
+            </div>
+            <div className={"listeners w-full flex gap-2 px-6"}>
+              {
+                // 상대방의 비디오 표시
+                peers.map((peer) => (
+                  <VideoContainer
+                    ref={(el) => {
+                      // 비디오 엘리먼트가 있고, 스트림이 있을 때
+                      if (el && peer.stream) {
+                        el.srcObject = peer.stream;
+                      }
+                      peerVideoRefs.current[peer.peerId] = el;
+                    }}
+                    nickname={peer.peerNickname}
+                    isMicOn={true}
+                    isVideoOn={true}
+                    isLocal={false}
+                  />
+                ))
+              }
+            </div>
+          </div>
+          <div
+            className={
+              "session-footer h-16 inline-flex w-full justify-between items-center border-t px-6"
+            }
+          >
+            <button
+              className={"bg-transparent rounded-full border p-3 text-xl"}
+            >
+              <FaAngleLeft />
+            </button>
+            <div className={"center-buttons space-x-2"}>
+              <button
+                onClick={handleVideoToggle}
+                className="bg-blue-500 text-white p-3 rounded-full"
+                aria-label={isVideoOn ? `비디오 끄기` : "비디오 켜기"}
+              >
+                {isVideoOn ? <BsCameraVideo /> : <BsCameraVideoOff />}
+              </button>
+              <button
+                onClick={handleMicToggle}
+                className="bg-blue-500 text-white p-3 rounded-full"
+                aria-label={isMicOn ? `마이크 끄기` : "마이크 켜기"}
+              >
+                {isMicOn ? <BsMic /> : <BsMicMute />}
+              </button>
+              <select
+                className={"w-32"}
+                onChange={(e) => setSelectedVideoDeviceId(e.target.value)}
+              >
+                {userVideoDevices.map((device) => (
+                  <option key={device.deviceId} value={device.deviceId}>
+                    {device.label}
+                  </option>
+                ))}
+              </select>
+              <select
+                className={"w-32"}
+                onChange={(e) => setSelectedAudioDeviceId(e.target.value)}
+              >
+                {userAudioDevices.map((device) => (
+                  <option key={device.deviceId} value={device.deviceId}>
+                    {device.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              className={"bg-transparent rounded-full border p-3 text-xl"}
+            >
+              <FaAngleRight />
+            </button>
+          </div>
+        </div>
+        <div className={"flex flex-col justify-between w-[440px] px-6"}>
+          <div className={"flex flex-col gap-4"}>
+            <div className={"flex flex-col gap-2"}>
+              <h2 className={"inline-flex gap-1 items-center text-semibold-s"}>
+                <FaClipboardList />
+                질문
+              </h2>
+              <p
+                className={
+                  "border border-accent-gray p-2 bg-transparent rounded-xl"
                 }
-                peerVideoRefs.current[peer.peerId] = el;
-              }}
-              nickname={peer.peerNickname}
-              isMicOn={true}
-              isVideoOn={true}
-              isLocal={false}
-            />
-          ))
-        }
-      </div>
+              >
+                Restful API란 무엇인지 설명해주세요
+              </p>
+            </div>
+            <div className={"flex flex-col gap-2"}>
+              <h2 className={"inline-flex gap-1 items-center text-semibold-s"}>
+                <FaUserGroup />
+                참가자
+              </h2>
+              <ul>
+                <li>참가자 1</li>
+                <li>참가자 2</li>
+                <li>참가자 3</li>
+              </ul>
+            </div>
+          </div>
+          <div className={"h-16 items-center flex w-full"}>
+            <button className={"w-full bg-red-500 text-white rounded-md py-2"}>
+              종료하기
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
