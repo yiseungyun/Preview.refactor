@@ -7,6 +7,7 @@ import {
   BsCameraVideo,
   BsCameraVideoOff,
 } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   id: string;
@@ -32,6 +33,7 @@ const VideoRoom = () => {
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const peerVideoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
+  const navigate = useNavigate();
   // STUN 서버 설정
   const pcConfig = {
     iceServers: [
@@ -145,6 +147,14 @@ const VideoRoom = () => {
 
     socket.emit("join_room", { room: roomId, nickname });
 
+    socket.on("room_full", () => {
+      console.log("방이 꽉찼심");
+      alert(
+        "해당 세션은 이미 유저가 가득 찼습니다. 세션 페이지로 이동합니다..."
+      );
+      navigate("/sessions");
+      return;
+    });
     // 기존 사용자들의 정보 수신: 방에 있던 사용자들과 createPeerConnection 생성
     socket.on("all_users", (users: User[]) => {
       users.forEach((user) => {
