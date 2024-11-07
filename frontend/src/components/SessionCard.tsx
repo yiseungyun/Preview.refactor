@@ -8,6 +8,7 @@ interface Props {
   maxParticipant: number;
   sessionStatus: "open" | "close";
   questionListId: number;
+  onEnter: () => void;
 }
 
 const SessionCard = ({
@@ -18,6 +19,7 @@ const SessionCard = ({
   maxParticipant,
   sessionStatus,
   questionListId,
+  onEnter,
 }: Props) => {
   return (
     <li
@@ -52,8 +54,9 @@ const SessionCard = ({
           </div>
           <button
             className={
-              "text-semibold-s text-primary-dark hover:text-primary-dark-hover bg-transparent inline-flex items-center"
+              "text-semibold-s text-primary-dark hover:text-primary-dark-hover bg-transparent inline-flex items-center gap-1 hover:gap-0.5 transition-all"
             }
+            onClick={onEnter}
           >
             <span>참여하기</span> <FaArrowRight />
           </button>

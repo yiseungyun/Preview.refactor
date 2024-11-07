@@ -1,6 +1,7 @@
 import { FaCirclePlus } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import SessionCard from "../components/SessionCard.tsx";
+import { useNavigate } from "react-router-dom";
 
 interface Session {
   id: number;
@@ -21,6 +22,7 @@ enum SessionStatus {
 const SessionListPage = () => {
   const [sessionList, setSessionList] = useState<Session[]>([]);
   const [listLoading, setListLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const sessionData: Session[] = [
@@ -66,6 +68,7 @@ const SessionListPage = () => {
             questionListId={1}
             participant={session.participant}
             maxParticipant={session.maxParticipant}
+            onEnter={() => navigate(`/session/${session.id}`)}
           />
         )
       );
