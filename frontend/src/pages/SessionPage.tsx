@@ -59,34 +59,25 @@ const SessionPage = () => {
 
   useEffect(() => {
     // 비디오 디바이스 목록 가져오기
-    const getVideoDevices = async () => {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter(
-          (device) => device.kind === "videoinput"
-        );
-        console.log(videoDevices);
-        setUserVideoDevices(videoDevices);
-      } catch (error) {
-        console.error("비디오 기기를 찾는데 문제가 발생했습니다.", error);
-      }
-    };
 
-    const getAudioDevices = async () => {
+    const getUserDevices = async () => {
       try {
         const devices = await navigator.mediaDevices.enumerateDevices();
         const audioDevices = devices.filter(
           (device) => device.kind === "audioinput"
         );
-        console.log(audioDevices);
+        const videoDevices = devices.filter(
+          (device) => device.kind === "videoinput"
+        );
+
         setUserAudioDevices(audioDevices);
+        setUserVideoDevices(videoDevices);
       } catch (error) {
-        console.error("오디오 기기를 찾는데 문제가 발생했습니다.", error);
+        console.error("미디어 기기를 찾는데 문제가 발생했습니다.", error);
       }
     };
 
-    getVideoDevices();
-    getAudioDevices();
+    getUserDevices();
   }, []);
 
   useEffect(() => {
