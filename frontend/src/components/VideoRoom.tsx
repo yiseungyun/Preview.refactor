@@ -143,7 +143,13 @@ const VideoRoom = () => {
     if (!socket || !roomId || !nickname) return;
 
     const stream = await getMedia();
-    if (!stream) return;
+    if (!stream) {
+      alert(
+        "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
+      );
+      navigate("/sessions");
+      return;
+    }
 
     socket.emit("join_room", { room: roomId, nickname });
 
