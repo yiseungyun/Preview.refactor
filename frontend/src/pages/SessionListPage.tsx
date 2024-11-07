@@ -1,5 +1,5 @@
 import { FaCirclePlus } from "react-icons/fa6";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SessionCard from "../components/SessionCard.tsx";
 
 interface Session {
@@ -13,32 +13,64 @@ interface Session {
   participant: number;
   maxParticipant: number;
 }
+enum SessionStatus {
+  OPEN = "open",
+  CLOSE = "close",
+}
+
 const SessionListPage = () => {
-  const [sessionList, setSessionList] = useState<Session[]>([
-    {
-      id: 1,
-      title: "프론트엔드 초보만 들어올 수 있음",
-      category: "프론트엔드",
-      sessionStatus: "open",
-      host: {
-        nickname: "J133",
-      },
-      participant: 1,
-      maxParticipant: 4,
-    },
-    {
-      id: 2,
-      title: "백엔드 초보만 들어올 수 있음",
-      category: "백엔드",
-      sessionStatus: "close",
-      host: {
-        nickname: "J000",
-      },
-      participant: 1,
-      maxParticipant: 2,
-    },
-  ]);
+  const [sessionList, setSessionList] = useState<Session[]>([]);
   const [listLoading, setListLoading] = useState(false);
+
+  useEffect(() => {
+    const sessionData: Session[] = [
+      {
+        id: 1,
+        title: "프론트엔드 초보만 들어올 수 있음",
+        category: "프론트엔드",
+        sessionStatus: "open",
+        host: {
+          nickname: "J133",
+        },
+        participant: 1,
+        maxParticipant: 4,
+      },
+      {
+        id: 2,
+        title: "백엔드 초보만 들어올 수 있음",
+        category: "백엔드",
+        sessionStatus: "close",
+        host: {
+          nickname: "J000",
+        },
+        participant: 1,
+        maxParticipant: 2,
+      },
+    ];
+
+    setTimeout(() => {
+      setSessionList(sessionData);
+      setListLoading(false);
+    }, 100);
+  }, []);
+  const renderSessionList = (sessionStatus: SessionStatus) => {
+    return sessionList.map((session) => {
+      return (
+        session.sessionStatus === sessionStatus && (
+          <SessionCard
+            key={session.id}
+            sessionStatus={session.sessionStatus}
+            category={session.category}
+            title={session.title}
+            host={session.host.nickname}
+            questionListId={1}
+            participant={session.participant}
+            maxParticipant={session.maxParticipant}
+          />
+        )
+      );
+    });
+  };
 
   return (
     <section
@@ -76,22 +108,7 @@ const SessionListPage = () => {
               {sessionList.length <= 0 ? (
                 <li>아직 아무도 세션을 열지 않았어요..!</li>
               ) : (
-                sessionList.map((session) => {
-                  return (
-                    session.sessionStatus === "open" && (
-                      <SessionCard
-                        key={session.id}
-                        sessionStatus={session.sessionStatus}
-                        category={session.category}
-                        title={session.title}
-                        host={session.host.nickname}
-                        questionListId={1}
-                        participant={session.participant}
-                        maxParticipant={session.maxParticipant}
-                      />
-                    )
-                  );
-                })
+                renderSessionList(SessionStatus.OPEN)
               )}
             </>
           )}
@@ -107,22 +124,7 @@ const SessionListPage = () => {
               {sessionList.length <= 0 ? (
                 <li>아직 아무도 세션을 열지 않았어요..!</li>
               ) : (
-                sessionList.map((session) => {
-                  return (
-                    session.sessionStatus === "close" && (
-                      <SessionCard
-                        key={session.id}
-                        sessionStatus={session.sessionStatus}
-                        category={session.category}
-                        title={session.title}
-                        host={session.host.nickname}
-                        questionListId={1}
-                        participant={session.participant}
-                        maxParticipant={session.maxParticipant}
-                      />
-                    )
-                  );
-                })
+                renderSessionList(SessionStatus.CLOSE)
               )}
             </>
           )}
