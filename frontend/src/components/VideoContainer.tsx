@@ -19,7 +19,7 @@ const VideoContainer = forwardRef(
     ref: React.Ref<HTMLVideoElement>
   ) => {
     return (
-      <div className="bg-black rounded-2xl overflow-hidden shadow relative">
+      <div className="bg-black rounded-2xl overflow-hidden shadow relative flex-grow">
         <video
           ref={ref}
           autoPlay
