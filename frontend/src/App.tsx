@@ -7,7 +7,7 @@ function App() {
 
   useEffect(() => {
     navigate("/sessions");
-  }, []);
+  }, [navigate]);
 
   return (
     <section className={"flex flex-col gap-3"}>
