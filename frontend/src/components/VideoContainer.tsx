@@ -19,7 +19,7 @@ const VideoContainer = forwardRef(
     ref: React.Ref<HTMLVideoElement>
   ) => {
     return (
-      <div className="bg-black rounded-2xl overflow-hidden shadow relative">
+      <div className="bg-black rounded-2xl overflow-hidden shadow relative flex-grow">
         <video
           ref={ref}
           autoPlay
@@ -28,7 +28,7 @@ const VideoContainer = forwardRef(
           className="w-full"
         />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
-          <p className="bg-accent-gray  bg-opacity-50 text-white px-2 py-0.5 rounded">
+          <p className="bg-grayscale-500  bg-opacity-50 text-white px-2 py-0.5 rounded">
             {isLocal && "Me"} {nickname}
           </p>
           <div className={"inline-flex gap-4 px-2 items-center"}>
