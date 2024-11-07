@@ -28,6 +28,16 @@ const VideoRoom = () => {
   const [nickname, setNickname] = useState<string>("");
   const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
   const [isMicOn, setIsMicOn] = useState<boolean>(true);
+  const [userVideoDevices, setUserVideoDevices] = useState<MediaDeviceInfo[]>(
+    []
+  );
+  const [userAudioDevices, setUserAudioDevices] = useState<MediaDeviceInfo[]>(
+    []
+  );
+  const [selectedVideoDeviceId, setSelectedVideoDeviceId] =
+    useState<string>("");
+  const [selectedAudioDeviceId, setSelectedAudioDeviceId] =
+    useState<string>("");
 
   const myVideoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
@@ -44,6 +54,38 @@ const VideoRoom = () => {
       },
     ],
   };
+
+  useEffect(() => {
+    // 비디오 디바이스 목록 가져오기
+    const getVideoDevices = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(
+          (device) => device.kind === "videoinput"
+        );
+        console.log(videoDevices);
+        setUserVideoDevices(videoDevices);
+      } catch (error) {
+        console.error("비디오 기기를 찾는데 문제가 발생했습니다.", error);
+      }
+    };
+
+    const getAudioDevices = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioDevices = devices.filter(
+          (device) => device.kind === "audioinput"
+        );
+        console.log(audioDevices);
+        setUserAudioDevices(audioDevices);
+      } catch (error) {
+        console.error("오디오 기기를 찾는데 문제가 발생했습니다.", error);
+      }
+    };
+
+    getVideoDevices();
+    getAudioDevices();
+  }, []);
 
   useEffect(() => {
     // 소켓 연결
@@ -96,8 +138,12 @@ const VideoRoom = () => {
   const getMedia = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
+        video: selectedVideoDeviceId
+          ? { deviceId: selectedVideoDeviceId }
+          : true,
+        audio: selectedAudioDeviceId
+          ? { deviceId: selectedAudioDeviceId }
+          : true,
       });
 
       if (myVideoRef.current) {
@@ -380,6 +426,20 @@ const VideoRoom = () => {
         >
           {isMicOn ? <BsMic /> : <BsMicMute />}
         </button>
+        <select onChange={(e) => setSelectedVideoDeviceId(e.target.value)}>
+          {userVideoDevices.map((device) => (
+            <option key={device.deviceId} value={device.deviceId}>
+              {device.label}
+            </option>
+          ))}
+        </select>
+        <select onChange={(e) => setSelectedAudioDeviceId(e.target.value)}>
+          {userAudioDevices.map((device) => (
+            <option key={device.deviceId} value={device.deviceId}>
+              {device.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
