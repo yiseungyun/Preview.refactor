@@ -45,7 +45,9 @@ const VideoRoom = () => {
 
   useEffect(() => {
     // 소켓 연결
-    const newSocket = io(import.meta.env.SIGNALING_SERVER_URL);
+    const newSocket = io(
+      import.meta.env.SIGNALING_SERVER_URL || "http://localhost:3000"
+    );
     setSocket(newSocket);
 
     // ref 값을 useEffect 안에서 캡처
@@ -370,6 +372,7 @@ const VideoRoom = () => {
           nickname={nickname}
           isMicOn={isMicOn}
           isVideoOn={isVideoOn}
+          isLocal={true}
         />
 
         {
@@ -386,6 +389,7 @@ const VideoRoom = () => {
               nickname={peer.peerNickname}
               isMicOn={true}
               isVideoOn={true}
+              isLocal={false}
             />
           ))
         }
