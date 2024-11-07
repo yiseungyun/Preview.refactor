@@ -125,6 +125,7 @@ const VideoRoom = () => {
     // 메모리 누수, 중복 실행을 방지하기 위해 정리
     return () => {
       if (socket) {
+        socket.off("room_full");
         socket.off("all_users");
         socket.off("getOffer");
         socket.off("getAnswer");
