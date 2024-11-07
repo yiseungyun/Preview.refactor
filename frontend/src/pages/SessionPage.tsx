@@ -395,8 +395,8 @@ const SessionPage = () => {
   };
 
   return (
-    <div className="p-4">
-      <div className="flex gap-2 mb-4 space-y-2">
+    <section className="w-screen h-screen flex flex-col max-w-7xl">
+      <div className="w-screen flex gap-2 mb-4 space-y-2">
         <input
           type="text"
           placeholder="Room ID"
@@ -473,7 +473,7 @@ const SessionPage = () => {
         {/*    ))*/}
         {/*  }*/}
       </div>
-      <section className={"w-screen h-screen max-w-7xl flex"}>
+      <div className={"w-screen max-w-7xl flex flex-grow"}>
         <div
           className={
             "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r"
@@ -599,8 +599,8 @@ const SessionPage = () => {
             </button>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 };
 
