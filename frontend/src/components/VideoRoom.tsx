@@ -7,6 +7,7 @@ import {
   BsCameraVideo,
   BsCameraVideoOff,
 } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   id: string;
@@ -32,6 +33,7 @@ const VideoRoom = () => {
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const peerVideoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
+  const navigate = useNavigate();
   // STUN 서버 설정
   const pcConfig = {
     iceServers: [
@@ -45,7 +47,9 @@ const VideoRoom = () => {
 
   useEffect(() => {
     // 소켓 연결
-    const newSocket = io(import.meta.env.SIGNALING_SERVER_URL);
+    const newSocket = io(
+      import.meta.env.SIGNALING_SERVER_URL || "http://localhost:3000"
+    );
     setSocket(newSocket);
 
     // ref 값을 useEffect 안에서 캡처
@@ -139,10 +143,24 @@ const VideoRoom = () => {
     if (!socket || !roomId || !nickname) return;
 
     const stream = await getMedia();
-    if (!stream) return;
+    if (!stream) {
+      alert(
+        "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
+      );
+      navigate("/sessions");
+      return;
+    }
 
     socket.emit("join_room", { room: roomId, nickname });
 
+    socket.on("room_full", () => {
+      console.log("방이 꽉찼심");
+      alert(
+        "해당 세션은 이미 유저가 가득 찼습니다. 세션 페이지로 이동합니다..."
+      );
+      navigate("/sessions");
+      return;
+    });
     // 기존 사용자들의 정보 수신: 방에 있던 사용자들과 createPeerConnection 생성
     socket.on("all_users", (users: User[]) => {
       users.forEach((user) => {
@@ -370,6 +388,7 @@ const VideoRoom = () => {
           nickname={nickname}
           isMicOn={isMicOn}
           isVideoOn={isVideoOn}
+          isLocal={true}
         />
 
         {
@@ -386,6 +405,7 @@ const VideoRoom = () => {
               nickname={peer.peerNickname}
               isMicOn={true}
               isVideoOn={true}
+              isLocal={false}
             />
           ))
         }
