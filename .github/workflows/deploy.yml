@@ -1,0 +1,23 @@
+name: Deploy to Ncloud Server
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.3.0 # workflow 내에서 repo의 최신 코드를 checkout
+      - name: Deploy to Ncloud via SSH
+        uses: appleboy/ssh-action@master # GitHub Actions에서 SSH로 서버에 접근
+        with:
+          host: ${{ secrets.REMOTE_SSH_HOST }}
+          username: ${{ secrets.REMOTE_SSH_USERNAME }}
+          key: ${{ secrets.REMOTE_SSH_KEY }}
+          passphrase: ${{ secrets.REMOTE_SSH_PASSPHRASE }}
+          password: ${{ secrets.REMOTE_SSH_PASSWORD }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
+          script: |
+            echo ${{ secrets.REMOTE_SSH_PASSWORD }} | sudo -S echo deploy start!
+            ./deploy.sh # 배포 스크립트 실행
