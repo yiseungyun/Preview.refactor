@@ -7,53 +7,41 @@ export default {
   theme: {
     extend: {
       colors: {
-        grayscale: {
-          'white-alt': 'rgba(255, 255, 255, 0.7)',
+        gray: {
           white: '#FFFFFF',
-          50: '#F5F7F9',
-          100: '#D2DAE0',
-          200: '#879298',
-          300: '#6E8091',
-          400: '#5F6E76',
-          500: '#4B5966',
-          black: '#14212B',
+          50: '#FAFAFA',
+          100: '#EDEDED',
+          200: '#E1E1E1',
+          300: '#D9D9D9',
+          400: '#6C6C6C',
+          500: '#5E5E5E',
+          600: '#3F3F3F',
+          black: '#171717',
         },
-        primary: {
-          light: {
-            DEFAULT: '#e6f9f1',    // rgb(230, 249, 241)
-            hover: '#d9f5e9',      // rgb(217, 245, 233)
-            active: '#b0ebd2',     // rgb(176, 235, 210)
-          },
-          DEFAULT: '#01bf6f',      // rgb(1, 191, 111)
-          hover: '#01ac64',        // rgb(1, 172, 100)
-          active: '#019959',       // rgb(1, 153, 89)
-          dark: {
-            DEFAULT: '#018f53',    // rgb(1, 143, 83)
-            hover: '#017343',      // rgb(1, 115, 67)
-            active: '#005632',     // rgb(0, 86, 50)
-          },
-          darker: '#004327',       // rgb(0, 67, 39)
+        green: {
+          50: '#F1FBF7',
+          100: '#01BF6F',
+          200: '#01AC64',
+          300: '#019959',
+          400: '#018F53',
+          500: '#017343',
+          600: '#005632',
+          700: '#004327'  
         },
-        accent: {
-          gray: {
-            DEFAULT: '#dfddd5'
-          }
+        point: {
+          1: '#F04040',
+          2: '#DFDDD5',
+          3: '#2572E6'
         }
-      },
-      borderColor: {
-        skin: {
-          bold: 'var(--color-border-bold)',
-          default: 'var(--color-border-default)',
-        },
       },
       fontSize: {
         // Bold(700) sizes
-        'bold-l': ['32px', { lineHeight: 'auto', fontWeight: '700' }],
-        'bold-m': ['28px', { lineHeight: 'auto', fontWeight: '700' }],
+        'bold-l': ['30px', { lineHeight: 'auto', fontWeight: '700' }],
+        'bold-m': ['26px', { lineHeight: 'auto', fontWeight: '700' }],
         'bold-r': ['20px', { lineHeight: 'auto', fontWeight: '700' }],
 
         // SemiBold(600) sizes
-        'semibold-xl': ['28px', { lineHeight: 'auto', fontWeight: '600' }],
+        'semibold-xl': ['26px', { lineHeight: 'auto', fontWeight: '600' }],
         'semibold-l': ['24px', { lineHeight: 'auto', fontWeight: '600' }],
         'semibold-m': ['22px', { lineHeight: 'auto', fontWeight: '600' }],
         'semibold-r': ['20px', { lineHeight: 'auto', fontWeight: '600' }],
@@ -76,4 +64,3 @@ export default {
   },
   plugins: [],
 }
-
