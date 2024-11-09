@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useSocket from "../hooks/useSocket.ts";
 import SessionSidebar from "../components/session/SessionSidebar.tsx";
 import SessionToolbar from "../components/session/SessionToolbar.tsx";
+import useMediaDevices from "../hooks/useMediaDevices.ts";
 
 interface User {
   id: string;
@@ -18,22 +19,21 @@ interface PeerConnection {
 
 const SessionPage = () => {
   const { socket } = useSocket(import.meta.env.VITE_SIGNALING_SERVER_URL);
-  const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [peers, setPeers] = useState<PeerConnection[]>([]); // 연결 관리
   const [roomId, setRoomId] = useState<string>("");
   const [nickname, setNickname] = useState<string>("");
   const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
   const [isMicOn, setIsMicOn] = useState<boolean>(true);
-  const [userVideoDevices, setUserVideoDevices] = useState<MediaDeviceInfo[]>(
-    []
-  );
-  const [userAudioDevices, setUserAudioDevices] = useState<MediaDeviceInfo[]>(
-    []
-  );
-  const [selectedVideoDeviceId, setSelectedVideoDeviceId] =
-    useState<string>("");
-  const [selectedAudioDeviceId, setSelectedAudioDeviceId] =
-    useState<string>("");
+  const {
+    userVideoDevices,
+    userAudioDevices,
+    selectedAudioDeviceId,
+    selectedVideoDeviceId,
+    setSelectedAudioDeviceId,
+    setSelectedVideoDeviceId,
+    getMedia,
+    stream: myStream,
+  } = useMediaDevices();
 
   const myVideoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
@@ -50,29 +50,6 @@ const SessionPage = () => {
       },
     ],
   };
-
-  useEffect(() => {
-    // 비디오 디바이스 목록 가져오기
-
-    const getUserDevices = async () => {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const audioDevices = devices.filter(
-          (device) => device.kind === "audioinput"
-        );
-        const videoDevices = devices.filter(
-          (device) => device.kind === "videoinput"
-        );
-
-        setUserAudioDevices(audioDevices);
-        setUserVideoDevices(videoDevices);
-      } catch (error) {
-        console.error("미디어 기기를 찾는데 문제가 발생했습니다.", error);
-      }
-    };
-
-    getUserDevices();
-  }, []);
 
   useEffect(() => {
     const connections = peerConnections;
@@ -114,27 +91,12 @@ const SessionPage = () => {
     };
   }, [socket]);
 
-  // 미디어 스트림 가져오기: 자신의 스트림을 가져옴
-  const getMedia = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: selectedVideoDeviceId
-          ? { deviceId: selectedVideoDeviceId }
-          : true,
-        audio: selectedAudioDeviceId
-          ? { deviceId: selectedAudioDeviceId }
-          : true,
-      });
-
-      if (myVideoRef.current) {
-        myVideoRef.current!.srcObject = stream;
-      }
-      setMyStream(stream);
-      return stream;
-    } catch (error) {
-      console.error("Error accessing media devices:", error);
+  // 미디어 스트림 가져오기
+  useEffect(() => {
+    if (myStream && myVideoRef.current) {
+      myVideoRef.current.srcObject = myStream;
     }
-  };
+  }, [myStream]);
 
   // 미디어 스트림 토글 관련
   const handleVideoToggle = () => {
