@@ -1,16 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import VideoContainer from "../components/session/VideoContainer.tsx";
-import {
-  BsMic,
-  BsMicMute,
-  BsCameraVideo,
-  BsCameraVideoOff,
-} from "react-icons/bs";
-import { FaAngleLeft, FaAngleRight, FaUserGroup } from "react-icons/fa6";
-import { FaClipboardList } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import useSocket from "../hooks/useSocket.ts";
 import SessionSidebar from "../components/session/SessionSidebar.tsx";
+import SessionToolbar from "../components/session/SessionToolbar.tsx";
 
 interface User {
   id: string;
@@ -45,8 +38,8 @@ const SessionPage = () => {
   const myVideoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const peerVideoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
-
   const navigate = useNavigate();
+
   // STUN 서버 설정
   const pcConfig = {
     iceServers: [
@@ -442,58 +435,16 @@ const SessionPage = () => {
               }
             </div>
           </div>
-          <div
-            className={
-              "session-footer h-16 inline-flex w-full justify-between items-center border-t px-6"
-            }
-          >
-            <button
-              className={"bg-transparent rounded-full border p-3 text-xl"}
-            >
-              <FaAngleLeft />
-            </button>
-            <div className={"center-buttons space-x-2"}>
-              <button
-                onClick={handleVideoToggle}
-                className="bg-blue-500 text-white p-3 rounded-full"
-                aria-label={isVideoOn ? `비디오 끄기` : "비디오 켜기"}
-              >
-                {isVideoOn ? <BsCameraVideo /> : <BsCameraVideoOff />}
-              </button>
-              <button
-                onClick={handleMicToggle}
-                className="bg-blue-500 text-white p-3 rounded-full"
-                aria-label={isMicOn ? `마이크 끄기` : "마이크 켜기"}
-              >
-                {isMicOn ? <BsMic /> : <BsMicMute />}
-              </button>
-              <select
-                className={"w-32"}
-                onChange={(e) => setSelectedVideoDeviceId(e.target.value)}
-              >
-                {userVideoDevices.map((device) => (
-                  <option key={device.deviceId} value={device.deviceId}>
-                    {device.label}
-                  </option>
-                ))}
-              </select>
-              <select
-                className={"w-32"}
-                onChange={(e) => setSelectedAudioDeviceId(e.target.value)}
-              >
-                {userAudioDevices.map((device) => (
-                  <option key={device.deviceId} value={device.deviceId}>
-                    {device.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              className={"bg-transparent rounded-full border p-3 text-xl"}
-            >
-              <FaAngleRight />
-            </button>
-          </div>
+          <SessionToolbar
+            handleVideoToggle={handleVideoToggle}
+            handleMicToggle={handleMicToggle}
+            userVideoDevices={userVideoDevices}
+            userAudioDevices={userAudioDevices}
+            setSelectedVideoDeviceId={setSelectedVideoDeviceId}
+            setSelectedAudioDeviceId={setSelectedAudioDeviceId}
+            isVideoOn={isVideoOn}
+            isMicOn={isMicOn}
+          />
         </div>
         <SessionSidebar
           question={"Restful API에 대해서 설명해주세요."}
