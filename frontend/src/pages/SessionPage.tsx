@@ -85,6 +85,10 @@ const SessionPage = () => {
     const newSocket = io(
       import.meta.env.VITE_SIGNALING_SERVER_URL || "http://localhost:3000"
     );
+    newSocket.on("connect_error", () => {
+      console.error("시그널링 서버와의 연결에 실패했습니다.");
+    });
+
     setSocket(newSocket);
 
     // ref 값을 useEffect 안에서 캡처
@@ -408,61 +412,6 @@ const SessionPage = () => {
         >
           Join Room
         </button>
-        {/*  <button*/}
-        {/*    onClick={handleVideoToggle}*/}
-        {/*    className="bg-blue-500 text-white px-4 py-2 rounded"*/}
-        {/*  >*/}
-        {/*    {isVideoOn ? <BsCameraVideo /> : <BsCameraVideoOff />}*/}
-        {/*  </button>*/}
-        {/*  <button*/}
-        {/*    onClick={handleMicToggle}*/}
-        {/*    className="bg-blue-500 text-white px-4 py-2 rounded"*/}
-        {/*  >*/}
-        {/*    {isMicOn ? <BsMic /> : <BsMicMute />}*/}
-        {/*  </button>*/}
-        {/*  <select onChange={(e) => setSelectedVideoDeviceId(e.target.value)}>*/}
-        {/*    {userVideoDevices.map((device) => (*/}
-        {/*      <option key={device.deviceId} value={device.deviceId}>*/}
-        {/*        {device.label}*/}
-        {/*      </option>*/}
-        {/*    ))}*/}
-        {/*  </select>*/}
-        {/*  <select onChange={(e) => setSelectedAudioDeviceId(e.target.value)}>*/}
-        {/*    {userAudioDevices.map((device) => (*/}
-        {/*      <option key={device.deviceId} value={device.deviceId}>*/}
-        {/*        {device.label}*/}
-        {/*      </option>*/}
-        {/*    ))}*/}
-        {/*  </select>*/}
-        {/*</div>*/}
-
-        {/*<div className="grid grid-cols-2 gap-4">*/}
-        {/*  <VideoContainer*/}
-        {/*    ref={myVideoRef}*/}
-        {/*    nickname={nickname}*/}
-        {/*    isMicOn={isMicOn}*/}
-        {/*    isVideoOn={isVideoOn}*/}
-        {/*    isLocal={true}*/}
-        {/*  />*/}
-
-        {/*  {*/}
-        {/*    // 상대방의 비디오 표시*/}
-        {/*    peers.map((peer) => (*/}
-        {/*      <VideoContainer*/}
-        {/*        ref={(el) => {*/}
-        {/*          // 비디오 엘리먼트가 있고, 스트림이 있을 때*/}
-        {/*          if (el && peer.stream) {*/}
-        {/*            el.srcObject = peer.stream;*/}
-        {/*          }*/}
-        {/*          peerVideoRefs.current[peer.peerId] = el;*/}
-        {/*        }}*/}
-        {/*        nickname={peer.peerNickname}*/}
-        {/*        isMicOn={true}*/}
-        {/*        isVideoOn={true}*/}
-        {/*        isLocal={false}*/}
-        {/*      />*/}
-        {/*    ))*/}
-        {/*  }*/}
       </div>
       <div className={"w-screen max-w-7xl flex flex-grow"}>
         <div
