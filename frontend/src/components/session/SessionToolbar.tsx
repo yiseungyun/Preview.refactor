@@ -33,7 +33,10 @@ const SessionToolbar = ({
         "session-footer h-16 inline-flex w-full justify-between items-center border-t px-6"
       }
     >
-      <button className={"bg-transparent rounded-full border p-3 text-xl"}>
+      <button
+        className={"bg-transparent rounded-full border p-3 text-xl"}
+        aria-label={"이전 질문 버튼"}
+      >
         <FaAngleLeft />
       </button>
       <div className={"center-buttons space-x-2"}>
@@ -82,7 +85,10 @@ const SessionToolbar = ({
           ))}
         </select>
       </div>
-      <button className={"bg-transparent rounded-full border p-3 text-xl"}>
+      <button
+        className={"bg-transparent rounded-full border p-3 text-xl"}
+        aria-label={"다음 질문 버튼"}
+      >
         <FaAngleRight />
       </button>
     </div>
