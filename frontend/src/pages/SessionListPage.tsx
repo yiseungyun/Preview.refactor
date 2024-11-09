@@ -1,7 +1,9 @@
-import { FaCirclePlus } from "react-icons/fa6";
+import { IoChevronDownSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import SessionCard from "../components/SessionCard.tsx";
 import { useNavigate } from "react-router-dom";
+import { IoMdAdd } from "react-icons/io";
+import { IoIosSearch } from "react-icons/io";
 
 interface Session {
   id: number;
@@ -32,7 +34,7 @@ const SessionListPage = () => {
         category: "프론트엔드",
         sessionStatus: "open",
         host: {
-          nickname: "J133",
+          nickname: "J133 네모정",
         },
         participant: 1,
         maxParticipant: 4,
@@ -55,6 +57,7 @@ const SessionListPage = () => {
       setListLoading(false);
     }, 100);
   }, []);
+
   const renderSessionList = (sessionStatus: SessionStatus) => {
     return sessionList.map((session) => {
       return (
@@ -77,32 +80,39 @@ const SessionListPage = () => {
 
   return (
     <section
-      className={"flex flex-col gap-10 max-w-7xl w-screen h-screen p-20"}
+      className={"flex flex-col gap-8 max-w-7xl w-screen h-screen p-20"}
     >
       <div>
         <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
-        <div className={"h-10 flex gap-2"}>
-          <input
-            className={"rounded-lg px-4 border h-full"}
-            type="text"
-            placeholder="세션을 검색하세요"
-          />
-          <select className={"rounded-lg px-4 border h-full"}>
-            <option>FE</option>
-            <option>BE</option>
-          </select>
+        <div className={"h-11 flex gap-2 w-[47.5rem]"}>
+          <div className="relative w-full h-full flex items-center text-gray-400">
+            <IoIosSearch className="absolute left-4 w-[1.25rem] h-[1.25rem]" />
+            <input
+              className={"rounded-custom-m pl-10 pr-4 w-full h-full border border-gray-200 text-medium-r"}
+              type="text"
+              placeholder="세션을 검색하세요"
+            />
+          </div>
+          <div className="relative inline-block items-center">
+            <select className={"rounded-custom-m bg-green-200 text-semibold-s text-gray-white appearance-none pl-5 pr-11 h-full"}>
+              <option>FE</option>
+              <option>BE</option>
+            </select>
+            <span className="absolute top-1/2 -translate-y-1/2 right-3 pointer-events-none">
+              <IoChevronDownSharp className="w-[1.25rem] h-[1.25rem] text-gray-white" />
+            </span>
+          </div>
           <button
             className={
-              "flex justify-center items-center fill-current text-white bg-primary hover:bg-primary-hover w-10 h-full rounded-lg"
+              "flex justify-center items-center fill-current min-w-11 min-h-11 bg-green-200 rounded-custom-m box-border"
             }
           >
-            <FaCirclePlus />
+            <IoMdAdd className="w-[1.35rem] h-[1.35rem] text-gray-white" />
           </button>
-          <button>링크입력</button>
         </div>
       </div>
       <div>
-        <h2 className={"text-semibold-xl mb-6"}>공개된 세션 목록</h2>
+        <h2 className={"text-semibold-l mb-6"}>공개된 세션 목록</h2>
         <ul>
           {listLoading ? (
             <>loading</>
@@ -118,7 +128,7 @@ const SessionListPage = () => {
         </ul>
       </div>
       <div>
-        <h2 className={"text-semibold-xl mb-6"}>진행 중인 세션 목록</h2>
+        <h2 className={"text-semibold-l mb-6"}>진행 중인 세션 목록</h2>
         <ul>
           {listLoading ? (
             <>loading</>
