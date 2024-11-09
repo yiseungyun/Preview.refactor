@@ -4,6 +4,7 @@ import {
   BsCameraVideoOff,
   BsMic,
   BsMicMute,
+  BsHandThumbsUp,
 } from "react-icons/bs";
 
 interface Props {
@@ -49,6 +50,12 @@ const SessionToolbar = ({
           aria-label={isMicOn ? `마이크 끄기` : "마이크 켜기"}
         >
           {isMicOn ? <BsMic /> : <BsMicMute />}
+        </button>
+        <button
+          className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full"
+          aria-label={"좋아요"}
+        >
+          {<BsHandThumbsUp />}
         </button>
         <select
           className={

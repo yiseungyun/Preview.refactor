@@ -398,11 +398,15 @@ const SessionPage = () => {
       <div className={"w-screen max-w-7xl flex flex-grow"}>
         <div
           className={
-            "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r"
+            "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r border-t"
           }
         >
           <div className={"flex flex-col gap-4 justify-between"}>
-            <h1 className={"text-center text-medium-xl font-bold w-full py-4"}>
+            <h1
+              className={
+                "text-center text-medium-xl font-bold w-full pt-4 pb-2"
+              }
+            >
               프론트엔드 초보자 면접 스터디
             </h1>
             <div className={"speaker w-full px-6"}>
