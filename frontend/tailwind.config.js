@@ -34,27 +34,34 @@ export default {
           3: '#2572E6'
         }
       },
+      borderRadius: {
+        's': '0.25rem',
+        'm': '0.5rem',
+        'xl': '1rem'
+      },
+      boxShadow: {
+        '8': '0 0 0.2rem 0.125rem rgba(182, 182, 182, 0.08)'
+      },
       fontSize: {
         // Bold(700) sizes
-        'bold-l': ['30px', { lineHeight: 'auto', fontWeight: '700' }],
-        'bold-m': ['26px', { lineHeight: 'auto', fontWeight: '700' }],
-        'bold-r': ['20px', { lineHeight: 'auto', fontWeight: '700' }],
+        'bold-l': ['1.625rem', { lineHeight: 'auto', fontWeight: '700' }],
+        'bold-m': ['1.5rem', { lineHeight: 'auto', fontWeight: '700' }],
+        'bold-r': ['1.25rem', { lineHeight: 'auto', fontWeight: '700' }],
 
         // SemiBold(600) sizes
-        'semibold-xl': ['26px', { lineHeight: 'auto', fontWeight: '600' }],
-        'semibold-l': ['24px', { lineHeight: 'auto', fontWeight: '600' }],
-        'semibold-m': ['22px', { lineHeight: 'auto', fontWeight: '600' }],
-        'semibold-r': ['20px', { lineHeight: 'auto', fontWeight: '600' }],
-        'semibold-s': ['18px', { lineHeight: 'auto', fontWeight: '600' }],
+        'semibold-l': ['1.375rem', { lineHeight: 'auto', fontWeight: '600' }],
+        'semibold-m': ['1.25rem', { lineHeight: 'auto', fontWeight: '600' }],
+        'semibold-r': ['1.125rem', { lineHeight: 'auto', fontWeight: '600' }],
+        'semibold-s': ['1rem', { lineHeight: 'auto', fontWeight: '600' }],
 
         // Medium(500) sizes
-        'medium-xl': ['24px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-l': ['22px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-m': ['20px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-r': ['18px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-s': ['16px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-xs': ['14px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-xxs': ['12px', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-xl': ['1.375rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-l': ['1.25rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-m': ['1.125rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-r': ['1rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-s': ['0.875rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-xs': ['0.75rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-xxs': ['0.625rem', { lineHeight: 'auto', fontWeight: '500' }],
       },
       fontFamily: {
         pretendard: ['Pretendard', 'sans-serif'],
