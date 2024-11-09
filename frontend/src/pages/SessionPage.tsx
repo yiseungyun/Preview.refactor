@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Socket, io } from "socket.io-client";
-import VideoContainer from "../components/VideoContainer.tsx";
+import VideoContainer from "../components/session/VideoContainer.tsx";
 import {
   BsMic,
   BsMicMute,
@@ -496,39 +495,10 @@ const SessionPage = () => {
             </button>
           </div>
         </div>
-        <div className={"flex flex-col justify-between w-[440px] px-6"}>
-          <div className={"flex flex-col gap-4"}>
-            <div className={"flex flex-col gap-2"}>
-              <h2 className={"inline-flex gap-1 items-center text-semibold-s"}>
-                <FaClipboardList />
-                질문
-              </h2>
-              <p
-                className={
-                  "border border-accent-gray p-2 bg-transparent rounded-xl"
-                }
-              >
-                Restful API란 무엇인지 설명해주세요
-              </p>
-            </div>
-            <div className={"flex flex-col gap-2"}>
-              <h2 className={"inline-flex gap-1 items-center text-semibold-s"}>
-                <FaUserGroup />
-                참가자
-              </h2>
-              <ul>
-                <li>참가자 1</li>
-                <li>참가자 2</li>
-                <li>참가자 3</li>
-              </ul>
-            </div>
-          </div>
-          <div className={"h-16 items-center flex w-full"}>
-            <button className={"w-full bg-red-500 text-white rounded-md py-2"}>
-              종료하기
-            </button>
-          </div>
-        </div>
+        <SessionSidebar
+          question={"Restful API에 대해서 설명해주세요."}
+          participants={["누군가", "수상한 누군가", "오오오"]}
+        />
       </div>
     </section>
   );
