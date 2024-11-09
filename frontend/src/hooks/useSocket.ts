@@ -16,7 +16,7 @@ const useSocket = (socketURL: string) => {
       newSocket.disconnect();
       setSocket(null);
     };
-  }, []);
+  }, [socketURL]);
 
   return { socket };
 };
