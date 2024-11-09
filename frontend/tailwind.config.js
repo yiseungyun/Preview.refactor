@@ -35,9 +35,9 @@ export default {
         }
       },
       borderRadius: {
-        's': '0.25rem',
-        'm': '0.5rem',
-        'xl': '1rem'
+        'custom-s': '0.25rem',
+        'custom-m': '0.5rem',
+        'custom-l': '0.875rem'
       },
       boxShadow: {
         '8': '0 0 0.2rem 0.125rem rgba(182, 182, 182, 0.08)'
