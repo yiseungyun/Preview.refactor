@@ -10,6 +10,8 @@ import {
 import { FaAngleLeft, FaAngleRight, FaUserGroup } from "react-icons/fa6";
 import { FaClipboardList } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import useSocket from "../hooks/useSocket.ts";
+import SessionSidebar from "../components/session/SessionSidebar.tsx";
 
 interface User {
   id: string;
@@ -23,7 +25,7 @@ interface PeerConnection {
 }
 
 const SessionPage = () => {
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const { socket } = useSocket(import.meta.env.VITE_SIGNALING_SERVER_URL);
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [peers, setPeers] = useState<PeerConnection[]>([]); // 연결 관리
   const [roomId, setRoomId] = useState<string>("");
@@ -81,17 +83,6 @@ const SessionPage = () => {
   }, []);
 
   useEffect(() => {
-    // 소켓 연결
-    const newSocket = io(
-      import.meta.env.VITE_SIGNALING_SERVER_URL || "http://localhost:3000"
-    );
-    newSocket.on("connect_error", () => {
-      console.error("시그널링 서버와의 연결에 실패했습니다.");
-    });
-
-    setSocket(newSocket);
-
-    // ref 값을 useEffect 안에서 캡처
     const connections = peerConnections;
 
     return () => {
@@ -104,7 +95,6 @@ const SessionPage = () => {
         // 연결 종료
         pc.close();
       });
-      newSocket.close();
     };
   }, []);
 
