@@ -62,7 +62,10 @@ const useMediaDevices = () => {
       setStream(myStream);
       return myStream;
     } catch (error) {
-      console.error("Error accessing media devices:", error);
+      console.error(
+        "미디어 스트림을 가져오는 도중 문제가 발생했습니다.",
+        error
+      );
     }
   };
 
