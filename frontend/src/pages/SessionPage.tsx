@@ -340,7 +340,7 @@ const SessionPage = () => {
   };
 
   return (
-    <section className="w-screen h-screen flex flex-col max-w-7xl">
+    <section className="w-screen h-screen flex flex-col max-w-[1440px]">
       <div className="w-screen flex gap-2 mb-4 space-y-2">
         <input
           type="text"
@@ -363,13 +363,17 @@ const SessionPage = () => {
           Join Room
         </button>
       </div>
-      <div className={"w-screen max-w-7xl flex flex-grow"}>
+      <div className={"w-screen flex flex-grow"}>
         <div
           className={
-            "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r border-t"
+            "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r border-t items-center"
           }
         >
-          <div className={"flex flex-col gap-4 justify-between"}>
+          <div
+            className={
+              "flex flex-col gap-4 justify-between items-center w-full"
+            }
+          >
             <h1
               className={
                 "text-center text-medium-xl font-bold w-full pt-4 pb-2"
@@ -377,7 +381,7 @@ const SessionPage = () => {
             >
               프론트엔드 초보자 면접 스터디
             </h1>
-            <div className={"speaker w-full px-6"}>
+            <div className={"speaker max-w-4xl px-6 flex w-full"}>
               <VideoContainer
                 ref={myVideoRef}
                 nickname={nickname}
@@ -420,7 +424,13 @@ const SessionPage = () => {
         </div>
         <SessionSidebar
           question={"Restful API에 대해서 설명해주세요."}
-          participants={["누군가", "수상한 누군가", "오오오"]}
+          participants={
+            peers.map((peer) => peer.peerNickname) ?? [
+              "누군가",
+              "수상한 누군가",
+              "오오오",
+            ]
+          }
         />
       </div>
     </section>
