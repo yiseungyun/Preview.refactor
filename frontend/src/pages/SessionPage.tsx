@@ -132,6 +132,13 @@ const SessionPage = () => {
     }
   };
 
+  const handleThumbsUp = () => {
+    if (socket) {
+      console.log("좋아요");
+      socket.emit("thumbs_up");
+    }
+  };
+
   // 방 입장 처리: 사용자가 join room 버튼을 클릭할 때
   const joinRoom = async () => {
     if (!socket || !roomId || !nickname) return;
@@ -395,6 +402,7 @@ const SessionPage = () => {
                 // 상대방의 비디오 표시
                 peers.map((peer) => (
                   <VideoContainer
+                    key={peer.peerId}
                     ref={(el) => {
                       // 비디오 엘리먼트가 있고, 스트림이 있을 때
                       if (el && peer.stream) {
@@ -414,6 +422,7 @@ const SessionPage = () => {
           <SessionToolbar
             handleVideoToggle={handleVideoToggle}
             handleMicToggle={handleMicToggle}
+            handleThumbsUp={handleThumbsUp}
             userVideoDevices={userVideoDevices}
             userAudioDevices={userAudioDevices}
             setSelectedVideoDeviceId={setSelectedVideoDeviceId}
