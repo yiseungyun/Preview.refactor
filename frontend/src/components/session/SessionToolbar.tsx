@@ -42,27 +42,27 @@ const SessionToolbar = ({
       <div className={"center-buttons space-x-2"}>
         <button
           onClick={handleVideoToggle}
-          className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full"
+          className="h-full aspect-square bg-green-500 hover:bg-green-600 text-white p-3 rounded-full"
           aria-label={isVideoOn ? `비디오 끄기` : "비디오 켜기"}
         >
           {isVideoOn ? <BsCameraVideo /> : <BsCameraVideoOff />}
         </button>
         <button
           onClick={handleMicToggle}
-          className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full"
+          className="h-full aspect-square bg-green-500 hover:bg-green-600 text-white p-3 rounded-full"
           aria-label={isMicOn ? `마이크 끄기` : "마이크 켜기"}
         >
           {isMicOn ? <BsMic /> : <BsMicMute />}
         </button>
         <button
-          className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full"
+          className="h-full aspect-square bg-white text-green-500 border box-border border-accent-gray-50 hover:bg-grayscale-50 p-3 rounded-full"
           aria-label={"좋아요"}
         >
           {<BsHandThumbsUp />}
         </button>
         <select
           className={
-            "w-32 bg-transparent border border-accent-gray py-2 px-2 rounded-xl hover:bg-gray-200"
+            "w-32 bg-transparent text-gray-700 text-medium-xs border border-accent-gray py-2 px-2 rounded-xl hover:bg-gray-200"
           }
           onChange={(e) => setSelectedVideoDeviceId(e.target.value)}
         >
@@ -78,7 +78,7 @@ const SessionToolbar = ({
         </select>
         <select
           className={
-            "w-32 bg-transparent border border-accent-gray py-2 px-2 rounded-xl hover:bg-gray-200"
+            "w-32 bg-transparent text-gray-700 text-medium-xs border border-accent-gray py-2 px-2 rounded-xl hover:bg-gray-200"
           }
           onChange={(e) => setSelectedAudioDeviceId(e.target.value)}
         >
