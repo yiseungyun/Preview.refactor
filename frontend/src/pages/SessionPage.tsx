@@ -68,12 +68,6 @@ const SessionPage = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedAudioDeviceId || selectedVideoDeviceId) {
-      getMedia();
-    }
-  }, [selectedAudioDeviceId, selectedVideoDeviceId]);
-
-  useEffect(() => {
     // 미디어 스트림 정리 로직
     return () => {
       if (myStream) {
@@ -81,6 +75,12 @@ const SessionPage = () => {
       }
     };
   }, [myStream]);
+
+  useEffect(() => {
+    if (selectedAudioDeviceId || selectedVideoDeviceId) {
+      getMedia();
+    }
+  }, [selectedAudioDeviceId, selectedVideoDeviceId]);
 
   useEffect(() => {
     // socket 이벤트 리스너들 정리
@@ -424,13 +424,7 @@ const SessionPage = () => {
         </div>
         <SessionSidebar
           question={"Restful API에 대해서 설명해주세요."}
-          participants={
-            peers.map((peer) => peer.peerNickname) ?? [
-              "누군가",
-              "수상한 누군가",
-              "오오오",
-            ]
-          }
+          participants={[nickname, ...peers.map((peer) => peer.peerNickname)]}
         />
       </div>
     </section>
