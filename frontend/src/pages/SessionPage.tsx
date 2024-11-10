@@ -68,7 +68,9 @@ const SessionPage = () => {
   }, []);
 
   useEffect(() => {
-    getMedia();
+    if (selectedAudioDeviceId || selectedVideoDeviceId) {
+      getMedia();
+    }
   }, [selectedAudioDeviceId, selectedVideoDeviceId]);
 
   useEffect(() => {
