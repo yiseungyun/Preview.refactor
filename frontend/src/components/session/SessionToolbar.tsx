@@ -39,7 +39,7 @@ const SessionToolbar = ({
       >
         <FaAngleLeft />
       </button>
-      <div className={"center-buttons space-x-2"}>
+      <div className={"inline-flex center-buttons gap-2"}>
         <button
           onClick={handleVideoToggle}
           className="h-full aspect-square bg-green-500 hover:bg-green-600 text-white p-3 rounded-full"
@@ -62,7 +62,7 @@ const SessionToolbar = ({
         </button>
         <select
           className={
-            "w-32 bg-transparent text-gray-700 text-medium-xs border border-accent-gray py-2 px-2 rounded-xl hover:bg-gray-200"
+            "max-w-40 bg-transparent text-gray-700 text-medium-xs border border-accent-gray py-2 px-2 rounded-xl hover:bg-gray-200"
           }
           onChange={(e) => setSelectedVideoDeviceId(e.target.value)}
         >
@@ -78,7 +78,7 @@ const SessionToolbar = ({
         </select>
         <select
           className={
-            "w-32 bg-transparent text-gray-700 text-medium-xs border border-accent-gray py-2 px-2 rounded-xl hover:bg-gray-200"
+            "max-w-40 bg-transparent text-gray-700 text-medium-xs border border-accent-gray py-2 px-2 rounded-xl hover:bg-gray-200"
           }
           onChange={(e) => setSelectedAudioDeviceId(e.target.value)}
         >
