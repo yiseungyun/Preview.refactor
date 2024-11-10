@@ -68,6 +68,10 @@ const SessionPage = () => {
   }, []);
 
   useEffect(() => {
+    getMedia();
+  }, [selectedAudioDeviceId, selectedVideoDeviceId]);
+
+  useEffect(() => {
     // 미디어 스트림 정리 로직
     return () => {
       if (myStream) {

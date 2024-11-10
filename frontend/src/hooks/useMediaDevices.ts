@@ -44,7 +44,13 @@ const useMediaDevices = () => {
   // 미디어 스트림 가져오기: 자신의 스트림을 가져옴
   const getMedia = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      if (stream) {
+        // 이미 스트림이 있으면 종료
+        stream.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+      const myStream = await navigator.mediaDevices.getUserMedia({
         video: selectedVideoDeviceId
           ? { deviceId: selectedVideoDeviceId }
           : true,
@@ -53,8 +59,8 @@ const useMediaDevices = () => {
           : true,
       });
 
-      setStream(stream);
-      return stream;
+      setStream(myStream);
+      return myStream;
     } catch (error) {
       console.error("Error accessing media devices:", error);
     }
