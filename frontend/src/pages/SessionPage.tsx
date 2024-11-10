@@ -251,6 +251,10 @@ const SessionPage = () => {
         setPeers((prev) => prev.filter((peer) => peer.peerId !== id));
       }
     });
+
+    socket.on("thumbs_up", () => {
+      console.log("누군가 좋아요를 눌렀습니다.");
+    });
   };
 
   // Peer Connection 생성
