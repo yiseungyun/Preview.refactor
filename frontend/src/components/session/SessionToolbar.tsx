@@ -66,11 +66,15 @@ const SessionToolbar = ({
           }
           onChange={(e) => setSelectedVideoDeviceId(e.target.value)}
         >
-          {userVideoDevices.map((device) => (
-            <option key={device.deviceId} value={device.deviceId}>
-              {device.label}
-            </option>
-          ))}
+          {userVideoDevices.length > 0 ? (
+            userVideoDevices.map((device) => (
+              <option key={device.deviceId} value={device.deviceId}>
+                {device.label}
+              </option>
+            ))
+          ) : (
+            <option value={""}>발견된 비디오 장치가 없습니다.</option>
+          )}
         </select>
         <select
           className={
@@ -78,11 +82,15 @@ const SessionToolbar = ({
           }
           onChange={(e) => setSelectedAudioDeviceId(e.target.value)}
         >
-          {userAudioDevices.map((device) => (
-            <option key={device.deviceId} value={device.deviceId}>
-              {device.label}
-            </option>
-          ))}
+          {userAudioDevices.length > 0 ? (
+            userAudioDevices.map((device) => (
+              <option key={device.deviceId} value={device.deviceId}>
+                {device.label}
+              </option>
+            ))
+          ) : (
+            <option value={""}>발견된 오디오 장치가 없습니다.</option>
+          )}
         </select>
       </div>
       <button
