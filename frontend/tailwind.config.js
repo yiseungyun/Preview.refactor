@@ -7,66 +7,61 @@ export default {
   theme: {
     extend: {
       colors: {
-        grayscale: {
-          'white-alt': 'rgba(255, 255, 255, 0.7)',
+        gray: {
           white: '#FFFFFF',
-          50: '#F5F7F9',
-          100: '#D2DAE0',
-          200: '#879298',
-          300: '#6E8091',
-          400: '#5F6E76',
-          500: '#4B5966',
-          black: '#14212B',
+          50: '#FAFAFA',
+          100: '#EDEDED',
+          200: '#E1E1E1',
+          300: '#D9D9D9',
+          400: '#6C6C6C',
+          500: '#5E5E5E',
+          600: '#3F3F3F',
+          black: '#171717',
         },
-        primary: {
-          light: {
-            DEFAULT: '#e6f9f1',    // rgb(230, 249, 241)
-            hover: '#d9f5e9',      // rgb(217, 245, 233)
-            active: '#b0ebd2',     // rgb(176, 235, 210)
-          },
-          DEFAULT: '#01bf6f',      // rgb(1, 191, 111)
-          hover: '#01ac64',        // rgb(1, 172, 100)
-          active: '#019959',       // rgb(1, 153, 89)
-          dark: {
-            DEFAULT: '#018f53',    // rgb(1, 143, 83)
-            hover: '#017343',      // rgb(1, 115, 67)
-            active: '#005632',     // rgb(0, 86, 50)
-          },
-          darker: '#004327',       // rgb(0, 67, 39)
+        green: {
+          50: '#F1FBF7',
+          100: '#01BF6F',
+          200: '#01AC64',
+          300: '#019959',
+          400: '#018F53',
+          500: '#017343',
+          600: '#005632',
+          700: '#004327'  
         },
-        accent: {
-          gray: {
-            DEFAULT: '#dfddd5'
-          }
+        point: {
+          1: '#F04040',
+          2: '#DFDDD5',
+          3: '#2572E6'
         }
       },
-      borderColor: {
-        skin: {
-          bold: 'var(--color-border-bold)',
-          default: 'var(--color-border-default)',
-        },
+      borderRadius: {
+        'custom-s': '0.25rem',
+        'custom-m': '0.5rem',
+        'custom-l': '0.875rem'
+      },
+      boxShadow: {
+        '8': '0 0 0.2rem 0.125rem rgba(182, 182, 182, 0.08)'
       },
       fontSize: {
         // Bold(700) sizes
-        'bold-l': ['32px', { lineHeight: 'auto', fontWeight: '700' }],
-        'bold-m': ['28px', { lineHeight: 'auto', fontWeight: '700' }],
-        'bold-r': ['20px', { lineHeight: 'auto', fontWeight: '700' }],
+        'bold-l': ['1.625rem', { lineHeight: 'auto', fontWeight: '700' }],
+        'bold-m': ['1.5rem', { lineHeight: 'auto', fontWeight: '700' }],
+        'bold-r': ['1.25rem', { lineHeight: 'auto', fontWeight: '700' }],
 
         // SemiBold(600) sizes
-        'semibold-xl': ['28px', { lineHeight: 'auto', fontWeight: '600' }],
-        'semibold-l': ['24px', { lineHeight: 'auto', fontWeight: '600' }],
-        'semibold-m': ['22px', { lineHeight: 'auto', fontWeight: '600' }],
-        'semibold-r': ['20px', { lineHeight: 'auto', fontWeight: '600' }],
-        'semibold-s': ['18px', { lineHeight: 'auto', fontWeight: '600' }],
+        'semibold-l': ['1.375rem', { lineHeight: 'auto', fontWeight: '600' }],
+        'semibold-m': ['1.25rem', { lineHeight: 'auto', fontWeight: '600' }],
+        'semibold-r': ['1.125rem', { lineHeight: 'auto', fontWeight: '600' }],
+        'semibold-s': ['1rem', { lineHeight: 'auto', fontWeight: '600' }],
 
         // Medium(500) sizes
-        'medium-xl': ['24px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-l': ['22px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-m': ['20px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-r': ['18px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-s': ['16px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-xs': ['14px', { lineHeight: 'auto', fontWeight: '500' }],
-        'medium-xxs': ['12px', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-xl': ['1.375rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-l': ['1.25rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-m': ['1.125rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-r': ['1rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-s': ['0.875rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-xs': ['0.75rem', { lineHeight: 'auto', fontWeight: '500' }],
+        'medium-xxs': ['0.625rem', { lineHeight: 'auto', fontWeight: '500' }],
       },
       fontFamily: {
         pretendard: ['Pretendard', 'sans-serif'],
@@ -76,4 +71,3 @@ export default {
   },
   plugins: [],
 }
-
