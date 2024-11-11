@@ -1,15 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Socket, io } from "socket.io-client";
-import VideoContainer from "../components/VideoContainer.tsx";
-import {
-  BsMic,
-  BsMicMute,
-  BsCameraVideo,
-  BsCameraVideoOff,
-} from "react-icons/bs";
-import { FaAngleLeft, FaAngleRight, FaUserGroup } from "react-icons/fa6";
-import { FaClipboardList } from "react-icons/fa";
+import VideoContainer from "../components/session/VideoContainer.tsx";
 import { useNavigate } from "react-router-dom";
+import useSocket from "../hooks/useSocket.ts";
+import SessionSidebar from "../components/session/SessionSidebar.tsx";
+import SessionToolbar from "../components/session/SessionToolbar.tsx";
+import useMediaDevices from "../hooks/useMediaDevices.ts";
 
 interface User {
   id: string;
@@ -23,29 +18,28 @@ interface PeerConnection {
 }
 
 const SessionPage = () => {
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [myStream, setMyStream] = useState<MediaStream | null>(null);
+  const { socket } = useSocket(import.meta.env.VITE_SIGNALING_SERVER_URL);
   const [peers, setPeers] = useState<PeerConnection[]>([]); // 연결 관리
   const [roomId, setRoomId] = useState<string>("");
   const [nickname, setNickname] = useState<string>("");
   const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
   const [isMicOn, setIsMicOn] = useState<boolean>(true);
-  const [userVideoDevices, setUserVideoDevices] = useState<MediaDeviceInfo[]>(
-    []
-  );
-  const [userAudioDevices, setUserAudioDevices] = useState<MediaDeviceInfo[]>(
-    []
-  );
-  const [selectedVideoDeviceId, setSelectedVideoDeviceId] =
-    useState<string>("");
-  const [selectedAudioDeviceId, setSelectedAudioDeviceId] =
-    useState<string>("");
+  const {
+    userVideoDevices,
+    userAudioDevices,
+    selectedAudioDeviceId,
+    selectedVideoDeviceId,
+    setSelectedAudioDeviceId,
+    setSelectedVideoDeviceId,
+    getMedia,
+    stream: myStream,
+  } = useMediaDevices();
 
   const myVideoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const peerVideoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
-
   const navigate = useNavigate();
+
   // STUN 서버 설정
   const pcConfig = {
     iceServers: [
@@ -58,36 +52,6 @@ const SessionPage = () => {
   };
 
   useEffect(() => {
-    // 비디오 디바이스 목록 가져오기
-
-    const getUserDevices = async () => {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const audioDevices = devices.filter(
-          (device) => device.kind === "audioinput"
-        );
-        const videoDevices = devices.filter(
-          (device) => device.kind === "videoinput"
-        );
-
-        setUserAudioDevices(audioDevices);
-        setUserVideoDevices(videoDevices);
-      } catch (error) {
-        console.error("미디어 기기를 찾는데 문제가 발생했습니다.", error);
-      }
-    };
-
-    getUserDevices();
-  }, []);
-
-  useEffect(() => {
-    // 소켓 연결
-    const newSocket = io(
-      import.meta.env.VITE_SIGNALING_SERVER_URL || "http://localhost:3000"
-    );
-    setSocket(newSocket);
-
-    // ref 값을 useEffect 안에서 캡처
     const connections = peerConnections;
 
     return () => {
@@ -100,7 +64,6 @@ const SessionPage = () => {
         // 연결 종료
         pc.close();
       });
-      newSocket.close();
     };
   }, []);
 
@@ -112,6 +75,12 @@ const SessionPage = () => {
       }
     };
   }, [myStream]);
+
+  useEffect(() => {
+    if (selectedAudioDeviceId || selectedVideoDeviceId) {
+      getMedia();
+    }
+  }, [selectedAudioDeviceId, selectedVideoDeviceId]);
 
   useEffect(() => {
     // socket 이벤트 리스너들 정리
@@ -128,27 +97,12 @@ const SessionPage = () => {
     };
   }, [socket]);
 
-  // 미디어 스트림 가져오기: 자신의 스트림을 가져옴
-  const getMedia = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: selectedVideoDeviceId
-          ? { deviceId: selectedVideoDeviceId }
-          : true,
-        audio: selectedAudioDeviceId
-          ? { deviceId: selectedAudioDeviceId }
-          : true,
-      });
-
-      if (myVideoRef.current) {
-        myVideoRef.current!.srcObject = stream;
-      }
-      setMyStream(stream);
-      return stream;
-    } catch (error) {
-      console.error("Error accessing media devices:", error);
+  // 미디어 스트림 가져오기
+  useEffect(() => {
+    if (myStream && myVideoRef.current) {
+      myVideoRef.current.srcObject = myStream;
     }
-  };
+  }, [myStream]);
 
   // 미디어 스트림 토글 관련
   const handleVideoToggle = () => {
@@ -386,7 +340,7 @@ const SessionPage = () => {
   };
 
   return (
-    <section className="w-screen h-screen flex flex-col max-w-7xl">
+    <section className="w-screen h-screen flex flex-col max-w-[1440px]">
       <div className="w-screen flex gap-2 mb-4 space-y-2">
         <input
           type="text"
@@ -408,73 +362,26 @@ const SessionPage = () => {
         >
           Join Room
         </button>
-        {/*  <button*/}
-        {/*    onClick={handleVideoToggle}*/}
-        {/*    className="bg-blue-500 text-white px-4 py-2 rounded"*/}
-        {/*  >*/}
-        {/*    {isVideoOn ? <BsCameraVideo /> : <BsCameraVideoOff />}*/}
-        {/*  </button>*/}
-        {/*  <button*/}
-        {/*    onClick={handleMicToggle}*/}
-        {/*    className="bg-blue-500 text-white px-4 py-2 rounded"*/}
-        {/*  >*/}
-        {/*    {isMicOn ? <BsMic /> : <BsMicMute />}*/}
-        {/*  </button>*/}
-        {/*  <select onChange={(e) => setSelectedVideoDeviceId(e.target.value)}>*/}
-        {/*    {userVideoDevices.map((device) => (*/}
-        {/*      <option key={device.deviceId} value={device.deviceId}>*/}
-        {/*        {device.label}*/}
-        {/*      </option>*/}
-        {/*    ))}*/}
-        {/*  </select>*/}
-        {/*  <select onChange={(e) => setSelectedAudioDeviceId(e.target.value)}>*/}
-        {/*    {userAudioDevices.map((device) => (*/}
-        {/*      <option key={device.deviceId} value={device.deviceId}>*/}
-        {/*        {device.label}*/}
-        {/*      </option>*/}
-        {/*    ))}*/}
-        {/*  </select>*/}
-        {/*</div>*/}
-
-        {/*<div className="grid grid-cols-2 gap-4">*/}
-        {/*  <VideoContainer*/}
-        {/*    ref={myVideoRef}*/}
-        {/*    nickname={nickname}*/}
-        {/*    isMicOn={isMicOn}*/}
-        {/*    isVideoOn={isVideoOn}*/}
-        {/*    isLocal={true}*/}
-        {/*  />*/}
-
-        {/*  {*/}
-        {/*    // 상대방의 비디오 표시*/}
-        {/*    peers.map((peer) => (*/}
-        {/*      <VideoContainer*/}
-        {/*        ref={(el) => {*/}
-        {/*          // 비디오 엘리먼트가 있고, 스트림이 있을 때*/}
-        {/*          if (el && peer.stream) {*/}
-        {/*            el.srcObject = peer.stream;*/}
-        {/*          }*/}
-        {/*          peerVideoRefs.current[peer.peerId] = el;*/}
-        {/*        }}*/}
-        {/*        nickname={peer.peerNickname}*/}
-        {/*        isMicOn={true}*/}
-        {/*        isVideoOn={true}*/}
-        {/*        isLocal={false}*/}
-        {/*      />*/}
-        {/*    ))*/}
-        {/*  }*/}
       </div>
-      <div className={"w-screen max-w-7xl flex flex-grow"}>
+      <div className={"w-screen flex flex-grow"}>
         <div
           className={
-            "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r"
+            "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r border-t items-center"
           }
         >
-          <div className={"flex flex-col gap-4 justify-between"}>
-            <h1 className={"text-center text-medium-xl font-bold w-full py-4"}>
+          <div
+            className={
+              "flex flex-col gap-4 justify-between items-center w-full"
+            }
+          >
+            <h1
+              className={
+                "text-center text-medium-xl font-bold w-full pt-4 pb-2"
+              }
+            >
               프론트엔드 초보자 면접 스터디
             </h1>
-            <div className={"speaker w-full px-6"}>
+            <div className={"speaker max-w-4xl px-6 flex w-full"}>
               <VideoContainer
                 ref={myVideoRef}
                 nickname={nickname}
@@ -504,92 +411,21 @@ const SessionPage = () => {
               }
             </div>
           </div>
-          <div
-            className={
-              "session-footer h-16 inline-flex w-full justify-between items-center border-t px-6"
-            }
-          >
-            <button
-              className={"bg-transparent rounded-full border p-3 text-xl"}
-            >
-              <FaAngleLeft />
-            </button>
-            <div className={"center-buttons space-x-2"}>
-              <button
-                onClick={handleVideoToggle}
-                className="bg-blue-500 text-white p-3 rounded-full"
-                aria-label={isVideoOn ? `비디오 끄기` : "비디오 켜기"}
-              >
-                {isVideoOn ? <BsCameraVideo /> : <BsCameraVideoOff />}
-              </button>
-              <button
-                onClick={handleMicToggle}
-                className="bg-blue-500 text-white p-3 rounded-full"
-                aria-label={isMicOn ? `마이크 끄기` : "마이크 켜기"}
-              >
-                {isMicOn ? <BsMic /> : <BsMicMute />}
-              </button>
-              <select
-                className={"w-32"}
-                onChange={(e) => setSelectedVideoDeviceId(e.target.value)}
-              >
-                {userVideoDevices.map((device) => (
-                  <option key={device.deviceId} value={device.deviceId}>
-                    {device.label}
-                  </option>
-                ))}
-              </select>
-              <select
-                className={"w-32"}
-                onChange={(e) => setSelectedAudioDeviceId(e.target.value)}
-              >
-                {userAudioDevices.map((device) => (
-                  <option key={device.deviceId} value={device.deviceId}>
-                    {device.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              className={"bg-transparent rounded-full border p-3 text-xl"}
-            >
-              <FaAngleRight />
-            </button>
-          </div>
+          <SessionToolbar
+            handleVideoToggle={handleVideoToggle}
+            handleMicToggle={handleMicToggle}
+            userVideoDevices={userVideoDevices}
+            userAudioDevices={userAudioDevices}
+            setSelectedVideoDeviceId={setSelectedVideoDeviceId}
+            setSelectedAudioDeviceId={setSelectedAudioDeviceId}
+            isVideoOn={isVideoOn}
+            isMicOn={isMicOn}
+          />
         </div>
-        <div className={"flex flex-col justify-between w-[440px] px-6"}>
-          <div className={"flex flex-col gap-4"}>
-            <div className={"flex flex-col gap-2"}>
-              <h2 className={"inline-flex gap-1 items-center text-semibold-s"}>
-                <FaClipboardList />
-                질문
-              </h2>
-              <p
-                className={
-                  "border border-accent-gray p-2 bg-transparent rounded-xl"
-                }
-              >
-                Restful API란 무엇인지 설명해주세요
-              </p>
-            </div>
-            <div className={"flex flex-col gap-2"}>
-              <h2 className={"inline-flex gap-1 items-center text-semibold-s"}>
-                <FaUserGroup />
-                참가자
-              </h2>
-              <ul>
-                <li>참가자 1</li>
-                <li>참가자 2</li>
-                <li>참가자 3</li>
-              </ul>
-            </div>
-          </div>
-          <div className={"h-16 items-center flex w-full"}>
-            <button className={"w-full bg-red-500 text-white rounded-md py-2"}>
-              종료하기
-            </button>
-          </div>
-        </div>
+        <SessionSidebar
+          question={"Restful API에 대해서 설명해주세요."}
+          participants={[nickname, ...peers.map((peer) => peer.peerNickname)]}
+        />
       </div>
     </section>
   );
