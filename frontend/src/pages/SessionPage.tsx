@@ -132,10 +132,12 @@ const SessionPage = () => {
     }
   };
 
-  const handleThumbsUp = () => {
+  const handleReaction = (reactionType: string) => {
     if (socket) {
-      console.log("좋아요");
-      socket.emit("thumbs_up");
+      socket.emit("reaction", {
+        roomId: roomId,
+        reaction: reactionType,
+      });
     }
   };
 
@@ -252,8 +254,17 @@ const SessionPage = () => {
       }
     });
 
-    socket.on("thumbs_up", () => {
-      console.log("누군가 좋아요를 눌렀습니다.");
+    socket.on("reaction", (data) => {
+      switch (data.reaction) {
+        case "thumbs_up":
+          console.log("누군가 좋아요를 눌렀습니다.");
+          console.log(data);
+          console.log(peers);
+          console.log(peers.find((peer) => peer.peerId === data.senderId));
+          break;
+        default:
+          break;
+      }
     });
   };
 
@@ -426,7 +437,7 @@ const SessionPage = () => {
           <SessionToolbar
             handleVideoToggle={handleVideoToggle}
             handleMicToggle={handleMicToggle}
-            handleThumbsUp={handleThumbsUp}
+            handleReaction={handleReaction}
             userVideoDevices={userVideoDevices}
             userAudioDevices={userAudioDevices}
             setSelectedVideoDeviceId={setSelectedVideoDeviceId}
