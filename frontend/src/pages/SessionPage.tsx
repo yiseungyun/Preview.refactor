@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import VideoContainer from "../components/session/VideoContainer.tsx";
 import { useNavigate } from "react-router-dom";
 import useSocket from "../hooks/useSocket.ts";
@@ -38,9 +38,12 @@ const SessionPage = () => {
     stream: myStream,
   } = useMediaDevices();
 
+  const reactionTimeouts = useRef<{
+    [key: string]: ReturnType<typeof setTimeout>;
+  }>({});
   const myVideoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
-  const peerVideoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
+  // const peerVideoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
   const navigate = useNavigate();
 
   // STUN 서버 설정
@@ -261,13 +264,22 @@ const SessionPage = () => {
     socket.on(
       "reaction",
       ({ senderId, reaction }: { senderId: string; reaction: string }) => {
+        if (reactionTimeouts.current[senderId]) {
+          clearTimeout(reactionTimeouts.current[senderId]);
+        }
+
         if (senderId === socket.id) {
           setReaction(reaction);
-          const timeout = setTimeout(() => setReaction(""), 3000);
+
+          reactionTimeouts.current[senderId] = setTimeout(() => {
+            setReaction("");
+            delete reactionTimeouts.current[senderId];
+          }, 3000);
         } else {
           addReaction(senderId, reaction);
-          const timeout = setTimeout(() => {
+          reactionTimeouts.current[senderId] = setTimeout(() => {
             addReaction(senderId, "");
+            delete reactionTimeouts.current[senderId];
           }, 3000);
         }
       }
