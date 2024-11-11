@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import VideoContainer from "../components/session/VideoContainer.tsx";
 import { useNavigate } from "react-router-dom";
 import useSocket from "../hooks/useSocket.ts";
@@ -15,6 +15,7 @@ interface PeerConnection {
   peerId: string; // 연결된 상대의 ID
   peerNickname: string; // 상대의 닉네임
   stream: MediaStream; // 상대방의 비디오/오디오 스트림
+  reaction?: string;
 }
 
 const SessionPage = () => {
@@ -22,8 +23,10 @@ const SessionPage = () => {
   const [peers, setPeers] = useState<PeerConnection[]>([]); // 연결 관리
   const [roomId, setRoomId] = useState<string>("");
   const [nickname, setNickname] = useState<string>("");
+  const [reaction, setReaction] = useState("");
   const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
   const [isMicOn, setIsMicOn] = useState<boolean>(true);
+
   const {
     userVideoDevices,
     userAudioDevices,
@@ -254,18 +257,28 @@ const SessionPage = () => {
       }
     });
 
-    socket.on("reaction", (data) => {
-      switch (data.reaction) {
-        case "thumbs_up":
-          console.log("누군가 좋아요를 눌렀습니다.");
-          console.log(data);
-          console.log(peers);
-          console.log(peers.find((peer) => peer.peerId === data.senderId));
-          break;
-        default:
-          break;
+    socket.on(
+      "reaction",
+      ({ senderId, reaction }: { senderId: string; reaction: string }) => {
+        if (senderId === socket.id) {
+          setReaction(reaction);
+          const timeout = setTimeout(() => setReaction(""), 3000);
+        } else {
+          addReaction(senderId, reaction);
+          const timeout = setTimeout(() => {
+            addReaction(senderId, "");
+          }, 3000);
+        }
       }
-    });
+    );
+  };
+
+  const addReaction = (senderId: string, reactionType: string) => {
+    setPeers((prev) =>
+      prev.map((peer) =>
+        peer.peerId === senderId ? { ...peer, reaction: reactionType } : peer
+      )
+    );
   };
 
   // Peer Connection 생성
@@ -361,6 +374,8 @@ const SessionPage = () => {
     }
   };
 
+  // 공감 기능 관련
+
   return (
     <section className="w-screen h-screen flex flex-col max-w-[1440px]">
       <div className="w-screen flex gap-2 mb-4 space-y-2">
@@ -410,28 +425,27 @@ const SessionPage = () => {
                 isMicOn={isMicOn}
                 isVideoOn={isVideoOn}
                 isLocal={true}
+                reaction={reaction || ""}
+                stream={myStream!}
               />
             </div>
             <div className={"listeners w-full flex gap-2 px-6"}>
-              {
-                // 상대방의 비디오 표시
-                peers.map((peer) => (
-                  <VideoContainer
-                    key={peer.peerId}
-                    ref={(el) => {
-                      // 비디오 엘리먼트가 있고, 스트림이 있을 때
-                      if (el && peer.stream) {
-                        el.srcObject = peer.stream;
-                      }
-                      peerVideoRefs.current[peer.peerId] = el;
-                    }}
-                    nickname={peer.peerNickname}
-                    isMicOn={true}
-                    isVideoOn={true}
-                    isLocal={false}
-                  />
-                ))
-              }
+              {useMemo(
+                () =>
+                  // 상대방의 비디오 표시
+                  peers.map((peer) => (
+                    <VideoContainer
+                      key={peer.peerId}
+                      nickname={peer.peerNickname}
+                      isMicOn={true}
+                      isVideoOn={true}
+                      isLocal={false}
+                      reaction={peer.reaction || ""}
+                      stream={peer.stream}
+                    />
+                  )),
+                [peers]
+              )}
             </div>
           </div>
           <SessionToolbar
