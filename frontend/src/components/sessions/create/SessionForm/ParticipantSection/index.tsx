@@ -9,7 +9,7 @@ const ParticipantSection = () => {
   return (
     <div>
       <SelectTitle title="최대 인원" />
-      <div className="flex w-full h-10 gap-2">
+      <div className="flex w-full h-11 gap-2">
         <ParticipantButton
           totalMember={totalMember}
           selectedValue={1}
