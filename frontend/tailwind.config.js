@@ -34,6 +34,9 @@ export default {
           3: '#2572E6'
         }
       },
+      borderWidth: {
+        'custom-s': '0.0875rem'
+      },
       borderRadius: {
         'custom-s': '0.25rem',
         'custom-m': '0.5rem',
@@ -67,6 +70,9 @@ export default {
         pretendard: ['Pretendard', 'sans-serif'],
         raleway: ['Raleway', 'sans-serif'],
       },
+      spacing: {
+        47.5: '47.5rem'
+      }
     },
   },
   plugins: [],
