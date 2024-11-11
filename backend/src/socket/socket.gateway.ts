@@ -130,7 +130,6 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
             reaction: string;
         }
     ) {
-        console.log("현재 연결", socket);
         this.server
             .to(data.roomId)
             .emit("reaction", { senderId: socket.id, reaction: data.reaction });
