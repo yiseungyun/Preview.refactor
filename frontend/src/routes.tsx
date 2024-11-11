@@ -1,4 +1,5 @@
 import App from "./App.tsx";
+import CreateSessionPage from "./pages/CreateSessionPage.tsx";
 import SessionListPage from "./pages/SessionListPage.tsx";
 import SessionPage from "./pages/SessionPage";
 
@@ -20,7 +21,7 @@ export const routes = [
     path: "/login",
   },
   {
-    element: <>세션 생성 페이지</>,
+    element: <CreateSessionPage />,
     path: "/sessions/create",
   },
   {
