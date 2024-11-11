@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ParticipantButton from "../../ParticpantButton";
+import ParticipantButton from "./ParticpantButton";
 import SelectTitle from "../../SelectTitle";
 type Participant = 1 | 2 | 3 | 4 | 5;
 
