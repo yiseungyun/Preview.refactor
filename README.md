@@ -1,8 +1,15 @@
-# web27-
-서비스 소개
+# ✨ Preview
+<img width="100%" src="https://github.com/user-attachments/assets/4894268d-c31d-44d6-9e6c-9c37b86a4a99" />
+
+<br/>
+
+<div align="center">면접 연습을 하고 싶은데.. 🧐</div>
+<div align="center">다른 사람과 함께 할 수 없을까? 👥</div>
+
+<h3 align="center">✨ Preview에서 면접 연습 시작하자! ✨</h3>
+
 ### 배포
-- 배포 링크
-- 시연 영상
+[**Preview 바로가기**](https://boostcamp-preview.kro.kr)
 
 <br/>
 
@@ -95,6 +102,7 @@
 <br>   
 
 ## 📁 문서
+
 ### 회의록
 - [1주차 회의록](https://github.com/boostcampwm-2024/web27-boostproject/wiki/1%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EC%9D%98%EB%A1%9D)
 - [2주차 회의록](https://github.com/boostcampwm-2024/web27-boostproject/wiki/2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EC%9D%98%EB%A1%9D)
