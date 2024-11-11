@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from "react";
+import { forwardRef } from "react";
 import {
   BsMic,
   BsMicMute,
