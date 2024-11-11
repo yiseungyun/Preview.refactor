@@ -96,6 +96,7 @@ const SessionPage = () => {
         socket.off("getAnswer");
         socket.off("getCandidate");
         socket.off("user_exit");
+        socket.off("reaction");
       }
     };
   }, [socket]);
