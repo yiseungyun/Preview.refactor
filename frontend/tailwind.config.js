@@ -50,6 +50,7 @@ export default {
         'bold-l': ['1.625rem', { lineHeight: 'auto', fontWeight: '700' }],
         'bold-m': ['1.5rem', { lineHeight: 'auto', fontWeight: '700' }],
         'bold-r': ['1.25rem', { lineHeight: 'auto', fontWeight: '700' }],
+        'bold-s': ['1.125rem', { lineHeight: 'auto', fontWeight: '700' }],
 
         // SemiBold(600) sizes
         'semibold-l': ['1.375rem', { lineHeight: 'auto', fontWeight: '600' }],
