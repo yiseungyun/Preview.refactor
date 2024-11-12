@@ -24,18 +24,20 @@ const SessionPage = () => {
   const [roomId, setRoomId] = useState<string>("");
   const [nickname, setNickname] = useState<string>("");
   const [reaction, setReaction] = useState("");
-  const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
-  const [isMicOn, setIsMicOn] = useState<boolean>(true);
 
   const {
     userVideoDevices,
     userAudioDevices,
     selectedAudioDeviceId,
     selectedVideoDeviceId,
+    stream: myStream,
+    isVideoOn,
+    isMicOn,
+    handleMicToggle,
+    handleVideoToggle,
     setSelectedAudioDeviceId,
     setSelectedVideoDeviceId,
     getMedia,
-    stream: myStream,
   } = useMediaDevices();
 
   const reactionTimeouts = useRef<{
@@ -110,34 +112,6 @@ const SessionPage = () => {
       myVideoRef.current.srcObject = myStream;
     }
   }, [myStream]);
-
-  // 미디어 스트림 토글 관련
-  const handleVideoToggle = () => {
-    try {
-      // 비디오 껐다키기
-      if (myStream) {
-        myStream.getVideoTracks().forEach((videoTrack) => {
-          videoTrack.enabled = !videoTrack.enabled;
-        });
-      }
-      setIsVideoOn((prev) => !prev);
-    } catch (error) {
-      console.error("Error stopping video stream", error);
-    }
-  };
-
-  const handleMicToggle = () => {
-    try {
-      if (myStream) {
-        myStream.getAudioTracks().forEach((audioTrack) => {
-          audioTrack.enabled = !audioTrack.enabled;
-        });
-      }
-      setIsMicOn((prev) => !prev);
-    } catch (error) {
-      console.error("Error stopping mic stream", error);
-    }
-  };
 
   const handleReaction = (reactionType: string) => {
     if (socket) {
