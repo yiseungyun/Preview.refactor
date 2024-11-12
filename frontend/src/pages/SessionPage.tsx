@@ -61,7 +61,7 @@ const SessionPage = () => {
         pc.close();
       });
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // 미디어 스트림 정리 로직
@@ -249,7 +249,7 @@ const SessionPage = () => {
         peer.peerId === senderId ? { ...peer, reaction: reactionType } : peer
       )
     );
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <section className="w-screen h-screen flex flex-col max-w-[1440px]">
