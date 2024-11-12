@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import VideoContainer from "../components/session/VideoContainer.tsx";
 import { useNavigate } from "react-router-dom";
 import useSocket from "../hooks/useSocket.ts";
@@ -260,13 +260,13 @@ const SessionPage = () => {
     );
   };
 
-  const addReaction = (senderId: string, reactionType: string) => {
+  const addReaction = useCallback((senderId: string, reactionType: string) => {
     setPeers((prev) =>
       prev.map((peer) =>
         peer.peerId === senderId ? { ...peer, reaction: reactionType } : peer
       )
     );
-  };
+  }, []);
 
   // Peer Connection 생성
   const createPeerConnection = (
