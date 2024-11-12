@@ -9,12 +9,7 @@ const router = createBrowserRouter(routes);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ToastProvider
-      toasts={[
-        { id: 1, message: "토스트 메시지", type: "success" },
-        { id: 2, message: "토스트 메시지", type: "error" },
-      ]}
-    />
+    <ToastProvider />
     <RouterProvider router={router} />
   </StrictMode>
 );
