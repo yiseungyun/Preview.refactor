@@ -23,9 +23,8 @@ const VideoContainer = ({
   reaction,
   stream,
 }: VideoContainerProps) => {
-  const renderReaction = (reaction: string) => {
-    console.log(reaction);
-    switch (reaction) {
+  const renderReaction = (reactionType: string) => {
+    switch (reactionType) {
       case "thumbs_up":
         return "👍";
       case "":
