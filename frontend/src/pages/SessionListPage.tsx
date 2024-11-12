@@ -4,6 +4,7 @@ import SessionCard from "../components/sessions/SessionCard.tsx";
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 import SearchBar from "../components/utils/SearchBar.tsx";
+import useToast from "../hooks/useToast.ts";
 
 interface Session {
   id: number;
@@ -25,6 +26,7 @@ const SessionListPage = () => {
   const [sessionList, setSessionList] = useState<Session[]>([]);
   const [listLoading, setListLoading] = useState(false);
   const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     const sessionData: Session[] = [
@@ -71,7 +73,10 @@ const SessionListPage = () => {
             questionListId={1}
             participant={session.participant}
             maxParticipant={session.maxParticipant}
-            onEnter={() => navigate(`/session/${session.id}`)}
+            onEnter={() => {
+              toast.success("세션에 참가했습니다.");
+              navigate(`/session/${session.id}`);
+            }}
           />
         )
       );
@@ -82,7 +87,7 @@ const SessionListPage = () => {
     <section className={"flex flex-col gap-8 max-w-7xl w-screen h-screen p-20"}>
       <div>
         <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
-        <div className={"h-11 flex gap-2 w-47.5"}>
+        <div className={"h-11 flex gap-2 w-[47.5rem]"}>
           <SearchBar text="세션을 검색하세요" />
           <div className="relative inline-block items-center">
             <select
