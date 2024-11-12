@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import SessionCard from "../components/sessions/SessionCard.tsx";
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
-import { IoIosSearch } from "react-icons/io";
 import SearchBar from "../components/utils/SearchBar.tsx";
 
 interface Session {
@@ -83,7 +82,7 @@ const SessionListPage = () => {
     <section className={"flex flex-col gap-8 max-w-7xl w-screen h-screen p-20"}>
       <div>
         <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
-        <div className={"h-11 flex gap-2 w-[47.5rem]"}>
+        <div className={"h-11 flex gap-2 w-47.5"}>
           <SearchBar text="세션을 검색하세요" />
           <div className="relative inline-block items-center">
             <select
@@ -95,7 +94,7 @@ const SessionListPage = () => {
               <option>BE</option>
             </select>
             <span className="absolute top-1/2 -translate-y-1/2 right-3 pointer-events-none">
-              <IoChevronDownSharp className="w-[1.25rem] h-[1.25rem] text-gray-white" />
+              <IoChevronDownSharp className="w-5 h-5 text-gray-white" />
             </span>
           </div>
           <button
