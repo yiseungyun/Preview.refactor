@@ -7,6 +7,19 @@ import {
     MessageBody,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
+import { RoomService } from "./room.service";
+
+const EVENT_NAME = {
+    CREATE_ROOM: "create_room",
+    JOIN_ROOM: "join_room",
+    MASTER_CHANGED: "master_changed",
+    FINISH_ROOM: "finish_room",
+    REACTION: "reaction",
+
+    USER_EXIT: "user_exit",
+    ROOM_FULL: "room_full",
+    ALL_USERS: "all_users",
+} as const;
 
 interface User {
     id: string;
@@ -19,9 +32,11 @@ interface User {
     },
 })
 @WebSocketGateway()
-export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;
+
+    constructor(private readonly roomService: RoomService) {}
 
     private users: { [key: string]: User[] } = {};
     private socketToRoom: { [key: string]: string } = {};
@@ -43,17 +58,32 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 if (this.users[roomID].length === 0) {
                     delete this.users[roomID];
                 } else {
-                    this.server.to(roomID).emit("user_exit", { id: client.id });
+                    this.server.to(roomID).emit(EVENT_NAME.USER_EXIT, { id: client.id });
                 }
             }
         }
     }
 
-    @SubscribeMessage("join_room")
+    @SubscribeMessage(EVENT_NAME.CREATE_ROOM)
+    async handleCreateRoom(client: Socket, data: { title }) {
+        try {
+            const roomId = await this.roomService.createRoom(
+                data.title,
+                client.id
+            );
+            this.server.emit(`room_created`, { roomId });
+        } catch(error) {
+            console.error(error);
+            return null;
+        }
+    }
+
+
+    @SubscribeMessage(EVENT_NAME.JOIN_ROOM)
     handleJoinRoom(client: Socket, data: { room: string; nickname: string }) {
         if (this.users[data.room]) {
             if (this.users[data.room].length === this.maximum) {
-                client.emit("room_full");
+                client.emit(EVENT_NAME.ROOM_FULL);
                 return;
             }
             this.users[data.room].push({
@@ -73,6 +103,6 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const usersInThisRoom = this.users[data.room].filter(
             (user) => user.id !== client.id
         );
-        client.emit("all_users", usersInThisRoom);
+        client.emit(EVENT_NAME.ALL_USERS, usersInThisRoom);
     }
 }
