@@ -72,6 +72,8 @@ export default {
         raleway: ['Raleway', 'sans-serif'],
       },
       spacing: {
+        0.375:'0.375rem',
+        42.5: '42.5rem',
         47.5: '47.5rem'
       }
     },
