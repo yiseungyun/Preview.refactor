@@ -20,7 +20,6 @@ const useMediaDevices = () => {
 
   useEffect(() => {
     // 비디오 디바이스 목록 가져오기
-
     const getUserDevices = async () => {
       try {
         const devices = await navigator.mediaDevices.enumerateDevices();
@@ -30,9 +29,15 @@ const useMediaDevices = () => {
         const videoDevices = devices.filter(
           (device) => device.kind === "videoinput"
         );
-
-        setUserAudioDevices(audioDevices);
-        setUserVideoDevices(videoDevices);
+        const dontHavePermission =
+          devices.find((device) => device.deviceId !== "") === undefined;
+        if (dontHavePermission) {
+          setUserAudioDevices([]);
+          setUserVideoDevices([]);
+        } else {
+          setUserAudioDevices(audioDevices);
+          setUserVideoDevices(videoDevices);
+        }
       } catch (error) {
         console.error("미디어 기기를 찾는데 문제가 발생했습니다.", error);
       }

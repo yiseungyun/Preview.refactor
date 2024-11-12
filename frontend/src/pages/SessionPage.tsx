@@ -433,7 +433,6 @@ const SessionPage = () => {
             </h1>
             <div className={"speaker max-w-4xl px-6 flex w-full"}>
               <VideoContainer
-                ref={myVideoRef}
                 nickname={nickname}
                 isMicOn={isMicOn}
                 isVideoOn={isVideoOn}
