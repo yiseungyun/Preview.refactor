@@ -43,9 +43,7 @@ const SessionPage = () => {
   const reactionTimeouts = useRef<{
     [key: string]: ReturnType<typeof setTimeout>;
   }>({});
-  const myVideoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
-  // const peerVideoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
   const navigate = useNavigate();
 
   // STUN 서버 설정
@@ -105,13 +103,6 @@ const SessionPage = () => {
       }
     };
   }, [socket]);
-
-  // 미디어 스트림 가져오기
-  useEffect(() => {
-    if (myStream && myVideoRef.current) {
-      myVideoRef.current.srcObject = myStream;
-    }
-  }, [myStream]);
 
   const handleReaction = (reactionType: string) => {
     if (socket) {
@@ -360,8 +351,6 @@ const SessionPage = () => {
       return null;
     }
   };
-
-  // 공감 기능 관련
 
   return (
     <section className="w-screen h-screen flex flex-col max-w-[1440px]">
