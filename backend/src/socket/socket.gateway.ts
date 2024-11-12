@@ -121,4 +121,17 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
             candidateSendID: data.candidateSendID,
         });
     }
+
+    @SubscribeMessage("reaction")
+    handleReaction(
+        socket: any,
+        data: {
+            roomId: string;
+            reaction: string;
+        }
+    ) {
+        this.server
+            .to(data.roomId)
+            .emit("reaction", { senderId: socket.id, reaction: data.reaction });
+    }
 }
