@@ -1,35 +1,20 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const navigate = useNavigate();
+  const [status] = useState("연결 대기중");
+
+  useEffect(() => {
+    navigate("/sessions");
+  }, [navigate]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>27팀 아자아자 화이팅</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <section className={"flex flex-col gap-3"}>
+      <p>이걸 보다니 실력자시군요?</p>
+      <div id="connectionStatus">{status}</div>
+    </section>
+  );
 }
 
-export default App
+export default App;

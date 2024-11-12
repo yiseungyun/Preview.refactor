@@ -1,9 +1,15 @@
-# web27-Preview
+# ✨ Preview
+<img width="100%" src="https://github.com/user-attachments/assets/4894268d-c31d-44d6-9e6c-9c37b86a4a99" />
 
-실시간 화상회의 기반 면접 스터디 플랫폼
+<br/>
+
+<div align="center">면접 연습을 하고 싶은데.. 🧐</div>
+<div align="center">다른 사람과 함께 할 수 없을까? 👥</div>
+
+<h3 align="center">✨ Preview에서 면접 연습 시작하자! ✨</h3>
 
 ### 배포
-[배포 링크](https://boostcamp-preview.kro.kr/)
+[**Preview 바로가기**](https://boostcamp-preview.kro.kr)
 
 ## 👋 팀원 소개
 
@@ -95,6 +101,7 @@
 <br>   
 
 ## 📁 문서
+
 ### 팀 노션 워크스페이스
 - [노션 링크](https://alpine-tiglon-9f0.notion.site/PREVIEW-HOME-12d696f85d1f805b9787e26374b3d209?pvs=4)
 
@@ -115,4 +122,3 @@
 ### 개발 일지
 - [공통 개발 일지](https://alpine-tiglon-9f0.notion.site/12d696f85d1f80c89569dcfe55b62b44?v=12f696f85d1f802db6af000cf32dfa28&pvs=4)
 - [문제 해결 일지](https://alpine-tiglon-9f0.notion.site/87b7f1ce19564eda8127eca29d567d0f?v=f2df7d634605464d876ccf43c9197db4&pvs=4)
-- 
