@@ -32,6 +32,23 @@ const VideoContainer = ({
         return "";
     }
   };
+
+  const renderMicIcon = () => {
+    return isMicOn ? (
+      <BsMic className="text-white" />
+    ) : (
+      <BsMicMute className="text-red-500" />
+    );
+  };
+
+  const renderVideoIcon = () => {
+    return isVideoOn ? (
+      <BsCameraVideo className="text-white" />
+    ) : (
+      <BsCameraVideoOff className="text-red-500" />
+    );
+  };
+
   return (
     <div className="relative flex-grow max-w-4xl">
       <div className="bg-black rounded-2xl overflow-hidden shadow">
@@ -41,16 +58,8 @@ const VideoContainer = ({
             {isLocal && "Me"} {nickname}
           </p>
           <div className={"inline-flex gap-4 px-2 items-center"}>
-            {isMicOn ? (
-              <BsMic className="text-white" />
-            ) : (
-              <BsMicMute className="text-red-500" />
-            )}
-            {isVideoOn ? (
-              <BsCameraVideo className="text-white" />
-            ) : (
-              <BsCameraVideoOff className="text-red-500" />
-            )}
+            {renderMicIcon()}
+            {renderVideoIcon()}
           </div>
         </div>
       </div>
