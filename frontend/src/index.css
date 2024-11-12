@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
   html {
     font-family: Pretendard, system-ui, sans-serif; 
@@ -23,9 +24,40 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #171717;
     background-color: #FAFAFA;
+  }
+}
+
+
+/* Animation */
+@keyframes expand {
+  0% {
+    transform: scaleX(0)
+  }
+  100% {
+    transform: scaleX(100%);
+  }
+}
+
+.revealExpand {
+  animation: revealExpand 0.2s ease;
+  animation-iteration-count: 1;
+}
+
+@keyframes revealExpand {
+  0% {
+    height: 0;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: center;
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+    transform-origin: center;
   }
 }
