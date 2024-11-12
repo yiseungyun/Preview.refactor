@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import CategoryTap from "./CategoryTab";
-import SearchBar from "./SearchBar";
+import SearchBar from "../../../../utils/SearchBar";
 
 interface Props {
   isModalOpen: boolean;
@@ -42,7 +42,9 @@ const ListSelectModal = ({ isModalOpen, setIsModalOpen }: Props) => {
           <IoMdClose className="text-gray-black w-7 h-7" />
         </button>
       </div>
-      <SearchBar />
+      <div className="mx-8">
+        <SearchBar text="질문지를 선택해주세요" />
+      </div>
       <div>
 
       </div>

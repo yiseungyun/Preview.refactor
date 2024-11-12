@@ -4,6 +4,7 @@ import SessionCard from "../components/sessions/SessionCard.tsx";
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 import { IoIosSearch } from "react-icons/io";
+import SearchBar from "../components/utils/SearchBar.tsx";
 
 interface Session {
   id: number;
@@ -83,16 +84,7 @@ const SessionListPage = () => {
       <div>
         <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
         <div className={"h-11 flex gap-2 w-[47.5rem]"}>
-          <div className="relative w-full h-full flex items-center text-gray-400">
-            <IoIosSearch className="absolute left-4 w-[1.25rem] h-[1.25rem]" />
-            <input
-              className={
-                "rounded-custom-m pl-10 pr-4 w-full h-full border border-gray-200 text-medium-r"
-              }
-              type="text"
-              placeholder="세션을 검색하세요"
-            />
-          </div>
+          <SearchBar text="세션을 검색하세요" />
           <div className="relative inline-block items-center">
             <select
               className={
