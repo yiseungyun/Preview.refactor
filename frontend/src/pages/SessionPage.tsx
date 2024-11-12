@@ -5,6 +5,7 @@ import useSocket from "../hooks/useSocket.ts";
 import SessionSidebar from "../components/session/SessionSidebar.tsx";
 import SessionToolbar from "../components/session/SessionToolbar.tsx";
 import useMediaDevices from "../hooks/useMediaDevices.ts";
+import useToast from "../hooks/useToast.ts";
 
 interface User {
   id: string;
@@ -45,6 +46,7 @@ const SessionPage = () => {
   }>({});
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const navigate = useNavigate();
+  const toast = useToast();
 
   // STUN 서버 설정
   const pcConfig = {
@@ -120,11 +122,14 @@ const SessionPage = () => {
 
   // 방 입장 처리: 사용자가 join room 버튼을 클릭할 때
   const joinRoom = async () => {
-    if (!socket || !roomId || !nickname) return;
+    if (!socket || !roomId || !nickname) {
+      toast.error("방 번호와 닉네임을 입력해주세요.");
+      return;
+    }
 
     const stream = await getMedia();
     if (!stream) {
-      alert(
+      toast.error(
         "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
       );
       navigate("/sessions");
@@ -134,8 +139,7 @@ const SessionPage = () => {
     socket.emit("join_room", { room: roomId, nickname });
 
     socket.on("room_full", () => {
-      console.log("방이 꽉찼심");
-      alert(
+      toast.error(
         "해당 세션은 이미 유저가 가득 찼습니다. 세션 페이지로 이동합니다..."
       );
       navigate("/sessions");
