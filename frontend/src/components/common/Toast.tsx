@@ -10,7 +10,7 @@ interface ToastProps {
 const Toast = ({ message, type, removeToast }: ToastProps) => {
   return (
     <div
-      className={`relative flex items-center text-medium-s ${type === "error" ? "bg-red-400" : "bg-green-100"} overflow-hidden text-white w-80 h-16 shadow-xl  p-2 z-50`}
+      className={`relative flex items-center text-medium-s ${type === "error" ? "bg-red-400" : "bg-green-100"} overflow-hidden text-white w-80 h-16 shadow-xl  p-2 z-50 revealExpand`}
     >
       <div className={"flex"}>
         <p className={"flex-grow"}>{message}</p>
