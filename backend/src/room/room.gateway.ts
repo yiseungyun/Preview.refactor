@@ -56,11 +56,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage(EVENT_NAME.CREATE_ROOM)
-    async handleCreateRoom(
-        client: Socket,
-        data: { title: string; nickname: string }
-    ) {
-        const { title, nickname } = data;
+    async handleCreateRoom(client: Socket, data: any) {
+        const { title, nickname } = data; // unknown 으로 받고, Dto와 Pipe로 검증받기
         try {
             const roomId = await this.roomService.createRoom(
                 title,
@@ -77,26 +74,23 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage(EVENT_NAME.JOIN_ROOM)
     async handleJoinRoom(client: Socket, data: any) {
-        console.log("너 타입:", typeof data);
-        const { roomId, nickname } = JSON.parse(data);
+        const { roomId, nickname } = data;
 
-        if (!(await this.roomService.checkAvailable(data.roomId))) {
+        if (!(await this.roomService.checkAvailable(roomId))) {
             // client joins full room
             client.emit(EVENT_NAME.ROOM_FULL);
             return;
         }
 
-        await this.roomService.joinRoom(client.id, data.roomId, data.nickname);
+        await this.roomService.joinRoom(client.id, roomId, nickname);
 
-        client.join(data.roomId);
+        client.join(roomId);
 
         console.log(`[${data.roomId}]: ${client.id} enter`);
 
         const usersInThisRoom = (
-            await this.roomService.getMemberSocket(data.roomId)
+            await this.roomService.getMemberSocket(roomId)
         ).filter((user) => user !== client.id);
-
-        console.log(usersInThisRoom);
 
         client.emit(EVENT_NAME.ALL_USERS, usersInThisRoom);
     }
