@@ -10,8 +10,8 @@ const useSocket = (socketURL: string) => {
     const newSocket = io(socketURL || "http://localhost:3000");
 
     newSocket.on("connect_error", socketErrorHandler);
+    newSocket.on("connect", socketConnectHandler);
     setSocket(newSocket);
-
     return () => {
       newSocket.disconnect();
       setSocket(null);
@@ -19,6 +19,10 @@ const useSocket = (socketURL: string) => {
   }, [socketURL]);
 
   return { socket };
+};
+
+const socketConnectHandler = () => {
+  console.log("시그널링 서버와 연결되었습니다.");
 };
 
 const socketErrorHandler = (error: Error) => {
