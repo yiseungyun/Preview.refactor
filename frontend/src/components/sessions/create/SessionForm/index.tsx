@@ -7,7 +7,7 @@ import ListSelectModal from "./ListSelectModal";
 import useSessionFormStore from "../../../../stores/useSessionFormStore";
 import useSocketStore from "../../../../stores/useSocketStore";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import useToast from "../../../../hooks/useToast";
 
 interface RoomCreatedResponse {
@@ -24,11 +24,15 @@ const SessionForm = () => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  useEffect(() => {
+  const initializeSocket = useCallback(() => {
     if (!socket) {
       connect(import.meta.env.VITE_SIGNALING_SERVER_URL);
     }
-  }, []);
+  }, [connect, socket]);
+
+  useEffect(() => {
+    initializeSocket();
+  }, [initializeSocket]);
 
   const submitHandler = () => {
     if (!isValid || !socket) {
@@ -63,6 +67,7 @@ const SessionForm = () => {
     return () => {
       socket.off("room_created", roomCreatedHandler);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, navigate]);
 
   return (
