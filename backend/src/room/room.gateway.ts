@@ -4,7 +4,6 @@ import {
     OnGatewayConnection,
     OnGatewayDisconnect,
     SubscribeMessage,
-    MessageBody,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { RoomService } from "./room.service";
@@ -26,6 +25,11 @@ interface User {
     nickname: string;
 }
 
+/**
+ * 연결과 관련된 에러를 처리
+ *
+ * 보다 연결과 관련된 코드가 존재
+ */
 @WebSocketGateway({
     cors: {
         origin: "*", // CORS 설정
@@ -42,67 +46,58 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private socketToRoom: { [key: string]: string } = {};
     private maximum = 5;
 
-    handleConnection(client: Socket) {
+    async handleConnection(client: Socket) {
         console.log(`Client connected in room: ${client.id}`);
     }
 
-    handleDisconnect(client: Socket): any {
+    async handleDisconnect(client: Socket) {
         console.log(`Client disconnected in room: ${client.id}`);
-        const roomID = this.socketToRoom[client.id];
-        if (roomID) {
-            const room = this.users[roomID];
-            if (room) {
-                this.users[roomID] = room.filter(
-                    (user) => user.id !== client.id
-                );
-                if (this.users[roomID].length === 0) {
-                    delete this.users[roomID];
-                } else {
-                    this.server.to(roomID).emit(EVENT_NAME.USER_EXIT, { id: client.id });
-                }
-            }
-        }
+        await this.roomService.disconnect(client.id);
     }
 
     @SubscribeMessage(EVENT_NAME.CREATE_ROOM)
-    async handleCreateRoom(client: Socket, data: { title }) {
+    async handleCreateRoom(
+        client: Socket,
+        data: { title: string; nickname: string }
+    ) {
+        const { title, nickname } = data;
         try {
             const roomId = await this.roomService.createRoom(
-                data.title,
-                client.id
+                title,
+                client.id,
+                nickname ?? "Master"
             );
-            this.server.emit(`room_created`, { roomId });
-        } catch(error) {
+            this.server.emit(EVENT_NAME.CREATE_ROOM, { roomId });
+            return roomId;
+        } catch (error) {
             console.error(error);
             return null;
         }
     }
 
-
     @SubscribeMessage(EVENT_NAME.JOIN_ROOM)
-    handleJoinRoom(client: Socket, data: { room: string; nickname: string }) {
-        if (this.users[data.room]) {
-            if (this.users[data.room].length === this.maximum) {
-                client.emit(EVENT_NAME.ROOM_FULL);
-                return;
-            }
-            this.users[data.room].push({
-                id: client.id,
-                nickname: data.nickname,
-            });
-        } else {
-            this.users[data.room] = [
-                { id: client.id, nickname: data.nickname },
-            ];
+    async handleJoinRoom(client: Socket, data: any) {
+        console.log("너 타입:", typeof data);
+        const { roomId, nickname } = JSON.parse(data);
+
+        if (!(await this.roomService.checkAvailable(data.roomId))) {
+            // client joins full room
+            client.emit(EVENT_NAME.ROOM_FULL);
+            return;
         }
 
-        this.socketToRoom[client.id] = data.room;
-        client.join(data.room);
-        console.log(`[${data.room}]: ${client.id} enter`);
+        await this.roomService.joinRoom(client.id, data.roomId, data.nickname);
 
-        const usersInThisRoom = this.users[data.room].filter(
-            (user) => user.id !== client.id
-        );
+        client.join(data.roomId);
+
+        console.log(`[${data.roomId}]: ${client.id} enter`);
+
+        const usersInThisRoom = (
+            await this.roomService.getMemberSocket(data.roomId)
+        ).filter((user) => user !== client.id);
+
+        console.log(usersInThisRoom);
+
         client.emit(EVENT_NAME.ALL_USERS, usersInThisRoom);
     }
 }
