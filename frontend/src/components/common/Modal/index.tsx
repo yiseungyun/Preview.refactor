@@ -1,7 +1,9 @@
-import { useEffect, useRef } from "react";
-import useModalStore from "../../stores/useModalStore";
+import { useRef } from "react";
+import useModalStore from "../../../stores/useModalStore";
+import useModal from "../../../hooks/useModal";
+import ModalTitle from "./Title";
 
-interface ModalProps {
+export interface ModalProps {
   title: string;
   subtitle: string;
   leftButton: string;
@@ -23,34 +25,10 @@ const Modal = ({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { isOpen, closeModal } = useModalStore();
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
+  useModal({ dialogRef, isOpen });
 
-    if (isOpen) {
-      dialog.showModal();
-    } else {
-      dialog.close();
-    }
-
-    return () => {
-      if (dialog.open) {
-        dialog.close();
-      }
-    };
-  }, [isOpen]);
-
-  const handleLeftClick = () => {
-    if (onLeftClick) {
-      onLeftClick();
-    }
-    closeModal();
-  };
-
-  const handleRightClick = () => {
-    if (onRightClick) {
-      onRightClick();
-    }
+  const handleButtonClick = (callback: () => void) => () => {
+    callback();
     closeModal();
   };
 
@@ -61,27 +39,18 @@ const Modal = ({
       ref={dialogRef}
       className="flex flex-col w-27.5 rounded-custom-l shadow-8 p-8 gap-4"
     >
-      <div className="text-gray-black flex flex-col">
-        {title.split("\\n").map((text, index) => {
-          return (
-            <p key={index}
-              className="text-semibold-m flex justify-center"
-            >{text}</p>
-          )
-        })}
-        <span className="text-medium-l flex justify-center mt-1">{subtitle}</span>
-      </div>
+      <ModalTitle title={title} subtitle={subtitle} />
       <div className="flex w-full gap-2">
         <button
           className="bg-gray-50 h-12 w-full rounded-custom-m border-2 border-gray-100 text-semibold-r text-gray-600"
-          onClick={handleLeftClick}
+          onClick={handleButtonClick(onLeftClick)}
         >
           {leftButton}
         </button>
         <button
           className={`w-full h-12 rounded-custom-m border-2 border-gray-100 text-semibold-r text-gray-white
             ${type === "red" ? "bg-point-1" : "bg-green-500"}`}
-          onClick={handleRightClick}
+          onClick={handleButtonClick(onRightClick)}
         >
           {rightButton}
         </button>
