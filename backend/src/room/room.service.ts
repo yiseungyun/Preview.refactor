@@ -37,7 +37,6 @@ export class RoomService {
     }
 
     async getMemberSocket(roomId: string) {
-        console.log("겟멤버소켓 :", roomId);
         const memberConnection =
             await this.roomRepository.getRoomMemberConnection(roomId);
         if (!memberConnection) return null;
@@ -48,7 +47,7 @@ export class RoomService {
     async checkAvailable(roomId: string) {
         const members =
             await this.roomRepository.getRoomMemberConnection(roomId);
-        console.log(members);
+
         return Object.keys(members).length < RoomService.MAX_MEMBERS;
     }
 
@@ -67,7 +66,7 @@ export class RoomService {
 
         const connections =
             await this.roomRepository.getRoomMemberConnection(roomId);
-        console.log("커넥션 정보 : ", connections);
+
         if (!connections) await this.roomRepository.deleteRoom(roomId);
     }
 }
