@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import VideoContainer from "../components/session/VideoContainer.tsx";
 import { useNavigate } from "react-router-dom";
-import useSocket from "../hooks/useSocket.ts";
 import SessionSidebar from "../components/session/SessionSidebar.tsx";
 import SessionToolbar from "../components/session/SessionToolbar.tsx";
 import useMediaDevices from "../hooks/useMediaDevices.ts";
 import useToast from "../hooks/useToast.ts";
 import usePeerConnection from "../hooks/usePeerConnection.ts";
+import useSocketStore from "../stores/useSocketStore.ts";
 
 interface User {
   id: string;
@@ -14,7 +14,9 @@ interface User {
 }
 
 const SessionPage = () => {
-  const { socket } = useSocket(import.meta.env.VITE_SIGNALING_SERVER_URL);
+  const { socket, connect } = useSocketStore();
+  if (!socket) connect(import.meta.env.VITE_SIGNALING_SERVER_URL);
+
   const {
     createPeerConnection,
     closePeerConnection,
