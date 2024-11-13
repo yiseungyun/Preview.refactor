@@ -8,9 +8,9 @@ interface Props {
 
 const SessionSidebar = ({ question, participants }: Props) => {
   return (
-    <div className={"flex flex-col justify-between w-[440px] px-6"}>
+    <div className={"flex flex-col justify-between w-[440px] px-6 bg-white"}>
       <div className={"flex flex-col gap-4"}>
-        <div className={"flex flex-col gap-2"}>
+        <div className={"flex flex-col gap-2 pt-6"}>
           <h2 className={"inline-flex gap-1 items-center text-semibold-s"}>
             <FaClipboardList />
             질문

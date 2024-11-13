@@ -17,10 +17,12 @@ const useMediaDevices = () => {
 
   // 본인 미디어 스트림
   const [stream, setStream] = useState<MediaStream | null>(null);
+  // 미디어 온오프 상태
+  const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
+  const [isMicOn, setIsMicOn] = useState<boolean>(true);
 
   useEffect(() => {
     // 비디오 디바이스 목록 가져오기
-
     const getUserDevices = async () => {
       try {
         const devices = await navigator.mediaDevices.enumerateDevices();
@@ -30,9 +32,15 @@ const useMediaDevices = () => {
         const videoDevices = devices.filter(
           (device) => device.kind === "videoinput"
         );
-
-        setUserAudioDevices(audioDevices);
-        setUserVideoDevices(videoDevices);
+        const dontHavePermission =
+          devices.find((device) => device.deviceId !== "") === undefined;
+        if (dontHavePermission) {
+          setUserAudioDevices([]);
+          setUserVideoDevices([]);
+        } else {
+          setUserAudioDevices(audioDevices);
+          setUserVideoDevices(videoDevices);
+        }
       } catch (error) {
         console.error("미디어 기기를 찾는데 문제가 발생했습니다.", error);
       }
@@ -69,15 +77,47 @@ const useMediaDevices = () => {
     }
   };
 
+  // 미디어 스트림 토글 관련
+  const handleVideoToggle = () => {
+    try {
+      // 비디오 껐다키기
+      if (stream) {
+        stream.getVideoTracks().forEach((videoTrack) => {
+          videoTrack.enabled = !videoTrack.enabled;
+        });
+      }
+      setIsVideoOn((prev) => !prev);
+    } catch (error) {
+      console.error("Error stopping video stream", error);
+    }
+  };
+
+  const handleMicToggle = () => {
+    try {
+      if (stream) {
+        stream.getAudioTracks().forEach((audioTrack) => {
+          audioTrack.enabled = !audioTrack.enabled;
+        });
+      }
+      setIsMicOn((prev) => !prev);
+    } catch (error) {
+      console.error("Error stopping mic stream", error);
+    }
+  };
+
   return {
     userAudioDevices,
     userVideoDevices,
     selectedAudioDeviceId,
     selectedVideoDeviceId,
+    stream,
+    isVideoOn,
+    isMicOn,
+    handleMicToggle,
+    handleVideoToggle,
     setSelectedAudioDeviceId,
     setSelectedVideoDeviceId,
     getMedia,
-    stream,
   };
 };
 

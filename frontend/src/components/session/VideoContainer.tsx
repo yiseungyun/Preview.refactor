@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import {
   BsMic,
   BsMicMute,
@@ -16,50 +15,57 @@ interface VideoContainerProps {
   stream: MediaStream;
 }
 
-const VideoContainer = forwardRef(
-  ({
-    nickname,
-    isMicOn,
-    isVideoOn,
-    isLocal,
-    reaction,
-    stream,
-  }: VideoContainerProps) => {
-    const renderReaction = (reaction: string) => {
-      console.log(reaction);
-      switch (reaction) {
-        case "thumbs_up":
-          return "👍";
-        case "":
-        default:
-          return "";
-      }
-    };
-    return (
-      <div className="relative flex-grow max-w-4xl">
-        <div className="bg-black rounded-2xl overflow-hidden shadow">
-          <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
-          <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
-            <p className="bg-grayscale-500 bg-opacity-50 text-white px-2 py-0.5 rounded">
-              {isLocal && "Me"} {nickname}
-            </p>
-            <div className={"inline-flex gap-4 px-2 items-center"}>
-              {isMicOn ? (
-                <BsMic className="text-white" />
-              ) : (
-                <BsMicMute className="text-red-500" />
-              )}
-              {isVideoOn ? (
-                <BsCameraVideo className="text-white" />
-              ) : (
-                <BsCameraVideoOff className="text-red-500" />
-              )}
-            </div>
+const VideoContainer = ({
+  nickname,
+  isMicOn,
+  isVideoOn,
+  isLocal,
+  reaction,
+  stream,
+}: VideoContainerProps) => {
+  const renderReaction = (reactionType: string) => {
+    switch (reactionType) {
+      case "thumbs_up":
+        return "👍";
+      case "":
+      default:
+        return "";
+    }
+  };
+
+  const renderMicIcon = () => {
+    return isMicOn ? (
+      <BsMic className="text-white" />
+    ) : (
+      <BsMicMute className="text-red-500" />
+    );
+  };
+
+  const renderVideoIcon = () => {
+    return isVideoOn ? (
+      <BsCameraVideo className="text-white" />
+    ) : (
+      <BsCameraVideoOff className="text-red-500" />
+    );
+  };
+
+  return (
+    <div className="relative flex-grow max-w-4xl">
+      <div className="bg-black rounded-2xl overflow-hidden shadow">
+        <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
+        <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
+          <p className="bg-grayscale-500 bg-opacity-50 text-white px-2 py-0.5 rounded">
+            {isLocal && "Me"} {nickname}
+          </p>
+          <div className={"inline-flex gap-4 px-2 items-center"}>
+            {renderMicIcon()}
+            {renderVideoIcon()}
           </div>
         </div>
-        {
-          <div
-            className={`
+      </div>
+      {
+        <div
+          className={`
               pointer-events-none
               absolute w-12 h-12 text-xl 
               flex items-center justify-center 
@@ -69,13 +75,12 @@ const VideoContainer = forwardRef(
               animate-fade-in-out
               ${reaction ? "opacity-100" : "opacity-0"}
             `}
-          >
-            <span className="animate-bounce">{renderReaction(reaction)}</span>
-          </div>
-        }
-      </div>
-    );
-  }
-);
+        >
+          <span className="animate-bounce">{renderReaction(reaction)}</span>
+        </div>
+      }
+    </div>
+  );
+};
 
 export default VideoContainer;

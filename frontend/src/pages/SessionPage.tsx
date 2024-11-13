@@ -1,61 +1,51 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import VideoContainer from "../components/session/VideoContainer.tsx";
 import { useNavigate } from "react-router-dom";
 import useSocket from "../hooks/useSocket.ts";
 import SessionSidebar from "../components/session/SessionSidebar.tsx";
 import SessionToolbar from "../components/session/SessionToolbar.tsx";
 import useMediaDevices from "../hooks/useMediaDevices.ts";
+import useToast from "../hooks/useToast.ts";
+import usePeerConnection from "../hooks/usePeerConnection.ts";
 
 interface User {
   id: string;
   nickname: string;
 }
 
-interface PeerConnection {
-  peerId: string; // 연결된 상대의 ID
-  peerNickname: string; // 상대의 닉네임
-  stream: MediaStream; // 상대방의 비디오/오디오 스트림
-  reaction?: string;
-}
-
 const SessionPage = () => {
   const { socket } = useSocket(import.meta.env.VITE_SIGNALING_SERVER_URL);
-  const [peers, setPeers] = useState<PeerConnection[]>([]); // 연결 관리
+  const {
+    createPeerConnection,
+    closePeerConnection,
+    peers,
+    setPeers,
+    peerConnections,
+  } = usePeerConnection(socket!);
   const [roomId, setRoomId] = useState<string>("");
   const [nickname, setNickname] = useState<string>("");
   const [reaction, setReaction] = useState("");
-  const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
-  const [isMicOn, setIsMicOn] = useState<boolean>(true);
 
   const {
     userVideoDevices,
     userAudioDevices,
     selectedAudioDeviceId,
     selectedVideoDeviceId,
+    stream: myStream,
+    isVideoOn,
+    isMicOn,
+    handleMicToggle,
+    handleVideoToggle,
     setSelectedAudioDeviceId,
     setSelectedVideoDeviceId,
     getMedia,
-    stream: myStream,
   } = useMediaDevices();
 
   const reactionTimeouts = useRef<{
     [key: string]: ReturnType<typeof setTimeout>;
   }>({});
-  const myVideoRef = useRef<HTMLVideoElement | null>(null);
-  const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
-  // const peerVideoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
   const navigate = useNavigate();
-
-  // STUN 서버 설정
-  const pcConfig = {
-    iceServers: [
-      {
-        urls: import.meta.env.VITE_STUN_SERVER_URL,
-        username: import.meta.env.VITE_STUN_USER_NAME,
-        credential: import.meta.env.VITE_STUN_CREDENTIAL,
-      },
-    ],
-  };
+  const toast = useToast();
 
   useEffect(() => {
     const connections = peerConnections;
@@ -71,7 +61,7 @@ const SessionPage = () => {
         pc.close();
       });
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // 미디어 스트림 정리 로직
@@ -93,6 +83,11 @@ const SessionPage = () => {
     // 메모리 누수, 중복 실행을 방지하기 위해 정리
     return () => {
       if (socket) {
+        if (reactionTimeouts.current) {
+          for (const value of Object.values(reactionTimeouts.current)) {
+            clearTimeout(value);
+          }
+        }
         socket.off("room_full");
         socket.off("all_users");
         socket.off("getOffer");
@@ -104,42 +99,7 @@ const SessionPage = () => {
     };
   }, [socket]);
 
-  // 미디어 스트림 가져오기
-  useEffect(() => {
-    if (myStream && myVideoRef.current) {
-      myVideoRef.current.srcObject = myStream;
-    }
-  }, [myStream]);
-
-  // 미디어 스트림 토글 관련
-  const handleVideoToggle = () => {
-    try {
-      // 비디오 껐다키기
-      if (myStream) {
-        myStream.getVideoTracks().forEach((videoTrack) => {
-          videoTrack.enabled = !videoTrack.enabled;
-        });
-      }
-      setIsVideoOn((prev) => !prev);
-    } catch (error) {
-      console.error("Error stopping video stream", error);
-    }
-  };
-
-  const handleMicToggle = () => {
-    try {
-      if (myStream) {
-        myStream.getAudioTracks().forEach((audioTrack) => {
-          audioTrack.enabled = !audioTrack.enabled;
-        });
-      }
-      setIsMicOn((prev) => !prev);
-    } catch (error) {
-      console.error("Error stopping mic stream", error);
-    }
-  };
-
-  const handleReaction = (reactionType: string) => {
+  const emitReaction = (reactionType: string) => {
     if (socket) {
       socket.emit("reaction", {
         roomId: roomId,
@@ -150,11 +110,14 @@ const SessionPage = () => {
 
   // 방 입장 처리: 사용자가 join room 버튼을 클릭할 때
   const joinRoom = async () => {
-    if (!socket || !roomId || !nickname) return;
+    if (!socket || !roomId || !nickname) {
+      toast.error("방 번호와 닉네임을 입력해주세요.");
+      return;
+    }
 
     const stream = await getMedia();
     if (!stream) {
-      alert(
+      toast.error(
         "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
       );
       navigate("/sessions");
@@ -164,8 +127,7 @@ const SessionPage = () => {
     socket.emit("join_room", { room: roomId, nickname });
 
     socket.on("room_full", () => {
-      console.log("방이 꽉찼심");
-      alert(
+      toast.error(
         "해당 세션은 이미 유저가 가득 찼습니다. 세션 페이지로 이동합니다..."
       );
       navigate("/sessions");
@@ -174,7 +136,9 @@ const SessionPage = () => {
     // 기존 사용자들의 정보 수신: 방에 있던 사용자들과 createPeerConnection 생성
     socket.on("all_users", (users: User[]) => {
       users.forEach((user) => {
-        createPeerConnection(user.id, user.nickname, stream, true);
+        createPeerConnection(user.id, user.nickname, stream, true, {
+          nickname,
+        });
       });
     });
 
@@ -192,7 +156,8 @@ const SessionPage = () => {
           data.offerSendID,
           data.offerSendNickname,
           stream,
-          false
+          false,
+          { nickname }
         );
         if (!pc) return;
 
@@ -251,14 +216,7 @@ const SessionPage = () => {
 
     // 사용자 퇴장 처리
     socket.on("user_exit", ({ id }: { id: string }) => {
-      if (peerConnections.current[id]) {
-        // 연결 종료
-        peerConnections.current[id].close();
-        // 연결 객체 제거
-        delete peerConnections.current[id];
-        // UI에서 사용자 제거
-        setPeers((prev) => prev.filter((peer) => peer.peerId !== id));
-      }
+      closePeerConnection(id);
     });
 
     socket.on(
@@ -268,9 +226,8 @@ const SessionPage = () => {
           clearTimeout(reactionTimeouts.current[senderId]);
         }
 
-        if (senderId === socket.id) {
+        if (senderId === socket!.id) {
           setReaction(reaction);
-
           reactionTimeouts.current[senderId] = setTimeout(() => {
             setReaction("");
             delete reactionTimeouts.current[senderId];
@@ -286,112 +243,17 @@ const SessionPage = () => {
     );
   };
 
-  const addReaction = (senderId: string, reactionType: string) => {
+  const addReaction = useCallback((senderId: string, reactionType: string) => {
     setPeers((prev) =>
       prev.map((peer) =>
         peer.peerId === senderId ? { ...peer, reaction: reactionType } : peer
       )
     );
-  };
-
-  // Peer Connection 생성
-  const createPeerConnection = (
-    peerSocketId: string,
-    peerNickname: string,
-    stream: MediaStream,
-    isOffer: boolean
-  ) => {
-    try {
-      // 유저 사이의 통신 선로를 생성
-      // STUN: 공개 주소를 알려주는 서버
-      // ICE: 두 피어 간의 최적의 경로를 찾아줌
-      const pc = new RTCPeerConnection(pcConfig);
-
-      // 로컬 스트림 추가: 내 카메라/마이크를 통신 선로(pc)에 연결
-      // 상대방에게 나의 비디오/오디오를 전송할 준비
-      stream.getTracks().forEach((track) => {
-        pc.addTrack(track, stream);
-      });
-
-      // ICE candidate 이벤트 처리
-      // 가능한 연결 경로를 찾을 때마다 상대에게 알려줌
-      pc.onicecandidate = (e) => {
-        if (e.candidate && socket) {
-          socket.emit("candidate", {
-            candidateReceiveID: peerSocketId,
-            candidate: e.candidate,
-            candidateSendID: socket.id,
-          });
-        }
-      };
-
-      // 연결 상태 모니터링
-      // 새로운 연결/연결 시도/연결 완료/연결 끊김/연결 실패/연결 종료
-      pc.onconnectionstatechange = () => {
-        console.log("연결 상태 변경:", pc.connectionState);
-      };
-      // ICE 연결 상태 모니터링
-      pc.oniceconnectionstatechange = () => {
-        console.log("ICE 연결 상태 변경:", pc.iceConnectionState);
-      };
-
-      // 원격 스트림 처리(상대가 addTrack을 호출할 때)
-      // 상대의 비디오/오디오 신호를 받아 연결하는 과정
-      // 상대방 스트림 수신 -> 기존 연결인지 확인 -> 스트림 정보 업데이트/추가
-      pc.ontrack = (e) => {
-        console.log("Received remote track:", e.streams[0]);
-        setPeers((prev) => {
-          // 이미 존재하는 피어인지 확인
-          const exists = prev.find((p) => p.peerId === peerSocketId);
-          if (exists) {
-            // 기존 피어의 스트림 업데이트
-            return prev.map((p) =>
-              p.peerId === peerSocketId ? { ...p, stream: e.streams[0] } : p
-            );
-          }
-          // 새로운 피어 추가
-          return [
-            ...prev,
-            {
-              peerId: peerSocketId,
-              peerNickname,
-              stream: e.streams[0],
-            },
-          ];
-        });
-      };
-
-      // Offer를 생성해야 하는 경우에만 Offer 생성
-      // Offer: 초대 - Offer 생성 -> 자신의 설정 저장 -> 상대에게 전송
-      if (isOffer) {
-        pc.createOffer()
-          .then((offer) => pc.setLocalDescription(offer))
-          .then(() => {
-            if (socket && pc.localDescription) {
-              socket.emit("offer", {
-                offerReceiveID: peerSocketId,
-                sdp: pc.localDescription,
-                offerSendID: socket.id,
-                offerSendNickname: nickname,
-              });
-            }
-          })
-          .catch((error) => console.error("Error creating offer:", error));
-      }
-
-      peerConnections.current[peerSocketId] = pc;
-      return pc;
-    } catch (error) {
-      console.error("Error creating peer connection:", error);
-      return null;
-    }
-  };
-
-  // 공감 기능 관련
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <section className="w-screen h-screen flex flex-col max-w-[1440px]">
-      <div className="w-screen flex gap-2 mb-4 space-y-2">
+      <div className="w-screen flex gap-2 mb-4 space-y-2 ">
         <input
           type="text"
           placeholder="Room ID"
@@ -433,7 +295,6 @@ const SessionPage = () => {
             </h1>
             <div className={"speaker max-w-4xl px-6 flex w-full"}>
               <VideoContainer
-                ref={myVideoRef}
                 nickname={nickname}
                 isMicOn={isMicOn}
                 isVideoOn={isVideoOn}
@@ -464,7 +325,7 @@ const SessionPage = () => {
           <SessionToolbar
             handleVideoToggle={handleVideoToggle}
             handleMicToggle={handleMicToggle}
-            handleReaction={handleReaction}
+            handleReaction={emitReaction}
             userVideoDevices={userVideoDevices}
             userAudioDevices={userAudioDevices}
             setSelectedVideoDeviceId={setSelectedVideoDeviceId}
