@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 
 interface User {
@@ -28,12 +28,6 @@ const usePeerConnection = (socket: Socket) => {
       },
     ],
   };
-
-  useEffect(() => {
-    if (!socket) {
-      console.error("usePeerConnection: 소켓이 필요합니다.");
-    }
-  }, [socket]);
 
   // Peer Connection 생성
   const createPeerConnection = (
