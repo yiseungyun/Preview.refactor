@@ -31,7 +31,7 @@ const SessionPage = () => {
     userAudioDevices,
     selectedAudioDeviceId,
     selectedVideoDeviceId,
-    stream: myStream,
+    stream,
     isVideoOn,
     isMicOn,
     handleMicToggle,
@@ -66,11 +66,11 @@ const SessionPage = () => {
   useEffect(() => {
     // 미디어 스트림 정리 로직
     return () => {
-      if (myStream) {
-        myStream.getTracks().forEach((track) => track.stop());
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [myStream]);
+  }, [stream]);
 
   useEffect(() => {
     if (selectedAudioDeviceId || selectedVideoDeviceId) {
@@ -300,7 +300,7 @@ const SessionPage = () => {
                 isVideoOn={isVideoOn}
                 isLocal={true}
                 reaction={reaction || ""}
-                stream={myStream!}
+                stream={stream!}
               />
             </div>
             <div className={"listeners w-full flex gap-2 px-6"}>
