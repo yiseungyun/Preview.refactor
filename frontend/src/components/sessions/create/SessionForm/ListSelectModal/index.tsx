@@ -40,7 +40,6 @@ const ListSelectModal = ({ isModalOpen, setIsModalOpen }: Props) => {
     } else {
       setSelectedOpen({ tab: tab, id });
     }
-
   };
 
   useEffect(() => {
@@ -103,9 +102,10 @@ const ListSelectModal = ({ isModalOpen, setIsModalOpen }: Props) => {
                 </div>
                 <button
                   className={`flex items-center ml-auto w-10 h-10 rounded-custom-m
-                    ${isSelected
-                      ? "bg-green-200 text-green-50"
-                      : "bg-gray-300 text-gray-50"
+                    ${
+                      isSelected
+                        ? "bg-green-200 text-green-50"
+                        : "bg-gray-300 text-gray-50"
                     }`}
                   onClick={() => checkHandler(id)}
                 >
