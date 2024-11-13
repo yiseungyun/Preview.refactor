@@ -1,11 +1,11 @@
 import { useRef } from "react";
 import { IoMdClose } from "react-icons/io";
 import CategoryTap from "./CategoryTab";
-import SearchBar from "../../../../common/SearchBar";
-import useModalStore from "../../../../../stores/useModalStore";
-import useModal from "../../../../../hooks/useModal";
+import SearchBar from "@/components/common/SearchBar";
+import useModalStore from "@/stores/useModalStore";
+import useModal from "@/hooks/useModal";
 import QuestionList from "./QuestionList";
-import useSessionFormStore from "../../../../../stores/useSessionFormStore";
+import useSessionFormStore from "@/stores/useSessionFormStore";
 
 const ListSelectModal = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);

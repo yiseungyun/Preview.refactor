@@ -1,4 +1,4 @@
-import useSessionFormStore from "../../../../../stores/useSessionFormStore";
+import useSessionFormStore from "@/stores/useSessionFormStore";
 import SelectTitle from "../../SelectTitle";
 
 const AccessSection = () => {
@@ -10,22 +10,20 @@ const AccessSection = () => {
       <div className="flex w-full h-11">
         <button
           className={`flex-grow rounded-l-custom-m border 
-          ${
-            access === "public"
+          ${access === "public"
               ? "text-semibold-r text-green-700 border-2 border-green-200 bg-green-50"
               : "text-medium-m text-gray-400 border-r-0"
-          }`}
+            }`}
           onClick={() => setAccess("public")}
         >
           공개
         </button>
         <button
           className={`flex-grow rounded-r-custom-m border
-          ${
-            access === "private"
+          ${access === "private"
               ? "text-semibold-r text-green-700 border-2 border-green-200 bg-green-50"
               : "text-medium-m text-gray-400 border-l-0"
-          }`}
+            }`}
           onClick={() => setAccess("private")}
         >
           비공개

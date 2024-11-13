@@ -4,11 +4,11 @@ import ParticipantSection from "./ParticipantSection";
 import NameSection from "./NameSection";
 import QuestionListSection from "./QuestionListSection";
 import ListSelectModal from "./ListSelectModal";
-import useSessionFormStore from "../../../../stores/useSessionFormStore";
-import useSocketStore from "../../../../stores/useSocketStore";
+import useSessionFormStore from "@/stores/useSessionFormStore";
+import useSocketStore from "@/stores/useSocketStore";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect } from "react";
-import useToast from "../../../../hooks/useToast";
+import useToast from "@/hooks/useToast";
 
 interface RoomCreatedResponse {
   success: boolean;

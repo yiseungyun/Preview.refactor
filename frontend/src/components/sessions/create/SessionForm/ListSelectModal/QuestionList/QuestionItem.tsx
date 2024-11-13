@@ -1,6 +1,6 @@
 import { GrDown, GrUp } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
-import useSessionFormStore from "../../../../../../stores/useSessionFormStore";
+import useSessionFormStore from "@/stores/useSessionFormStore";
 
 interface Question {
   id: number;
@@ -67,10 +67,9 @@ const QuestionItem = ({ item }: { item: ListItem }) => {
         </div>
         <button
           className={`flex items-center ml-auto w-10 h-10 rounded-custom-m
-            ${
-              isSelected
-                ? "bg-green-200 text-green-50"
-                : "bg-gray-300 text-gray-50"
+            ${isSelected
+              ? "bg-green-200 text-green-50"
+              : "bg-gray-300 text-gray-50"
             }`}
           onClick={() => checkHandler(item.id, item.title)}
         >

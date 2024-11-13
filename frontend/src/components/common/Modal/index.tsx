@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import useModalStore from "../../../stores/useModalStore";
-import useModal from "../../../hooks/useModal";
+import useModalStore from "@/stores/useModalStore";
+import useModal from "@/hooks/useModal";
 import ModalTitle from "./Title";
 
 export interface ModalProps {

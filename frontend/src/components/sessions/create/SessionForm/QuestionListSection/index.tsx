@@ -1,5 +1,5 @@
-import useModalStore from "../../../../../stores/useModalStore";
-import useSessionFormStore from "../../../../../stores/useSessionFormStore";
+import useModalStore from "@/stores/useModalStore";
+import useSessionFormStore from "@/stores/useSessionFormStore";
 import SelectTitle from "../../SelectTitle";
 import { MdOutlineArrowForwardIos } from "react-icons/md";
 

@@ -1,4 +1,4 @@
-import useSessionFormStore from "../../../../../../stores/useSessionFormStore";
+import useSessionFormStore from "@/stores/useSessionFormStore";
 import { data } from "../data";
 import QuestionItem from "./QuestionItem";
 

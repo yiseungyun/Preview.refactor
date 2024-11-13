@@ -1,4 +1,4 @@
-import useSessionFormStore from "../../../../../stores/useSessionFormStore";
+import useSessionFormStore from "@/stores/useSessionFormStore";
 
 interface Props {
   selectedValue: 1 | 2 | 3 | 4 | 5;
@@ -11,11 +11,10 @@ const ParticipantButton = ({ selectedValue, onClick }: Props) => {
   return (
     <button
       className={`flex-grow rounded-custom-m
-      ${
-        participant === selectedValue
+      ${participant === selectedValue
           ? "bg-green-50 border-2 border-green-200 text-semibold-r text-green-600"
           : "bg-gray-white border border-gray-100 text-medium-m text-gray-400"
-      }`}
+        }`}
       onClick={onClick}
     >
       {selectedValue}명

@@ -1,6 +1,6 @@
 import { IoChevronDownSharp } from "react-icons/io5";
 import SelectTitle from "../../SelectTitle";
-import useSessionFormStore from "../../../../../stores/useSessionFormStore";
+import useSessionFormStore from "@/stores/useSessionFormStore";
 
 const CategorySection = () => {
   const { category, setCategory } = useSessionFormStore();

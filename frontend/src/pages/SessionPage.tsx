@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import VideoContainer from "../components/session/VideoContainer.tsx";
+import VideoContainer from "@/components/session/VideoContainer.tsx";
 import { useNavigate } from "react-router-dom";
-import SessionSidebar from "../components/session/SessionSidebar.tsx";
-import SessionToolbar from "../components/session/SessionToolbar.tsx";
-import useMediaDevices from "../hooks/useMediaDevices.ts";
-import useToast from "../hooks/useToast.ts";
-import usePeerConnection from "../hooks/usePeerConnection.ts";
-import useSocketStore from "../stores/useSocketStore.ts";
+import SessionSidebar from "@/components/session/SessionSidebar.tsx";
+import SessionToolbar from "@/components/session/SessionToolbar.tsx";
+import useMediaDevices from "@/hooks/useMediaDevices.ts";
+import useToast from "@/hooks/useToast.ts";
+import usePeerConnection from "@/hooks/usePeerConnection.ts";
+import useSocketStore from "@/stores/useSocketStore";
 
 interface User {
   id: string;

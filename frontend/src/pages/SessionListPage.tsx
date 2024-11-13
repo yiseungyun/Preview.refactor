@@ -1,10 +1,10 @@
 import { IoChevronDownSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
-import SessionCard from "../components/sessions/SessionCard.tsx";
+import SessionCard from "@/components/sessions/SessionCard.tsx";
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
-import SearchBar from "../components/common/SearchBar.tsx";
-import useToast from "../hooks/useToast.ts";
+import SearchBar from "@/components/common/SearchBar.tsx";
+import useToast from "@/hooks/useToast";
 
 interface Session {
   id: number;
