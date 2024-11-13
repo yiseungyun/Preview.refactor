@@ -18,6 +18,8 @@ interface SessionFormState {
   setAccess: (access: "private" | "public") => void;
   setTab: (tab: "myList" | "savedList") => void;
   setSelectedOpenId: (selectedOpenId: number) => void;
+
+  isFormValid: () => boolean;
 }
 
 const initialState = {
@@ -31,7 +33,7 @@ const initialState = {
   selectedOpenId: -1,
 };
 
-const useSessionFormStore = create<SessionFormState>((set) => ({
+const useSessionFormStore = create<SessionFormState>((set, get) => ({
   ...initialState,
 
   setCategory: (category) => set({ category }),
@@ -42,6 +44,16 @@ const useSessionFormStore = create<SessionFormState>((set) => ({
   setAccess: (access) => set({ access }),
   setTab: (tab) => set({ tab }),
   setSelectedOpenId: (id) => set({ selectedOpenId: id }),
+
+  isFormValid: () => {
+    const state = get();
+    return (
+      state.category.trim() !== "" &&
+      state.sessionName.trim() !== "" &&
+      state.questionId > 0 &&
+      state.questionTitle.trim() !== ""
+    );
+  },
 }));
 
 export default useSessionFormStore;
