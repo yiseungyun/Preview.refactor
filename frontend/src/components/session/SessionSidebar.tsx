@@ -20,9 +20,9 @@ const SessionSidebar = ({ socket, question, participants, roomId }: Props) => {
 
   const existHandler = () => {
     socket?.emit("leave_room", { roomId });
-    toast.success('메인 화면으로 이동합니다.');
+    toast.success("메인 화면으로 이동합니다.");
     navigate("/sessions");
-  }
+  };
 
   return (
     <div className={"flex flex-col justify-between w-[440px] px-6 bg-white"}>
@@ -32,7 +32,7 @@ const SessionSidebar = ({ socket, question, participants, roomId }: Props) => {
         leftButton="취소하기"
         rightButton="종료하기"
         type="red"
-        onLeftClick={() => { }}
+        onLeftClick={() => {}}
         onRightClick={existHandler}
       />
       <div className={"flex flex-col gap-4"}>
@@ -67,7 +67,9 @@ const SessionSidebar = ({ socket, question, participants, roomId }: Props) => {
       <div className={"h-16 items-center flex w-full"}>
         <button
           className={"w-full bg-red-500 text-white rounded-md py-2"}
-          onClick={() => { openModal() }}
+          onClick={() => {
+            openModal();
+          }}
         >
           종료하기
         </button>
