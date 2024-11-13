@@ -40,7 +40,6 @@ export class RedisService {
             cursor = nextCursor;
             keys.push(...matchedKeys);
         } while (cursor !== "0");
-        console.log("getKeys: ", keys);
         return keys;
     }
 
@@ -51,14 +50,10 @@ export class RedisService {
     async getValues(query: string) {
         const keys = await this.getKeys(query);
         if (!keys.length) return null;
-        const values = await this.client.mget(keys);
-
-        return values.map((value) => JSON.parse(value));
+        return this.client.mget(keys);
     }
 
     async getMap(query: string, valueType: "object" | "primitive" = "object") {
-        // 키와 값을 객체로 변환
-        console.log("getMap : 이렇게 검색 :", query);
         const keys = await this.getKeys(query);
         const values = await this.getValues(query);
         if (!values) return null;
