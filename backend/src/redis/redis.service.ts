@@ -4,16 +4,71 @@ import { redisConfig } from "../config/redis.config";
 
 @Injectable()
 export class RedisService {
-    private readonly client: Redis;
+    private readonly client: Redis = new Redis({
+        host: redisConfig.host,
+        port: redisConfig.port,
+        password: redisConfig.password,
+    });
 
-    constructor() {
-        this.client = new Redis({
-            host: redisConfig.host,
-            port: redisConfig.port,
-            password: redisConfig.password,
-        });
+    async set(key: string, value: any, ttl: number = 0) {
+        if (typeof value === "object") value = JSON.stringify(value);
+
+        await this.client.set(key, value, "KEEPTTL");
+        await this.client.expire(key, ttl);
     }
-    getClient(): Redis {
-        return this.client;
+
+    async get(key: string) {
+        return this.client.get(key);
+    }
+
+    async getTTL(key: string) {
+        return this.client.ttl(key);
+    }
+
+    async getKeys(query: string) {
+        const keys: string[] = [];
+        let cursor = "0";
+
+        do {
+            const [nextCursor, matchedKeys] = await this.client.scan(
+                cursor,
+                "MATCH",
+                query,
+                "COUNT",
+                "100"
+            );
+            cursor = nextCursor;
+            keys.push(...matchedKeys);
+        } while (cursor !== "0");
+        console.log("getKeys: ", keys);
+        return keys;
+    }
+
+    async delete(...keys: string[]) {
+        return this.client.del(...keys);
+    }
+
+    async getValues(query: string) {
+        const keys = await this.getKeys(query);
+        if (!keys.length) return null;
+        const values = await this.client.mget(keys);
+
+        return values.map((value) => JSON.parse(value));
+    }
+
+    async getMap(query: string, valueType: "object" | "primitive" = "object") {
+        // 키와 값을 객체로 변환
+        console.log("getMap : 이렇게 검색 :", query);
+        const keys = await this.getKeys(query);
+        const values = await this.getValues(query);
+        if (!values) return null;
+
+        return keys.reduce((acc, key, index) => {
+            acc[key] =
+                valueType === "object"
+                    ? JSON.parse(values[index])
+                    : values[index];
+            return acc;
+        }, {});
     }
 }
