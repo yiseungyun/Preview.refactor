@@ -6,8 +6,6 @@ import QuestionListSection from "./QuestionListSection";
 import ListSelectModal from "./ListSelectModal";
 
 const SessionForm = () => {
-
-
   return (
     <div className="flex flex-col gap-8 p-8 bg-gray-white shadow-8 w-47.5 rounded-custom-l">
       <ListSelectModal />

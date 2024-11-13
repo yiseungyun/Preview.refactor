@@ -1,10 +1,8 @@
-import { useState } from "react";
+import useSessionFormStore from "../../../../../stores/useSessionFormStore";
 import SelectTitle from "../../SelectTitle";
 
-type Access = "public" | "private";
-
 const AccessSection = () => {
-  const [access, setAccess] = useState<Access>("public");
+  const { access, setAccess } = useSessionFormStore();
 
   return (
     <div className="w-full">

@@ -1,12 +1,12 @@
 import { IoChevronDownSharp } from "react-icons/io5";
 import SelectTitle from "../../SelectTitle";
-import { useState } from "react";
+import useSessionFormStore from "../../../../../stores/useSessionFormStore";
 
 const CategorySection = () => {
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const { category, setCategory } = useSessionFormStore();
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(event.target.value);
+    setCategory(event.target.value);
   };
 
   return (
@@ -15,7 +15,7 @@ const CategorySection = () => {
       <div className="relative">
         <select
           className="text-medium-m w-full h-11 pl-4 border-custom-s border-gray-100 rounded-custom-m appearance-none"
-          value={selectedCategory}
+          value={category}
           onChange={handleChange}
         >
           <option value="" disabled>

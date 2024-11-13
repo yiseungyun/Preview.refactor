@@ -1,9 +1,8 @@
-interface Props {
-  tab: "myList" | "savedList";
-  setTab: (tab: "myList" | "savedList") => void;
-}
+import useSessionFormStore from "../../../../../stores/useSessionFormStore";
 
-const CategoryTap = ({ tab, setTab }: Props) => {
+const CategoryTap = () => {
+  const { tab, setTab } = useSessionFormStore();
+
   return (
     <section className="flex items-center gap-2">
       <button
