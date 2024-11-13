@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import CategoryTap from "./CategoryTab";
-import SearchBar from "../../../../utils/SearchBar";
+import SearchBar from "../../../../common/SearchBar";
 import { data } from "./data";
 import { GrUp } from "react-icons/gr";
 import { GrDown } from "react-icons/gr";
