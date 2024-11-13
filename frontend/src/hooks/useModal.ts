@@ -2,16 +2,16 @@ import { useEffect } from "react";
 
 const useModal = ({
   dialogRef,
-  isOpen,
+  isModalOpen,
 }: {
   dialogRef: React.RefObject<HTMLDialogElement>;
-  isOpen: boolean;
+  isModalOpen: boolean;
 }) => {
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
 
-    if (isOpen) {
+    if (isModalOpen) {
       dialog.showModal();
     } else {
       dialog.close();
@@ -22,7 +22,7 @@ const useModal = ({
         dialog.close();
       }
     };
-  }, [isOpen, dialogRef]);
+  }, [isModalOpen, dialogRef]);
 };
 
 export default useModal;

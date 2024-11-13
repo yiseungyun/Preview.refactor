@@ -6,11 +6,7 @@ import { data } from "./data";
 import { GrUp } from "react-icons/gr";
 import { GrDown } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
-
-interface Props {
-  isModalOpen: boolean;
-  setIsModalOpen: (modal: boolean) => void;
-}
+import useModalStore from "../../../../../stores/useModalStore";
 
 type Tab = "myList" | "savedList";
 
@@ -19,16 +15,12 @@ interface SelectedItem {
   id: number;
 }
 
-const ListSelectModal = ({ isModalOpen, setIsModalOpen }: Props) => {
+const ListSelectModal = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [tab, setTab] = useState<Tab>("myList");
   const [selectedItem, setSelecetedItem] = useState<SelectedItem>();
   const [selectedOpen, setSelectedOpen] = useState<SelectedItem | null>();
-
-  const closeModal = () => {
-    dialogRef.current?.close();
-    setIsModalOpen(false);
-  };
+  const { isModalOpen, closeModal } = useModalStore();
 
   const checkHandler = (id: number) => {
     setSelecetedItem({ tab: tab, id });
@@ -102,10 +94,9 @@ const ListSelectModal = ({ isModalOpen, setIsModalOpen }: Props) => {
                 </div>
                 <button
                   className={`flex items-center ml-auto w-10 h-10 rounded-custom-m
-                    ${
-                      isSelected
-                        ? "bg-green-200 text-green-50"
-                        : "bg-gray-300 text-gray-50"
+                    ${isSelected
+                      ? "bg-green-200 text-green-50"
+                      : "bg-gray-300 text-gray-50"
                     }`}
                   onClick={() => checkHandler(id)}
                 >

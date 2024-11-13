@@ -23,16 +23,16 @@ const Modal = ({
   onRightClick,
 }: ModalProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const { isOpen, closeModal } = useModalStore();
+  const { isModalOpen, closeModal } = useModalStore();
 
-  useModal({ dialogRef, isOpen });
+  useModal({ dialogRef, isModalOpen });
 
   const handleButtonClick = (callback: () => void) => () => {
     callback();
     closeModal();
   };
 
-  if (!isOpen) return null;
+  if (!isModalOpen) return null;
 
   return (
     <dialog
