@@ -1,5 +1,5 @@
-import useSessionFormStore from "../../../../../stores/useSessionFormStore";
-import { data } from "./data";
+import useSessionFormStore from "../../../../../../stores/useSessionFormStore";
+import { data } from "../data";
 import QuestionItem from "./QuestionItem";
 
 const QuestionList = () => {

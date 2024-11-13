@@ -1,6 +1,6 @@
 import { GrDown, GrUp } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
-import useSessionFormStore from "../../../../../stores/useSessionFormStore";
+import useSessionFormStore from "../../../../../../stores/useSessionFormStore";
 
 interface Question {
   id: number;
@@ -17,15 +17,22 @@ interface ListItem {
 }
 
 const QuestionItem = ({ item }: { item: ListItem }) => {
-  const { questionId, selectedOpenId, setQuestionId, setSelectedOpenId } = useSessionFormStore();
+  const {
+    questionId,
+    selectedOpenId,
+    setQuestionId,
+    setQuestionTitle,
+    setSelectedOpenId,
+  } = useSessionFormStore();
 
-  const checkHandler = (id: number) => {
+  const checkHandler = (id: number, title: string) => {
     setQuestionId(id);
+    setQuestionTitle(title);
   };
 
   const openHandler = (id: number) => {
     if (selectedOpenId === id) {
-      setSelectedOpenId(-1)
+      setSelectedOpenId(-1);
     } else {
       setSelectedOpenId(id);
     }
@@ -60,11 +67,12 @@ const QuestionItem = ({ item }: { item: ListItem }) => {
         </div>
         <button
           className={`flex items-center ml-auto w-10 h-10 rounded-custom-m
-                    ${isSelected
-              ? "bg-green-200 text-green-50"
-              : "bg-gray-300 text-gray-50"
+            ${
+              isSelected
+                ? "bg-green-200 text-green-50"
+                : "bg-gray-300 text-gray-50"
             }`}
-          onClick={() => checkHandler(item.id)}
+          onClick={() => checkHandler(item.id, item.title)}
         >
           <ImCheckmark className="m-auto w-5 h-5" />
         </button>

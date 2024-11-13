@@ -15,6 +15,8 @@ const NameSection = () => {
         className="text-medium-m w-full h-11 p-4 border-custom-s border-gray-100 rounded-custom-m"
         placeholder="예) 프론트엔드 면접 스터디"
         onChange={changeHandler}
+        minLength={5}
+        maxLength={20}
       />
     </div>
   );

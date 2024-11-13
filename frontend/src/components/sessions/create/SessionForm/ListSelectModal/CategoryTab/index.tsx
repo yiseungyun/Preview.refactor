@@ -1,4 +1,4 @@
-import useSessionFormStore from "../../../../../stores/useSessionFormStore";
+import useSessionFormStore from "../../../../../../stores/useSessionFormStore";
 
 const CategoryTap = () => {
   const { tab, setTab } = useSessionFormStore();
