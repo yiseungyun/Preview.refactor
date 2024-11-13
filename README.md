@@ -11,8 +11,6 @@
 ### 배포
 [**Preview 바로가기**](https://boostcamp-preview.kro.kr)
 
-<br/>
-
 ## 👋 팀원 소개
 
 |김찬우|서정우|송수민|이승윤|
@@ -23,12 +21,12 @@
 <br/>
 
 > 🐧 **김찬우**
-> 
+>
 > '함께 자라는 개발도 잘하는 사람'이 되고 싶은 그저 프로그래밍이 재밌는 사람입니다. 펭귄처럼 바보라도 당당하게 호기심 있게 되고 싶습니다!
 
 > 💣 **서정우**
 >
-> 멈추지 않는 개발자가 되고 싶습니다.
+> 멈추지 않는 기술의 변화를 즐기는 개발자가 되고 싶은 서정우입니다!
 
 > 🐬 **송수민**
 >
@@ -42,9 +40,10 @@
 
 ## 👥 협업
 ### 브랜치 구조
-- git flow 
+- git flow
 ### 커밋 규칙
 **Udacity 스타일 가이드**
+
 | 타입 | 상황 |
 | --- | --- |
 | feat | 새로운 기능을 추가하였을 때 |
@@ -103,24 +102,23 @@
 
 ## 📁 문서
 
+### 팀 노션 워크스페이스
+- [노션 링크](https://alpine-tiglon-9f0.notion.site/PREVIEW-HOME-12d696f85d1f805b9787e26374b3d209?pvs=4)
+
 ### 회의록
 - [1주차 회의록](https://github.com/boostcampwm-2024/web27-boostproject/wiki/1%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EC%9D%98%EB%A1%9D)
 - [2주차 회의록](https://github.com/boostcampwm-2024/web27-boostproject/wiki/2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EC%9D%98%EB%A1%9D)
-- [3주차 회의록](https://github.com/boostcampwm-2024/web27-boostproject/wiki/3%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EC%9D%98%EB%A1%9D)
-- [4주차 회의록](https://github.com/boostcampwm-2024/web27-boostproject/wiki/4%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EC%9D%98%EB%A1%9D)
-- [5주차 회의록](https://github.com/boostcampwm-2024/web27-boostproject/wiki/5%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EC%9D%98%EB%A1%9D)
-- [6주차 회의록](https://github.com/boostcampwm-2024/web27-boostproject/wiki/6%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EC%9D%98%EB%A1%9D)
+
 
 ### 회고
-- [1주차 회고](https://github.com/boostcampwm-2024/web27-boostproject/wiki/1%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0)
-- [2주차 회고](https://github.com/boostcampwm-2024/web27-boostproject/wiki/2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0)
-- [3주차 회고](https://github.com/boostcampwm-2024/web27-boostproject/wiki/3%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0)
-- [4주차 회고](https://github.com/boostcampwm-2024/web27-boostproject/wiki/4%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0)
-- [5주차 회고](https://github.com/boostcampwm-2024/web27-boostproject/wiki/5%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0)
-- [6주차 회고](https://github.com/boostcampwm-2024/web27-boostproject/wiki/6%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0)
+- [팀회고](https://alpine-tiglon-9f0.notion.site/13a138b3a6894de39933e51b28807050?pvs=4)
+
+### 데일리 노트
+- [김찬우](https://alpine-tiglon-9f0.notion.site/a508fc384103499e93e24d08853823fc?v=df366c8d70f7482bad03a674a45c7606&pvs=74)
+- [송수민](https://alpine-tiglon-9f0.notion.site/887afedf1a5b4e93861b97c15ed38611?v=5012a5fb547344e79b460503fd146ad3&pvs=4)
+- [서정우](https://alpine-tiglon-9f0.notion.site/4b8e2b6b9a554c13a2cbb69671d7bd29?v=78b3d26348cf40bcb1c09e0d05836dae&pvs=4)
+- [이승윤](https://alpine-tiglon-9f0.notion.site/31e9cfd20c2f4e50a64abde07444b23d?v=cfc1e71581ce469b814c5b34e1803cff&pvs=4)
 
 ### 개발 일지
-- [공통 개발 일지](https://github.com/boostcampwm-2024/web27-boostproject/wiki/%EA%B3%B5%ED%86%B5-%EA%B0%9C%EB%B0%9C-%EC%9D%BC%EC%A7%80)
-- [프론트엔드 개발 일지](https://github.com/boostcampwm-2024/web27-boostproject/wiki/%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C-%EA%B0%9C%EB%B0%9C-%EC%9D%BC%EC%A7%80)
-- [백엔드 개발 일지](https://github.com/boostcampwm-2024/web27-boostproject/wiki/%EB%B0%B1%EC%97%94%EB%93%9C-%EA%B0%9C%EB%B0%9C-%EC%9D%BC%EC%A7%80)
-- [문제 해결 일지](https://github.com/boostcampwm-2024/web27-boostproject/wiki/%EB%AC%B8%EC%A0%9C-%EA%B3%B5%EC%9C%A0)
+- [공통 개발 일지](https://alpine-tiglon-9f0.notion.site/12d696f85d1f80c89569dcfe55b62b44?v=12f696f85d1f802db6af000cf32dfa28&pvs=4)
+- [문제 해결 일지](https://alpine-tiglon-9f0.notion.site/87b7f1ce19564eda8127eca29d567d0f?v=f2df7d634605464d876ccf43c9197db4&pvs=4)
