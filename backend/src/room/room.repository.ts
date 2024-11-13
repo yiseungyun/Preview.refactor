@@ -4,7 +4,6 @@ import { MemberConnection, Room } from "./room.model";
 import { generateRoomId } from "../utils/generateRoomId";
 import { HOUR } from "../utils/time";
 import { CreateRoomDto } from "./dto/create-room.dto";
-import { UpdateRoomDto } from "./dto/update-room.dto";
 
 /**
  * `room:` 과 같은 태그를 사용하는 부분
@@ -19,7 +18,6 @@ export class RoomRepository {
     }
 
     async getRoomMemberConnection(roomId: string) {
-        console.log("멤버커넥션 : roomId", roomId);
         const connectionMap = await this.redisService.getMap(
             `join:${roomId}:*`
         );
@@ -45,16 +43,8 @@ export class RoomRepository {
         return room;
     }
 
-    // async updateRoom(roomId: string, dto: UpdateRoomDto) {
-    //     const room = await this.findRoom(roomId);
-    //     if (!room) return null;
-    //
-    //     this.redisService.set(`room:${roomId}`, room);
-    // }
-
     async findMyRoomId(socketId: string) {
         const keys = await this.redisService.getKeys(`join:*:${socketId}`);
-        console.log("?");
         if (!keys.length) return null;
         return keys[0].split(":")[1];
     }
@@ -67,7 +57,6 @@ export class RoomRepository {
             {
                 title: dto.title,
                 createdAt: Date.now(),
-                members: [dto.socketId],
                 host: dto.socketId,
             } as Room,
             6 * HOUR
@@ -88,8 +77,6 @@ export class RoomRepository {
 
         if (connections.length > 0) {
             // overlapped connection error
-            console.log(connections, "?");
-            console.log(typeof connections);
             return;
         }
 
@@ -108,12 +95,11 @@ export class RoomRepository {
 
     async deleteUser(socketId: string) {
         const keys = await this.redisService.getKeys(`join:*:${socketId}`);
-        console.log("지울 룸 아이디 : ", keys);
+
         await this.redisService.delete(...keys);
     }
 
     async deleteRoom(roomId: string) {
-        console.log("지울 룸의 아이디 : ", roomId);
         await this.redisService.delete(`room:${roomId}`);
     }
 }
