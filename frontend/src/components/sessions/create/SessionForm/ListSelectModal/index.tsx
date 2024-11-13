@@ -1,16 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import CategoryTap from "./CategoryTab";
-import SearchBar from "../../../../utils/SearchBar";
+import SearchBar from "../../../../common/SearchBar";
 import { data } from "./data";
 import { GrUp } from "react-icons/gr";
 import { GrDown } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
-
-interface Props {
-  isModalOpen: boolean;
-  setIsModalOpen: (modal: boolean) => void;
-}
+import useModalStore from "../../../../../stores/useModalStore";
 
 type Tab = "myList" | "savedList";
 
@@ -19,16 +15,12 @@ interface SelectedItem {
   id: number;
 }
 
-const ListSelectModal = ({ isModalOpen, setIsModalOpen }: Props) => {
+const ListSelectModal = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [tab, setTab] = useState<Tab>("myList");
   const [selectedItem, setSelecetedItem] = useState<SelectedItem>();
   const [selectedOpen, setSelectedOpen] = useState<SelectedItem | null>();
-
-  const closeModal = () => {
-    dialogRef.current?.close();
-    setIsModalOpen(false);
-  };
+  const { isModalOpen, closeModal } = useModalStore();
 
   const checkHandler = (id: number) => {
     setSelecetedItem({ tab: tab, id });
@@ -40,7 +32,6 @@ const ListSelectModal = ({ isModalOpen, setIsModalOpen }: Props) => {
     } else {
       setSelectedOpen({ tab: tab, id });
     }
-
   };
 
   useEffect(() => {
@@ -85,9 +76,9 @@ const ListSelectModal = ({ isModalOpen, setIsModalOpen }: Props) => {
                   }}
                 >
                   {isListOpen ? (
-                    <GrUp className="w-6 h-6 text-gray-600" />
+                    <GrUp className="w-5 h-5 text-gray-600" />
                   ) : (
-                    <GrDown className="w-6 h-6 text-gray-600" />
+                    <GrDown className="w-5 h-5 text-gray-600" />
                   )}
                 </button>
                 <div>
@@ -102,14 +93,14 @@ const ListSelectModal = ({ isModalOpen, setIsModalOpen }: Props) => {
                   </p>
                 </div>
                 <button
-                  className={`flex items-center ml-auto w-11 h-11 rounded-custom-m
+                  className={`flex items-center ml-auto w-10 h-10 rounded-custom-m
                     ${isSelected
                       ? "bg-green-200 text-green-50"
                       : "bg-gray-300 text-gray-50"
                     }`}
                   onClick={() => checkHandler(id)}
                 >
-                  <ImCheckmark className="m-auto w-6 h-6" />
+                  <ImCheckmark className="m-auto w-5 h-5" />
                 </button>
               </div>
               {isListOpen ? (

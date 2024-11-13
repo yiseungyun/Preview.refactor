@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import SessionCard from "../components/sessions/SessionCard.tsx";
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
-import SearchBar from "../components/utils/SearchBar.tsx";
+import SearchBar from "../components/common/SearchBar.tsx";
 import useToast from "../hooks/useToast.ts";
 
 interface Session {

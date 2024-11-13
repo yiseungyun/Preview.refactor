@@ -1,8 +1,10 @@
 import { useState } from "react";
 import SelectTitle from "../../SelectTitle";
 
+type Access = "public" | "private";
+
 const AccessSection = () => {
-  const [access, setAccess] = useState("public");
+  const [access, setAccess] = useState<Access>("public");
 
   return (
     <div className="w-full">
