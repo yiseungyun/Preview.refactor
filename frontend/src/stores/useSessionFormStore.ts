@@ -19,6 +19,7 @@ interface SessionFormState {
   setTab: (tab: "myList" | "savedList") => void;
   setSelectedOpenId: (selectedOpenId: number) => void;
 
+  resetForm: () => void;
   isFormValid: () => boolean;
 }
 
@@ -45,6 +46,7 @@ const useSessionFormStore = create<SessionFormState>((set, get) => ({
   setTab: (tab) => set({ tab }),
   setSelectedOpenId: (id) => set({ selectedOpenId: id }),
 
+  resetForm: () => set(initialState),
   isFormValid: () => {
     const state = get();
     return (

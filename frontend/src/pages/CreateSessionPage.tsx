@@ -1,9 +1,16 @@
 import { IoArrowBackSharp } from "react-icons/io5";
 import SessionForm from "../components/sessions/create/SessionForm";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import useSessionFormStore from "../stores/useSessionFormStore";
 
 const CreateSessionPage = () => {
   const navigate = useNavigate();
+  const { resetForm } = useSessionFormStore();
+
+  useEffect(() => {
+    resetForm();
+  }, []);
 
   return (
     <div className="m-20">
