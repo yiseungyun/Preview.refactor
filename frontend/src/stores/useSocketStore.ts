@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 import { Socket, io } from "socket.io-client";
 
 interface SocketStore {
@@ -19,7 +19,7 @@ const useSocketStore = create<SocketStore>((set) => ({
       state.socket?.disconnect();
       return { socket: null };
     });
-  }
+  },
 }));
 
 const socketErrorHandler = (error: Error) => {

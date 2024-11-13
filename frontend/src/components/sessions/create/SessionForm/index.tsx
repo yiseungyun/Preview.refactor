@@ -8,26 +8,40 @@ import useSessionFormStore from "../../../../stores/useSessionFormStore";
 import useSocketStore from "../../../../stores/useSocketStore";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import useToast from "../../../../hooks/useToast";
+
+interface RoomCreatedResponse {
+  success: boolean;
+  roomId?: string;
+  error?: string;
+}
 
 const SessionForm = () => {
   const { socket, connect } = useSocketStore();
-  const { category, sessionName, questionId, participant, access } = useSessionFormStore();
+  const { category, sessionName, questionId, participant, access } =
+    useSessionFormStore();
   const isValid = useSessionFormStore((state) => state.isFormValid());
   const navigate = useNavigate();
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!socket) {
+      connect(import.meta.env.VITE_SIGNALING_SERVER_URL);
+    }
+  }, []);
 
   const submitHandler = () => {
-    if (!isValid) {
+    if (!isValid || !socket) {
       return;
     }
 
-    connect(import.meta.env.VITE_SIGNALING_SERVER_URL);
     const roomData = {
       title: sessionName,
       category,
       questionId,
       maxParticipant: participant,
-      isPrivate: access === "private"
-    }
+      isPrivate: access === "private",
+    };
 
     // 현재는 title 데이터만 받음
     socket?.emit("create_room", roomData.title);
@@ -36,14 +50,19 @@ const SessionForm = () => {
   useEffect(() => {
     if (!socket) return;
 
-    const roomCreatedHandler = (response: { roomId: string }) => {
-      navigate(`/room/${response.roomId}`);
-    }
+    const roomCreatedHandler = (response: RoomCreatedResponse) => {
+      if (response.success) {
+        navigate(`/session/${response.roomId}`);
+      } else {
+        toast.error("방 생성에 실패하였습니다.");
+        navigate(`/sessions`);
+      }
+    };
     socket.on("room_created", roomCreatedHandler);
 
     return () => {
-      socket.off("room_created", roomCreatedHandler)
-    }
+      socket.off("room_created", roomCreatedHandler);
+    };
   }, [socket, navigate]);
 
   return (
