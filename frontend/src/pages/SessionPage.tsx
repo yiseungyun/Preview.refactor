@@ -335,8 +335,10 @@ const SessionPage = () => {
           />
         </div>
         <SessionSidebar
+          socket={socket}
           question={"Restful API에 대해서 설명해주세요."}
           participants={[nickname, ...peers.map((peer) => peer.peerNickname)]}
+          roomId={roomId}
         />
       </div>
     </section>
