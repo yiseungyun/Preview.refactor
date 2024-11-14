@@ -66,19 +66,18 @@ export class RoomService {
         if (roomMemberCount === 1) {
             await this.roomRepository.deleteRoom(roomId);
             return { roomId };
-        } else {
-            const isHost = await this.roomRepository.checkHost(socketId);
-            await this.roomRepository.deleteUser(socketId);
-            if (isHost === "true") {
-                const newHost = await this.roomRepository.getNewHost(roomId);
-                await this.roomRepository.setNewHost(roomId, newHost.socketId);
-                return {
-                    roomId,
-                    socketId: newHost.socketId,
-                    nickname: newHost.nickname,
-                };
-            } else return { roomId };
         }
+        const isHost = await this.roomRepository.checkHost(socketId);
+        await this.roomRepository.deleteUser(socketId);
+
+        if (isHost !== "true") return { roomId };
+        const newHost = await this.roomRepository.getNewHost(roomId);
+        await this.roomRepository.setNewHost(roomId, newHost.socketId);
+        return {
+            roomId,
+            socketId: newHost.socketId,
+            nickname: newHost.nickname,
+        };
     }
 
     async finishRoom(socketId: string) {

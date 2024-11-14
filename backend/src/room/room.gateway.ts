@@ -41,7 +41,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     async handleDisconnect(client: Socket) {
         console.log(`Client disconnected in room: ${client.id}`);
-        await this.roomService.leaveRoom(client.id);
+        await this.handleLeaveRoom(client);
     }
 
     @SubscribeMessage(EVENT_NAME.CREATE_ROOM)
@@ -89,7 +89,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const result = await this.roomService.leaveRoom(client.id);
         const roomId = result.roomId;
 
-        if (Object.keys(result).length === 0) {
+        if (Object.keys(result).length === 0) { // 방장 바뀌었을때, 둘다 이벤트 보낼 수 있도록 개선?
             this.server
                 .to(roomId)
                 .emit(EVENT_NAME.USER_EXIT, { socketId: client.id });
