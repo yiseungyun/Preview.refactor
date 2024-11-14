@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { RoomRepository } from "./room.repository";
+import { CreateRoomDto } from "./dto/create-room.dto";
 
 /**
  * 비즈니스 로직 처리를 좀 더 하게 하기 위한 클래스로 설정
@@ -25,10 +26,17 @@ export class RoomService {
         const { title, status, maxParticipants, socketId, nickname } = dto;
         const roomId = await this.roomRepository.createRoom({
             title,
-            status: "PUBLIC",
+            status: status ?? "PUBLIC",
+            maxParticipants: maxParticipants ?? RoomService.MAX_MEMBERS,
             socketId,
+            nickname: nickname ?? "Master",
         });
-        await this.roomRepository.addUser(roomId, socketId, nickname, true);
+        await this.roomRepository.addUser(
+            roomId,
+            dto.socketId,
+            dto.nickname,
+            true
+        );
         return roomId;
     }
 
@@ -51,7 +59,7 @@ export class RoomService {
         const members =
             await this.roomRepository.getRoomMemberConnection(roomId);
 
-        return Object.keys(members).length < RoomService.MAX_MEMBERS;
+        return Object.keys(members).length < room.maxParticipants;
     }
 
     async checkHost(socketId: string) {

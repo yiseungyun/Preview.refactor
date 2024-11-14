@@ -108,7 +108,8 @@ export class RoomRepository {
             {
                 title,
                 createdAt: Date.now(),
-                host: dto.socketId,
+                host: socketId,
+                maxParticipants,
             } as Room,
             6 * HOUR
         );

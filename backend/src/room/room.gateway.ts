@@ -23,7 +23,6 @@ const EVENT_NAME = {
     ROOM_FINISHED: "room_finished",
 } as const;
 
-
 /**
  * 연결과 관련된 에러를 처리
  *
@@ -52,13 +51,15 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage(EVENT_NAME.CREATE_ROOM)
     async handleCreateRoom(client: Socket, data: any) {
-        const { title, nickname } = data; // unknown 으로 받고, Dto와 Pipe로 검증받기
+        const { title, nickname, status, maxParticipants } = data; // unknown 으로 받고, Dto와 Pipe로 검증받기
         try {
-            const roomId = await this.roomService.createRoom(
+            const roomId = await this.roomService.createRoom({
                 title,
-                client.id,
-                nickname ?? "Master"
-            );
+                status,
+                socketId: client.id,
+                nickname,
+                maxParticipants,
+            });
             client.join(roomId);
             this.server.to(roomId).emit(EVENT_NAME.ROOM_CREATED, { roomId });
         } catch (error) {
