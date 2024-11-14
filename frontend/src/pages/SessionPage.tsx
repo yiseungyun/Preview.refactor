@@ -233,11 +233,17 @@ const SessionPage = () => {
       navigate("/sessions");
     };
 
+    const handleUserExit = ({ socketId }: { socketId: string }) => {
+      toast.error("유저가 나갔습니다.");
+      closePeerConnection(socketId);
+    };
+
     socket.on("all_users", handleAllUsers);
     socket.on("getOffer", handleGetOffer);
     socket.on("getAnswer", handleGetAnswer);
     socket.on("getCandidate", handleGetCandidate);
-    socket.on("user_exit", ({ id }) => closePeerConnection(id));
+    // socket.on("user_exit", (data) => console.log(data));
+    socket.on("user_exit", handleUserExit);
     socket.on("room_full", () => {
       toast.error("해당 세션은 이미 유저가 가득 찼습니다.");
       navigate("/sessions");

@@ -129,6 +129,7 @@ const usePeerConnection = (socket: Socket) => {
   const closePeerConnection = (peerSocketId: string) => {
     if (peerConnections.current[peerSocketId]) {
       // 연결 종료
+      console.log("Closing peer connection:", peerSocketId);
       peerConnections.current[peerSocketId].close();
       // 연결 객체 제거
       delete peerConnections.current[peerSocketId];
