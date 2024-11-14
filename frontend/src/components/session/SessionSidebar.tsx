@@ -5,11 +5,17 @@ import Modal from "../common/Modal";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import useToast from "../../hooks/useToast";
+import { TbCrown } from "react-icons/tb";
+
+interface ParticipantsData {
+  nickname: string;
+  isHost: boolean;
+}
 
 interface Props {
   socket: Socket | null;
   question: string;
-  participants: string[];
+  participants: ParticipantsData[];
   roomId: string | undefined; // TODO: sessionId가 입력되지 않았을 때(undefined) 처리 필요
 }
 
@@ -32,7 +38,7 @@ const SessionSidebar = ({ socket, question, participants, roomId }: Props) => {
         leftButton="취소하기"
         rightButton="종료하기"
         type="red"
-        onLeftClick={() => { }}
+        onLeftClick={() => {}}
         onRightClick={existHandler}
       />
       <div className={"flex flex-col gap-4"}>
@@ -58,7 +64,10 @@ const SessionSidebar = ({ socket, question, participants, roomId }: Props) => {
             {participants.map((participant, index) => (
               <li key={index} className={"flex items-center gap-2"}>
                 <span className={"w-4 h-4 bg-accent-gray rounded-full"} />
-                <span>{participant}</span>
+                <span>{participant.nickname}</span>
+                <span className={"text-yellow-400"}>
+                  {participant.isHost && <TbCrown />}
+                </span>
               </li>
             ))}
           </ul>

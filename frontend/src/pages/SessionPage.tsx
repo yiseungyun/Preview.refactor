@@ -8,11 +8,6 @@ import useToast from "@/hooks/useToast.ts";
 import usePeerConnection from "@/hooks/usePeerConnection.ts";
 import useSocketStore from "@/stores/useSocketStore";
 
-interface User {
-  id: string;
-  nickname: string;
-}
-
 type RoomStatus = "PUBLIC" | "PRIVATE";
 interface RoomMetadata {
   title: string;
@@ -35,7 +30,6 @@ interface AllUsersResponse {
 
 const SessionPage = () => {
   const { socket, connect } = useSocketStore();
-
   const {
     createPeerConnection,
     closePeerConnection,
@@ -46,8 +40,8 @@ const SessionPage = () => {
   const { sessionId } = useParams();
   const [nickname, setNickname] = useState<string>("");
   const [reaction, setReaction] = useState("");
-  const [roomName, setRoomName] = useState("");
   const [roomMetadata, setRoomMetadata] = useState<RoomMetadata | null>(null);
+  const [isHost, setIsHost] = useState<boolean>(false);
 
   const {
     userVideoDevices,
@@ -108,6 +102,8 @@ const SessionPage = () => {
       console.log("Received roomMetadata:", roomMetadata);
       console.log("Received all_users:", users);
       setRoomMetadata(roomMetadata);
+      console.log(roomMetadata);
+      setIsHost(roomMetadata.host === socket.id);
       Object.entries(users).forEach(([socketId, userInfo]) => {
         console.log("Creating peer connection for:", {
           socketId,
@@ -116,6 +112,7 @@ const SessionPage = () => {
 
         createPeerConnection(socketId, userInfo.nickname, stream, true, {
           nickname,
+          isHost: userInfo.isHost,
         });
       });
     };
@@ -360,7 +357,13 @@ const SessionPage = () => {
         <SessionSidebar
           socket={socket}
           question={"Restful API에 대해서 설명해주세요."}
-          participants={[nickname, ...peers.map((peer) => peer.peerNickname)]}
+          participants={[
+            { nickname, isHost },
+            ...peers.map((peer) => ({
+              nickname: peer.peerNickname,
+              isHost: peer.isHost || false,
+            })),
+          ]}
           roomId={sessionId}
         />
       </div>
