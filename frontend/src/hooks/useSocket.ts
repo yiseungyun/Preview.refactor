@@ -9,9 +9,10 @@ const useSocket = (socketURL: string) => {
       connect(socketURL);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+ 
   }, [socketURL]);
 
   return { socket };
 };
-
+ 
 export default useSocket;
