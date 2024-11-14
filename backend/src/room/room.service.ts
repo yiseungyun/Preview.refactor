@@ -15,7 +15,11 @@ export class RoomService {
 
     async getPublicRoom() {
         const rooms = await this.roomRepository.getAllRoom();
-        return rooms.filter((room) => room.status === "PUBLIC");
+
+        Object.keys(rooms).forEach((roomId) => {
+            if (rooms[roomId].status === "PRIVATE") rooms[roomId] = undefined;
+        });
+        return rooms;
     }
 
     async getRoomId(socketId: string) {

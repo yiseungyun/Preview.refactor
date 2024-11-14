@@ -13,8 +13,17 @@ import { CreateRoomDto } from "./dto/create-room.dto";
 export class RoomRepository {
     constructor(private readonly redisService: RedisService) {}
 
-    async getAllRoom(): Promise<Room[]> {
-        return (await this.redisService.getMap("room:*")) as Room[];
+    async getAllRoom(): Promise<Record<string, Room>> {
+        const redisMap = await this.redisService.getMap("room:*");
+        console.log(redisMap);
+
+        return Object.entries(redisMap).reduce(
+            (acc, [roomId, room]) => {
+                acc[roomId.split(":")[1]] = room as Room;
+                return acc;
+            },
+            {} as Record<string, Room>
+        );
     }
 
     async getRoomMemberConnection(roomId: string) {
@@ -100,7 +109,7 @@ export class RoomRepository {
     }
 
     async createRoom(dto: CreateRoomDto) {
-        const { title, socketId, maxParticipants } = dto;
+        const { title, socketId, maxParticipants, status } = dto;
         const roomId = generateRoomId();
 
         await this.redisService.set(
@@ -110,6 +119,7 @@ export class RoomRepository {
                 createdAt: Date.now(),
                 host: socketId,
                 maxParticipants,
+                status,
             } as Room,
             6 * HOUR
         );
