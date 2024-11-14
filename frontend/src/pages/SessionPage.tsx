@@ -7,6 +7,7 @@ import useMediaDevices from "@/hooks/useMediaDevices.ts";
 import useToast from "@/hooks/useToast.ts";
 import usePeerConnection from "@/hooks/usePeerConnection.ts";
 import useSocketStore from "@/stores/useSocketStore";
+import useSessionFormStore from "@/stores/useSessionFormStore";
 
 interface User {
   id: string;
@@ -15,6 +16,7 @@ interface User {
 
 const SessionPage = () => {
   const { socket, connect } = useSocketStore();
+  const { sessionName } = useSessionFormStore();
 
   const {
     createPeerConnection,
@@ -293,7 +295,7 @@ const SessionPage = () => {
                 "text-center text-medium-xl font-bold w-full pt-4 pb-2"
               }
             >
-              프론트엔드 초보자 면접 스터디
+              {sessionName}
             </h1>
             <div className={"speaker max-w-4xl px-6 flex w-full"}>
               <VideoContainer
