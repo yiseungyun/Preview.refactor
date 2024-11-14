@@ -23,6 +23,12 @@ const EVENT_NAME = {
     ROOM_FINISHED: "room_finished",
 } as const;
 
+
+/**
+ * 연결과 관련된 에러를 처리
+ *
+ * 보다 연결과 관련된 코드가 존재
+ */
 @WebSocketGateway({
     cors: {
         origin: "*", // CORS 설정
@@ -53,11 +59,10 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 client.id,
                 nickname ?? "Master"
             );
-            this.server.emit(EVENT_NAME.ROOM_CREATED, { roomId });
-            return roomId;
+            client.join(roomId);
+            this.server.to(roomId).emit(EVENT_NAME.ROOM_CREATED, { roomId });
         } catch (error) {
             console.error(error);
-            return null;
         }
     }
 
@@ -89,16 +94,15 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const result = await this.roomService.leaveRoom(client.id);
         const roomId = result.roomId;
 
-        if (Object.keys(result).length === 0) { // 방장 바뀌었을때, 둘다 이벤트 보낼 수 있도록 개선?
-            this.server
-                .to(roomId)
-                .emit(EVENT_NAME.USER_EXIT, { socketId: client.id });
-        } else {
+        if (Object.keys(result).length > 0) {
             this.server.to(roomId).emit(EVENT_NAME.MASTER_CHANGED, {
                 masterSocketId: result.socketId,
                 masterNickname: result.nickname,
             });
         }
+        this.server
+            .to(roomId)
+            .emit(EVENT_NAME.USER_EXIT, { socketId: client.id });
     }
 
     @SubscribeMessage(EVENT_NAME.FINISH_ROOM)

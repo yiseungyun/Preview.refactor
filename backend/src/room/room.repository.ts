@@ -32,16 +32,14 @@ export class RoomRepository {
             {} as Record<string, MemberConnection>
         );
     }
-
     async checkHost(socketId: string) {
         const roomId = await this.findMyRoomId(socketId);
-        const isHost = await this.redisService.getHashValueByField(
+        const hostId = await this.redisService.getHashValueByField(
             `room:${roomId}:${socketId}`,
-            "isHost"
+            "host"
         );
-        return isHost;
+        return socketId === hostId;
     }
-
     async getRoomById(roomId: string) {
         const room = JSON.stringify(
             await this.redisService.get(`room:${roomId}`)
