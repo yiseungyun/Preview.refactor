@@ -38,6 +38,7 @@ const SessionSidebar = ({
   };
 
   const destroyAndExitHandler = () => {
+    socket?.off("room_finished");
     socket?.emit("finish_room", { roomId });
     toast.success("메인 화면으로 이동합니다.");
     navigate("/sessions");

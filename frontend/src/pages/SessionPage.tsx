@@ -228,6 +228,11 @@ const SessionPage = () => {
       }
     };
 
+    const handleRoomFinished = () => {
+      toast.error("방장이 세션을 종료했습니다.");
+      navigate("/sessions");
+    };
+
     socket.on("all_users", handleAllUsers);
     socket.on("getOffer", handleGetOffer);
     socket.on("getAnswer", handleGetAnswer);
@@ -239,6 +244,7 @@ const SessionPage = () => {
     });
     socket.on("master_changed", handleHostChange);
     socket.on("reaction", handleReaction);
+    socket.on("room_finished", handleRoomFinished);
 
     return () => {
       console.log("Cleaning up socket event listeners");
