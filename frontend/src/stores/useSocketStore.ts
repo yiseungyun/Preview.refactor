@@ -11,6 +11,8 @@ const useSocketStore = create<SocketStore>((set) => ({
   socket: null,
   connect: (socketURL) => {
     const newSocket = io(socketURL || "http://localhost:3000");
+
+    newSocket.on("connect", socketConnectHandler);
     newSocket.on("connect_error", socketErrorHandler);
     set({ socket: newSocket });
   },
@@ -22,6 +24,9 @@ const useSocketStore = create<SocketStore>((set) => ({
   },
 }));
 
+const socketConnectHandler = () => {
+  console.log("소켓을 성공적으로 연결했습니다.");
+};
 const socketErrorHandler = (error: Error) => {
   console.error("시그널링 서버와의 연결에 실패했습니다.", error);
 };
