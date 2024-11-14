@@ -37,13 +37,23 @@ export class RoomService {
             nickname: nickname ?? "Master",
         });
         await this.roomRepository.addUser(roomId, dto.socketId, dto.nickname);
-        return roomId;
+        return {
+            roomId,
+            roomMetadata: {
+                title,
+                status: status ?? "PUBLIC",
+                maxParticipants: maxParticipants ?? RoomService.MAX_MEMBERS,
+                host: socketId,
+                nickname: nickname ?? "Master",
+            },
+        };
     }
 
     async joinRoom(socketId: string, roomId: string, nickname: string) {
         const room = this.roomRepository.getRoomById(roomId);
         if (!room) return null; // throw join error
         await this.roomRepository.addUser(roomId, socketId, nickname);
+        return room;
     }
 
     async getRoomMemberConnection(callerId: string, roomId: string) {

@@ -53,15 +53,19 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async handleCreateRoom(client: Socket, data: any) {
         const { title, nickname, status, maxParticipants } = data; // unknown 으로 받고, Dto와 Pipe로 검증받기
         try {
-            const roomId = await this.roomService.createRoom({
+            const roomData = await this.roomService.createRoom({
                 title,
                 status,
                 socketId: client.id,
                 nickname,
                 maxParticipants,
             });
-            client.join(roomId);
-            this.server.to(roomId).emit(EVENT_NAME.ROOM_CREATED, { roomId });
+
+            client.join(roomData.roomId);
+
+            this.server
+                .to(roomData.roomId)
+                .emit(EVENT_NAME.ROOM_CREATED, roomData);
         } catch (error) {
             console.error(error);
         }
@@ -77,7 +81,11 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
             return;
         }
 
-        await this.roomService.joinRoom(client.id, roomId, nickname);
+        const room = await this.roomService.joinRoom(
+            client.id,
+            roomId,
+            nickname
+        );
 
         client.join(roomId);
 
@@ -88,7 +96,10 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
             roomId
         );
 
-        client.emit(EVENT_NAME.ALL_USERS, usersInThisRoom);
+        client.emit(EVENT_NAME.ALL_USERS, {
+            roomMetadata: room,
+            users: usersInThisRoom,
+        });
     }
 
     @SubscribeMessage(EVENT_NAME.LEAVE_ROOM)
