@@ -7,6 +7,7 @@ import useMediaDevices from "@/hooks/useMediaDevices.ts";
 import useToast from "@/hooks/useToast.ts";
 import usePeerConnection from "@/hooks/usePeerConnection.ts";
 import useSocketStore from "@/stores/useSocketStore";
+import SessionHeader from "@components/session/SessionHeader.tsx";
 
 type RoomStatus = "PUBLIC" | "PRIVATE";
 interface RoomMetadata {
@@ -302,18 +303,10 @@ const SessionPage = () => {
               "flex flex-col gap-4 justify-between items-center w-full"
             }
           >
-            <h1
-              className={
-                "text-center text-medium-xl font-bold w-full pt-4 pb-2"
-              }
-            >
-              {roomMetadata?.title}{" "}
-              <span className={"font-light"}>
-                {" "}
-                {roomMetadata &&
-                  `(${peers.length + 1} / ${roomMetadata.maxParticipants})`}
-              </span>
-            </h1>
+            <SessionHeader
+              roomMetadata={roomMetadata}
+              participantsCount={peers.length + 1}
+            />
             <div className={"speaker max-w-4xl px-6 flex w-full"}>
               <VideoContainer
                 nickname={nickname}
