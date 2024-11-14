@@ -32,22 +32,21 @@ export class RoomRepository {
             {} as Record<string, MemberConnection>
         );
     }
+
     async checkHost(socketId: string) {
         const roomId = await this.findMyRoomId(socketId);
-        const hostId = await this.redisService.getHashValueByField(
-            `room:${roomId}:${socketId}`,
-            "host"
-        );
-        return socketId === hostId;
+
+        const room = JSON.parse(await this.redisService.get(`room:${roomId}`));
+        if (!room) return false;
+        return socketId === room.host;
     }
+
     async getRoomById(roomId: string) {
-        const room = JSON.stringify(
-            await this.redisService.get(`room:${roomId}`)
-        );
+        const room = JSON.parse(await this.redisService.get(`room:${roomId}`));
 
         if (!room) return null;
 
-        return room;
+        return room as Room;
     }
 
     async findMyRoomId(socketId: string) {
@@ -58,6 +57,7 @@ export class RoomRepository {
 
     async getRoomMemberCount(roomId: string) {
         const keys = await this.redisService.getKeys(`join:${roomId}:*`);
+
         return keys.length;
     }
 
@@ -78,24 +78,35 @@ export class RoomRepository {
         }
 
         const sortedMembers = members.sort((a, b) => a.joinTime - b.joinTime);
-        return sortedMembers[0];
+        return sortedMembers[0] as {
+            joinTime: number;
+            nickname: string;
+            socketId: string;
+        };
     }
 
     async setNewHost(roomId: string, newHostId: string) {
-        await this.redisService.setHashValueByField(
+        const room = JSON.parse(await this.redisService.get(`room:${roomId}`));
+        const roomTTL = await this.redisService.getTTL(`room:${roomId}`);
+
+        await this.redisService.set(
             `room:${roomId}`,
-            "host",
-            newHostId
+            {
+                ...room,
+                host: newHostId,
+            },
+            roomTTL
         );
     }
 
     async createRoom(dto: CreateRoomDto) {
+        const { title, socketId, maxParticipants } = dto;
         const roomId = generateRoomId();
 
         await this.redisService.set(
             `room:${roomId}`,
             {
-                title: dto.title,
+                title,
                 createdAt: Date.now(),
                 host: dto.socketId,
             } as Room,
@@ -117,7 +128,6 @@ export class RoomRepository {
 
         if (connections.length > 0) {
             // overlapped connection error
-            return;
         }
 
         const roomTTL = await this.redisService.getTTL(`room:${roomId}`);

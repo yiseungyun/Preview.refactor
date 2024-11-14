@@ -51,7 +51,6 @@ export class RedisService {
     async setHashValueByField(key: string, field: string, value: any) {
         if (typeof value !== "string") value = stringify(value);
         return this.client.hset(key, field, value);
-
     }
 
     async delete(...keys: string[]) {

@@ -9,6 +9,7 @@ import { RoomRepository } from "./room.repository";
 @Injectable()
 export class RoomService {
     private static MAX_MEMBERS = 5;
+
     constructor(private readonly roomRepository: RoomRepository) {}
 
     async getPublicRoom() {
