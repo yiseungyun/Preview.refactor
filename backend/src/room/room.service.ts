@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { RoomRepository } from "./room.repository";
 import { CreateRoomDto } from "./dto/create-room.dto";
+import { MemberConnection } from "./room.model";
 
 /**
  * 비즈니스 로직 처리를 좀 더 하게 하기 위한 클래스로 설정
@@ -35,12 +36,7 @@ export class RoomService {
             socketId,
             nickname: nickname ?? "Master",
         });
-        await this.roomRepository.addUser(
-            roomId,
-            dto.socketId,
-            dto.nickname,
-            true
-        );
+        await this.roomRepository.addUser(roomId, dto.socketId, dto.nickname);
         return roomId;
     }
 
@@ -50,18 +46,28 @@ export class RoomService {
         await this.roomRepository.addUser(roomId, socketId, nickname);
     }
 
-    async getMemberSocket(roomId: string) {
+    async getRoomMemberConnection(callerId: string, roomId: string) {
         const memberConnection =
-            await this.roomRepository.getRoomMemberConnection(roomId);
+            await this.roomRepository.getRoomMemberConnection(callerId, roomId);
         if (!memberConnection) return null;
 
-        return Object.keys(memberConnection);
+        return Object.entries(memberConnection).reduce(
+            (acc, [id, memberConnection]) => {
+                if (callerId !== id) {
+                    acc[id] = memberConnection;
+                }
+                return acc;
+            },
+            {} as Record<string, MemberConnection>
+        );
     }
 
-    async checkAvailable(roomId: string) {
+    async checkAvailable(socketId: string, roomId: string) {
         const room = await this.roomRepository.getRoomById(roomId);
-        const members =
-            await this.roomRepository.getRoomMemberConnection(roomId);
+        const members = await this.roomRepository.getRoomMemberConnection(
+            socketId,
+            roomId
+        );
 
         return Object.keys(members).length < room.maxParticipants;
     }

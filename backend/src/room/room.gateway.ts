@@ -71,7 +71,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async handleJoinRoom(client: Socket, data: any) {
         const { roomId, nickname } = data;
 
-        if (!(await this.roomService.checkAvailable(roomId))) {
+        if (!(await this.roomService.checkAvailable(client.id, roomId))) {
             // client joins full room
             client.emit(EVENT_NAME.ROOM_FULL);
             return;
@@ -83,9 +83,10 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         console.log(`[${data.roomId}]: ${client.id} enter`);
 
-        const usersInThisRoom = (
-            await this.roomService.getMemberSocket(roomId)
-        ).filter((user) => user !== client.id);
+        const usersInThisRoom = await this.roomService.getRoomMemberConnection(
+            client.id,
+            roomId
+        );
 
         client.emit(EVENT_NAME.ALL_USERS, usersInThisRoom);
     }

@@ -26,16 +26,22 @@ export class RoomRepository {
         );
     }
 
-    async getRoomMemberConnection(roomId: string) {
+    async getRoomMemberConnection(callerId: string, roomId: string) {
+        const room = await this.getRoomById(roomId);
         const connectionMap = await this.redisService.getMap(
             `join:${roomId}:*`
         );
 
-        if (!connectionMap) return [];
+        if (!connectionMap) return {};
 
         return Object.entries(connectionMap).reduce(
             (acc, [socketId, connection]) => {
-                acc[socketId.split(":")[2]] = connection as MemberConnection; // 현재 as 키워드를 사용했지만, 별도의 검증 로직이 필요합니다.
+                socketId = socketId.split(":")[2];
+
+                acc[socketId] = {
+                    ...(connection as MemberConnection),
+                    isHost: room.host === socketId,
+                } as MemberConnection; // 현재 as 키워드를 사용했지만, 별도의 검증 로직이 필요합니다.
                 return acc;
             },
             {} as Record<string, MemberConnection>
@@ -127,12 +133,7 @@ export class RoomRepository {
         return roomId;
     }
 
-    async addUser(
-        roomId: string,
-        socketId: string,
-        nickname: string,
-        isHost: boolean = false
-    ) {
+    async addUser(roomId: string, socketId: string, nickname: string) {
         const connections = await this.redisService.getKeys(
             `join:*:${socketId}`
         );
@@ -147,7 +148,6 @@ export class RoomRepository {
             `join:${roomId}:${socketId}`,
             {
                 joinTime: Date.now(),
-                isHost,
                 nickname,
             } as MemberConnection,
             roomTTL
