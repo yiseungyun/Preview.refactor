@@ -7,16 +7,34 @@ import useMediaDevices from "@/hooks/useMediaDevices.ts";
 import useToast from "@/hooks/useToast.ts";
 import usePeerConnection from "@/hooks/usePeerConnection.ts";
 import useSocketStore from "@/stores/useSocketStore";
-import useSessionFormStore from "@/stores/useSessionFormStore";
 
 interface User {
   id: string;
   nickname: string;
 }
 
+type RoomStatus = "PUBLIC" | "PRIVATE";
+interface RoomMetadata {
+  title: string;
+  status: RoomStatus;
+  maxParticipants: number;
+  createdAt: number;
+  host: string;
+}
+
+interface AllUsersResponse {
+  roomMetadata: RoomMetadata;
+  users: {
+    [socketId: string]: {
+      joinTime: number;
+      nickname: string;
+      isHost: boolean;
+    };
+  };
+}
+
 const SessionPage = () => {
   const { socket, connect } = useSocketStore();
-  const { sessionName } = useSessionFormStore();
 
   const {
     createPeerConnection,
@@ -28,6 +46,8 @@ const SessionPage = () => {
   const { sessionId } = useParams();
   const [nickname, setNickname] = useState<string>("");
   const [reaction, setReaction] = useState("");
+  const [roomName, setRoomName] = useState("");
+  const [roomMetadata, setRoomMetadata] = useState<RoomMetadata | null>(null);
 
   const {
     userVideoDevices,
@@ -84,8 +104,10 @@ const SessionPage = () => {
 
     console.log("Setting up socket event listeners");
 
-    const handleAllUsers = (users: User[]) => {
+    const handleAllUsers = ({ roomMetadata, users }: AllUsersResponse) => {
+      console.log("Received roomMetadata:", roomMetadata);
       console.log("Received all_users:", users);
+      setRoomMetadata(roomMetadata);
       Object.entries(users).forEach(([socketId, userInfo]) => {
         console.log("Creating peer connection for:", {
           socketId,
@@ -247,14 +269,13 @@ const SessionPage = () => {
     socket.emit("join_room", { roomId: sessionId, nickname });
   };
 
-  const addReaction = useCallback(
-    (senderId: string, reactionType: string) => {
-      setPeers((prev) =>
-        prev.map((peer) =>
-          peer.peerId === senderId ? { ...peer, reaction: reactionType } : peer
-        )
-      );
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const addReaction = useCallback((senderId: string, reactionType: string) => {
+    setPeers((prev) =>
+      prev.map((peer) =>
+        peer.peerId === senderId ? { ...peer, reaction: reactionType } : peer
+      )
+    );
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <section className="w-screen h-screen flex flex-col max-w-[1440px]">
@@ -289,7 +310,12 @@ const SessionPage = () => {
                 "text-center text-medium-xl font-bold w-full pt-4 pb-2"
               }
             >
-              {sessionName}
+              {roomMetadata?.title}{" "}
+              <span className={"font-light"}>
+                {" "}
+                {roomMetadata &&
+                  `(${peers.length + 1} / ${roomMetadata.maxParticipants})`}
+              </span>
             </h1>
             <div className={"speaker max-w-4xl px-6 flex w-full"}>
               <VideoContainer
