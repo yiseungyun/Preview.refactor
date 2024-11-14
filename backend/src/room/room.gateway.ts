@@ -91,15 +91,24 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage(EVENT_NAME.LEAVE_ROOM)
     async handleLeaveRoom(client: Socket) {
-        const result = await this.roomService.leaveRoom(client.id);
-        const roomId = result.roomId;
+        const roomId = await this.roomService.getRoomId(client.id);
 
-        if (Object.keys(result).length > 0) {
+        const isHost = await this.roomService.checkHost(client.id);
+        const leftCount = await this.roomService.leaveRoom(client.id);
+
+        if (!leftCount) {
+            await this.roomService.deleteRoom(roomId);
+            return;
+        }
+
+        if (isHost) {
+            const hostConnection = await this.roomService.delegateHost(roomId);
             this.server.to(roomId).emit(EVENT_NAME.MASTER_CHANGED, {
-                masterSocketId: result.socketId,
-                masterNickname: result.nickname,
+                masterSocketId: hostConnection.socketId,
+                masterNickname: hostConnection.nickname,
             });
         }
+
         this.server
             .to(roomId)
             .emit(EVENT_NAME.USER_EXIT, { socketId: client.id });

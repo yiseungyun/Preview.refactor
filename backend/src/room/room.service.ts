@@ -16,7 +16,12 @@ export class RoomService {
         return rooms.filter((room) => room.status === "PUBLIC");
     }
 
-    async createRoom(title: string, socketId: string, nickname: string) {
+    async getRoomId(socketId: string) {
+        return this.roomRepository.findMyRoomId(socketId);
+    }
+
+    async createRoom(dto: CreateRoomDto) {
+        const { title, status, maxParticipants, socketId, nickname } = dto;
         const roomId = await this.roomRepository.createRoom({
             title,
             status: "PUBLIC",
@@ -41,10 +46,15 @@ export class RoomService {
     }
 
     async checkAvailable(roomId: string) {
+        const room = await this.roomRepository.getRoomById(roomId);
         const members =
             await this.roomRepository.getRoomMemberConnection(roomId);
 
         return Object.keys(members).length < RoomService.MAX_MEMBERS;
+    }
+
+    async checkHost(socketId: string) {
+        return await this.roomRepository.checkHost(socketId);
     }
 
     async checkConnected(socketId: string) {
@@ -54,32 +64,26 @@ export class RoomService {
     async leaveRoom(socketId: string) {
         const roomId = await this.roomRepository.findMyRoomId(socketId);
 
-        if (!roomId) {
-            return { roomId: null };
-        }
+        if (!roomId) return null;
 
-        const roomMemberCount =
-            await this.roomRepository.getRoomMemberCount(roomId);
-        if (roomMemberCount === 1) {
-            await this.roomRepository.deleteRoom(roomId);
-            return { roomId };
-        }
-        const isHost = await this.roomRepository.checkHost(socketId);
         await this.roomRepository.deleteUser(socketId);
 
-        if (isHost) return { roomId };
+        return this.roomRepository.getRoomMemberCount(roomId);
+    }
+
+    async delegateHost(roomId: string) {
         const newHost = await this.roomRepository.getNewHost(roomId);
         await this.roomRepository.setNewHost(roomId, newHost.socketId);
-        return {
-            roomId,
-            socketId: newHost.socketId,
-            nickname: newHost.nickname,
-        };
+        return newHost;
     }
 
     async finishRoom(socketId: string) {
         const roomId = await this.roomRepository.findMyRoomId(socketId);
         await this.roomRepository.deleteRoom(roomId);
         return roomId;
+    }
+
+    async deleteRoom(roomId: string) {
+        await this.roomRepository.deleteRoom(roomId);
     }
 }
