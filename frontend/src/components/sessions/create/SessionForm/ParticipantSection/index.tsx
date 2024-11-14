@@ -1,11 +1,10 @@
-import { useState } from "react";
 import ParticipantButton from "./ParticpantButton";
 import SelectTitle from "../../SelectTitle";
-type Participant = 1 | 2 | 3 | 4 | 5;
+import useSessionFormStore from "@/stores/useSessionFormStore";
 const MEMBER_COUNTS = [1, 2, 3, 4, 5] as const;
 
 const ParticipantSection = () => {
-  const [totalMember, setTotalMember] = useState<Participant>(1);
+  const { setParticipant } = useSessionFormStore();
 
   return (
     <div>
@@ -14,9 +13,8 @@ const ParticipantSection = () => {
         {MEMBER_COUNTS.map((value) => (
           <ParticipantButton
             key={value}
-            totalMember={totalMember}
             selectedValue={value}
-            onClick={() => setTotalMember(value)}
+            onClick={() => setParticipant(value)}
           />
         ))}
       </div>
