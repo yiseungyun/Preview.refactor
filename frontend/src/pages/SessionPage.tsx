@@ -277,7 +277,7 @@ const SessionPage = () => {
 
   return (
     <section className="w-screen h-screen flex flex-col max-w-[1440px]">
-      <div className="w-screen flex gap-2 mb-4 space-y-2 ">
+      <div className="w-full flex gap-2 p-1 bg-white">
         <input
           type="text"
           placeholder="Nickname"
