@@ -63,7 +63,7 @@ const SessionSidebar = ({ socket, question, participants, roomId }: Props) => {
           <ul>
             {participants.map((participant, index) => (
               <li key={index} className={"flex items-center gap-2"}>
-                <span className={"w-4 h-4 bg-accent-gray rounded-full"} />
+                <span className={"w-4 h-4 bg-point-2 rounded-full"} />
                 <span>{participant.nickname}</span>
                 <span className={"text-yellow-400"}>
                   {participant.isHost && <TbCrown />}
