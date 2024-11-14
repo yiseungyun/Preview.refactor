@@ -49,7 +49,7 @@ const SessionForm = () => {
 
     socket?.emit("create_room", {
       title: roomData.title,
-      maxParticipants: roomData.maxParticipant
+      maxParticipants: roomData.maxParticipant,
     });
   };
 
