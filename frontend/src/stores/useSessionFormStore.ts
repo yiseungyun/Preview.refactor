@@ -6,7 +6,7 @@ interface SessionFormState {
   questionId: number;
   questionTitle: string;
   participant: 1 | 2 | 3 | 4 | 5;
-  access: "private" | "public";
+  access: "PRIVATE" | "PUBLIC";
   tab: "myList" | "savedList";
   selectedOpenId: number;
 
@@ -15,7 +15,7 @@ interface SessionFormState {
   setQuestionId: (id: number) => void;
   setQuestionTitle: (title: string) => void;
   setParticipant: (count: 1 | 2 | 3 | 4 | 5) => void;
-  setAccess: (access: "private" | "public") => void;
+  setAccess: (access: "PRIVATE" | "PUBLIC") => void;
   setTab: (tab: "myList" | "savedList") => void;
   setSelectedOpenId: (selectedOpenId: number) => void;
 
@@ -29,7 +29,7 @@ const initialState = {
   questionId: -1,
   questionTitle: "",
   participant: 1 as const,
-  access: "public" as const,
+  access: "PUBLIC" as const,
   tab: "myList" as const,
   selectedOpenId: -1,
 };

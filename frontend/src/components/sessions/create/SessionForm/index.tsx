@@ -41,15 +41,17 @@ const SessionForm = () => {
 
     const roomData = {
       title: sessionName,
+      status: access ?? "PUBLIC",
       category,
       questionId,
-      maxParticipant: participant,
-      isPrivate: access === "private",
+      maxParticipants: participant,
     };
 
     socket?.emit("create_room", {
       title: roomData.title,
-      maxParticipants: roomData.maxParticipant,
+      maxParticipants: roomData.maxParticipants,
+      status: roomData.status,
+      category: roomData.category,
     });
   };
 
