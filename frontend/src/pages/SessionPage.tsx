@@ -29,6 +29,11 @@ interface AllUsersResponse {
   };
 }
 
+interface ResponseMasterChanged {
+  masterNickname: string;
+  masterSocketId: string;
+}
+
 const SessionPage = () => {
   const { socket, connect } = useSocketStore();
   const {
@@ -103,7 +108,6 @@ const SessionPage = () => {
       console.log("Received roomMetadata:", roomMetadata);
       console.log("Received all_users:", users);
       setRoomMetadata(roomMetadata);
-      console.log(roomMetadata);
       setIsHost(roomMetadata.host === socket.id);
       Object.entries(users).forEach(([socketId, userInfo]) => {
         console.log("Creating peer connection for:", {
@@ -175,6 +179,29 @@ const SessionPage = () => {
       }
     };
 
+    const handleHostChange = (data: ResponseMasterChanged) => {
+      console.log("Host Changed", data);
+      if (data.masterSocketId === socket.id) {
+        // 내가 호스트가 된 경우
+        setIsHost(true);
+        toast.success("당신이 호스트가 되었습니다.");
+      } else {
+        setPeers((prev) => {
+          return prev.map((peer) => {
+            if (peer.peerId === data.masterSocketId) {
+              return {
+                ...peer,
+                isHost: true,
+              };
+            } else {
+              return peer;
+            }
+          });
+        });
+        toast.success(`${data.masterNickname}님이 호스트가 되었습니다.`);
+      }
+    };
+
     const handleReaction = ({
       senderId,
       reaction,
@@ -210,6 +237,7 @@ const SessionPage = () => {
       toast.error("해당 세션은 이미 유저가 가득 찼습니다.");
       navigate("/sessions");
     });
+    socket.on("master_changed", handleHostChange);
     socket.on("reaction", handleReaction);
 
     return () => {
