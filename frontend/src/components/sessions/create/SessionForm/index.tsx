@@ -1,4 +1,4 @@
-import AccessButton from "./AccessSection";
+import AccessSection from "./AccessSection";
 import CategorySection from "./CategorySection";
 import ParticipantSection from "./ParticipantSection";
 import NameSection from "./NameSection";
@@ -77,7 +77,7 @@ const SessionForm = () => {
       <NameSection />
       <QuestionListSection />
       <ParticipantSection />
-      <AccessButton />
+      <AccessSection />
       <button
         className={`w-full h-12 rounded-custom-m text-semibold-r text-gray-white
         ${isValid ? "bg-green-200" : "bg-gray-200"}
