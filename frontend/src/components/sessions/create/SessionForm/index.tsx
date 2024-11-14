@@ -36,6 +36,7 @@ const SessionForm = () => {
 
   const submitHandler = () => {
     if (!isValid || !socket) {
+      toast.error("입력값을 확인해주세요.");
       return;
     }
 
@@ -61,6 +62,7 @@ const SessionForm = () => {
     const roomCreatedHandler = (response: RoomCreatedResponse) => {
       if (response.roomId) {
         navigate(`/session/${response.roomId}`);
+        toast.success(`${sessionName} 세션이 성공적으로 생성되었습니다.`);
       } else {
         toast.error("방 생성에 실패하였습니다.");
         navigate(`/sessions`);
