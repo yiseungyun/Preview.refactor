@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
-import { Room } from "./room.model";
 import { RoomRepository } from "./room.repository";
 
-import { generateRoomId } from "../utils/generateRoomId";
-import { HOUR } from "../utils/time";
-
+/**
+ * 비즈니스 로직 처리를 좀 더 하게 하기 위한 클래스로 설정
+ * 예외 처리 (로직, 더 밑단 에러 처리 - redis 에러 등) 도 이곳에서 이루어질 예정
+ * redis 와 관련된 부분은 모르도록 하려고 합니다.
+ */
 @Injectable()
 export class RoomService {
     private static MAX_MEMBERS = 5;
@@ -22,6 +23,7 @@ export class RoomService {
             socketId,
         });
         await this.roomRepository.addUser(roomId, socketId, nickname, true);
+        return roomId;
     }
 
     async joinRoom(socketId: string, roomId: string, nickname: string) {
@@ -56,29 +58,23 @@ export class RoomService {
             return { roomId: null };
         }
 
-        // 퇴장 로직
-        // 0 방에 유저가 본인만 남음 -> (master이던 말던) 방 삭제 -> return 0(인원수)
-        // 1 해당 유저가 master인지 확인
-        // 1.1 master라면? -> 유저 퇴장 -> 새로운 Master 정해주기 -> return 새로운 master socketId  -> master_changed 이벤트 발생
-        // 1.2 master가 아니라면? -> 유저 퇴장 -> return 인원수 -> gateway에서 user_exit 이벤트 발생
         const roomMemberCount =
             await this.roomRepository.getRoomMemberCount(roomId);
         if (roomMemberCount === 1) {
             await this.roomRepository.deleteRoom(roomId);
             return { roomId };
-        } else {
-            const isHost = await this.roomRepository.checkHost(socketId);
-            await this.roomRepository.deleteUser(socketId);
-            if (isHost === "true") {
-                const newHost = await this.roomRepository.getNewHost(roomId);
-                await this.roomRepository.setNewHost(roomId, newHost.socketId);
-                return {
-                    roomId,
-                    socketId: newHost.socketId,
-                    nickname: newHost.nickname,
-                };
-            } else return { roomId };
         }
+        const isHost = await this.roomRepository.checkHost(socketId);
+        await this.roomRepository.deleteUser(socketId);
+
+        if (isHost) return { roomId };
+        const newHost = await this.roomRepository.getNewHost(roomId);
+        await this.roomRepository.setNewHost(roomId, newHost.socketId);
+        return {
+            roomId,
+            socketId: newHost.socketId,
+            nickname: newHost.nickname,
+        };
     }
 
     async finishRoom(socketId: string) {
