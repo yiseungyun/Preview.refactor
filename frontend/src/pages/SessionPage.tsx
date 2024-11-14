@@ -254,6 +254,8 @@ const SessionPage = () => {
       socket.off("getCandidate", handleGetCandidate);
       socket.off("user_exit");
       socket.off("room_full");
+      socket.off("master_changed", handleHostChange);
+      socket.off("room_finished", handleRoomFinished);
       socket.off("reaction", handleReaction);
 
       if (reactionTimeouts.current) {
