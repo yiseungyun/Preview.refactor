@@ -242,7 +242,6 @@ const SessionPage = () => {
     socket.on("getOffer", handleGetOffer);
     socket.on("getAnswer", handleGetAnswer);
     socket.on("getCandidate", handleGetCandidate);
-    // socket.on("user_exit", (data) => console.log(data));
     socket.on("user_exit", handleUserExit);
     socket.on("room_full", () => {
       toast.error("해당 세션은 이미 유저가 가득 찼습니다.");
