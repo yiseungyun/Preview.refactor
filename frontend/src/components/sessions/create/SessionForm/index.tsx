@@ -1,4 +1,4 @@
-import AccessButton from "./AccessSection";
+import AccessSection from "./AccessSection";
 import CategorySection from "./CategorySection";
 import ParticipantSection from "./ParticipantSection";
 import NameSection from "./NameSection";
@@ -11,7 +11,7 @@ import { useCallback, useEffect } from "react";
 import useToast from "@/hooks/useToast";
 
 interface RoomCreatedResponse {
-  success: boolean;
+  success?: boolean;
   roomId?: string;
   error?: string;
 }
@@ -47,15 +47,17 @@ const SessionForm = () => {
       isPrivate: access === "private",
     };
 
-    // 현재는 title 데이터만 받음
-    socket?.emit("create_room", roomData.title);
+    socket?.emit("create_room", {
+      title: roomData.title,
+      maxParticipants: roomData.maxParticipant,
+    });
   };
 
   useEffect(() => {
     if (!socket) return;
 
     const roomCreatedHandler = (response: RoomCreatedResponse) => {
-      if (response.success) {
+      if (response.roomId) {
         navigate(`/session/${response.roomId}`);
       } else {
         toast.error("방 생성에 실패하였습니다.");
@@ -77,7 +79,7 @@ const SessionForm = () => {
       <NameSection />
       <QuestionListSection />
       <ParticipantSection />
-      <AccessButton />
+      <AccessSection />
       <button
         className={`w-full h-12 rounded-custom-m text-semibold-r text-gray-white
         ${isValid ? "bg-green-200" : "bg-gray-200"}

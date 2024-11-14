@@ -10,7 +10,7 @@ interface Props {
   socket: Socket | null;
   question: string;
   participants: string[];
-  roomId: string;
+  roomId: string | undefined; // TODO: sessionId가 입력되지 않았을 때(undefined) 처리 필요
 }
 
 const SessionSidebar = ({ socket, question, participants, roomId }: Props) => {
@@ -32,7 +32,7 @@ const SessionSidebar = ({ socket, question, participants, roomId }: Props) => {
         leftButton="취소하기"
         rightButton="종료하기"
         type="red"
-        onLeftClick={() => {}}
+        onLeftClick={() => { }}
         onRightClick={existHandler}
       />
       <div className={"flex flex-col gap-4"}>
