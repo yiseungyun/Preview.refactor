@@ -358,6 +358,7 @@ const SessionPage = () => {
             })),
           ]}
           roomId={sessionId}
+          isHost={isHost}
         />
       </div>
     </section>
