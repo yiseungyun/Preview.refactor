@@ -7,17 +7,35 @@ import useMediaDevices from "@/hooks/useMediaDevices.ts";
 import useToast from "@/hooks/useToast.ts";
 import usePeerConnection from "@/hooks/usePeerConnection.ts";
 import useSocketStore from "@/stores/useSocketStore";
-import useSessionFormStore from "@/stores/useSessionFormStore";
+import SessionHeader from "@components/session/SessionHeader.tsx";
 
-interface User {
-  id: string;
-  nickname: string;
+type RoomStatus = "PUBLIC" | "PRIVATE";
+interface RoomMetadata {
+  title: string;
+  status: RoomStatus;
+  maxParticipants: number;
+  createdAt: number;
+  host: string;
+}
+
+interface AllUsersResponse {
+  roomMetadata: RoomMetadata;
+  users: {
+    [socketId: string]: {
+      joinTime: number;
+      nickname: string;
+      isHost: boolean;
+    };
+  };
+}
+
+interface ResponseMasterChanged {
+  masterNickname: string;
+  masterSocketId: string;
 }
 
 const SessionPage = () => {
   const { socket, connect } = useSocketStore();
-  const { sessionName } = useSessionFormStore();
-
   const {
     createPeerConnection,
     closePeerConnection,
@@ -28,6 +46,8 @@ const SessionPage = () => {
   const { sessionId } = useParams();
   const [nickname, setNickname] = useState<string>("");
   const [reaction, setReaction] = useState("");
+  const [roomMetadata, setRoomMetadata] = useState<RoomMetadata | null>(null);
+  const [isHost, setIsHost] = useState<boolean>(false);
 
   const {
     userVideoDevices,
@@ -84,8 +104,11 @@ const SessionPage = () => {
 
     console.log("Setting up socket event listeners");
 
-    const handleAllUsers = (users: User[]) => {
+    const handleAllUsers = ({ roomMetadata, users }: AllUsersResponse) => {
+      console.log("Received roomMetadata:", roomMetadata);
       console.log("Received all_users:", users);
+      setRoomMetadata(roomMetadata);
+      setIsHost(roomMetadata.host === socket.id);
       Object.entries(users).forEach(([socketId, userInfo]) => {
         console.log("Creating peer connection for:", {
           socketId,
@@ -94,6 +117,7 @@ const SessionPage = () => {
 
         createPeerConnection(socketId, userInfo.nickname, stream, true, {
           nickname,
+          isHost: userInfo.isHost,
         });
       });
     };
@@ -155,6 +179,29 @@ const SessionPage = () => {
       }
     };
 
+    const handleHostChange = (data: ResponseMasterChanged) => {
+      console.log("Host Changed", data);
+      if (data.masterSocketId === socket.id) {
+        // 내가 호스트가 된 경우
+        setIsHost(true);
+        toast.success("당신이 호스트가 되었습니다.");
+      } else {
+        setPeers((prev) => {
+          return prev.map((peer) => {
+            if (peer.peerId === data.masterSocketId) {
+              return {
+                ...peer,
+                isHost: true,
+              };
+            } else {
+              return peer;
+            }
+          });
+        });
+        toast.success(`${data.masterNickname}님이 호스트가 되었습니다.`);
+      }
+    };
+
     const handleReaction = ({
       senderId,
       reaction,
@@ -181,16 +228,28 @@ const SessionPage = () => {
       }
     };
 
+    const handleRoomFinished = () => {
+      toast.error("방장이 세션을 종료했습니다.");
+      navigate("/sessions");
+    };
+
+    const handleUserExit = ({ socketId }: { socketId: string }) => {
+      toast.error("유저가 나갔습니다.");
+      closePeerConnection(socketId);
+    };
+
     socket.on("all_users", handleAllUsers);
     socket.on("getOffer", handleGetOffer);
     socket.on("getAnswer", handleGetAnswer);
     socket.on("getCandidate", handleGetCandidate);
-    socket.on("user_exit", ({ id }) => closePeerConnection(id));
+    socket.on("user_exit", handleUserExit);
     socket.on("room_full", () => {
       toast.error("해당 세션은 이미 유저가 가득 찼습니다.");
       navigate("/sessions");
     });
+    socket.on("master_changed", handleHostChange);
     socket.on("reaction", handleReaction);
+    socket.on("room_finished", handleRoomFinished);
 
     return () => {
       console.log("Cleaning up socket event listeners");
@@ -200,6 +259,8 @@ const SessionPage = () => {
       socket.off("getCandidate", handleGetCandidate);
       socket.off("user_exit");
       socket.off("room_full");
+      socket.off("master_changed", handleHostChange);
+      socket.off("room_finished", handleRoomFinished);
       socket.off("reaction", handleReaction);
 
       if (reactionTimeouts.current) {
@@ -247,18 +308,17 @@ const SessionPage = () => {
     socket.emit("join_room", { roomId: sessionId, nickname });
   };
 
-  const addReaction = useCallback(
-    (senderId: string, reactionType: string) => {
-      setPeers((prev) =>
-        prev.map((peer) =>
-          peer.peerId === senderId ? { ...peer, reaction: reactionType } : peer
-        )
-      );
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const addReaction = useCallback((senderId: string, reactionType: string) => {
+    setPeers((prev) =>
+      prev.map((peer) =>
+        peer.peerId === senderId ? { ...peer, reaction: reactionType } : peer
+      )
+    );
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <section className="w-screen h-screen flex flex-col max-w-[1440px]">
-      <div className="w-screen flex gap-2 mb-4 space-y-2 ">
+      <div className="w-full flex gap-2 p-1 bg-white">
         <input
           type="text"
           placeholder="Nickname"
@@ -284,13 +344,10 @@ const SessionPage = () => {
               "flex flex-col gap-4 justify-between items-center w-full"
             }
           >
-            <h1
-              className={
-                "text-center text-medium-xl font-bold w-full pt-4 pb-2"
-              }
-            >
-              {sessionName}
-            </h1>
+            <SessionHeader
+              roomMetadata={roomMetadata}
+              participantsCount={peers.length + 1}
+            />
             <div className={"speaker max-w-4xl px-6 flex w-full"}>
               <VideoContainer
                 nickname={nickname}
@@ -334,8 +391,15 @@ const SessionPage = () => {
         <SessionSidebar
           socket={socket}
           question={"Restful API에 대해서 설명해주세요."}
-          participants={[nickname, ...peers.map((peer) => peer.peerNickname)]}
+          participants={[
+            { nickname, isHost },
+            ...peers.map((peer) => ({
+              nickname: peer.peerNickname,
+              isHost: peer.isHost || false,
+            })),
+          ]}
           roomId={sessionId}
+          isHost={isHost}
         />
       </div>
     </section>
