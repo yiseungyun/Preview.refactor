@@ -1,15 +1,18 @@
+import useSessionFormStore from "@/stores/useSessionFormStore";
+
 interface Props {
-  totalMember: 1 | 2 | 3 | 4 | 5;
   selectedValue: 1 | 2 | 3 | 4 | 5;
   onClick: () => void;
 }
 
-const ParticipantButton = ({ totalMember, selectedValue, onClick }: Props) => {
+const ParticipantButton = ({ selectedValue, onClick }: Props) => {
+  const { participant } = useSessionFormStore();
+
   return (
     <button
       className={`flex-grow rounded-custom-m
       ${
-        totalMember === selectedValue
+        participant === selectedValue
           ? "bg-green-50 border-2 border-green-200 text-semibold-r text-green-600"
           : "bg-gray-white border border-gray-100 text-medium-m text-gray-400"
       }`}
