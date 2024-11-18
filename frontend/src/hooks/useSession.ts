@@ -1,13 +1,38 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useToast from "@/hooks/useToast";
 import useMediaDevices from "@/hooks/useMediaDevices";
 import usePeerConnection from "@/hooks/usePeerConnection";
 import useSocket from "./useSocket";
 
-interface User {
-  id: string;
+export type RoomStatus = "PUBLIC" | "PRIVATE";
+export interface RoomMetadata {
+  title: string;
+  status: RoomStatus;
+  maxParticipants: number;
+  createdAt: number;
+  host: string;
+}
+
+interface AllUsersResponse {
+  roomMetadata: RoomMetadata;
+  users: {
+    [socketId: string]: {
+      joinTime: number;
+      nickname: string;
+      isHost: boolean;
+    };
+  };
+}
+
+interface ResponseMasterChanged {
+  masterNickname: string;
+  masterSocketId: string;
+}
+
+interface Participant {
   nickname: string;
+  isHost: boolean;
 }
 
 export const useSession = (sessionId: string | undefined) => {
@@ -25,6 +50,9 @@ export const useSession = (sessionId: string | undefined) => {
 
   const [nickname, setNickname] = useState<string>("");
   const [reaction, setReaction] = useState("");
+  const [roomMetadata, setRoomMetadata] = useState<RoomMetadata | null>(null);
+  const [isHost, setIsHost] = useState<boolean>(false);
+
   const reactionTimeouts = useRef<{
     [key: string]: ReturnType<typeof setTimeout>;
   }>({});
@@ -46,7 +74,6 @@ export const useSession = (sessionId: string | undefined) => {
 
   useEffect(() => {
     const connections = peerConnections;
-
     return () => {
       Object.values(connections.current).forEach((pc) => {
         pc.ontrack = null;
@@ -56,15 +83,63 @@ export const useSession = (sessionId: string | undefined) => {
         pc.close();
       });
     };
-  }, []);
+  }, [peerConnections]);
+
+  useEffect(() => {
+    if (selectedAudioDeviceId || selectedVideoDeviceId) {
+      getMedia();
+    }
+  }, [selectedAudioDeviceId, selectedVideoDeviceId, getMedia]);
+
+  useEffect(() => {
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [stream]);
+
+  const handleUserExit = useCallback(({ socketId }: { socketId: string }) => {
+    toast.error("유저가 나갔습니다.");
+    closePeerConnection(socketId);
+  }, [toast, closePeerConnection]);
+
+  const handleRoomFinished = useCallback(() => {
+    toast.error("방장이 세션을 종료했습니다.");
+    navigate("/sessions");
+  }, [toast, navigate]);
+
+  const handleHostChange = useCallback((data: ResponseMasterChanged) => {
+    if (socket && data.masterSocketId === socket.id) {
+      setIsHost(true);
+      toast.success("당신이 호스트가 되었습니다.");
+    } else {
+      setPeers((prev) =>
+        prev.map((peer) =>
+          peer.peerId === data.masterSocketId
+            ? { ...peer, isHost: true }
+            : peer
+        )
+      );
+      toast.success(`${data.masterNickname}님이 호스트가 되었습니다.`);
+    }
+  }, [socket, toast, setPeers]);
 
   const setupSocketListeners = useCallback(() => {
     if (!socket || !stream) return;
 
-    const handleAllUsers = (users: User[]) => {
+    const handleAllUsers = ({ roomMetadata, users }: AllUsersResponse) => {
+      if (!roomMetadata || !users) {
+        console.error("Invalid data received from server:", { roomMetadata, users });
+        return;
+      }
+
+      setRoomMetadata(roomMetadata);
+      setIsHost(roomMetadata.host === socket.id);
       Object.entries(users).forEach(([socketId, userInfo]) => {
         createPeerConnection(socketId, userInfo.nickname, stream, true, {
           nickname,
+          isHost: userInfo.isHost,
         });
       });
     };
@@ -154,12 +229,14 @@ export const useSession = (sessionId: string | undefined) => {
     socket.on("getOffer", handleGetOffer);
     socket.on("getAnswer", handleGetAnswer);
     socket.on("getCandidate", handleGetCandidate);
-    socket.on("user_exit", ({ id }) => closePeerConnection(id));
+    socket.on("user_exit", handleUserExit);
     socket.on("room_full", () => {
       toast.error("해당 세션은 이미 유저가 가득 찼습니다.");
       navigate("/sessions");
     });
+    socket.on("master_changed", handleHostChange);
     socket.on("reaction", handleReaction);
+    socket.on("room_finished", handleRoomFinished);
 
     return () => {
       socket.off("all_users", handleAllUsers);
@@ -168,32 +245,32 @@ export const useSession = (sessionId: string | undefined) => {
       socket.off("getCandidate", handleGetCandidate);
       socket.off("user_exit");
       socket.off("room_full");
+      socket.off("master_changed", handleHostChange);
+      socket.off("room_finished", handleRoomFinished);
       socket.off("reaction", handleReaction);
 
       if (reactionTimeouts.current) {
         Object.values(reactionTimeouts.current).forEach(clearTimeout);
       }
     };
-  }, [socket, stream, nickname, createPeerConnection, closePeerConnection]);
+  }, [
+    socket,
+    stream,
+    nickname,
+    createPeerConnection,
+    closePeerConnection,
+    peerConnections,
+    navigate,
+    toast,
+    handleHostChange,
+    handleUserExit,
+    handleRoomFinished
+  ]);
 
   useEffect(() => {
     const cleanup = setupSocketListeners();
     return () => cleanup?.();
   }, [setupSocketListeners]);
-
-  useEffect(() => {
-    if (selectedAudioDeviceId || selectedVideoDeviceId) {
-      getMedia();
-    }
-  }, [selectedAudioDeviceId, selectedVideoDeviceId]);
-
-  useEffect(() => {
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [stream]);
 
   const joinRoom = async () => {
     if (!socket || !sessionId || !nickname) {
@@ -213,14 +290,14 @@ export const useSession = (sessionId: string | undefined) => {
     socket.emit("join_room", { roomId: sessionId, nickname });
   };
 
-  const emitReaction = (reactionType: string) => {
+  const emitReaction = useCallback((reactionType: string) => {
     if (socket) {
       socket.emit("reaction", {
         roomId: sessionId,
         reaction: reactionType,
       });
     }
-  };
+  }, [socket, sessionId]);
 
   const addReaction = useCallback(
     (senderId: string, reactionType: string) => {
@@ -233,6 +310,14 @@ export const useSession = (sessionId: string | undefined) => {
     [setPeers]
   );
 
+  const participants: Participant[] = useMemo(() => [
+    { nickname, isHost },
+    ...peers.map((peer) => ({
+      nickname: peer.peerNickname,
+      isHost: peer.isHost || false,
+    }))
+  ], [nickname, isHost, peers]);
+
   return {
     nickname,
     setNickname,
@@ -243,6 +328,9 @@ export const useSession = (sessionId: string | undefined) => {
     isVideoOn,
     isMicOn,
     stream,
+    roomMetadata,
+    isHost,
+    participants,
     handleMicToggle,
     handleVideoToggle,
     setSelectedAudioDeviceId,

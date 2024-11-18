@@ -1,16 +1,14 @@
-import { useMemo } from "react";
 import VideoContainer from "@/components/session/VideoContainer.tsx";
 import { useParams } from "react-router-dom";
 import SessionSidebar from "@/components/session/SessionSidebar.tsx";
 import SessionToolbar from "@/components/session/SessionToolbar.tsx";
-import useSocketStore from "@/stores/useSocketStore";
-import useSessionFormStore from "@/stores/useSessionFormStore";
 import { useSession } from "@/hooks/useSession";
+import useSocket from "@/hooks/useSocket";
+import SessionHeader from "@/components/session/SessionHeader";
 
 const SessionPage = () => {
-  const { socket } = useSocketStore();
-  const { sessionName } = useSessionFormStore();
   const { sessionId } = useParams();
+  const { socket } = useSocket();
   const {
     nickname,
     setNickname,
@@ -21,17 +19,20 @@ const SessionPage = () => {
     isVideoOn,
     isMicOn,
     stream,
+    roomMetadata,
+    isHost,
+    participants,
     handleMicToggle,
     handleVideoToggle,
     setSelectedAudioDeviceId,
     setSelectedVideoDeviceId,
     joinRoom,
-    emitReaction
+    emitReaction,
   } = useSession(sessionId);
 
   return (
     <section className="w-screen h-screen flex flex-col max-w-[1440px]">
-      <div className="w-screen flex gap-2 mb-4 space-y-2 ">
+      <div className="w-full flex gap-2 p-1 bg-white">
         <input
           type="text"
           placeholder="Nickname"
@@ -47,23 +48,12 @@ const SessionPage = () => {
         </button>
       </div>
       <div className={"w-screen flex flex-grow"}>
-        <div
-          className={
-            "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r border-t items-center"
-          }
-        >
-          <div
-            className={
-              "flex flex-col gap-4 justify-between items-center w-full"
-            }
-          >
-            <h1
-              className={
-                "text-center text-medium-xl font-bold w-full pt-4 pb-2"
-              }
-            >
-              {sessionName}
-            </h1>
+        <div className={"camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r border-t items-center"}>
+          <div className={"flex flex-col gap-4 justify-between items-center w-full"}>
+            <SessionHeader
+              roomMetadata={roomMetadata}
+              participantsCount={peers.length + 1}
+            />
             <div className={"speaker max-w-4xl px-6 flex w-full"}>
               <VideoContainer
                 nickname={nickname}
@@ -75,21 +65,17 @@ const SessionPage = () => {
               />
             </div>
             <div className={"listeners w-full flex gap-2 px-6"}>
-              {useMemo(
-                () =>
-                  peers.map((peer) => (
-                    <VideoContainer
-                      key={peer.peerId}
-                      nickname={peer.peerNickname}
-                      isMicOn={true}
-                      isVideoOn={true}
-                      isLocal={false}
-                      reaction={peer.reaction || ""}
-                      stream={peer.stream}
-                    />
-                  )),
-                [peers]
-              )}
+              {peers.map((peer) => (
+                <VideoContainer
+                  key={peer.peerId}
+                  nickname={peer.peerNickname}
+                  isMicOn={true}
+                  isVideoOn={true}
+                  isLocal={false}
+                  reaction={peer.reaction || ""}
+                  stream={peer.stream}
+                />
+              ))}
             </div>
           </div>
           <SessionToolbar
@@ -107,12 +93,12 @@ const SessionPage = () => {
         <SessionSidebar
           socket={socket}
           question={"Restful API에 대해서 설명해주세요."}
-          participants={[nickname, ...peers.map((peer) => peer.peerNickname)]}
+          participants={participants}
           roomId={sessionId}
+          isHost={isHost}
         />
       </div>
     </section>
   );
 };
-
 export default SessionPage;

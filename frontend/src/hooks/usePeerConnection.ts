@@ -4,12 +4,14 @@ import { Socket } from "socket.io-client";
 interface User {
   id?: string;
   nickname: string;
+  isHost?: boolean;
 }
 
 interface PeerConnection {
   peerId: string; // 연결된 상대의 ID
   peerNickname: string; // 상대의 닉네임
   stream: MediaStream; // 상대방의 비디오/오디오 스트림
+  isHost?: boolean; // 호스트 여부
   reaction?: string;
 }
 
@@ -91,6 +93,7 @@ const usePeerConnection = (socket: Socket) => {
             {
               peerId: peerSocketId,
               peerNickname,
+              isHost: localUser.isHost,
               stream: e.streams[0],
             },
           ];
@@ -126,6 +129,7 @@ const usePeerConnection = (socket: Socket) => {
   const closePeerConnection = (peerSocketId: string) => {
     if (peerConnections.current[peerSocketId]) {
       // 연결 종료
+      console.log("Closing peer connection:", peerSocketId);
       peerConnections.current[peerSocketId].close();
       // 연결 객체 제거
       delete peerConnections.current[peerSocketId];

@@ -36,20 +36,23 @@ const SessionForm = () => {
 
   const submitHandler = () => {
     if (!isValid || !socket) {
+      toast.error("입력값을 확인해주세요.");
       return;
     }
 
     const roomData = {
       title: sessionName,
+      status: access ?? "PUBLIC",
       category,
       questionId,
-      maxParticipant: participant,
-      isPrivate: access === "private",
+      maxParticipants: participant,
     };
 
     socket?.emit("create_room", {
       title: roomData.title,
-      maxParticipants: roomData.maxParticipant,
+      maxParticipants: roomData.maxParticipants,
+      status: roomData.status,
+      category: roomData.category,
     });
   };
 
@@ -59,6 +62,7 @@ const SessionForm = () => {
     const roomCreatedHandler = (response: RoomCreatedResponse) => {
       if (response.roomId) {
         navigate(`/session/${response.roomId}`);
+        toast.success(`${sessionName} 세션이 성공적으로 생성되었습니다.`);
       } else {
         toast.error("방 생성에 실패하였습니다.");
         navigate(`/sessions`);
