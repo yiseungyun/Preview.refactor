@@ -4,29 +4,8 @@ import useSocketStore from "@/stores/useSocketStore";
 import useMediaDevices from "@/hooks/useMediaDevices";
 import usePeerConnection from "@/hooks/usePeerConnection";
 import { useNavigate } from "react-router-dom";
-import { Socket } from "socket.io-client";
 import { act } from "react";
-
-type MockSocket = Partial<Socket> & {
-  emit: jest.Mock;
-  on: jest.Mock;
-  off: jest.Mock;
-  id: string;
-};
-
-interface MockPeerConnection {
-  ontrack: null | ((event: any) => void);
-  onicecandidate: null | ((event: any) => void);
-  oniceconnectionstatechange: null | (() => void);
-  onconnectionstatechange: null | (() => void);
-  close: jest.Mock;
-}
-
-interface MockPeerConnections {
-  current: {
-    [key: string]: MockPeerConnection;
-  };
-}
+import { MockPeerConnections, MockSocket } from "../type/session.test";
 
 const mockSocket: MockSocket = {
   emit: jest.fn(),
@@ -46,8 +25,20 @@ const mockMediaStream = {
 };
 
 const mockToast = { success: jest.fn(), error: jest.fn() };
+
 const mockNavigate = jest.fn();
-let mockPeerConnections: MockPeerConnections = { current: {} };
+
+const mockPeerConnections: MockPeerConnections = {
+  current: {
+    "peer-1": {
+      ontrack: null,
+      onicecandidate: null,
+      oniceconnectionstatechange: null,
+      onconnectionstatechange: null,
+      close: jest.fn(),
+    },
+  },
+};
 
 // jest.mock: 실제 모듈대신 mock 모듈을 사용하도록 설정
 jest.mock("@/hooks/useMediaDevices");
@@ -93,8 +84,6 @@ describe("useSession Hook 테스트", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockSocketStore.socket = null;
-    mockSocketStore.connect = jest.fn();
 
     (useMediaDevices as jest.Mock).mockReturnValue({
       userAudioDevices: [],
@@ -111,18 +100,6 @@ describe("useSession Hook 테스트", () => {
       setSelectedVideoDeviceId: jest.fn(),
       getMedia: mockGetMedia,
     });
-
-    mockPeerConnections = {
-      current: {
-        "peer-1": {
-          ontrack: null,
-          onicecandidate: null,
-          oniceconnectionstatechange: null,
-          onconnectionstatechange: null,
-          close: jest.fn(),
-        },
-      },
-    };
 
     (usePeerConnection as jest.Mock).mockReturnValue({
       createPeerConnection: jest.fn(),
@@ -187,6 +164,17 @@ describe("useSession Hook 테스트", () => {
         roomId: "test-session",
         nickname: "test-user",
       });
+    });
+
+    it("세션 ID가 없이 스터디룸 입장", async () => {
+      mockSocketStore.socket = mockSocket;
+      const { result } = renderHook(() => useSession(undefined));
+
+      await act(async () => {
+        await result.current.joinRoom();
+      });
+
+      expect(mockToast.error).toHaveBeenCalledWith("세션 ID가 필요합니다.");
     });
 
     it("닉네임 없이 스터디룸 입장", async () => {
@@ -268,7 +256,7 @@ describe("useSession Hook 테스트", () => {
 
       // room_full 이벤트 핸들러 찾기
       const roomFullHandler = mockSocket.on.mock.calls.find(
-        ([event]) => event === "room_full"
+        ([event]: [string]) => event === "room_full"
       )[1];
 
       // 이벤트 핸들러 실행
