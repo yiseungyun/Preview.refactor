@@ -1,10 +1,10 @@
 import { IoChevronDownSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
-import SessionCard from "../components/SessionCard.tsx";
+import SessionCard from "@/components/sessions/SessionCard.tsx";
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
-import { IoIosSearch } from "react-icons/io";
-import useToast from "../hooks/useToast.ts";
+import SearchBar from "@/components/common/SearchBar.tsx";
+import useToast from "@/hooks/useToast";
 
 interface Session {
   id: number;
@@ -88,16 +88,7 @@ const SessionListPage = () => {
       <div>
         <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
         <div className={"h-11 flex gap-2 w-[47.5rem]"}>
-          <div className="relative w-full h-full flex items-center text-gray-400">
-            <IoIosSearch className="absolute left-4 w-[1.25rem] h-[1.25rem]" />
-            <input
-              className={
-                "rounded-custom-m pl-10 pr-4 w-full h-full border border-gray-200 text-medium-r"
-              }
-              type="text"
-              placeholder="세션을 검색하세요"
-            />
-          </div>
+          <SearchBar text="세션을 검색하세요" />
           <div className="relative inline-block items-center">
             <select
               className={
@@ -108,13 +99,14 @@ const SessionListPage = () => {
               <option>BE</option>
             </select>
             <span className="absolute top-1/2 -translate-y-1/2 right-3 pointer-events-none">
-              <IoChevronDownSharp className="w-[1.25rem] h-[1.25rem] text-gray-white" />
+              <IoChevronDownSharp className="w-5 h-5 text-gray-white" />
             </span>
           </div>
           <button
             className={
               "flex justify-center items-center fill-current min-w-11 min-h-11 bg-green-200 rounded-custom-m box-border"
             }
+            onClick={() => navigate("/sessions/create")}
           >
             <IoMdAdd className="w-[1.35rem] h-[1.35rem] text-gray-white" />
           </button>

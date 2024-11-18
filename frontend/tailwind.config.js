@@ -34,6 +34,9 @@ export default {
           3: '#2572E6'
         }
       },
+      borderWidth: {
+        'custom-s': '0.0875rem'
+      },
       borderRadius: {
         'custom-s': '0.25rem',
         'custom-m': '0.5rem',
@@ -47,6 +50,7 @@ export default {
         'bold-l': ['1.625rem', { lineHeight: 'auto', fontWeight: '700' }],
         'bold-m': ['1.5rem', { lineHeight: 'auto', fontWeight: '700' }],
         'bold-r': ['1.25rem', { lineHeight: 'auto', fontWeight: '700' }],
+        'bold-s': ['1.125rem', { lineHeight: 'auto', fontWeight: '700' }],
 
         // SemiBold(600) sizes
         'semibold-l': ['1.375rem', { lineHeight: 'auto', fontWeight: '600' }],
@@ -67,6 +71,12 @@ export default {
         pretendard: ['Pretendard', 'sans-serif'],
         raleway: ['Raleway', 'sans-serif'],
       },
+      spacing: {
+        0.375:'0.375rem',
+        27.5: '27.5rem',
+        42.5: '42.5rem',
+        47.5: '47.5rem'
+      }
     },
   },
   plugins: [],
