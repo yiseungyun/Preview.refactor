@@ -4,36 +4,7 @@ import useToast from "@/hooks/useToast";
 import useMediaDevices from "@/hooks/useMediaDevices";
 import usePeerConnection from "@/hooks/usePeerConnection";
 import useSocket from "./useSocket";
-
-export type RoomStatus = "PUBLIC" | "PRIVATE";
-export interface RoomMetadata {
-  title: string;
-  status: RoomStatus;
-  maxParticipants: number;
-  createdAt: number;
-  host: string;
-}
-
-interface AllUsersResponse {
-  roomMetadata: RoomMetadata;
-  users: {
-    [socketId: string]: {
-      joinTime: number;
-      nickname: string;
-      isHost: boolean;
-    };
-  };
-}
-
-interface ResponseMasterChanged {
-  masterNickname: string;
-  masterSocketId: string;
-}
-
-interface Participant {
-  nickname: string;
-  isHost: boolean;
-}
+import { AllUsersResponse, Participant, ResponseMasterChanged, RoomMetadata } from "./type/session";
 
 export const useSession = (sessionId: string | undefined) => {
   const { socket } = useSocket();
