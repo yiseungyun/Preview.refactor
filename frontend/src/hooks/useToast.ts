@@ -1,4 +1,4 @@
-import useToastStore from "../stores/useToastStore.ts";
+import useToastStore from "@/stores/useToastStore";
 import { useCallback } from "react";
 
 const useToast = () => {

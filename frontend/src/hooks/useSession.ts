@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useToast from "@/hooks/useToast";
 import useMediaDevices from "@/hooks/useMediaDevices";
 import usePeerConnection from "@/hooks/usePeerConnection";
-import useSocketStore from "@/stores/useSocketStore";
+import useSocket from "./useSocket";
 
 interface User {
   id: string;
@@ -11,7 +11,7 @@ interface User {
 }
 
 export const useSession = (sessionId: string | undefined) => {
-  const { socket, connect } = useSocketStore();
+  const { socket } = useSocket();
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -45,7 +45,6 @@ export const useSession = (sessionId: string | undefined) => {
   } = useMediaDevices();
 
   useEffect(() => {
-    if (!socket) connect(import.meta.env.VITE_SIGNALING_SERVER_URL);
     const connections = peerConnections;
 
     return () => {

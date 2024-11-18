@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import useSocketStore from "../stores/useSocketStore";
 
-const useSocket = (socketURL: string) => {
+const socketURL = import.meta.env.VITE_SIGNALING_SERVER;
+
+const useSocket = () => {
   const { socket, connect } = useSocketStore();
 
   useEffect(() => {
@@ -9,10 +11,9 @@ const useSocket = (socketURL: string) => {
       connect(socketURL);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
- 
-  }, [socketURL]);
+  }, []);
 
   return { socket };
 };
- 
+
 export default useSocket;

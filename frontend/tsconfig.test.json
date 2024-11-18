@@ -1,6 +1,23 @@
 {
   "extends": "./tsconfig.json",
-    "compilerOptions": {
-    "jsx": "react-jsx"
-  }
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "esnext",
+    "jsx": "react-jsx",
+    "types": [
+      "jest",
+      "node"
+    ],
+    "moduleResolution": "node",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ]
 }
