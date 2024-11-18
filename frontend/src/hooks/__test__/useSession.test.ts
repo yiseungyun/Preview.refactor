@@ -14,6 +14,20 @@ type MockSocket = Partial<Socket> & {
   id: string;
 };
 
+interface MockPeerConnection {
+  ontrack: null | ((event: any) => void);
+  onicecandidate: null | ((event: any) => void);
+  oniceconnectionstatechange: null | (() => void);
+  onconnectionstatechange: null | (() => void);
+  close: jest.Mock;
+}
+
+interface MockPeerConnections {
+  current: {
+    [key: string]: MockPeerConnection;
+  };
+}
+
 const mockSocket: MockSocket = {
   emit: jest.fn(),
   on: jest.fn(),
@@ -33,7 +47,7 @@ const mockMediaStream = {
 
 const mockToast = { success: jest.fn(), error: jest.fn() };
 const mockNavigate = jest.fn();
-let mockPeerConnections = { current: {} };
+let mockPeerConnections: MockPeerConnections = { current: {} };
 
 // jest.mock: 실제 모듈대신 mock 모듈을 사용하도록 설정
 jest.mock("@/hooks/useMediaDevices");
@@ -267,8 +281,9 @@ describe("useSession Hook 테스트", () => {
     });
   });
 
-  /*describe("정리(Cleanup) 테스트", () => {
+  describe("정리(Cleanup) 테스트", () => {
     it("언마운트 시 모든 리소스 정리", () => {
+      mockSocketStore.socket = mockSocket;
       const { unmount } = renderHook(() => useSession("test-session"));
 
       unmount();
@@ -304,17 +319,5 @@ describe("useSession Hook 테스트", () => {
       // 3. Peer Connection 정리
       expect(mockPeerConnections.current["peer-1"].close).toHaveBeenCalled();
     });
-
-    it("스트림이 없는 경우에도 정리 동작", () => {
-      (useMediaDevices as jest.Mock).mockReturnValue({
-        ...useMediaDevices(),
-        stream: null,
-      });
-
-      const { unmount } = renderHook(() => useSession("test-session"));
-      unmount();
-
-      expect(mockSocket.off).toHaveBeenCalled();
-    });
-  });*/
+  });
 });
