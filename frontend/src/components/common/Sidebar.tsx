@@ -94,14 +94,14 @@ const SidebarMenu = ({
 }: SidebarMenuProps) => {
   const activeClass = isSelected
     ? "bg-green-100 text-white"
-    : "bg-transparent ";
+    : "bg-transparent transition-color duration-300 hover:bg-gray-200/30";
 
   return (
     <li
-      className={`${activeClass} flex-nowrap text-nowrap text-bold-r px-4 p-2 w-full rounded-lg`}
+      className={`${activeClass} flex-nowrap text-nowrap text-bold-r px-4 p-2 w-full rounded-lg  `}
     >
       <Link
-        className={"inline-flex gap-2 items-center"}
+        className={"inline-flex gap-2 items-center w-full"}
         to={path}
         aria-label={label + "(으)로 이동하는 버튼"}
       >
