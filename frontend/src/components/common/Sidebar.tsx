@@ -22,7 +22,7 @@ const Sidebar = () => {
       icon: <FaLayerGroup />,
     },
     {
-      path: "/mypage",
+      path: "/login",
       label: "마이페이지",
       icon: <FaRegCircleUser />,
     },
