@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 import { ReactElement, useEffect, useState } from "react";
-import { FaClipboardList, FaHome, FaLayerGroup } from "react-icons/fa";
+import {
+  FaClipboardList,
+  FaExternalLinkAlt,
+  FaHome,
+  FaLayerGroup,
+} from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { FaRegCircleUser } from "react-icons/fa6";
 
@@ -73,7 +78,9 @@ const Sidebar = () => {
         aria-label={"리포지토리 링크"}
         target={"_blank"}
       >
-        <span>BOOSKIT</span>
+        <span className={"inline-flex items-center gap-1"}>
+          BOOSKIT <FaExternalLinkAlt size={12} />
+        </span>
       </a>
     </nav>
   );
@@ -98,7 +105,7 @@ const SidebarMenu = ({
 
   return (
     <li
-      className={`${activeClass} flex-nowrap text-nowrap text-bold-r px-4 p-2 w-full rounded-lg  `}
+      className={`${activeClass} flex-nowrap text-nowrap text-bold-r px-4 p-2 w-full rounded-lg cursor-pointer`}
     >
       <Link
         className={"inline-flex gap-2 items-center w-full"}
