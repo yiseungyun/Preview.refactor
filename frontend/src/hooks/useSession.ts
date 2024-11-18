@@ -273,7 +273,17 @@ export const useSession = (sessionId: string | undefined) => {
   }, [setupSocketListeners]);
 
   const joinRoom = async () => {
-    if (!socket || !sessionId || !nickname) {
+    if (!socket) {
+      toast.error("소켓 연결이 필요합니다.");
+      return;
+    }
+
+    if (!sessionId) {
+      toast.error("세션 ID가 필요합니다.");
+      return;
+    }
+
+    if (!nickname) {
       toast.error("닉네임을 입력해주세요.");
       return;
     }
