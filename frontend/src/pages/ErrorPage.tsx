@@ -41,14 +41,23 @@ const ErrorPage = () => {
             4
           </span>
         </div>
-        <button
+        <div
           className={
-            " bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg mt-4 absolute bottom-16 left-1/2 transform -translate-x-1/2 z-20 pointer-events-nones"
+            "absolute bottom-16 left-1/2 transform -translate-x-1/2 z-20 pointer-events-nones"
           }
-          onClick={() => navigate("/sessions")}
         >
-          메인 페이지로 이동하기
-        </button>
+          <p className={"font-light text-xl"}>
+            이런! 요청하신 데이터를 찾을 수 없었어요!
+          </p>
+          <button
+            className={
+              " bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg mt-4 "
+            }
+            onClick={() => navigate("/sessions")}
+          >
+            메인 페이지로 이동하기
+          </button>
+        </div>
       </div>
     </section>
   );
