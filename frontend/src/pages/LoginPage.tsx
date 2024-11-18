@@ -13,7 +13,7 @@ const LoginPage = () => {
           {/* 내부 콘텐츠 그리드 */}
           <div className="flex h-full">
             {/* 왼쪽 콘텐츠 영역 - 7칸 차지 */}
-            <div className=" flex-grow flex flex-col justify-center col-span-7 p-16 bg-gradient-to-br from-emerald-600 to-emerald-700">
+            <div className="hidden lg:flex flex-grow flex-col justify-center col-span-7 p-16 bg-gradient-to-br from-emerald-600 to-emerald-700">
               <div className="max-w-2xl min-w-2xl flex flex-col justify-center">
                 <DotLottiePlayer
                   src={mainSnowman}
@@ -26,7 +26,7 @@ const LoginPage = () => {
             </div>
 
             {/* 오른쪽 로그인 폼 - 5칸 차지 */}
-            <div className="col-span-5 p-16 bg-gray-50 w-5/12">
+            <div className="col-span-5 p-16 bg-gray-50 w-full lg:w-5/12">
               <h1 className="text-7xl font-pretendard font-bold black mb-8 tracking-tight text-center">
                 Preview
               </h1>
