@@ -213,8 +213,16 @@ describe("useSession Hook 테스트", () => {
   });
 
   describe("리액션 기능 테스트", () => {
-    it("리액션 이벤트 발생", () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
       mockSocketStore.socket = mockSocket;
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it("리액션 이벤트 발생 및 타이머 동작", () => {
       const { result } = renderHook(() => useSession("test-session"));
 
       act(() => {
@@ -225,6 +233,11 @@ describe("useSession Hook 테스트", () => {
         roomId: "test-session",
         reaction: "👍",
       });
+
+      act(() => {
+        jest.advanceTimersByTime(3000);
+      });
+      expect(result.current.reaction).toBe("");
     });
   });
 
