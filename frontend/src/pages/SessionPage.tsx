@@ -48,8 +48,16 @@ const SessionPage = () => {
         </button>
       </div>
       <div className={"w-screen flex flex-grow"}>
-        <div className={"camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r border-t items-center"}>
-          <div className={"flex flex-col gap-4 justify-between items-center w-full"}>
+        <div
+          className={
+            "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r border-t items-center"
+          }
+        >
+          <div
+            className={
+              "flex flex-col gap-4 justify-between items-center w-full"
+            }
+          >
             <SessionHeader
               roomMetadata={roomMetadata}
               participantsCount={peers.length + 1}

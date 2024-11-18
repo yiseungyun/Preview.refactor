@@ -99,38 +99,47 @@ export const useSession = (sessionId: string | undefined) => {
     };
   }, [stream]);
 
-  const handleUserExit = useCallback(({ socketId }: { socketId: string }) => {
-    toast.error("유저가 나갔습니다.");
-    closePeerConnection(socketId);
-  }, [toast, closePeerConnection]);
+  const handleUserExit = useCallback(
+    ({ socketId }: { socketId: string }) => {
+      toast.error("유저가 나갔습니다.");
+      closePeerConnection(socketId);
+    },
+    [toast, closePeerConnection]
+  );
 
   const handleRoomFinished = useCallback(() => {
     toast.error("방장이 세션을 종료했습니다.");
     navigate("/sessions");
   }, [toast, navigate]);
 
-  const handleHostChange = useCallback((data: ResponseMasterChanged) => {
-    if (socket && data.masterSocketId === socket.id) {
-      setIsHost(true);
-      toast.success("당신이 호스트가 되었습니다.");
-    } else {
-      setPeers((prev) =>
-        prev.map((peer) =>
-          peer.peerId === data.masterSocketId
-            ? { ...peer, isHost: true }
-            : peer
-        )
-      );
-      toast.success(`${data.masterNickname}님이 호스트가 되었습니다.`);
-    }
-  }, [socket, toast, setPeers]);
+  const handleHostChange = useCallback(
+    (data: ResponseMasterChanged) => {
+      if (socket && data.masterSocketId === socket.id) {
+        setIsHost(true);
+        toast.success("당신이 호스트가 되었습니다.");
+      } else {
+        setPeers((prev) =>
+          prev.map((peer) =>
+            peer.peerId === data.masterSocketId
+              ? { ...peer, isHost: true }
+              : peer
+          )
+        );
+        toast.success(`${data.masterNickname}님이 호스트가 되었습니다.`);
+      }
+    },
+    [socket, toast, setPeers]
+  );
 
   const setupSocketListeners = useCallback(() => {
     if (!socket || !stream) return;
 
     const handleAllUsers = ({ roomMetadata, users }: AllUsersResponse) => {
       if (!roomMetadata || !users) {
-        console.error("Invalid data received from server:", { roomMetadata, users });
+        console.error("Invalid data received from server:", {
+          roomMetadata,
+          users,
+        });
         return;
       }
 
@@ -264,7 +273,7 @@ export const useSession = (sessionId: string | undefined) => {
     toast,
     handleHostChange,
     handleUserExit,
-    handleRoomFinished
+    handleRoomFinished,
   ]);
 
   useEffect(() => {
@@ -300,14 +309,17 @@ export const useSession = (sessionId: string | undefined) => {
     socket.emit("join_room", { roomId: sessionId, nickname });
   };
 
-  const emitReaction = useCallback((reactionType: string) => {
-    if (socket) {
-      socket.emit("reaction", {
-        roomId: sessionId,
-        reaction: reactionType,
-      });
-    }
-  }, [socket, sessionId]);
+  const emitReaction = useCallback(
+    (reactionType: string) => {
+      if (socket) {
+        socket.emit("reaction", {
+          roomId: sessionId,
+          reaction: reactionType,
+        });
+      }
+    },
+    [socket, sessionId]
+  );
 
   const addReaction = useCallback(
     (senderId: string, reactionType: string) => {
@@ -320,13 +332,16 @@ export const useSession = (sessionId: string | undefined) => {
     [setPeers]
   );
 
-  const participants: Participant[] = useMemo(() => [
-    { nickname, isHost },
-    ...peers.map((peer) => ({
-      nickname: peer.peerNickname,
-      isHost: peer.isHost || false,
-    }))
-  ], [nickname, isHost, peers]);
+  const participants: Participant[] = useMemo(
+    () => [
+      { nickname, isHost },
+      ...peers.map((peer) => ({
+        nickname: peer.peerNickname,
+        isHost: peer.isHost || false,
+      })),
+    ],
+    [nickname, isHost, peers]
+  );
 
   return {
     nickname,

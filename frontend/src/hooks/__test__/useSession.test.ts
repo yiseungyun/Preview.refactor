@@ -6,7 +6,6 @@ import usePeerConnection from "@/hooks/usePeerConnection";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { act } from "react";
-import useToast from "@/hooks/useToast";
 
 type MockSocket = Partial<Socket> & {
   emit: jest.Mock;
@@ -25,7 +24,7 @@ const mockSocket: MockSocket = {
 const mockSocketStore = {
   socket: null as MockSocket | null,
   connect: jest.fn(),
-  disconnect: jest.fn()
+  disconnect: jest.fn(),
 };
 
 const mockMediaStream = {
@@ -46,13 +45,13 @@ jest.mock("@/hooks/usePeerConnection", () => ({
     closePeerConnection: jest.fn(),
     peers: [],
     setPeers: jest.fn(),
-    peerConnections: { current: {} }
-  })
+    peerConnections: { current: {} },
+  }),
 }));
 
 jest.mock("@/hooks/useToast", () => ({
   __esModule: true,
-  default: () => mockToast
+  default: () => mockToast,
 }));
 
 jest.mock("react-router-dom", () => ({
@@ -61,7 +60,7 @@ jest.mock("react-router-dom", () => ({
 
 jest.mock("@/stores/useSocketStore", () => ({
   __esModule: true,
-  default: jest.fn(() => mockSocketStore)
+  default: jest.fn(() => mockSocketStore),
 }));
 
 jest.mock("@/hooks/useSocket", () => ({
@@ -69,10 +68,10 @@ jest.mock("@/hooks/useSocket", () => ({
   default: () => {
     const store = useSocketStore();
     if (!store.socket) {
-      store.connect('test-url');
+      store.connect("test-url");
     }
     return { socket: store.socket };
-  }
+  },
 }));
 
 describe("useSession Hook 테스트", () => {
@@ -132,7 +131,9 @@ describe("useSession Hook 테스트", () => {
       expect(result.current.isMicOn).toBe(true);
       expect(result.current.roomMetadata).toBeNull();
       expect(result.current.isHost).toBe(false);
-      expect(result.current.participants).toEqual([{ nickname: "", isHost: false }]);
+      expect(result.current.participants).toEqual([
+        { nickname: "", isHost: false },
+      ]);
     });
 
     it("소켓이 없는 경우: 연결 시도", () => {
@@ -225,8 +226,9 @@ describe("useSession Hook 테스트", () => {
     });
   });
 
-  /*describe("소켓 이벤트 리스너 테스트", () => {
-    it("모든 소켓 이벤트 리스너가 등록", () => {
+  describe("소켓 이벤트 리스너 테스트", () => {
+    it("모든 소켓 이벤트 리스너 등록", () => {
+      mockSocketStore.socket = mockSocket;
       renderHook(() => useSession("test-session"));
 
       const expectedEvents = [
@@ -237,6 +239,8 @@ describe("useSession Hook 테스트", () => {
         "user_exit",
         "room_full",
         "reaction",
+        "master_changed",
+        "room_finished",
       ];
 
       expectedEvents.forEach((event) => {
@@ -245,6 +249,7 @@ describe("useSession Hook 테스트", () => {
     });
 
     it("room_full 이벤트 발생", () => {
+      mockSocketStore.socket = mockSocket;
       renderHook(() => useSession("test-session"));
 
       // room_full 이벤트 핸들러 찾기
@@ -262,7 +267,7 @@ describe("useSession Hook 테스트", () => {
     });
   });
 
-  describe("정리(Cleanup) 테스트", () => {
+  /*describe("정리(Cleanup) 테스트", () => {
     it("언마운트 시 모든 리소스 정리", () => {
       const { unmount } = renderHook(() => useSession("test-session"));
 

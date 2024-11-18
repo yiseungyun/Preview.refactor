@@ -16,5 +16,4 @@ const useSocket = () => {
   return { socket };
 };
 
-
 export default useSocket;
