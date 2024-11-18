@@ -3,6 +3,7 @@ import CreateSessionPage from "./pages/CreateSessionPage.tsx";
 import SessionListPage from "./pages/SessionListPage.tsx";
 import SessionPage from "./pages/SessionPage";
 import ErrorPage from "@/pages/ErrorPage.tsx";
+import LoginPage from "@/pages/LoginPage.tsx";
 
 export const routes = [
   {
@@ -18,7 +19,7 @@ export const routes = [
     path: "/sessions",
   },
   {
-    element: <>로그인 페이지</>,
+    element: <LoginPage />,
     path: "/login",
   },
   {
