@@ -2,6 +2,7 @@ import App from "./App.tsx";
 import CreateSessionPage from "./pages/CreateSessionPage.tsx";
 import SessionListPage from "./pages/SessionListPage.tsx";
 import SessionPage from "./pages/SessionPage";
+import ErrorPage from "@/pages/ErrorPage.tsx";
 
 export const routes = [
   {
@@ -25,7 +26,7 @@ export const routes = [
     path: "/sessions/create",
   },
   {
-    element: <>에러 페이지</>,
+    element: <ErrorPage />,
     path: "/*",
   },
 ];
