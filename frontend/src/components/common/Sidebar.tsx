@@ -58,7 +58,10 @@ const Sidebar = () => {
           Preview
         </header>
         <hr className={"mx-6"} />
-        <ul className={"flex flex-col gap-1.5 items-center mx-4 p-2"}>
+        <ul
+          className={"flex flex-col gap-1.5 items-center mx-4 p-2"}
+          aria-label={"사이드바 링크 리스트"}
+        >
           {routes.map((route) => {
             return (
               <SidebarMenu
@@ -106,12 +109,9 @@ const SidebarMenu = ({
   return (
     <li
       className={`${activeClass} flex-nowrap text-nowrap text-bold-r px-4 p-2 w-full rounded-lg cursor-pointer`}
+      aria-label={label + "(으)로 이동하는 버튼"}
     >
-      <Link
-        className={"inline-flex gap-2 items-center w-full"}
-        to={path}
-        aria-label={label + "(으)로 이동하는 버튼"}
-      >
+      <Link className={"inline-flex gap-2 items-center w-full"} to={path}>
         {icon}
         <span>{label}</span>
       </Link>
