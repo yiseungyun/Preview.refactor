@@ -209,8 +209,9 @@ describe("useSession Hook 테스트", () => {
     });
   });
 
-  /*describe("리액션 기능 테스트", () => {
+  describe("리액션 기능 테스트", () => {
     it("리액션 이벤트 발생", () => {
+      mockSocketStore.socket = mockSocket;
       const { result } = renderHook(() => useSession("test-session"));
 
       act(() => {
@@ -224,7 +225,7 @@ describe("useSession Hook 테스트", () => {
     });
   });
 
-  describe("소켓 이벤트 리스너 테스트", () => {
+  /*describe("소켓 이벤트 리스너 테스트", () => {
     it("모든 소켓 이벤트 리스너가 등록", () => {
       renderHook(() => useSession("test-session"));
 
