@@ -1,11 +1,12 @@
 import { renderHook } from "@testing-library/react";
-import { useSession } from "../useSession";
+import { useSession } from "@/hooks/useSession";
 import useSocketStore from "@/stores/useSocketStore";
 import useMediaDevices from "@/hooks/useMediaDevices";
 import usePeerConnection from "@/hooks/usePeerConnection";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { act } from "react";
+import useToast from "@/hooks/useToast";
 
 type MockSocket = Partial<Socket> & {
   emit: jest.Mock;
@@ -31,6 +32,7 @@ const mockMediaStream = {
   getTracks: jest.fn().mockReturnValue([{ stop: jest.fn(), enabled: true }]),
 };
 
+const mockToast = { success: jest.fn(), error: jest.fn() };
 const mockNavigate = jest.fn();
 let mockPeerConnections = { current: {} };
 
@@ -50,10 +52,7 @@ jest.mock("@/hooks/usePeerConnection", () => ({
 
 jest.mock("@/hooks/useToast", () => ({
   __esModule: true,
-  default: () => ({
-    error: jest.fn(),
-    success: jest.fn(),
-  })
+  default: () => mockToast
 }));
 
 jest.mock("react-router-dom", () => ({
@@ -131,6 +130,9 @@ describe("useSession Hook 테스트", () => {
       expect(result.current.reaction).toBe("");
       expect(result.current.isVideoOn).toBe(true);
       expect(result.current.isMicOn).toBe(true);
+      expect(result.current.roomMetadata).toBeNull();
+      expect(result.current.isHost).toBe(false);
+      expect(result.current.participants).toEqual([{ nickname: "", isHost: false }]);
     });
 
     it("소켓이 없는 경우: 연결 시도", () => {
@@ -172,18 +174,21 @@ describe("useSession Hook 테스트", () => {
       });
     });
 
-    /*it("닉네임 없이 스터디룸 입장", async () => {
+    it("닉네임 없이 스터디룸 입장", async () => {
       const { result } = renderHook(() => useSession("test-session"));
 
       await act(async () => {
         await result.current.joinRoom();
       });
 
+      console.log(result.current.nickname === ""); // true
+      console.log(!result.current.nickname); // true
+
       expect(mockToast.error).toHaveBeenCalledWith("닉네임을 입력해주세요.");
       expect(mockSocket.emit).not.toHaveBeenCalled();
     });
 
-    it("미디어 스트림 획득 실패 시 에러 처리", async () => {
+    /*it("미디어 스트림 획득 실패 시 에러 처리", async () => {
       (useMediaDevices as jest.Mock).mockReturnValue({
         ...useMediaDevices(),
         getMedia: jest.fn().mockResolvedValue(null),
