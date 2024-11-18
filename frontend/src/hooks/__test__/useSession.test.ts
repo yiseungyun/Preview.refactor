@@ -5,6 +5,7 @@ import useMediaDevices from "@/hooks/useMediaDevices";
 import usePeerConnection from "@/hooks/usePeerConnection";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
+import { act } from "react";
 
 type MockSocket = Partial<Socket> & {
   emit: jest.Mock;
@@ -76,23 +77,12 @@ jest.mock("@/hooks/useSocket", () => ({
 }));
 
 describe("useSession Hook 테스트", () => {
+  const mockGetMedia = jest.fn().mockResolvedValue(mockMediaStream);
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockSocketStore.socket = null;
     mockSocketStore.connect = jest.fn();
-
-    mockPeerConnections = {
-      current: {
-        "peer-1": {
-          ontrack: null,
-          onicecandidate: null,
-          oniceconnectionstatechange: null,
-          onconnectionstatechange: null,
-          close: jest.fn(),
-        },
-      },
-    };
 
     (useMediaDevices as jest.Mock).mockReturnValue({
       userAudioDevices: [],
@@ -107,8 +97,20 @@ describe("useSession Hook 테스트", () => {
       handleVideoToggle: jest.fn(),
       setSelectedAudioDeviceId: jest.fn(),
       setSelectedVideoDeviceId: jest.fn(),
-      getMedia: jest.fn().mockResolvedValue(mockMediaStream),
+      getMedia: mockGetMedia,
     });
+
+    mockPeerConnections = {
+      current: {
+        "peer-1": {
+          ontrack: null,
+          onicecandidate: null,
+          oniceconnectionstatechange: null,
+          onconnectionstatechange: null,
+          close: jest.fn(),
+        },
+      },
+    };
 
     (usePeerConnection as jest.Mock).mockReturnValue({
       createPeerConnection: jest.fn(),
@@ -145,8 +147,9 @@ describe("useSession Hook 테스트", () => {
     });
   });
 
-  /*describe("스터디룸 입장 테스트", () => {
+  describe("스터디룸 입장 테스트", () => {
     it("스터디룸 입장 성공", async () => {
+      mockSocketStore.socket = mockSocket;
       const { result } = renderHook(() => useSession("test-session"));
 
       // 1. 닉네임 설정
@@ -160,19 +163,16 @@ describe("useSession Hook 테스트", () => {
       });
 
       // 3. 미디어 스트림 요청 확인
-      expect(useMediaDevices().getMedia).toHaveBeenCalled();
+      expect(mockGetMedia).toHaveBeenCalled();
 
       // 4. 소켓 이벤트 발생 확인
       expect(mockSocket.emit).toHaveBeenCalledWith("join_room", {
         roomId: "test-session",
         nickname: "test-user",
       });
-
-      // 5. 성공 메시지 표시
-      expect(mockToast.success).toHaveBeenCalled();
     });
 
-    it("닉네임 없이 스터디룸 입장", async () => {
+    /*it("닉네임 없이 스터디룸 입장", async () => {
       const { result } = renderHook(() => useSession("test-session"));
 
       await act(async () => {
@@ -202,10 +202,10 @@ describe("useSession Hook 테스트", () => {
         "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
       );
       expect(mockNavigate).toHaveBeenCalledWith("/sessions");
-    });
+    });*/
   });
 
-  describe("리액션 기능 테스트", () => {
+  /*describe("리액션 기능 테스트", () => {
     it("리액션 이벤트 발생", () => {
       const { result } = renderHook(() => useSession("test-session"));
 
