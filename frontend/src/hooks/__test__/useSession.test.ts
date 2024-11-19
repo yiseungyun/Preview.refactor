@@ -5,40 +5,14 @@ import useMediaDevices from "@/hooks/useMediaDevices";
 import usePeerConnection from "@/hooks/usePeerConnection";
 import { useNavigate } from "react-router-dom";
 import { act } from "react";
-import { MockPeerConnections, MockSocket } from "../type/session.test";
-
-const mockSocket: MockSocket = {
-  emit: jest.fn(),
-  on: jest.fn(),
-  off: jest.fn(),
-  id: "mock-socket-id",
-};
-
-const mockSocketStore = {
-  socket: null as MockSocket | null,
-  connect: jest.fn(),
-  disconnect: jest.fn(),
-};
-
-const mockMediaStream = {
-  getTracks: jest.fn().mockReturnValue([{ stop: jest.fn(), enabled: true }]),
-};
-
-const mockToast = { success: jest.fn(), error: jest.fn() };
-
-const mockNavigate = jest.fn();
-
-const mockPeerConnections: MockPeerConnections = {
-  current: {
-    "peer-1": {
-      ontrack: null,
-      onicecandidate: null,
-      oniceconnectionstatechange: null,
-      onconnectionstatechange: null,
-      close: jest.fn(),
-    },
-  },
-};
+import {
+  mockMediaStream,
+  mockNavigate,
+  mockPeerConnections,
+  mockSocket,
+  mockSocketStore,
+  mockToast,
+} from "./mocks/useSession.mock";
 
 // jest.mock: 실제 모듈대신 mock 모듈을 사용하도록 설정
 jest.mock("@/hooks/useMediaDevices");
@@ -142,8 +116,11 @@ describe("useSession Hook 테스트", () => {
   });
 
   describe("스터디룸 입장 테스트", () => {
-    it("스터디룸 입장 성공", async () => {
+    beforeEach(() => {
       mockSocketStore.socket = mockSocket;
+    });
+
+    it("스터디룸 입장 성공", async () => {
       const { result } = renderHook(() => useSession("test-session"));
 
       // 1. 닉네임 설정
@@ -167,7 +144,6 @@ describe("useSession Hook 테스트", () => {
     });
 
     it("세션 ID가 없이 스터디룸 입장", async () => {
-      mockSocketStore.socket = mockSocket;
       const { result } = renderHook(() => useSession(undefined));
 
       await act(async () => {
@@ -178,7 +154,6 @@ describe("useSession Hook 테스트", () => {
     });
 
     it("닉네임 없이 스터디룸 입장", async () => {
-      mockSocketStore.socket = mockSocket;
       const { result } = renderHook(() => useSession("test-session"));
 
       await act(async () => {
@@ -190,7 +165,6 @@ describe("useSession Hook 테스트", () => {
     });
 
     it("미디어 스트림 획득 실패 시 에러 처리", async () => {
-      mockSocketStore.socket = mockSocket;
       (useMediaDevices as jest.Mock).mockReturnValue({
         ...useMediaDevices(),
         getMedia: jest.fn().mockResolvedValue(null),
@@ -242,10 +216,12 @@ describe("useSession Hook 테스트", () => {
   });
 
   describe("소켓 이벤트 리스너 테스트", () => {
-    it("모든 소켓 이벤트 리스너 등록", () => {
+    beforeEach(() => {
       mockSocketStore.socket = mockSocket;
       renderHook(() => useSession("test-session"));
+    });
 
+    it("모든 소켓 이벤트 리스너 등록", () => {
       const expectedEvents = [
         "all_users",
         "getOffer",
@@ -264,9 +240,6 @@ describe("useSession Hook 테스트", () => {
     });
 
     it("room_full 이벤트 발생", () => {
-      mockSocketStore.socket = mockSocket;
-      renderHook(() => useSession("test-session"));
-
       // room_full 이벤트 핸들러 찾기
       const roomFullHandler = mockSocket.on.mock.calls.find(
         ([event]: [string]) => event === "room_full"

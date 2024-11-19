@@ -4,7 +4,12 @@ import useToast from "@/hooks/useToast";
 import useMediaDevices from "@/hooks/useMediaDevices";
 import usePeerConnection from "@/hooks/usePeerConnection";
 import useSocket from "./useSocket";
-import { AllUsersResponse, Participant, ResponseMasterChanged, RoomMetadata } from "./type/session";
+import {
+  AllUsersResponse,
+  Participant,
+  ResponseMasterChanged,
+  RoomMetadata,
+} from "./type/session";
 
 export const useSession = (sessionId: string | undefined) => {
   const { socket } = useSocket();
