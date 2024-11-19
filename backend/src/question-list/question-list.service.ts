@@ -19,10 +19,11 @@ export class QuestionListService {
         const { contents, questionListId } = createQuestionDto;
 
         const questionDtos = contents.map((content, index) => {
-            const question = new QuestionDto();
-            question.content = content;
-            question.index = index;
-            question.questionListId = questionListId;
+            const question: QuestionDto = {
+                content,
+                index,
+                questionListId,
+            };
 
             return question;
         });

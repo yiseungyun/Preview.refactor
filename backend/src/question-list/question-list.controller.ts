@@ -24,10 +24,12 @@ export class QuestionListController {
             );
 
             // 질문지 DTO 준비
-            const createQuestionListDto = new CreateQuestionListDto();
-            createQuestionListDto.title = title;
-            createQuestionListDto.isPublic = isPublic;
-            createQuestionListDto.userId = user.id;
+            // const createQuestionListDto = new CreateQuestionListDto();
+            const createQuestionListDto: CreateQuestionListDto = {
+                title,
+                isPublic,
+                userId: user.id,
+            };
 
             // 질문지 생성
             const createdQuestionList =
@@ -36,9 +38,10 @@ export class QuestionListController {
                 );
 
             // 질문 DTO 준비
-            const createQuestionDto = new CreateQuestionDto();
-            createQuestionDto.contents = contents;
-            createQuestionDto.questionListId = createdQuestionList.id;
+            const createQuestionDto: CreateQuestionDto = {
+                contents,
+                questionListId: createdQuestionList.id,
+            };
 
             // 질문 생성
             const createdQuestions =

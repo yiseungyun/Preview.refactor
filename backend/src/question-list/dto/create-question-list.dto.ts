@@ -1,4 +1,4 @@
-export class CreateQuestionListDto {
+export interface CreateQuestionListDto {
     title: string;
     isPublic: boolean;
     userId: number;
