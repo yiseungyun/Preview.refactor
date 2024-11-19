@@ -229,9 +229,9 @@ describe("useSession Hook 테스트", () => {
         "getCandidate",
         "user_exit",
         "room_full",
-        "reaction",
         "master_changed",
         "room_finished",
+        "reaction",
       ];
 
       expectedEvents.forEach((event) => {
@@ -255,7 +255,7 @@ describe("useSession Hook 테스트", () => {
     });
   });
 
-  describe("정리(Cleanup) 테스트", () => {
+  describe("정리(Clean up) 테스트", () => {
     it("언마운트 시 모든 리소스 정리", () => {
       mockSocketStore.socket = mockSocket;
       const { unmount } = renderHook(() => useSession("test-session"));
@@ -281,6 +281,14 @@ describe("useSession Hook 테스트", () => {
       );
       expect(mockSocket.off).toHaveBeenCalledWith("user_exit");
       expect(mockSocket.off).toHaveBeenCalledWith("room_full");
+      expect(mockSocket.off).toHaveBeenCalledWith(
+        "master_changed",
+        expect.any(Function)
+      );
+      expect(mockSocket.off).toHaveBeenCalledWith(
+        "room_finished",
+        expect.any(Function)
+      );
       expect(mockSocket.off).toHaveBeenCalledWith(
         "reaction",
         expect.any(Function)
