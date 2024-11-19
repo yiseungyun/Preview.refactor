@@ -1,7 +1,7 @@
 import AccessSection from "./AccessSection";
 import CategorySection from "./CategorySection";
 import ParticipantSection from "./ParticipantSection";
-import NameSection from "./NameSection";
+import TitleSection from "./TitleSection";
 import QuestionListSection from "./QuestionListSection";
 import ListSelectModal from "./ListSelectModal";
 import useSessionFormStore from "@/stores/useSessionFormStore";
@@ -70,7 +70,7 @@ const SessionForm = () => {
     <div className="flex flex-col gap-8 p-8 bg-gray-white shadow-8 w-47.5 rounded-custom-l">
       <ListSelectModal />
       <CategorySection />
-      <NameSection />
+      <TitleSection />
       <QuestionListSection />
       <ParticipantSection />
       <AccessSection />

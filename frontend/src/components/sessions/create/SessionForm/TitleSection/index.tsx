@@ -2,7 +2,7 @@ import useSessionFormStore from "@/stores/useSessionFormStore";
 import SelectTitle from "@/components/common/SelectTitle";
 import TitleInput from "@/components/common/TitleInput";
 
-const NameSection = () => {
+const TitleSection = () => {
   const { setSessionName } = useSessionFormStore();
 
   return (
@@ -16,4 +16,4 @@ const NameSection = () => {
   );
 };
 
-export default NameSection;
+export default TitleSection;
