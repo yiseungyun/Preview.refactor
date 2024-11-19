@@ -5,10 +5,10 @@ import NameSection from "./NameSection";
 import QuestionListSection from "./QuestionListSection";
 import ListSelectModal from "./ListSelectModal";
 import useSessionFormStore from "@/stores/useSessionFormStore";
-import useSocketStore from "@/stores/useSocketStore";
 import { useNavigate } from "react-router-dom";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import useToast from "@/hooks/useToast";
+import useSocket from "@/hooks/useSocket";
 
 interface RoomCreatedResponse {
   success?: boolean;
@@ -17,22 +17,12 @@ interface RoomCreatedResponse {
 }
 
 const SessionForm = () => {
-  const { socket, connect } = useSocketStore();
+  const { socket } = useSocket();
   const { category, sessionName, questionId, participant, access } =
     useSessionFormStore();
   const isValid = useSessionFormStore((state) => state.isFormValid());
   const navigate = useNavigate();
   const toast = useToast();
-
-  const initializeSocket = useCallback(() => {
-    if (!socket) {
-      connect(import.meta.env.VITE_SIGNALING_SERVER_URL);
-    }
-  }, [connect, socket]);
-
-  useEffect(() => {
-    initializeSocket();
-  }, [initializeSocket]);
 
   const submitHandler = () => {
     if (!isValid || !socket) {
