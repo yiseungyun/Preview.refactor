@@ -3,8 +3,10 @@ import Sidebar from "@components/common/Sidebar.tsx";
 import SearchBar from "@components/common/SearchBar.tsx";
 import QuestionsPreviewCard from "@components/questions/QuestionsPreviewCard.tsx";
 import Select from "@components/common/Select.tsx";
+import useToast from "@hooks/useToast.ts";
 
 const QuestionList = () => {
+  const toast = useToast();
   // 더미 데이터
   const questionLists = [
     {
@@ -57,6 +59,10 @@ const QuestionList = () => {
     },
   ];
 
+  const handleNavigateDetail = (id: number) => {
+    toast.error(`질문지 아이디${id} 페이지는 준비중인 기능입니다.`);
+  };
+
   return (
     <section className="flex w-screen min-h-screen ">
       <Sidebar />
@@ -90,6 +96,7 @@ const QuestionList = () => {
               title={list.title}
               isStarred={list.isStarred}
               usage={list.usage}
+              onClick={() => handleNavigateDetail(list.id)}
             />
           ))}
         </div>
