@@ -1,5 +1,4 @@
-export interface CreateQuestionDto {
-    content: string;
-    index: number;
+export class CreateQuestionDto {
+    contents: string[];
     questionListId: number;
 }
