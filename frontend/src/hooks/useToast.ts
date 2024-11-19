@@ -8,7 +8,7 @@ const useToast = () => {
   const toast = useCallback(
     (message: string, type: "success" | "error") => {
       const newToast = {
-        id: new Date().getTime(),
+        id: new Date().getTime() + Math.floor(Math.random() * 200),
         message,
         type,
         duration: DURATION || 5000,
