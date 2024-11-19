@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import "dotenv/config";
 import { Profile, Strategy } from "passport-github";
-import { AuthService } from "../auth/auth.service";
+import { AuthService } from "../auth.service";
 
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, "github") {
