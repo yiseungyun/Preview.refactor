@@ -1,5 +1,5 @@
 import useSessionFormStore from "@/stores/useSessionFormStore";
-import SelectTitle from "../../SelectTitle";
+import SelectTitle from "../../../../common/SelectTitle";
 
 const NameSection = () => {
   const { setSessionName } = useSessionFormStore();

@@ -1,5 +1,5 @@
 import ParticipantButton from "./ParticpantButton";
-import SelectTitle from "../../SelectTitle";
+import SelectTitle from "../../../../common/SelectTitle";
 import useSessionFormStore from "@/stores/useSessionFormStore";
 const MEMBER_COUNTS = [1, 2, 3, 4, 5] as const;
 
