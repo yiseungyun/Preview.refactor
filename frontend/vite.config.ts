@@ -14,4 +14,5 @@ export default defineConfig({
       "@stores": resolve(__dirname, "src/stores"),
     },
   },
+  assetsInclude: ["**/*.lottie"],
 });
