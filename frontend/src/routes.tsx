@@ -4,12 +4,14 @@ import SessionListPage from "./pages/SessionListPage.tsx";
 import SessionPage from "./pages/SessionPage";
 import ErrorPage from "@/pages/ErrorPage.tsx";
 import LoginPage from "@/pages/LoginPage.tsx";
+import QuestionListPage from "@/pages/QuestionListPage.tsx";
 
 export const routes = [
   {
     element: <App />,
     path: "/",
   },
+
   {
     element: <SessionPage />,
     path: "/session/:sessionId",
@@ -17,6 +19,10 @@ export const routes = [
   {
     element: <SessionListPage />,
     path: "/sessions",
+  },
+  {
+    element: <QuestionListPage />,
+    path: "/questions",
   },
   {
     element: <LoginPage />,
