@@ -1,9 +1,10 @@
 import useToastStore from "@/stores/useToastStore";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 const useToast = () => {
   const { createToast, removeToast } = useToastStore();
   const DURATION = 5000;
+  const timerIDs = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const toast = useCallback(
     (message: string, type: "success" | "error") => {
@@ -15,10 +16,20 @@ const useToast = () => {
       };
 
       createToast(newToast);
-      setTimeout(() => removeToast(newToast.id), DURATION);
+      const id = setTimeout(() => {
+        removeToast(newToast.id);
+        timerIDs.current = timerIDs.current.filter((timerId) => timerId !== id);
+      }, DURATION);
+      timerIDs.current.push(id);
     },
     [createToast, removeToast]
   );
+
+  useEffect(() => {
+    return () => {
+      timerIDs.current.forEach((id) => clearTimeout(id));
+    };
+  }, []);
 
   const success = useCallback(
     (message: string) => {
