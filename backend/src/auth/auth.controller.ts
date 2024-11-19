@@ -1,4 +1,4 @@
-import { Controller, Get, Redirect, Req, Res, UseGuards } from "@nestjs/common";
+import { Controller, Get, Redirect, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 
 @Controller("auth")
@@ -20,5 +20,6 @@ export class AuthController {
     @UseGuards(AuthGuard("jwt"))
     protectedResource() {
         return "JWT is working!";
+
     }
 }

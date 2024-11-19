@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { QuestionList } from "../question/question-list.entity";
 
 @Entity()
 export class User {
@@ -20,4 +21,7 @@ export class User {
 
     @Column({ nullable: true, unique: true })
     githubId: number;
+
+    @OneToMany(() => QuestionList, (questionList) => questionList.user)
+    questionLists: QuestionList[];
 }
