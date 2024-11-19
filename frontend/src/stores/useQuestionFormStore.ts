@@ -1,15 +1,20 @@
 import { create } from "zustand";
 
+interface Question {
+  id: string;
+  content: string;
+}
+
 interface QuestionState {
   category: string;
   questionTitle: string;
   access: "PRIVATE" | "PUBLIC";
-  questionList: string[];
+  questionList: Question[];
 
   setCategory: (category: string) => void;
   setQuestionTitle: (name: string) => void;
   setAccess: (access: "PRIVATE" | "PUBLIC") => void;
-  addQuestion: (question: string) => void;
+  addQuestion: (content: string) => void;
   resetForm: () => void;
   isFormValid: () => boolean;
 }
@@ -27,11 +32,15 @@ const useQuestionFormStore = create<QuestionState>((set, get) => ({
   setCategory: (category) => set({ category }),
   setQuestionTitle: (title) => set({ questionTitle: title }),
   setAccess: (access) => set({ access }),
-  addQuestion: (question: string) =>
+  addQuestion: (content: string) =>
     set((state) => {
       const currentQuestions = state.questionList;
       if (currentQuestions.length < 20) {
-        return { questionList: [...currentQuestions, question] };
+        const newQuestion: Question = {
+          id: crypto.randomUUID(),
+          content
+        }
+        return { questionList: [...currentQuestions, newQuestion] };
       }
       return state;
     }),

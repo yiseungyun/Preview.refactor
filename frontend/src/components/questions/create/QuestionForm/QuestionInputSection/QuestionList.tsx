@@ -6,8 +6,8 @@ const QuestionList = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      {questions.map((question, index) => (
-        <QuestionItem key={index} content={question} />
+      {questions.map((question) => (
+        <QuestionItem key={question.id} content={question.content} />
       ))}
     </div>
   );
