@@ -88,7 +88,7 @@ const Sidebar = () => {
         <button
           onClick={toggleTheme}
           className={
-            "text-xl dark:bg-gray-100 dark:text-gray-black border-gray-200 rounded-full p-2 dark:border-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-200/80  transition-colors"
+            "text-xl dark:bg-gray-100 dark:text-gray-black border border-gray-200 rounded-full p-2 dark:border-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-200/80  transition-colors"
           }
           aria-roledescription={"라이트모드와 다크모드 간 전환 버튼"}
           aria-label={"테마 변경버튼"}
