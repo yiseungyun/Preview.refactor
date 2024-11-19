@@ -1,12 +1,12 @@
 import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { QuestionService } from "./question.service";
+import { QuestionListService } from "./question-list.service";
 import { UserRepository } from "../user/user.repository";
 
 @Controller("question-list")
-export class QuestionController {
+export class QuestionListController {
     constructor(
-        private readonly questionService: QuestionService,
+        private readonly questionService: QuestionListService,
         private readonly userRepository: UserRepository
     ) {}
     @Post()

@@ -3,8 +3,8 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { User } from "../user/user.entity"; // 엔티티 경로를 수정하세요.
 import "dotenv/config";
 import { addTransactionalDataSource } from "typeorm-transactional";
-import { QuestionList } from "../question/question-list.entity";
-import { Question } from "../question/question.entity";
+import { QuestionList } from "../question-list/question-list.entity";
+import { Question } from "../question-list/question.entity";
 
 export const typeOrmConfig: DataSourceOptions = {
     type: "mysql",

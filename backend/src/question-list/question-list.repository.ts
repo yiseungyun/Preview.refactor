@@ -6,7 +6,7 @@ import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
 
 @Injectable()
-export class QuestionRepository {
+export class QuestionListRepository {
     constructor(private dataSource: DataSource) {}
 
     createQuestionList(createQuestionListDto: CreateQuestionListDto) {

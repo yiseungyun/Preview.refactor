@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
-import { QuestionRepository } from "./question.repository";
+import { QuestionListRepository } from "./question-list.repository";
 
 @Injectable()
-export class QuestionService {
-    constructor(private readonly questionRepository: QuestionRepository) {}
+export class QuestionListService {
+    constructor(private readonly questionRepository: QuestionListRepository) {}
 
 
     // 질문 생성 메서드
