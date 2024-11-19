@@ -5,7 +5,6 @@ import { CreateUserDto } from "./dto/create-user.dto";
 
 @Injectable()
 export class UserRepository {
-    private static dataSource: DataSource;
     constructor(private dataSource: DataSource) {}
 
     getUserByGithubId(githubId: number) {
