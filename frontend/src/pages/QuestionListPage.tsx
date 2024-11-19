@@ -2,6 +2,7 @@ import { FaPlus } from "react-icons/fa6";
 import Sidebar from "@components/common/Sidebar.tsx";
 import SearchBar from "@components/common/SearchBar.tsx";
 import QuestionsPreviewCard from "@components/questions/QuestionsPreviewCard.tsx";
+import Select from "@components/common/Select.tsx";
 
 const QuestionList = () => {
   // 더미 데이터
@@ -64,10 +65,17 @@ const QuestionList = () => {
           <h1 className="text-4xl font-bold text-black dark:text-white my-4">
             질문지 목록
           </h1>
-          <div className="flex flex-wrap gap-4 items-center justify-between">
+          <div className="flex gap-4 items-stretch justify-between">
             <SearchBar text={"질문지 검색하기"} />
-            <button className="flex items-center gap-2 px-4 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500 transition-colors">
-              <FaPlus className="w-5 h-5" />새 질문지 만들기
+            <Select
+              options={[
+                { label: "FE", value: "FE" },
+                { label: "BE", value: "BE" },
+                { label: "CS", value: "CS" },
+              ]}
+            />
+            <button className="flex items-center gap-2 px-4 py-3 bg-green-200 text-white rounded-lg hover:bg-emerald-500 transition-colors">
+              <FaPlus className="w-5 h-5" />
             </button>
           </div>
         </div>

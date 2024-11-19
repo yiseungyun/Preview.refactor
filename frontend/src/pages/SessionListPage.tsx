@@ -1,4 +1,3 @@
-import { IoChevronDownSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import SessionCard from "@/components/sessions/SessionCard.tsx";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +5,7 @@ import { IoMdAdd } from "react-icons/io";
 import SearchBar from "@/components/common/SearchBar.tsx";
 import useToast from "@/hooks/useToast";
 import Sidebar from "@components/common/Sidebar.tsx";
+import Select from "@components/common/Select.tsx";
 
 interface Session {
   id: number;
@@ -92,19 +92,13 @@ const SessionListPage = () => {
           <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
           <div className={"h-11 flex gap-2 w-[47.5rem]"}>
             <SearchBar text="세션을 검색하세요" />
-            <div className="relative inline-block items-center">
-              <select
-                className={
-                  "rounded-custom-m bg-green-200 text-semibold-s text-gray-white appearance-none pl-5 pr-11 h-full"
-                }
-              >
-                <option>FE</option>
-                <option>BE</option>
-              </select>
-              <span className="absolute top-1/2 -translate-y-1/2 right-3 pointer-events-none">
-                <IoChevronDownSharp className="w-5 h-5 text-gray-white" />
-              </span>
-            </div>
+            <Select
+              options={[
+                { label: "FE", value: "FE" },
+                { label: "BE", value: "BE" },
+                { label: "CS", value: "CS" },
+              ]}
+            />
             <button
               className={
                 "flex justify-center items-center fill-current min-w-11 min-h-11 bg-green-200 rounded-custom-m box-border"
