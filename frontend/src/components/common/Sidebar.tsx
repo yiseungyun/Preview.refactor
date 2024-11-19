@@ -43,7 +43,7 @@ const Sidebar = () => {
   return (
     <nav
       className={
-        "min-w-80 w-80 h-screen flex flex-col border-r gap-1.5 justify-between overflow-y-hidden bg-white transition-colors dark:bg-gray-black dark:border-r-gray-200"
+        "min-w-80 w-80 h-screen flex flex-col border-r gap-1.5 justify-between overflow-y-hidden bg-white transition-colors dark:bg-gray-black dark:border-r-gray-400"
       }
     >
       <div>
@@ -54,7 +54,7 @@ const Sidebar = () => {
         >
           Preview
         </header>
-        <hr className={"mx-6 dark:border-gray-700"} />
+        <hr className={"mx-6 dark:border-gray-400"} />
         <ul
           className={"flex flex-col gap-1.5 items-center mx-4 p-2"}
           aria-label={"사이드바 링크 리스트"}
