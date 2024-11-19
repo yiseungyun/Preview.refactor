@@ -1,14 +1,9 @@
 import { Link } from "react-router-dom";
 import { ReactElement, useEffect, useState } from "react";
-import {
-  FaClipboardList,
-  FaExternalLinkAlt,
-  FaHome,
-  FaLayerGroup,
-} from "react-icons/fa";
+import { FaClipboardList, FaHome, FaLayerGroup } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { FaRegCircleUser } from "react-icons/fa6";
-
+import { FaGithub } from "react-icons/fa6";
 const Sidebar = () => {
   const routes = [
     {
@@ -82,7 +77,7 @@ const Sidebar = () => {
         target={"_blank"}
       >
         <span className={"inline-flex items-center gap-1"}>
-          BOOSKIT <FaExternalLinkAlt size={12} />
+          <FaGithub /> BOOSKIT
         </span>
       </a>
     </nav>
