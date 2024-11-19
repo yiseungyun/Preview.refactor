@@ -1,3 +1,4 @@
+import QuestionForm from "@/components/questions/create/QuestionForm";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
@@ -17,6 +18,7 @@ const CreateQuestionPage = () => {
       <p className="text-medium-l text-gray-400 mb-8">
         면접 스터디를 위한 새로운 질문지를 생성합니다.
       </p>
+      <QuestionForm />
     </div>
   );
 };
