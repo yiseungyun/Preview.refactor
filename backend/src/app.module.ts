@@ -13,6 +13,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import "dotenv/config";
 
 import { createDataSource, typeOrmConfig } from "./config/typeorm.config";
+import { QuestionModule } from './question/question.module';
 
 @Module({
     imports: [
@@ -25,6 +26,7 @@ import { createDataSource, typeOrmConfig } from "./config/typeorm.config";
         RedisModule,
         AuthModule,
         UserModule,
+        QuestionModule,
     ],
     controllers: [AppController],
     providers: [AppService],
