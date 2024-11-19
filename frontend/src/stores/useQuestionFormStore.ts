@@ -30,7 +30,8 @@ const useQuestionFormStore = create<QuestionState>((set, get) => ({
     const state = get();
     return (
       state.category.trim() !== "" &&
-      state.questionTitle.trim() !== ""
+      state.questionTitle.trim() !== "" &&
+      state.questionTitle.trim().length >= 5
     );
   },
 }));
