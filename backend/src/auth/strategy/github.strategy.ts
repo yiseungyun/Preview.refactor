@@ -32,8 +32,12 @@ export class GithubStrategy extends PassportStrategy(Strategy, "github") {
         done: (error: any, user?: any) => void
     ) {
         try {
-            const user = await this.authService.githubLogin(profile);
-            console.log(user);
+            // const user = await this.authService.githubLogin(profile);
+            // console.log(user);
+            const user = {
+                githubId: parseInt(profile.id),
+                username: `camper_${profile.id}`,
+            };
             done(null, user);
         } catch (err) {
             console.error(err);
