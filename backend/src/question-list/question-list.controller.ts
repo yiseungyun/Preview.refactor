@@ -17,25 +17,47 @@ export class QuestionListController {
         @Req() req,
         @Body() body: { title: string; contents: string[]; isPublic: boolean }
     ) {
-        const { title, contents, isPublic } = body;
-        const user = await this.userRepository.getUserByGithubId(req.user.id);
-
-        const createQuestionListDto = new CreateQuestionListDto();
-        createQuestionListDto.title = title;
-        createQuestionListDto.isPublic = isPublic;
-        createQuestionListDto.userId = user.id;
-
-        const createdQuestionList =
-            await this.questionService.createQuestionList(
-                createQuestionListDto
+        try {
+            const { title, contents, isPublic } = body;
+            const user = await this.userRepository.getUserByGithubId(
+                req.user.id
             );
 
-        const createQuestionDto = new CreateQuestionDto();
-        createQuestionDto.contents = contents;
-        createQuestionDto.questionListId = createdQuestionList.id;
+            // 질문지 DTO 준비
+            const createQuestionListDto = new CreateQuestionListDto();
+            createQuestionListDto.title = title;
+            createQuestionListDto.isPublic = isPublic;
+            createQuestionListDto.userId = user.id;
 
-        await this.questionService.createQuestions(createQuestionDto);
+            // 질문지 생성
+            const createdQuestionList =
+                await this.questionService.createQuestionList(
+                    createQuestionListDto
+                );
 
-        return createdQuestionList;
+            // 질문 DTO 준비
+            const createQuestionDto = new CreateQuestionDto();
+            createQuestionDto.contents = contents;
+            createQuestionDto.questionListId = createdQuestionList.id;
+
+            // 질문 생성
+            const createdQuestions =
+                await this.questionService.createQuestions(createQuestionDto);
+
+            return {
+                success: true,
+                message: "Question list created successfully.",
+                data: {
+                    createdQuestionList,
+                    createdQuestions,
+                },
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: "Failed to create question list.",
+                error: error.message,
+            };
+        }
     }
 }
