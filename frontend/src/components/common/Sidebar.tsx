@@ -47,7 +47,7 @@ const Sidebar = () => {
       <div>
         <header
           className={
-            "text-green-400 text-5xl text-center py-7 font-bold hover:tracking-widest transition-all duration-700"
+            "text-green-400 text-5xl text-center py-7 font-bold hover:tracking-widest transition-all duration-700 font-raleway"
           }
         >
           Preview
