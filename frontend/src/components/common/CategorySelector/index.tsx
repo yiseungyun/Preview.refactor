@@ -5,7 +5,7 @@ interface Option {
   label: string;
 }
 
-interface CategoryOptions {
+interface CategoryProps {
   title: string;
   options: Option[];
   value: string;
@@ -17,7 +17,7 @@ const CategorySelector = ({
   options,
   value,
   onChange,
-}: CategoryOptions) => {
+}: CategoryProps) => {
   const changeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
     onChange(event.target.value);
   };
