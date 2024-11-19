@@ -41,18 +41,18 @@ const Sidebar = () => {
   return (
     <nav
       className={
-        "min-w-80 w-80 h-screen flex flex-col border-r gap-1.5 justify-between overflow-y-hidden"
+        "min-w-80 w-80 h-screen flex flex-col border-r gap-1.5 justify-between overflow-y-hidden bg-white dark:bg-gray-black dark:border-r-gray-200"
       }
     >
       <div>
         <header
           className={
-            "text-green-400 text-5xl text-center py-7 font-bold hover:tracking-widest transition-all duration-700 font-raleway"
+            "text-green-400 text-5xl text-center py-7 font-bold hover:tracking-widest transition-all duration-700 font-raleway dark:text-green-100"
           }
         >
           Preview
         </header>
-        <hr className={"mx-6"} />
+        <hr className={"mx-6 dark:border-gray-700"} />
         <ul
           className={"flex flex-col gap-1.5 items-center mx-4 p-2"}
           aria-label={"사이드바 링크 리스트"}
