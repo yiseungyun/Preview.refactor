@@ -9,7 +9,7 @@ interface ItemProps {
 
 const QuestionItem = ({ content, onDelete, onEdit }: ItemProps) => {
   return (
-    <div className="flex justify-between items-center w-full h-11 p-4 shadow-16 rounded-custom-m">
+    <div className="flex gap-2 justify-between items-center w-full min-h-11 px-4 py-3 shadow-16 rounded-custom-m">
       <span className="text-medium-m text-gray-black">{content}</span>
       <div className="flex text-gray-500 gap-2">
         <button onClick={onEdit}>

@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 interface EditInputProps {
   value: string;
   onChange: (value: string) => void;
@@ -6,19 +8,51 @@ interface EditInputProps {
 }
 
 const EditInput = ({ value, onChange, onSave, onCancel }: EditInputProps) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const adjustHeight = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+
+      const defaultHeight = 44;
+      const scrollHeight = textarea.scrollHeight;
+
+      textarea.style.height = value
+        ? `${Math.max(defaultHeight, scrollHeight)}px`
+        : `${defaultHeight}px`;
+    }
+  };
+
+  const changeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value.slice(0, 100);
+    onChange(newValue);
+  };
+
+  useEffect(() => {
+    adjustHeight();
+  }, [value]);
+
   return (
     <div className="flex items-center relative">
-      <input
-        className="w-full h-11 pl-4 pr-24 shadow-16 rounded-custom-m text-medium-m text-gray-black"
+      <textarea
+        ref={textareaRef}
+        className="w-full min-h-11 pl-4 pr-24 py-3 shadow-16 rounded-custom-m text-medium-m text-gray-black resize-none duration-200 overflow-hidden"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        maxLength={100}
+        onChange={changeHandler}
+        rows={1}
       />
       <div className="absolute right-4 flex gap-2 text-gray-600 text-semibold-s">
-        <button onClick={onSave} className="hover:text-point-3">
+        <button
+          onClick={onSave}
+          className="hover:text-point-3 transition-colors"
+        >
           저장
         </button>
-        <button onClick={onCancel} className="hover:text-point-1">
+        <button
+          onClick={onCancel}
+          className="hover:text-point-1 transition-colors"
+        >
           취소
         </button>
       </div>
