@@ -1,14 +1,10 @@
 import { Link } from "react-router-dom";
 import { ReactElement, useEffect, useState } from "react";
-import {
-  FaClipboardList,
-  FaExternalLinkAlt,
-  FaHome,
-  FaLayerGroup,
-} from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
+import { FaClipboardList, FaHome, FaLayerGroup } from "react-icons/fa";
+import { MdDarkMode, MdLightMode, MdLogout } from "react-icons/md";
 import { FaRegCircleUser } from "react-icons/fa6";
-
+import { FaGithub } from "react-icons/fa6";
+import useTheme from "@hooks/useTheme.ts";
 const Sidebar = () => {
   const routes = [
     {
@@ -39,6 +35,7 @@ const Sidebar = () => {
   ];
 
   const [selected, setSelected] = useState<string>("");
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     setSelected(window.location.pathname);
@@ -46,18 +43,18 @@ const Sidebar = () => {
   return (
     <nav
       className={
-        "min-w-80 w-80 h-screen flex flex-col border-r gap-1.5 justify-between overflow-y-hidden"
+        "min-w-80 w-80 h-screen flex flex-col border-r gap-1.5 justify-between overflow-y-hidden bg-white transition-colors dark:bg-gray-black dark:border-r-gray-200"
       }
     >
       <div>
         <header
           className={
-            "text-green-400 text-5xl text-center py-7 font-bold hover:tracking-widest transition-all duration-700"
+            "text-green-400 text-5xl text-center py-7 font-bold hover:tracking-widest transition-all duration-700 font-raleway dark:text-green-100"
           }
         >
           Preview
         </header>
-        <hr className={"mx-6"} />
+        <hr className={"mx-6 dark:border-gray-700"} />
         <ul
           className={"flex flex-col gap-1.5 items-center mx-4 p-2"}
           aria-label={"사이드바 링크 리스트"}
@@ -75,16 +72,30 @@ const Sidebar = () => {
           })}
         </ul>
       </div>
-      <a
-        className={"pb-4 px-6 text-medium-m hover:text-gray-500"}
-        href={"https://github.com/boostcampwm-2024/web27-Preview"}
-        aria-label={"리포지토리 링크"}
-        target={"_blank"}
-      >
-        <span className={"inline-flex items-center gap-1"}>
-          BOOSKIT <FaExternalLinkAlt size={12} />
-        </span>
-      </a>
+      <div className={"pb-4 px-6 inline-flex items-center justify-between"}>
+        <a
+          className={
+            "text-medium-m dark:text-white text-black hover:text-gray-500"
+          }
+          href={"https://github.com/boostcampwm-2024/web27-Preview"}
+          aria-label={"리포지토리 링크"}
+          target={"_blank"}
+        >
+          <span className={"inline-flex items-center gap-1"}>
+            <FaGithub /> BOOSKIT
+          </span>
+        </a>
+        <button
+          onClick={toggleTheme}
+          className={
+            "text-xl dark:bg-gray-100 dark:text-gray-black border-gray-200 rounded-full p-2 dark:border-gray-200 hover:bg-gray-200/80 dark:hover:bg-gray-200/80  transition-colors"
+          }
+          aria-roledescription={"라이트모드와 다크모드 간 전환 버튼"}
+          aria-label={"테마 변경버튼"}
+        >
+          {theme === "light" ? <MdLightMode /> : <MdDarkMode />}
+        </button>
+      </div>
     </nav>
   );
 };
@@ -103,8 +114,8 @@ const SidebarMenu = ({
   isSelected = false,
 }: SidebarMenuProps) => {
   const activeClass = isSelected
-    ? "bg-green-100 text-white"
-    : "bg-transparent transition-color duration-300 hover:bg-gray-200/30";
+    ? "bg-green-100 dark:text-black text-white"
+    : "bg-transparent dark:text-white text-black transition-color duration-300 hover:bg-gray-200/30";
 
   return (
     <li
