@@ -1,5 +1,5 @@
 import useSessionFormStore from "@/stores/useSessionFormStore";
-import SelectTitle from "../../../../common/SelectTitle";
+import SelectTitle from "@/components/common/SelectTitle";
 
 const AccessSection = () => {
   const { access, setAccess } = useSessionFormStore();
