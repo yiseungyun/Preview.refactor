@@ -2,18 +2,22 @@ import { DotLottiePlayer } from "@dotlottie/react-player";
 
 interface LoadingIndicator {
   loadingState: boolean;
+  text?: string;
 }
 
-const LoadingIndicator = ({ loadingState }: LoadingIndicator) => {
+const LoadingIndicator = ({ loadingState, text }: LoadingIndicator) => {
   return (
     loadingState && (
-      <div className={"w-full flex justify-center"}>
+      <div className={"w-full flex flex-col items-center "}>
         <DotLottiePlayer
-          src={"@src/../public/assets/loadingIndicator.lottie"}
+          src={"/assets/loadingIndicator.lottie"}
           autoplay={true}
           loop={true}
           style={{ width: 200, height: 200 }}
         />
+        {text && (
+          <p className={"animate-pulse text-xl text-gray-400"}>{text}</p>
+        )}
       </div>
     )
   );
