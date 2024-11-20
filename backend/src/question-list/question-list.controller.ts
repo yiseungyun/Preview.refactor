@@ -95,4 +95,34 @@ export class QuestionListController {
             });
         }
     }
+
+    @Post("category")
+    async getAllQuestionListsByCategoryName(
+        @Res() res,
+        @Body()
+        body: {
+            categoryName: string;
+        }
+    ) {
+        try {
+            const { categoryName } = body;
+            const allQuestionLists: GetAllQuestionListDto[] =
+                await this.questionService.getAllQuestionListsByCategoryName(
+                    categoryName
+                );
+            return res.send({
+                success: true,
+                message: "All question lists received successfully.",
+                data: {
+                    allQuestionLists,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to get all question lists.",
+                error: error.message,
+            });
+        }
+    }
 }

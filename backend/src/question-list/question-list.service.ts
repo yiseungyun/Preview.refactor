@@ -35,6 +35,38 @@ export class QuestionListService {
         return allQuestionLists;
     }
 
+    async getAllQuestionListsByCategoryName(categoryName: string) {
+        const allQuestionLists: GetAllQuestionListDto[] = [];
+
+        const categoryId =
+            await this.questionListRepository.getCategoryIdByName(categoryName);
+
+        if (!categoryId) {
+            return [];
+        }
+
+        const publicQuestionLists =
+            await this.questionListRepository.findPublicQuestionListsByCategoryId(
+                categoryId
+            );
+
+        for (const publicQuestionList of publicQuestionLists) {
+            const { id, title } = publicQuestionList;
+            const categoryNames: string[] =
+                await this.questionListRepository.findCategoryNamesByQuestionListId(
+                    id
+                );
+
+            const questionList: GetAllQuestionListDto = {
+                id,
+                title,
+                categoryNames,
+            };
+            allQuestionLists.push(questionList);
+        }
+        return allQuestionLists;
+    }
+
     // 질문 생성 메서드
     async createQuestionList(createQuestionListDto: CreateQuestionListDto) {
         const { title, categoryNames, isPublic, userId } =

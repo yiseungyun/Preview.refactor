@@ -16,7 +16,26 @@ export class QuestionListRepository {
         });
     }
 
-    async findCategoryNamesByQuestionListId(questionListId) {
+    async getCategoryIdByName(categoryName: string) {
+        const category = await this.dataSource.getRepository(Category).findOne({
+            where: { name: categoryName },
+            select: ["id"],
+        });
+
+        return category?.id || null;
+    }
+
+    findPublicQuestionListsByCategoryId(categoryId: number) {
+        return this.dataSource.getRepository(QuestionList).find({
+            where: {
+                isPublic: true,
+                categories: { id: categoryId },
+            },
+            relations: ["categories"],
+        });
+    }
+
+    async findCategoryNamesByQuestionListId(questionListId: number) {
         const questionList = await this.dataSource
             .getRepository(QuestionList)
             .findOne({
