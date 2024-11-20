@@ -11,8 +11,26 @@ import Pagination from "./Pagination";
 const ListSelectModal = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { isModalOpen, closeModal } = useModalStore();
-  const { setTab, setSelectedOpenId } = useSessionFormStore();
-  const [page, setPage] = useState(1);
+  const { tab, setTab, setSelectedOpenId } = useSessionFormStore();
+  const [myListPage, setMyListPage] = useState(1);
+  const [savedListPage, setSavedListPage] = useState(1);
+
+  const totalPages = {
+    myList: 14,
+    savedList: 8,
+  };
+
+  const getCurrentPageProps = () => ({
+    currentPage: tab === "myList" ? myListPage : savedListPage,
+    totalPage: totalPages[tab],
+    onPageChange: (page: number) => {
+      if (tab === "myList") {
+        setMyListPage(page);
+      } else {
+        setSavedListPage(page);
+      }
+    },
+  });
 
   useModal({ isModalOpen, dialogRef });
 
@@ -34,8 +52,8 @@ const ListSelectModal = () => {
       <div className="mx-8 mb-4">
         <SearchBar text="질문지를 검색해주세요" />
       </div>
-      <QuestionList />
-      <Pagination currentPage={page} totalPage={14} onPageChange={setPage} />
+      <QuestionList page={getCurrentPageProps().currentPage} />
+      <Pagination {...getCurrentPageProps()} />
     </dialog>
   );
 };
