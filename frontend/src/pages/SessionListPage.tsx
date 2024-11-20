@@ -6,21 +6,20 @@ import SearchBar from "@/components/common/SearchBar.tsx";
 import useToast from "@/hooks/useToast";
 import Sidebar from "@components/common/Sidebar.tsx";
 import Select from "@components/common/Select.tsx";
+import axios from "axios";
 
 interface Session {
   id: number;
   title: string;
-  category: string;
-  sessionStatus: "open" | "close";
+  category?: string;
+  inProgress: boolean;
   host: {
-    nickname: string;
+    nickname?: string;
+    socketId: string;
   };
-  participant: number;
+  participant: number; // 현재 참여자
   maxParticipant: number;
-}
-enum SessionStatus {
-  OPEN = "open",
-  CLOSE = "close",
+  createdAt: number;
 }
 
 const SessionListPage = () => {
@@ -30,47 +29,58 @@ const SessionListPage = () => {
   const toast = useToast();
 
   useEffect(() => {
-    const sessionData: Session[] = [
-      {
-        id: 1,
-        title: "프론트엔드 초보만 들어올 수 있음",
-        category: "프론트엔드",
-        sessionStatus: "open",
-        host: {
-          nickname: "J133 네모정",
-        },
-        participant: 1,
-        maxParticipant: 4,
-      },
-      {
-        id: 2,
-        title: "백엔드 초보만 들어올 수 있음",
-        category: "백엔드",
-        sessionStatus: "close",
-        host: {
-          nickname: "J000",
-        },
-        participant: 1,
-        maxParticipant: 2,
-      },
-    ];
-
-    setTimeout(() => {
-      setSessionList(sessionData);
-      setListLoading(false);
-    }, 100);
+    getSessionList();
+    setListLoading(false);
   }, []);
 
-  const renderSessionList = (sessionStatus: SessionStatus) => {
+  const getSessionList = async () => {
+    try {
+      const response = await axios.get("/api/rooms");
+      setSessionList(response.data ?? []);
+    } catch (e) {
+      console.error("세션리스트 불러오기 실패", e);
+      const sessionData: Session[] = [
+        {
+          id: 1,
+          title: "프론트엔드 초보만 들어올 수 있음",
+          category: "프론트엔드",
+          inProgress: false,
+          host: {
+            nickname: "J133 네모정",
+            socketId: "2222",
+          },
+          participant: 1,
+          maxParticipant: 4,
+          createdAt: 1231231230,
+        },
+        {
+          id: 2,
+          title: "백엔드 고수만 들어올 수 있음",
+          category: "백엔드",
+          inProgress: true,
+          host: {
+            nickname: "J187 카드뮴",
+            socketId: "2221232",
+          },
+          participant: 1,
+          maxParticipant: 2,
+          createdAt: 1231231230,
+        },
+      ];
+      setSessionList(sessionData);
+    }
+  };
+
+  const renderSessionList = (isInProgress: boolean) => {
     return sessionList.map((session) => {
       return (
-        session.sessionStatus === sessionStatus && (
+        session.inProgress === isInProgress && (
           <SessionCard
             key={session.id}
-            sessionStatus={session.sessionStatus}
+            inProgress={session.inProgress}
             category={session.category}
             title={session.title}
-            host={session.host.nickname}
+            host={session.host.nickname ?? "익명"}
             questionListId={1}
             participant={session.participant}
             maxParticipant={session.maxParticipant}
@@ -119,7 +129,7 @@ const SessionListPage = () => {
                 {sessionList.length <= 0 ? (
                   <li>아직 아무도 세션을 열지 않았어요..!</li>
                 ) : (
-                  renderSessionList(SessionStatus.OPEN)
+                  renderSessionList(false)
                 )}
               </>
             )}
@@ -135,7 +145,7 @@ const SessionListPage = () => {
                 {sessionList.length <= 0 ? (
                   <li>아직 아무도 세션을 열지 않았어요..!</li>
                 ) : (
-                  renderSessionList(SessionStatus.CLOSE)
+                  renderSessionList(true)
                 )}
               </>
             )}
