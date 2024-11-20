@@ -41,7 +41,11 @@ const SessionListPage = () => {
         setSessionList(response.data ?? []);
         setListLoading(false);
         setInProgressListLoading(false);
-      } else throw new Error("Invalid response data");
+      } else {
+        setSessionList([]);
+        setListLoading(false);
+        setInProgressListLoading(false);
+      }
     } catch (e) {
       console.error("세션리스트 불러오기 실패", e);
       const sessionData: Session[] = [
