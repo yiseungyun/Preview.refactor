@@ -24,6 +24,12 @@ const QuestionInput = () => {
     }
   };
 
+  const keyUpHandler = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+    }
+  };
+
   const enterHandler = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -51,6 +57,7 @@ const QuestionInput = () => {
         placeholder="추가할 질문을 입력하세요"
         value={inputValue}
         onChange={changeHandler}
+        onKeyUp={keyUpHandler}
         onKeyDown={enterHandler}
         maxLength={100}
         rows={1}

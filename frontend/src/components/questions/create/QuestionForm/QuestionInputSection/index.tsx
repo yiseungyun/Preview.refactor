@@ -8,9 +8,9 @@ const QuestionInputSection = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex gap-1">
+      <div className="flex gap-1 items-center h-auto">
         <SelectTitle title="질문" />
-        <span className="text-medium-r text-gray-500">
+        <span className="text-medium-s text-gray-500 h-8">
           {questionList.length}/20
         </span>
       </div>
