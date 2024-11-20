@@ -1,46 +1,53 @@
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "../user/user.repository";
-import { Profile } from "passport-github";
 import { Transactional } from "typeorm-transactional";
+// import { JwtService } from "@nestjs/jwt";
+// import { CreateJwtTokenDto } from "./dto/create-jwt-token.dto";
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(
+        private readonly userRepository: UserRepository
+        // private readonly jwtService: JwtService
+    ) {}
 
     @Transactional()
-    public async githubLogin(profile: Profile) {
-        const user = await this.userRepository.getUserByGithubId(
-            parseInt(profile.id)
-        );
+    public async getUserByGithubId(id: number) {
+        const user = await this.userRepository.getUserByGithubId(id);
 
         if (!user)
             return await this.userRepository.createUser({
-                githubId: parseInt(profile.id),
-                username: `camper_${profile.id}`,
+                githubId: id,
+                username: `camper_${id}`,
             });
 
         return user;
     }
 
-    // public oauthLogin(code: string) {
-    //     // 1. GitHub OAuth 토큰 획득
-    //     const accessToken = githubClient.getAccessToken(code);
+    // public async createJwtToken(userPayload: CreateJwtTokenDto) {
+    //     const accessToken = this.jwtService.sign(
+    //         {
+    //             id: userPayload.id,
+    //             username: userPayload.username,
+    //         },
+    //         {
+    //             secret: process.env.JWT_ACCESS_TOKEN_SECRET_KEY,
+    //             expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+    //         }
+    //     );
     //
-    //     // 1. User DB를 토큰이나, 깃허브 사용자 정보를 통해서 재구성하는 행위
-    //     // 2. nickname => 캠퍼_{github_username}
-    //     // 3. id => AUTO INCREMENT, password => null
-    //     // 4. user_id => null
+    //     const refreshToken = this.jwtService.sign(
+    //         {},
+    //         {
+    //             secret: process.env.JWT_REFRESH_TOKEN_SECRET_KEY,
+    //             expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+    //             audience: String(userPayload.userId),
+    //         }
+    //     );
     //
-    //     // 2. GitHub API로 사용자 정보 조회
-    //     const userInfo = githubClient.getUserInfo(accessToken);
-    //
-    //     // 3. 자체 DB에 사용자 정보 저장
-    //     const user = userRepository.findByGithubId(userInfo.getId())
-    //         .orElseGet(() -> createUser(userInfo));
-    //
-    //     // 4. JWT 발급 (자체 서비스용)
-    //     const jwt = jwtProvider.generateToken(user);
-    //
-    //     return new UserResponse(user, jwt);
+    //     return {
+    //         accessToken,
+    //         refreshToken,
+    //     };
     // }
 }
