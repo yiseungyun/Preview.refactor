@@ -36,7 +36,8 @@ const SessionListPage = () => {
   const getSessionList = async () => {
     try {
       const response = await axios.get("/api/rooms");
-      setSessionList(response.data ?? []);
+      if (Array.isArray(response.data)) setSessionList(response.data ?? []);
+      else throw new Error("Invalid response data");
     } catch (e) {
       console.error("세션리스트 불러오기 실패", e);
       const sessionData: Session[] = [
