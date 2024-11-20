@@ -70,6 +70,23 @@ export const data: Data = {
         },
       ],
     },
+    {
+      id: 4,
+      user_name: "사용자",
+      category: "프론트엔드",
+      title: "프론트엔드 면접 질문이심3",
+      count: 10,
+      questions: [
+        {
+          id: 123,
+          question: "클로저에 대해 설명해주세요.",
+        },
+        {
+          id: 1231,
+          question: "클로저에 대해 설명해주세요. 22",
+        },
+      ],
+    },
   ],
   savedList: [
     {

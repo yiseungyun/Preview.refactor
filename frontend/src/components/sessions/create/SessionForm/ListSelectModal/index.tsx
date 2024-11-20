@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import CategoryTap from "./CategoryTab";
 import SearchBar from "@/components/common/SearchBar";
@@ -6,11 +6,13 @@ import useModalStore from "@/stores/useModalStore";
 import useModal from "@/hooks/useModal";
 import QuestionList from "./QuestionList";
 import useSessionFormStore from "@/stores/useSessionFormStore";
+import Pagination from "./Pagination";
 
 const ListSelectModal = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { isModalOpen, closeModal } = useModalStore();
   const { setTab, setSelectedOpenId } = useSessionFormStore();
+  const [page, setPage] = useState(1);
 
   useModal({ isModalOpen, dialogRef });
 
@@ -29,10 +31,11 @@ const ListSelectModal = () => {
           <IoMdClose className="text-gray-black w-7 h-7" />
         </button>
       </div>
-      <div className="mx-8">
+      <div className="mx-8 mb-4">
         <SearchBar text="질문지를 검색해주세요" />
       </div>
       <QuestionList />
+      <Pagination currentPage={page} totalPage={14} onPageChange={setPage} />
     </dialog>
   );
 };

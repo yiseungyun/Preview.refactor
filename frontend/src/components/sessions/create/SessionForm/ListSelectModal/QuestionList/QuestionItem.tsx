@@ -79,10 +79,10 @@ const QuestionItem = ({ item }: { item: ListItem }) => {
       </div>
       {isListOpen ? (
         <div className="bg-gray-50 px-20 py-5">
-          {item.questions.map((item) => {
+          {item.questions.map((item, index) => {
             return (
-              <p key={item.id} className="text-medium-r text-gray-600">
-                {item.question}
+              <p key={item.id} className="text-medium-r p-0.5 text-gray-600">
+                Q{index + 1}. {item.question}
               </p>
             );
           })}
