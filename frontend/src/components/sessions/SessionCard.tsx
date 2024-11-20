@@ -33,9 +33,9 @@ const SessionCard = ({
         >
           {category}
         </span>
-        <h3 className={"text-semibold-r mt-[0.5rem]"}>{title}</h3>
+        <h3 className={"text-semibold-m mt-[0.5rem]"}>{title}</h3>
         <p className={"text-medium-r text-gray-400"}>
-          질문지인데 누르면 질문 리스트를 볼 수 있임 {questionListId}
+          질문지인데 누르면 질문 리스트를 볼 수 있음 {questionListId}
         </p>
         <div
           className={
@@ -53,7 +53,7 @@ const SessionCard = ({
           {sessionStatus === "open" ? (
             <button
               className={
-                "text-semibold-s text-green-500 inline-flex items-center gap-[0.5rem] hover:gap-[0.375rem] transition-all"
+                "text-semibold-r text-green-500 inline-flex items-center gap-[0.5rem] hover:gap-[0.375rem] transition-all"
               }
               onClick={onEnter}
             >

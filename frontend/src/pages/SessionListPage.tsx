@@ -85,9 +85,9 @@ const SessionListPage = () => {
   };
 
   return (
-    <section className={"flex w-screen h-screen "}>
+    <section className={"flex w-screen h-screen"}>
       <Sidebar />
-      <div className={"flex flex-col gap-8 max-w-7xl p-20"}>
+      <div className={"flex flex-col gap-8 max-w-7xl px-12 pt-20"}>
         <div>
           <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
           <div className={"h-11 flex gap-2 w-[47.5rem]"}>
@@ -110,7 +110,7 @@ const SessionListPage = () => {
           </div>
         </div>
         <div>
-          <h2 className={"text-semibold-l mb-6"}>공개된 세션 목록</h2>
+          <h2 className={"text-semibold-l mb-4"}>공개된 세션 목록</h2>
           <ul>
             {listLoading ? (
               <>loading</>
@@ -126,7 +126,7 @@ const SessionListPage = () => {
           </ul>
         </div>
         <div>
-          <h2 className={"text-semibold-l mb-6"}>진행 중인 세션 목록</h2>
+          <h2 className={"text-semibold-l mb-4"}>진행 중인 세션 목록</h2>
           <ul>
             {listLoading ? (
               <>loading</>
