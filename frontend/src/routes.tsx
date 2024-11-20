@@ -6,6 +6,7 @@ import SessionPage from "./pages/SessionPage";
 import ErrorPage from "@/pages/ErrorPage.tsx";
 import LoginPage from "@/pages/LoginPage.tsx";
 import QuestionListPage from "@/pages/QuestionListPage.tsx";
+import AuthCallbackPage from "@/pages/Login/AuthCallbackPage.tsx";
 
 export const routes = [
   {
@@ -28,6 +29,10 @@ export const routes = [
   {
     element: <LoginPage />,
     path: "/login",
+  },
+  {
+    element: <AuthCallbackPage />,
+    path: "/login/callback",
   },
   {
     element: <CreateSessionPage />,

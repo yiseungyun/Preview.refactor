@@ -4,6 +4,17 @@ import { DotLottiePlayer } from "@dotlottie/react-player";
 import mainSnowman from "../../public/assets/noondeumyum.lottie";
 
 const LoginPage = () => {
+  const handleOAuthLogin = (provider: "github" | "google") => {
+    if (provider === "github") {
+      // 깃허브 로그인
+      window.location.assign(
+        `https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_OAUTH_GITHUB_ID}&redirect_uri=${import.meta.env.VITE_OAUTH_GITHUB_CALLBACK}`
+      );
+    } else if (provider === "google") {
+      // 구글 로그인
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-8">
       {/* 전체 컨테이너 */}
@@ -84,6 +95,7 @@ const LoginPage = () => {
                   </div>
                   {/* OAuth 로그인 버튼 */}
                   <button
+                    onClick={() => handleOAuthLogin("github")}
                     type="button"
                     className="w-full bg-gray-900 text-white py-3 rounded-md hover:bg-gray-800 transition-colors font-medium text-lg shadow-16 flex items-center justify-center gap-3"
                   >
