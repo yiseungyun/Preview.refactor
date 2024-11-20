@@ -11,7 +11,7 @@ import { QuestionListService } from "./question-list.service";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { CreateQuestionDto } from "./dto/create-question.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
-import { JwtAuthenticationGuard } from "../auth/jwt.guard";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller("question-list")
 export class QuestionListController {
@@ -39,7 +39,7 @@ export class QuestionListController {
     }
 
     @Post()
-    // @UseGuards(JwtAuthenticationGuard)
+    @UseGuards(AuthGuard("jwt"))
     async createQuestionList(
         @Req() req,
         @Res() res,
@@ -59,8 +59,7 @@ export class QuestionListController {
                 title,
                 categoryNames,
                 isPublic,
-                // userId: req.user.id,
-                userId: 1,
+                userId: req.user.userId,
             };
 
             // 질문지 생성
