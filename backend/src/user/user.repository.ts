@@ -16,6 +16,14 @@ export class UserRepository {
             .getOne();
     }
 
+    getUserByUserId(userId: number) {
+        return this.dataSource
+            .getRepository(User)
+            .createQueryBuilder("user")
+            .where("user.id = :id", { id: userId })
+            .getOne();
+    }
+
     createUser(createUserDto: CreateUserDto) {
         return this.dataSource.getRepository(User).save(createUserDto);
     }

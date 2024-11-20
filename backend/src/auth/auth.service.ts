@@ -4,7 +4,6 @@ import { Transactional } from "typeorm-transactional";
 import { JwtService } from "@nestjs/jwt";
 import "dotenv/config";
 import { Response } from "express";
-import { UserDto } from "../user/dto/user.dto";
 
 @Injectable()
 export class AuthService {
@@ -17,7 +16,7 @@ export class AuthService {
     async githubLogin(req: any, res: Response) {
         try {
             // 유저 가져오기
-            let user: UserDto = await this.userRepository.getUserByGithubId(
+            let user = await this.userRepository.getUserByGithubId(
                 req.user.githubId
             );
 
@@ -31,7 +30,7 @@ export class AuthService {
 
             // access token, refresh token 발급
             const userPayload = {
-                githubId: user.githubId,
+                userId: user.id,
                 username: user.username,
             };
             const accessToken = this.jwtService.sign(userPayload, {
@@ -44,7 +43,7 @@ export class AuthService {
                 {
                     secret: process.env.JWT_REFRESH_TOKEN_SECRET_KEY,
                     expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
-                    audience: String(user.githubId),
+                    audience: String(user.id),
                 }
             );
 

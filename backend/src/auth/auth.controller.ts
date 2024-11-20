@@ -12,7 +12,6 @@ export class AuthController {
     @UseGuards(AuthGuard("github"))
     async githubAuth() {}
 
-    /* Get Google Auth Callback */
     @Get("github/login")
     @UseGuards(AuthGuard("github"))
     async githubAuthCallback(@Req() req, @Res() res: Response) {
@@ -32,11 +31,11 @@ export class AuthController {
         }
     }
 
-    @Get("github/whoami")
+    @Get("whoami")
     @UseGuards(JwtAuthenticationGuard)
     async whoami(@Req() req, @Res() res: Response) {
         return res.json({
-            githubId: req.user.githubId,
+            userId: req.user.userId,
             username: req.user.username,
         });
     }

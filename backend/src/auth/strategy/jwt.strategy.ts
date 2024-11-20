@@ -14,14 +14,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        const { githubId } = payload;
-        const user = await this.userRepository.getUserByGithubId(githubId);
+        const { userId } = payload;
+        const user = await this.userRepository.getUserByUserId(userId);
         if (!user) {
             throw new UnauthorizedException({ message: "user not exists." });
         }
 
         return {
-            githubId: user.githubId,
+            userId: user.id,
             username: user.username,
         };
     }
