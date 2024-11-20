@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import useSessionFormStore from "@/stores/useSessionFormStore";
 import Sidebar from "@components/common/Sidebar.tsx";
+import { sectionWithSidebar } from "@/constraints/LayoutConstant.ts";
 
 const CreateSessionPage = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const CreateSessionPage = () => {
   }, []);
 
   return (
-    <section className="flex w-screen h-screen">
+    <section className={`${sectionWithSidebar}`}>
       <Sidebar />
       <div className={"p-20"}>
         <button
