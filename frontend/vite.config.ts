@@ -14,4 +14,15 @@ export default defineConfig({
       "@stores": resolve(__dirname, "src/stores"),
     },
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ""), // 필요한 경우 경로 재작성
+      },
+    },
+  },
+  assetsInclude: ["**/*.lottie"],
 });
