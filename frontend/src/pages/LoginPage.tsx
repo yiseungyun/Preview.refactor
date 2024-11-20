@@ -16,11 +16,11 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-8">
       {/* 전체 컨테이너 */}
       <div className="w-full max-w-7xl mx-auto px-8">
         {/* 전체 콘텐츠를 감싸는 프레임 */}
-        <div className="h-[640px] bg-gray-800/50 backdrop-blur-md rounded-2xl border border-gray-700 shadow-xl overflow-hidden">
+        <div className="h-[640px] bg-gray-800/50 backdrop-blur-md rounded-2xl shadow-24 overflow-hidden">
           {/* 내부 콘텐츠 그리드 */}
           <div className="flex h-full">
             {/* 왼쪽 콘텐츠 영역 - 7칸 차지 */}
@@ -37,8 +37,8 @@ const LoginPage = () => {
             </div>
 
             {/* 오른쪽 로그인 폼 - 5칸 차지 */}
-            <div className="col-span-5 p-16 bg-gray-50 w-full lg:w-5/12">
-              <h1 className="text-7xl font-pretendard font-bold black mb-8 tracking-tight text-center">
+            <div className="col-span-5 p-16 bg-gray-white w-full lg:w-5/12">
+              <h1 className="text-6xl font-raleway font-bold black mb-11 tracking-tight text-center">
                 Preview
               </h1>
               <div className="w-full max-w-md mx-auto">
@@ -63,7 +63,7 @@ const LoginPage = () => {
 
                   <button
                     type="submit"
-                    className="w-full bg-emerald-600 text-white py-3 rounded-md hover:bg-emerald-500 transition-colors font-medium text-lg shadow-lg"
+                    className="w-full bg-green-200 text-white py-3 rounded-md hover:bg-green-100 transition-colors font-medium text-lg shadow-16"
                   >
                     로그인
                   </button>
@@ -71,13 +71,13 @@ const LoginPage = () => {
                   <div className="flex items-center justify-between text-base text-gray-600">
                     <button
                       type="button"
-                      className="hover:text-emerald-600 transition-colors"
+                      className="hover:text-green-300 transition-colors"
                     >
                       회원가입
                     </button>
                     <button
                       type="button"
-                      className="hover:text-emerald-600 transition-colors"
+                      className="hover:text-green-300 transition-colors"
                     >
                       비밀번호 찾기
                     </button>
@@ -97,14 +97,14 @@ const LoginPage = () => {
                   <button
                     onClick={() => handleOAuthLogin("github")}
                     type="button"
-                    className="w-full bg-gray-900 text-white py-3 rounded-md hover:bg-gray-800 transition-colors font-medium text-lg shadow-lg flex items-center justify-center gap-3"
+                    className="w-full bg-gray-900 text-white py-3 rounded-md hover:bg-gray-800 transition-colors font-medium text-lg shadow-16 flex items-center justify-center gap-3"
                   >
                     <FaGithub className="w-5 h-5" />
                     GitHub으로 계속하기
                   </button>
                   <button
                     type="button"
-                    className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-400 transition-colors font-medium text-lg shadow-lg flex items-center justify-center gap-3"
+                    className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-400 transition-colors font-medium text-lg shadow-16 flex items-center justify-center gap-3"
                   >
                     <FaGoogle className="w-5 h-5" />
                     Google으로 그만하기

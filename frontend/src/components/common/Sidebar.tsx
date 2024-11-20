@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ReactElement, useEffect, useState } from "react";
 import { FaClipboardList, FaHome, FaLayerGroup } from "react-icons/fa";
 import { MdDarkMode, MdLightMode, MdLogout } from "react-icons/md";
-import { FaRegCircleUser } from "react-icons/fa6";
+import { IoPersonSharp } from "react-icons/io5";
 import { FaGithub } from "react-icons/fa6";
 import useTheme from "@hooks/useTheme.ts";
 const Sidebar = () => {
@@ -25,7 +25,7 @@ const Sidebar = () => {
     {
       path: "/login",
       label: "마이페이지",
-      icon: <FaRegCircleUser />,
+      icon: <IoPersonSharp />,
     },
     {
       path: "/logout",
@@ -43,7 +43,7 @@ const Sidebar = () => {
   return (
     <nav
       className={
-        "min-w-80 w-80 h-screen flex flex-col border-r gap-1.5 justify-between overflow-y-hidden bg-white transition-colors dark:bg-gray-black dark:border-r-gray-400"
+        "min-w-17.5 w-17.5 h-screen flex flex-col border-r-custom-s gap-1.5 justify-between overflow-y-hidden bg-white transition-colors dark:bg-gray-black dark:border-r-gray-400"
       }
     >
       <div>
@@ -54,9 +54,9 @@ const Sidebar = () => {
         >
           Preview
         </header>
-        <hr className={"mx-6 dark:border-gray-400"} />
+        <hr className={"mx-4 dark:border-gray-400"} />
         <ul
-          className={"flex flex-col gap-1.5 items-center mx-4 p-2"}
+          className={"flex flex-col gap-2 items-center mx-2 my-2 p-2"}
           aria-label={"사이드바 링크 리스트"}
         >
           {routes.map((route) => {
@@ -114,15 +114,15 @@ const SidebarMenu = ({
   isSelected = false,
 }: SidebarMenuProps) => {
   const activeClass = isSelected
-    ? "bg-green-100 dark:text-black text-white"
-    : "bg-transparent dark:text-white text-black transition-color duration-300 hover:bg-gray-200/30";
+    ? "bg-green-100 dark:text-gray-black text-white text-semibold-m"
+    : "bg-transparent dark:text-white text-gray-black text-medium-l transition-color duration-300 hover:bg-gray-200/30";
 
   return (
     <li
-      className={`${activeClass} flex-nowrap text-nowrap text-bold-r px-4 p-2 w-full rounded-lg cursor-pointer`}
+      className={`${activeClass} flex items-center flex-nowrap text-nowrap px-4 p-2 w-full rounded-lg cursor-pointer`}
       aria-label={label + "(으)로 이동하는 버튼"}
     >
-      <Link className={"inline-flex gap-2 items-center w-full"} to={path}>
+      <Link className={"inline-flex gap-3 items-center w-full"} to={path}>
         {icon}
         <span>{label}</span>
       </Link>

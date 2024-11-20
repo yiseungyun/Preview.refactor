@@ -1,9 +1,9 @@
-import useSessionFormStore from "@/stores/useSessionFormStore";
 import SelectTitle from "@/components/common/SelectTitle";
 import AccessButton from "@/components/common/AccessButton";
+import useQuestionFormStore from "@/stores/useQuestionFormStore";
 
 const AccessSection = () => {
-  const { access, setAccess } = useSessionFormStore();
+  const { access, setAccess } = useQuestionFormStore();
 
   return (
     <div className="w-full">

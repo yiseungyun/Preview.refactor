@@ -42,6 +42,8 @@ export default {
       },
       boxShadow: {
         8: "0 0 0.2rem 0.125rem rgba(182, 182, 182, 0.08)",
+        16: "0 0 0.125rem 0.075rem rgba(182, 182, 182, 0.16)",
+        24: "0 0 0.4rem 0.15rem rgba(182, 182, 182, 0.24)",
       },
       fontSize: {
         // Bold(700) sizes
@@ -51,19 +53,18 @@ export default {
         "bold-s": ["1.125rem", { lineHeight: "auto", fontWeight: "700" }],
 
         // SemiBold(600) sizes
-        "semibold-l": ["1.375rem", { lineHeight: "auto", fontWeight: "600" }],
-        "semibold-m": ["1.25rem", { lineHeight: "auto", fontWeight: "600" }],
-        "semibold-r": ["1.125rem", { lineHeight: "auto", fontWeight: "600" }],
-        "semibold-s": ["1rem", { lineHeight: "auto", fontWeight: "600" }],
+        "semibold-l": ["1.25rem", { lineHeight: "auto", fontWeight: "600" }],
+        "semibold-m": ["1.125rem", { lineHeight: "auto", fontWeight: "600" }],
+        "semibold-r": ["1rem", { lineHeight: "auto", fontWeight: "600" }],
+        "semibold-s": ["0.8rem", { lineHeight: "auto", fontWeight: "600" }],
 
         // Medium(500) sizes
-        "medium-xl": ["1.375rem", { lineHeight: "auto", fontWeight: "500" }],
-        "medium-l": ["1.25rem", { lineHeight: "auto", fontWeight: "500" }],
-        "medium-m": ["1.125rem", { lineHeight: "auto", fontWeight: "500" }],
-        "medium-r": ["1rem", { lineHeight: "auto", fontWeight: "500" }],
+        "medium-xl": ["1.25rem", { lineHeight: "auto", fontWeight: "500" }],
+        "medium-l": ["1.125rem", { lineHeight: "auto", fontWeight: "500" }],
+        "medium-m": ["1rem", { lineHeight: "auto", fontWeight: "500" }],
+        "medium-r": ["0.9rem", { lineHeight: "auto", fontWeight: "500" }],
         "medium-s": ["0.875rem", { lineHeight: "auto", fontWeight: "500" }],
         "medium-xs": ["0.75rem", { lineHeight: "auto", fontWeight: "500" }],
-        "medium-xxs": ["0.625rem", { lineHeight: "auto", fontWeight: "500" }],
       },
       fontFamily: {
         pretendard: ["Pretendard", "sans-serif"],
@@ -71,10 +72,11 @@ export default {
       },
       spacing: {
         0.375: "0.375rem",
+        17.5: "17.5rem",
         27.5: "27.5rem",
         42.5: "42.5rem",
         47.5: "47.5rem",
-      },
+      }, 
     },
   },
   plugins: [],

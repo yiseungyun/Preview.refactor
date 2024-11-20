@@ -1,4 +1,3 @@
-import { FaPlus } from "react-icons/fa6";
 import Sidebar from "@components/common/Sidebar.tsx";
 import SearchBar from "@components/common/SearchBar.tsx";
 import QuestionsPreviewCard from "@components/questions/QuestionsPreviewCard.tsx";
@@ -6,6 +5,8 @@ import Select from "@components/common/Select.tsx";
 import useToast from "@hooks/useToast.ts";
 import { useEffect, useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
+import { IoMdAdd } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 interface Question {
   id: number;
@@ -21,6 +22,7 @@ const QuestionList = () => {
   // 더미 데이터
   const [questionList, setQuestionList] = useState<Question[]>([]);
   const [questionLoading, setQuestionLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const questionLists = [
@@ -86,14 +88,14 @@ const QuestionList = () => {
   };
 
   return (
-    <section className="flex w-screen min-h-screen ">
+    <section className="flex w-screen min-h-screen">
       <Sidebar />
-      <div className="max-w-7xl w-full mx-auto p-8">
+      <div className="max-w-7xl w-full px-12 pt-20">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-black dark:text-white my-4">
+          <h1 className="text-bold-l text-gray-black dark:text-white mb-6">
             질문지 목록
           </h1>
-          <div className="flex gap-4 items-stretch justify-between">
+          <div className="flex gap-2 items-stretch justify-between">
             <SearchBar text={"질문지 검색하기"} />
             <Select
               options={[
@@ -102,13 +104,18 @@ const QuestionList = () => {
                 { label: "CS", value: "CS" },
               ]}
             />
-            <button className="flex items-center gap-2 px-4 py-3 bg-green-200 text-white rounded-lg hover:bg-emerald-500 transition-colors">
-              <FaPlus className="w-5 h-5" />
+            <button
+              className={
+                "flex justify-center items-center fill-current min-w-11 min-h-11 bg-green-200 rounded-custom-m box-border"
+              }
+              onClick={() => navigate("/questions/create")}
+            >
+              <IoMdAdd className="w-[1.35rem] h-[1.35rem] text-gray-white" />
             </button>
           </div>
         </div>
         <LoadingIndicator loadingState={questionLoading} />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3  gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {questionList.map((list) => (
             <QuestionsPreviewCard
               key={list.id}

@@ -1,6 +1,6 @@
 import useModalStore from "@/stores/useModalStore";
 import useSessionFormStore from "@/stores/useSessionFormStore";
-import SelectTitle from "../../SelectTitle";
+import SelectTitle from "@/components/common/SelectTitle";
 import { MdOutlineArrowForwardIos } from "react-icons/md";
 
 const QuestionListSection = () => {
