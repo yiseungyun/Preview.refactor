@@ -1,24 +1,29 @@
-import { Controller, Get, Redirect, Req, Res, UseGuards } from "@nestjs/common";
+import { Controller, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+import { Request } from "express";
+import { AuthService } from "./auth.service";
+import { GithubProfile } from "./decorator/gitub-profile.decorator";
+import { Profile } from "passport-github";
 
 @Controller("auth")
 export class AuthController {
-    @Get("github")
-    @UseGuards(AuthGuard("github"))
-    async githubLogin(): Promise<void> {}
+    constructor(private readonly authService: AuthService) {}
 
-    @Get("github/login")
+    @Post("github")
     @UseGuards(AuthGuard("github"))
-    @Redirect()
-    async githubLoginCallback(@Req() req) {
-        const username: string = req.user.username;
-        if (username) return { url: "/login/success/" + username };
-        return { url: "/login/failure" };
-    }
+    async githubCallback(
+        @Req() req: Request,
+        @GithubProfile() profile: Profile
+    ) {
+        const id = parseInt(profile.id);
 
-    @Get("protected")
-    @UseGuards(AuthGuard("jwt"))
-    protectedResource() {
-        return "JWT is working!";
+        // const user = await this.authService.getUserByGithubId(id);
+        // const jwtToken = await this.authService.createJwtToken(user);
+
+        return {
+            id,
+            success: true,
+            // token: jwtToken,
+        };
     }
 }
