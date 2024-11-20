@@ -1,34 +1,65 @@
-import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    Req,
+    Res,
+    UseGuards,
+} from "@nestjs/common";
 import { QuestionListService } from "./question-list.service";
-import { UserRepository } from "../user/user.repository";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { CreateQuestionDto } from "./dto/create-question.dto";
+import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller("question-list")
 export class QuestionListController {
-    constructor(
-        private readonly questionService: QuestionListService,
-        private readonly userRepository: UserRepository
-    ) {}
+    constructor(private readonly questionService: QuestionListService) {}
+
+    @Get()
+    async getAllQuestionLists(@Res() res) {
+        try {
+            const allQuestionLists: GetAllQuestionListDto[] =
+                await this.questionService.getAllQuestionLists();
+            return res.send({
+                success: true,
+                message: "All question lists received successfully.",
+                data: {
+                    allQuestionLists,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to get all question lists.",
+                error: error.message,
+            });
+        }
+    }
+
     @Post()
-    @UseGuards(AuthGuard("github"))
+    @UseGuards(AuthGuard("jwt"))
     async createQuestionList(
         @Req() req,
-        @Body() body: { title: string; contents: string[]; isPublic: boolean }
+        @Res() res,
+        @Body()
+        body: {
+            title: string;
+            contents: string[];
+            categoryNames: string[];
+            isPublic: boolean;
+        }
     ) {
         try {
-            const { title, contents, isPublic } = body;
-            const user = await this.userRepository.getUserByGithubId(
-                req.user.id
-            );
+            const { title, contents, categoryNames, isPublic } = body;
 
             // 질문지 DTO 준비
-            // const createQuestionListDto = new CreateQuestionListDto();
             const createQuestionListDto: CreateQuestionListDto = {
                 title,
+                categoryNames,
                 isPublic,
-                userId: user.id,
+                userId: req.user.userId,
             };
 
             // 질문지 생성
@@ -47,20 +78,50 @@ export class QuestionListController {
             const createdQuestions =
                 await this.questionService.createQuestions(createQuestionDto);
 
-            return {
+            return res.send({
                 success: true,
                 message: "Question list created successfully.",
                 data: {
                     createdQuestionList,
                     createdQuestions,
                 },
-            };
+            });
         } catch (error) {
-            return {
+            return res.send({
                 success: false,
                 message: "Failed to create question list.",
                 error: error.message,
-            };
+            });
+        }
+    }
+
+    @Post("category")
+    async getAllQuestionListsByCategoryName(
+        @Res() res,
+        @Body()
+        body: {
+            categoryName: string;
+        }
+    ) {
+        try {
+            const { categoryName } = body;
+            const allQuestionLists: GetAllQuestionListDto[] =
+                await this.questionService.getAllQuestionListsByCategoryName(
+                    categoryName
+                );
+            return res.send({
+                success: true,
+                message: "All question lists received successfully.",
+                data: {
+                    allQuestionLists,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to get all question lists.",
+                error: error.message,
+            });
         }
     }
 }

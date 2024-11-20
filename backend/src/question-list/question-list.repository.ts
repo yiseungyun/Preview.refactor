@@ -1,21 +1,68 @@
 import { Injectable } from "@nestjs/common";
-import { DataSource } from "typeorm";
+import { DataSource, In } from "typeorm";
 import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
-import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { QuestionDto } from "./dto/question.dto";
+import { Category } from "./category.entity";
+import { QuestionListDto } from "./dto/question-list.dto";
 
 @Injectable()
 export class QuestionListRepository {
     constructor(private dataSource: DataSource) {}
 
-    createQuestionList(createQuestionListDto: CreateQuestionListDto) {
+    findPublicQuestionLists() {
+        return this.dataSource.getRepository(QuestionList).find({
+            where: { isPublic: true },
+        });
+    }
+
+    async getCategoryIdByName(categoryName: string) {
+        const category = await this.dataSource.getRepository(Category).findOne({
+            where: { name: categoryName },
+            select: ["id"],
+        });
+
+        return category?.id || null;
+    }
+
+    findPublicQuestionListsByCategoryId(categoryId: number) {
+        return this.dataSource.getRepository(QuestionList).find({
+            where: {
+                isPublic: true,
+                categories: { id: categoryId },
+            },
+            relations: ["categories"],
+        });
+    }
+
+    async findCategoryNamesByQuestionListId(questionListId: number) {
+        const questionList = await this.dataSource
+            .getRepository(QuestionList)
+            .findOne({
+                where: { id: questionListId },
+                relations: ["categories"], // 질문지와 관련된 카테고리도 함께 조회
+            });
+        console.log(questionList);
+        return questionList
+            ? questionList.categories.map((category) => category.name)
+            : [];
+    }
+
+    createQuestionList(questionListDto: QuestionListDto) {
         return this.dataSource
             .getRepository(QuestionList)
-            .save(createQuestionListDto);
+            .save(questionListDto);
     }
 
     async createQuestions(questionDtos: QuestionDto[]) {
         return this.dataSource.getRepository(Question).save(questionDtos);
+    }
+
+    async findCategoriesByNames(categoryNames: string[]) {
+        return this.dataSource.getRepository(Category).find({
+            where: {
+                name: In(categoryNames),
+            },
+        });
     }
 }

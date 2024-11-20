@@ -5,6 +5,7 @@ import "dotenv/config";
 import { addTransactionalDataSource } from "typeorm-transactional";
 import { QuestionList } from "../question-list/question-list.entity";
 import { Question } from "../question-list/question.entity";
+import { Category } from "../question-list/category.entity";
 
 export const typeOrmConfig: DataSourceOptions = {
     type: "mysql",
@@ -13,7 +14,7 @@ export const typeOrmConfig: DataSourceOptions = {
     username: process.env.MYSQL_USERNAME,
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
-    entities: [User, QuestionList, Question],
+    entities: [User, QuestionList, Question, Category],
     namingStrategy: new SnakeNamingStrategy(),
     synchronize: true,
 };
