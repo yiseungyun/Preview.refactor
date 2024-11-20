@@ -1,9 +1,11 @@
-import { Controller, Post, Req, UseGuards } from "@nestjs/common";
+import { Controller, Get,Post, Res, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Request } from "express";
 import { AuthService } from "./auth.service";
 import { GithubProfile } from "./decorator/gitub-profile.decorator";
 import { Profile } from "passport-github";
+import { Response } from "express";
+import { JwtAuthenticationGuard } from "./jwt.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -25,5 +27,14 @@ export class AuthController {
             success: true,
             // token: jwtToken,
         };
+        }
+
+    @Get("whoami")
+    @UseGuards(JwtAuthenticationGuard)
+    async whoami(@Req() req, @Res() res: Response) {
+        return res.json({
+            userId: req.user.userId,
+            username: req.user.username,
+        });
     }
 }
