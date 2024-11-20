@@ -42,6 +42,7 @@ export default {
       },
       boxShadow: {
         8: "0 0 0.2rem 0.125rem rgba(182, 182, 182, 0.08)",
+        16: "0 0 0.125rem 0.075rem rgba(182, 182, 182, 0.16)",
       },
       fontSize: {
         // Bold(700) sizes
