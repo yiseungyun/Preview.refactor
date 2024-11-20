@@ -7,6 +7,7 @@ import useToast from "@/hooks/useToast";
 import Sidebar from "@components/common/Sidebar.tsx";
 import Select from "@components/common/Select.tsx";
 import axios from "axios";
+import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 
 interface Session {
   id: number;
@@ -24,20 +25,23 @@ interface Session {
 
 const SessionListPage = () => {
   const [sessionList, setSessionList] = useState<Session[]>([]);
-  const [listLoading, setListLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(true);
+  const [inProgressListLoading, setInProgressListLoading] = useState(true);
   const navigate = useNavigate();
   const toast = useToast();
 
   useEffect(() => {
     getSessionList();
-    setListLoading(false);
   }, []);
 
   const getSessionList = async () => {
     try {
       const response = await axios.get("/api/rooms");
-      if (Array.isArray(response.data)) setSessionList(response.data ?? []);
-      else throw new Error("Invalid response data");
+      if (Array.isArray(response.data)) {
+        setSessionList(response.data ?? []);
+        setListLoading(false);
+        setInProgressListLoading(false);
+      } else throw new Error("Invalid response data");
     } catch (e) {
       console.error("세션리스트 불러오기 실패", e);
       const sessionData: Session[] = [
@@ -69,6 +73,8 @@ const SessionListPage = () => {
         },
       ];
       setSessionList(sessionData);
+      setListLoading(false);
+      setInProgressListLoading(false);
     }
   };
 
@@ -124,7 +130,7 @@ const SessionListPage = () => {
           <h2 className={"text-semibold-l mb-4"}>공개된 세션 목록</h2>
           <ul>
             {listLoading ? (
-              <>loading</>
+              <LoadingIndicator loadingState={listLoading} />
             ) : (
               <>
                 {sessionList.length <= 0 ? (
@@ -140,7 +146,7 @@ const SessionListPage = () => {
           <h2 className={"text-semibold-l mb-4"}>진행 중인 세션 목록</h2>
           <ul>
             {listLoading ? (
-              <>loading</>
+              <LoadingIndicator loadingState={inProgressListLoading} />
             ) : (
               <>
                 {sessionList.length <= 0 ? (
