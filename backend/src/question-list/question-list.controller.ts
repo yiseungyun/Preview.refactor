@@ -1,12 +1,43 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    Req,
+    Res,
+    UseGuards,
+} from "@nestjs/common";
 import { QuestionListService } from "./question-list.service";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { CreateQuestionDto } from "./dto/create-question.dto";
+import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
 import { JwtAuthenticationGuard } from "../auth/jwt.guard";
 
 @Controller("question-list")
 export class QuestionListController {
     constructor(private readonly questionService: QuestionListService) {}
+
+    @Get()
+    async getAllQuestionLists(@Res() res) {
+        try {
+            const allQuestionLists: GetAllQuestionListDto[] =
+                await this.questionService.getAllQuestionLists();
+            return res.send({
+                success: true,
+                message: "All question lists received successfully.",
+                data: {
+                    allQuestionLists,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to get all question lists.",
+                error: error.message,
+            });
+        }
+    }
+
     @Post()
     // @UseGuards(JwtAuthenticationGuard)
     async createQuestionList(

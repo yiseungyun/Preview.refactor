@@ -4,12 +4,36 @@ import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { CreateQuestionDto } from "./dto/create-question.dto";
 import { QuestionDto } from "./dto/question.dto";
 import { QuestionListDto } from "./dto/question-list.dto";
+import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
 
 @Injectable()
 export class QuestionListService {
     constructor(
         private readonly questionListRepository: QuestionListRepository
     ) {}
+
+    async getAllQuestionLists() {
+        const allQuestionLists: GetAllQuestionListDto[] = [];
+
+        const publicQuestionLists =
+            await this.questionListRepository.findPublicQuestionLists();
+
+        for (const publicQuestionList of publicQuestionLists) {
+            const { id, title } = publicQuestionList;
+            const categoryNames: string[] =
+                await this.questionListRepository.findCategoryNamesByQuestionListId(
+                    id
+                );
+
+            const questionList: GetAllQuestionListDto = {
+                id,
+                title,
+                categoryNames,
+            };
+            allQuestionLists.push(questionList);
+        }
+        return allQuestionLists;
+    }
 
     // 질문 생성 메서드
     async createQuestionList(createQuestionListDto: CreateQuestionListDto) {
