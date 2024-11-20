@@ -22,7 +22,7 @@ const QuestionInput = () => {
     } else {
       toast.error("질문은 10자 이상 입력해주세요.");
     }
-  }
+  };
 
   const enterHandler = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter") {
@@ -33,7 +33,7 @@ const QuestionInput = () => {
 
   const addHandler = () => {
     addInput();
-  }
+  };
 
   useEffect(() => {
     adjustHeight(textareaRef, inputValue);

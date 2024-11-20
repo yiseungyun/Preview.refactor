@@ -1,6 +1,9 @@
+import { RefObject } from "react";
 
-
-export const adjustHeight = (textareaRef, value) => {
+export const adjustHeight = (
+  textareaRef: RefObject<HTMLTextAreaElement>,
+  value: string
+) => {
   const textarea = textareaRef.current;
   if (textarea) {
     textarea.style.height = "auto";
