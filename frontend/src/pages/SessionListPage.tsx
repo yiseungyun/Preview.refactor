@@ -42,9 +42,7 @@ const SessionListPage = () => {
         setListLoading(false);
         setInProgressListLoading(false);
       } else {
-        setSessionList([]);
-        setListLoading(false);
-        setInProgressListLoading(false);
+        throw new Error("세션리스트 불러오기 실패");
       }
     } catch (e) {
       console.error("세션리스트 불러오기 실패", e);
