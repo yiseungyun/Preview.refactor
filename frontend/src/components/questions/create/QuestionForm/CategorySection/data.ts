@@ -9,6 +9,6 @@ export const options = [
   },
   {
     value: "프론트엔드",
-    label: "프론트엔드"
-  }
+    label: "프론트엔드",
+  },
 ];

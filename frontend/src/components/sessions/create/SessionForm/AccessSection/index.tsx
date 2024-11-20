@@ -8,10 +8,7 @@ const AccessSection = () => {
   return (
     <div className="w-full">
       <SelectTitle title="공개 여부" />
-      <AccessButton
-        access={access}
-        onClick={setAccess}
-      />
+      <AccessButton access={access} onClick={setAccess} />
     </div>
   );
 };

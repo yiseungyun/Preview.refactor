@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { adjustHeight } from "../utils/textarea";
 
 interface EditInputProps {
   value: string;
@@ -10,27 +11,13 @@ interface EditInputProps {
 const EditInput = ({ value, onChange, onSave, onCancel }: EditInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const adjustHeight = () => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = "auto";
-
-      const defaultHeight = 44;
-      const scrollHeight = textarea.scrollHeight;
-
-      textarea.style.height = value
-        ? `${Math.max(defaultHeight, scrollHeight)}px`
-        : `${defaultHeight}px`;
-    }
-  };
-
   const changeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value.slice(0, 100);
     onChange(newValue);
   };
 
   useEffect(() => {
-    adjustHeight();
+    adjustHeight(textareaRef, value);
   }, [value]);
 
   return (

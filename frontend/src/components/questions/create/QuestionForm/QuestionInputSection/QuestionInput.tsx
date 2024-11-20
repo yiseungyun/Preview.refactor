@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import useQuestionFormStore from "@/stores/useQuestionFormStore";
 import useToast from "@/hooks/useToast";
+import { adjustHeight } from "../utils/textarea";
 
 const QuestionInput = () => {
   const toast = useToast();
@@ -8,20 +9,6 @@ const QuestionInput = () => {
   const [inputValue, setInputValue] = useState("");
   const addQuestion = useQuestionFormStore((state) => state.addQuestion);
   const questionList = useQuestionFormStore((state) => state.questionList);
-
-  const adjustHeight = () => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = "auto";
-
-      const defaultHeight = 44;
-      const scrollHeight = textarea.scrollHeight;
-
-      textarea.style.height = inputValue
-        ? `${Math.max(defaultHeight, scrollHeight)}px`
-        : `${defaultHeight}px`;
-    }
-  };
 
   const changeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value.slice(0, 100);
@@ -40,7 +27,6 @@ const QuestionInput = () => {
   const enterHandler = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter") {
       event.preventDefault();
-
       addInput();
     }
   };
@@ -50,7 +36,7 @@ const QuestionInput = () => {
   }
 
   useEffect(() => {
-    adjustHeight();
+    adjustHeight(textareaRef, inputValue);
   }, [inputValue]);
 
   useEffect(() => {

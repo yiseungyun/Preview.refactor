@@ -67,7 +67,7 @@ const SessionForm = () => {
   }, [socket, navigate]);
 
   return (
-    <div className="flex flex-col gap-8 p-8 bg-gray-white shadow-8 w-47.5 rounded-custom-l">
+    <div className="flex flex-col gap-7 p-8 bg-gray-white shadow-8 w-47.5 rounded-custom-l">
       <ListSelectModal />
       <CategorySection />
       <TitleSection />

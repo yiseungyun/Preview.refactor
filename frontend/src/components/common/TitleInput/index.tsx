@@ -3,10 +3,7 @@ interface TitleProps {
   onChange: (title: string) => void;
 }
 
-const TitleInput = ({
-  placeholder,
-  onChange
-}: TitleProps) => {
+const TitleInput = ({ placeholder, onChange }: TitleProps) => {
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
   };
