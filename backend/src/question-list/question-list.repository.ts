@@ -1,21 +1,30 @@
 import { Injectable } from "@nestjs/common";
-import { DataSource } from "typeorm";
+import { DataSource, In } from "typeorm";
 import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
-import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { QuestionDto } from "./dto/question.dto";
+import { Category } from "./category.entity";
+import { QuestionListDto } from "./dto/question-list.dto";
 
 @Injectable()
 export class QuestionListRepository {
     constructor(private dataSource: DataSource) {}
 
-    createQuestionList(createQuestionListDto: CreateQuestionListDto) {
+    createQuestionList(questionListDto: QuestionListDto) {
         return this.dataSource
             .getRepository(QuestionList)
-            .save(createQuestionListDto);
+            .save(questionListDto);
     }
 
     async createQuestions(questionDtos: QuestionDto[]) {
         return this.dataSource.getRepository(Question).save(questionDtos);
+    }
+
+    async findCategoriesByNames(categoryNames: string[]) {
+        return this.dataSource.getRepository(Category).find({
+            where: {
+                name: In(categoryNames),
+            },
+        });
     }
 }

@@ -1,34 +1,35 @@
-import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
+import { Body, Controller, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { QuestionListService } from "./question-list.service";
-import { UserRepository } from "../user/user.repository";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { CreateQuestionDto } from "./dto/create-question.dto";
+import { JwtAuthenticationGuard } from "../auth/jwt.guard";
 
 @Controller("question-list")
 export class QuestionListController {
-    constructor(
-        private readonly questionService: QuestionListService,
-        private readonly userRepository: UserRepository
-    ) {}
+    constructor(private readonly questionService: QuestionListService) {}
     @Post()
-    @UseGuards(AuthGuard("github"))
+    // @UseGuards(JwtAuthenticationGuard)
     async createQuestionList(
         @Req() req,
-        @Body() body: { title: string; contents: string[]; isPublic: boolean }
+        @Res() res,
+        @Body()
+        body: {
+            title: string;
+            contents: string[];
+            categoryNames: string[];
+            isPublic: boolean;
+        }
     ) {
         try {
-            const { title, contents, isPublic } = body;
-            const user = await this.userRepository.getUserByGithubId(
-                req.user.id
-            );
+            const { title, contents, categoryNames, isPublic } = body;
 
             // 질문지 DTO 준비
-            // const createQuestionListDto = new CreateQuestionListDto();
             const createQuestionListDto: CreateQuestionListDto = {
                 title,
+                categoryNames,
                 isPublic,
-                userId: user.id,
+                // userId: req.user.id,
+                userId: 1,
             };
 
             // 질문지 생성
@@ -47,20 +48,20 @@ export class QuestionListController {
             const createdQuestions =
                 await this.questionService.createQuestions(createQuestionDto);
 
-            return {
+            return res.send({
                 success: true,
                 message: "Question list created successfully.",
                 data: {
                     createdQuestionList,
                     createdQuestions,
                 },
-            };
+            });
         } catch (error) {
-            return {
+            return res.send({
                 success: false,
                 message: "Failed to create question list.",
                 error: error.message,
-            };
+            });
         }
     }
 }

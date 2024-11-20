@@ -13,7 +13,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import "dotenv/config";
 
 import { createDataSource, typeOrmConfig } from "./config/typeorm.config";
-import { QuestionListModule } from './question-list/question-list.module';
+import { QuestionListModule } from "./question-list/question-list.module";
 
 @Module({
     imports: [
