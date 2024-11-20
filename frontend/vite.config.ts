@@ -16,17 +16,12 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // 모든 /api로 시작하는 요청을 리다이렉트
       "/api": {
         target: "http://localhost:3000",
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, ""), // 필요한 경우 경로 재작성
       },
-      // 5173/api/auth/github => 3000/auth/github
-
-      // 또는 특정 경로만 리다이렉트
-      // '/specific-path': 'http://localhost:3000'
     },
   },
   assetsInclude: ["**/*.lottie"],
