@@ -8,20 +8,23 @@ import "dotenv/config";
 
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, "github") {
+    private static REQUEST_ACCESS_TOKEN_URL =
+        "https://github.com/login/oauth/access_token";
+    private static REQUEST_USER_URL = "https://api.github.com/user";
+
     constructor() {
         super();
     }
 
     async validate(req: Request, done: any) {
-        console.log(req.body);
-        const code = req.body.code;
+        const { code } = req.body;
 
         if (!code) {
             throw new UnauthorizedException("Authorization code not found");
         }
 
         const tokenResponse = await axios.post(
-            "https://github.com/login/oauth/access_token",
+            GithubStrategy.REQUEST_ACCESS_TOKEN_URL,
             {
                 client_id: process.env.OAUTH_GITHUB_ID,
                 client_secret: process.env.OAUTH_GITHUB_SECRET,
@@ -32,18 +35,14 @@ export class GithubStrategy extends PassportStrategy(Strategy, "github") {
             }
         );
 
-        console.log("토큰 받아오기 성공");
         const { access_token } = tokenResponse.data;
 
-        console.log(access_token);
         // GitHub 사용자 정보 조회
-        const userResponse = await axios.get("https://api.github.com/user", {
+        const userResponse = await axios.get(GithubStrategy.REQUEST_USER_URL, {
             headers: {
                 Authorization: `Bearer ${access_token}`,
             },
         });
-
-        console.log("잘됨?", userResponse.data.id);
 
         return done(null, {
             profile: userResponse.data,
