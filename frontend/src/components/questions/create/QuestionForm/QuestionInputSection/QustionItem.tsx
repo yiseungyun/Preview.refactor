@@ -13,10 +13,10 @@ const QuestionItem = ({ content, onDelete, onEdit }: ItemProps) => {
       <span className="text-medium-m text-gray-black">{content}</span>
       <div className="flex text-gray-500 gap-2">
         <button onClick={onEdit}>
-          <MdEdit className="w-5 h-5 hover:text-point-3" />
+          <MdEdit className="w-5 h-5 hover:text-gray-black" />
         </button>
         <button onClick={onDelete}>
-          <RiDeleteBin6Fill className="w-5 h-5 hover:text-point-1" />
+          <RiDeleteBin6Fill className="w-5 h-5 hover:text-gray-black" />
         </button>
       </div>
     </div>

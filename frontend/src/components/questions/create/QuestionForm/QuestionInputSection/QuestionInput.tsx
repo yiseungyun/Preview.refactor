@@ -28,18 +28,26 @@ const QuestionInput = () => {
     setInputValue(newValue);
   };
 
+  const addInput = () => {
+    if (inputValue.trim().length >= 10) {
+      addQuestion(inputValue.trim());
+      setInputValue("");
+    } else {
+      toast.error("질문은 10자 이상 입력해주세요.");
+    }
+  }
+
   const enterHandler = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter") {
       event.preventDefault();
 
-      if (inputValue.trim().length >= 10) {
-        addQuestion(inputValue.trim());
-        setInputValue("");
-      } else {
-        toast.error("질문은 10자 이상 입력해주세요.");
-      }
+      addInput();
     }
   };
+
+  const addHandler = () => {
+    addInput();
+  }
 
   useEffect(() => {
     adjustHeight();
@@ -50,10 +58,10 @@ const QuestionInput = () => {
   }, [questionList]);
 
   return (
-    <div className="relative">
+    <div className="relative flex items-center">
       <textarea
         ref={textareaRef}
-        className="text-medium-m w-full min-h-11 px-4 py-[0.5rem] border-custom-s border-gray-100 rounded-custom-m resize-none overflow-hidden duration-200"
+        className="text-medium-m w-full min-h-11 pl-4 pr-12 py-[0.5rem] border-custom-s border-gray-100 rounded-custom-m resize-none overflow-hidden duration-200"
         placeholder="추가할 질문을 입력하세요"
         value={inputValue}
         onChange={changeHandler}
@@ -61,6 +69,12 @@ const QuestionInput = () => {
         maxLength={100}
         rows={1}
       />
+      <button
+        className="absolute right-4 flex gap-2 text-gray-500 text-semibold-s hover:text-gray-black transition-colors"
+        onClick={addHandler}
+      >
+        추가
+      </button>
     </div>
   );
 };

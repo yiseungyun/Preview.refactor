@@ -14,8 +14,10 @@ const QuestionInputSection = () => {
           {questionList.length}/20
         </span>
       </div>
-      <QuestionInput />
-      <QuestionList />
+      <div className="flex flex-col gap-4">
+        <QuestionInput />
+        <QuestionList />
+      </div>
     </div>
   );
 };

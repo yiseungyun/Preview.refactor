@@ -42,16 +42,16 @@ const EditInput = ({ value, onChange, onSave, onCancel }: EditInputProps) => {
         onChange={changeHandler}
         rows={1}
       />
-      <div className="absolute right-4 flex gap-2 text-gray-600 text-semibold-s">
+      <div className="absolute right-4 flex gap-2 text-gray-500 text-semibold-s">
         <button
           onClick={onSave}
-          className="hover:text-point-3 transition-colors"
+          className="hover:text-gray-black transition-colors"
         >
           저장
         </button>
         <button
           onClick={onCancel}
-          className="hover:text-point-1 transition-colors"
+          className="hover:text-gray-black transition-colors"
         >
           취소
         </button>
