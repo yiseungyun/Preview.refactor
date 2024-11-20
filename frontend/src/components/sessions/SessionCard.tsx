@@ -1,29 +1,29 @@
 import { FaUserGroup } from "react-icons/fa6";
 import { IoArrowForwardSharp } from "react-icons/io5";
 interface Props {
-  category: string;
+  category?: string;
   title: string;
   host: string;
+  inProgress: boolean;
   participant: number;
   maxParticipant: number;
-  sessionStatus: "open" | "close";
   questionListId: number;
   onEnter: () => void;
 }
 
 const SessionCard = ({
-  category,
+  category = "None",
   title,
   host,
   participant,
   maxParticipant,
-  sessionStatus,
+  inProgress,
   questionListId,
   onEnter,
 }: Props) => {
   return (
     <li
-      className={`relative flex rounded-custom-l border-l-[1.625rem] ${sessionStatus === "open" ? "border-l-point-2" : "border-l-green-200"} bg-gray-white shadow-8 overflow-hidden py-3 max-w-[47.5rem] h-[8.75rem]`}
+      className={`relative flex rounded-custom-l border-l-[1.625rem] ${inProgress ? "border-l-point-2" : "border-l-green-200"} bg-gray-white shadow-8 overflow-hidden py-3 max-w-[47.5rem] h-[8.75rem]`}
     >
       <div className={"flex-grow px-[0.75rem] flex flex-col items-start"}>
         <span
@@ -50,7 +50,7 @@ const SessionCard = ({
               {participant}/{maxParticipant}명
             </span>
           </div>
-          {sessionStatus === "open" ? (
+          {!inProgress ? (
             <button
               className={
                 "text-semibold-s text-green-500 inline-flex items-center gap-[0.5rem] hover:gap-[0.375rem] transition-all"
