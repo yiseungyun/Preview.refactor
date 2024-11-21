@@ -1,22 +1,28 @@
 import { GrDown, GrUp } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
 import useSessionFormStore from "@/stores/useSessionFormStore";
+import axios from "axios";
+import { useState } from "react";
 
 interface Question {
   id: number;
-  question: string;
+  content: string;
 }
 
-interface ListItem {
+interface QuestionsMap {
+  [key: number]: Question[];
+}
+
+interface QuestionList {
   id: number;
-  user_name: string;
-  category: string;
   title: string;
-  count: number;
-  questions: Question[];
+  usage: number;
+  isStarred?: boolean;
+  questionCount: number;
+  categoryNames: string[];
 }
 
-const QuestionItem = ({ item }: { item: ListItem }) => {
+const QuestionItem = ({ item }: { item: QuestionList }) => {
   const {
     questionId,
     selectedOpenId,
@@ -24,6 +30,12 @@ const QuestionItem = ({ item }: { item: ListItem }) => {
     setQuestionTitle,
     setSelectedOpenId,
   } = useSessionFormStore();
+
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const isSelected = questionId === item.id;
+  const isListOpen = selectedOpenId === item.id;
+
+  const [questionMap, setQuestionMap] = useState<QuestionsMap>({});
 
   const checkHandler = (id: number, title: string) => {
     setQuestionId(id);
@@ -36,10 +48,29 @@ const QuestionItem = ({ item }: { item: ListItem }) => {
     } else {
       setSelectedOpenId(id);
     }
+
+    if (questionMap[id]) {
+      setQuestions(questionMap[id]);
+    } else {
+      getQuestionListDetail();
+    }
   };
 
-  const isSelected = questionId === item.id;
-  const isListOpen = selectedOpenId === item.id;
+  const getQuestionListDetail = async () => {
+    try {
+      const response = await axios.post(`/api/question-list/contents`, {
+        questionListId: item.id,
+      });
+      console.log(response);
+      const questionsData: Question[] =
+        response.data.data.questionListContents.contents;
+      console.log(questionsData);
+      setQuestionMap({ ...questionMap, [item.id]: questionsData });
+      setQuestions(questionsData);
+    } catch (e) {
+      console.error("질문지 리스트 디테일 불러오기 실패", e);
+    }
+  };
 
   return (
     <>
@@ -58,9 +89,12 @@ const QuestionItem = ({ item }: { item: ListItem }) => {
         </button>
         <div>
           <div className="flex gap-3">
-            <div>{item.category}</div>
+            <div>{item.categoryNames[0]}</div>
+            {/*<span className="text-medium-s text-gray-600">*/}
+            {/*  {item.user_name} • {item.count}개의 질문*/}
+            {/*</span>*/}
             <span className="text-medium-s text-gray-600">
-              {item.user_name} • {item.count}개의 질문
+              {"유저"} • {item.questionCount}개의 질문
             </span>
           </div>
           <p className="text-semibold-r text-gray-black">{item.title}</p>
@@ -72,17 +106,19 @@ const QuestionItem = ({ item }: { item: ListItem }) => {
                 ? "bg-green-200 text-green-50"
                 : "bg-gray-300 text-gray-50"
             }`}
-          onClick={() => checkHandler(item.id, item.title)}
+          onClick={() => {
+            checkHandler(item.id, item.title);
+          }}
         >
           <ImCheckmark className="m-auto w-5 h-5" />
         </button>
       </div>
       {isListOpen ? (
         <div className="bg-gray-50 px-20 py-5">
-          {item.questions.map((item) => {
+          {questions.map((item) => {
             return (
               <p key={item.id} className="text-medium-r text-gray-600">
-                {item.question}
+                {item.content}
               </p>
             );
           })}
