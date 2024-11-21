@@ -17,7 +17,7 @@ export class RoomService {
     async getPublicRoom() {
         const rooms = await this.roomRepository.getAllRoom();
 
-        Object.keys(rooms).forEach((roomId) => {
+        Object.keys(rooms ?? {}).forEach((roomId) => {
             if (rooms[roomId].status === "PRIVATE") rooms[roomId] = undefined;
         });
         return rooms;
