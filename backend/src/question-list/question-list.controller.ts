@@ -11,19 +11,20 @@ import { QuestionListService } from "./question-list.service";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { CreateQuestionDto } from "./dto/create-question.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
+import { QuestionListContentsDto } from "./dto/question-list-contents.dto";
 import { AuthGuard } from "@nestjs/passport";
 import { JwtPayload } from "../auth/jwt/jwt.decorator";
 import { IJwtPayload } from "../auth/jwt/jwt.model";
 
 @Controller("question-list")
 export class QuestionListController {
-    constructor(private readonly questionService: QuestionListService) {}
+    constructor(private readonly questionListService: QuestionListService) {}
 
     @Get()
     async getAllQuestionLists(@Res() res) {
         try {
             const allQuestionLists: GetAllQuestionListDto[] =
-                await this.questionService.getAllQuestionLists();
+                await this.questionListService.getAllQuestionLists();
             return res.send({
                 success: true,
                 message: "All question lists received successfully.",
@@ -67,7 +68,7 @@ export class QuestionListController {
 
             // 질문지 생성
             const createdQuestionList =
-                await this.questionService.createQuestionList(
+                await this.questionListService.createQuestionList(
                     createQuestionListDto
                 );
 
@@ -79,7 +80,9 @@ export class QuestionListController {
 
             // 질문 생성
             const createdQuestions =
-                await this.questionService.createQuestions(createQuestionDto);
+                await this.questionListService.createQuestions(
+                    createQuestionDto
+                );
 
             return res.send({
                 success: true,
@@ -109,7 +112,7 @@ export class QuestionListController {
         try {
             const { categoryName } = body;
             const allQuestionLists: GetAllQuestionListDto[] =
-                await this.questionService.getAllQuestionListsByCategoryName(
+                await this.questionListService.getAllQuestionListsByCategoryName(
                     categoryName
                 );
             return res.send({
@@ -123,6 +126,36 @@ export class QuestionListController {
             return res.send({
                 success: false,
                 message: "Failed to get all question lists.",
+                error: error.message,
+            });
+        }
+    }
+
+    @Post("contents")
+    async getQuestionListContents(
+        @Res() res,
+        @Body()
+        body: {
+            questionListId: number;
+        }
+    ) {
+        try {
+            const { questionListId } = body;
+            const questionListContents: QuestionListContentsDto =
+                await this.questionListService.getQuestionListContents(
+                    questionListId
+                );
+            return res.send({
+                success: true,
+                message: "Question list contents received successfully.",
+                data: {
+                    questionListContents,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to get question list contents.",
                 error: error.message,
             });
         }

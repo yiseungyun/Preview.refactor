@@ -65,4 +65,16 @@ export class QuestionListRepository {
             },
         });
     }
+
+    getQuestionListById(questionListId: number) {
+        return this.dataSource.getRepository(QuestionList).findOne({
+            where: { id: questionListId },
+        });
+    }
+
+    getContentsByQuestionListId(questionListId: number) {
+        return this.dataSource.getRepository(Question).find({
+            where: { questionListId: questionListId },
+        });
+    }
 }

@@ -5,6 +5,7 @@ import { CreateQuestionDto } from "./dto/create-question.dto";
 import { QuestionDto } from "./dto/question.dto";
 import { QuestionListDto } from "./dto/question-list.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
+import { QuestionListContentsDto } from "./dto/question-list-contents.dto";
 
 @Injectable()
 export class QuestionListService {
@@ -103,5 +104,34 @@ export class QuestionListService {
         });
 
         return await this.questionListRepository.createQuestions(questionDtos);
+    }
+
+    async getQuestionListContents(questionListId: number) {
+        const questionList =
+            await this.questionListRepository.getQuestionListById(
+                questionListId
+            );
+        const { id, title, usage, userId } = questionList;
+
+        const contents =
+            await this.questionListRepository.getContentsByQuestionListId(
+                questionListId
+            );
+
+        const categoryNames =
+            await this.questionListRepository.findCategoryNamesByQuestionListId(
+                questionListId
+            );
+
+        const questionListContents: QuestionListContentsDto = {
+            id,
+            title,
+            contents,
+            categoryNames,
+            usage,
+            userId,
+        };
+
+        return questionListContents;
     }
 }
