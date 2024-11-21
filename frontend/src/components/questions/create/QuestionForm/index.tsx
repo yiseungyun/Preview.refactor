@@ -3,29 +3,14 @@ import AccessSection from "./AccessSection";
 import CategorySection from "./CategorySection";
 import TitleSection from "./TitleSection";
 import QuestionInputSection from "./QuestionInputSection";
-import { useMutation } from "@tanstack/react-query";
-import { createQuestionList } from "@/api/questions/create";
-import useToast from "@/hooks/useToast";
-import { useNavigate } from "react-router-dom";
+import { useCreateQuestion } from "@/hooks/useCreateQuestion";
 
 const QuestionForm = () => {
   const isValid = useQuestionFormStore((state) => state.isFormValid());
   const { category, questionTitle, access, questionList } =
     useQuestionFormStore();
-  const toast = useToast();
-  const navigate = useNavigate();
 
-  const mutation = useMutation({
-    mutationFn: createQuestionList,
-    onSuccess: (response) => {
-      const questionListId = response.data.createdQuestionList.id;
-      toast.success("질문지 생성에 성공했습니다.");
-      navigate(`questions/${questionListId}`);
-    },
-    onError: () => {
-      toast.error("질문지 생성에 실패했습니다.");
-    },
-  });
+  const mutation = useCreateQuestion();
 
   const submitHandler = () => {
     const requestData = {

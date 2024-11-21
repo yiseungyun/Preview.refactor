@@ -7,10 +7,8 @@ interface QuestionListRequest {
   isPublic: boolean;
 }
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
 export const createQuestionList = async (data: QuestionListRequest) => {
-  const response = await axios.post(`${BASE_URL}/api/question-list`, data);
+  const response = await axios.post("/api/question-list", data);
 
   return response.data;
 };
