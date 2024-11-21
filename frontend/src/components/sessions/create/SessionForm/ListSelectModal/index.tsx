@@ -49,7 +49,7 @@ const ListSelectModal = () => {
           <IoMdClose className="text-gray-black w-7 h-7" />
         </button>
       </div>
-      <div className="mx-8 mb-4">
+      <div className="mx-8 mb-8">
         <SearchBar text="질문지를 검색해주세요" />
       </div>
       <QuestionList page={getCurrentPageProps().currentPage} />
