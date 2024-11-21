@@ -1,16 +1,17 @@
 import { Link } from "react-router-dom";
 import { ReactElement, useEffect, useState } from "react";
-import { FaClipboardList, FaHome, FaLayerGroup } from "react-icons/fa";
+import { FaClipboardList, FaLayerGroup } from "react-icons/fa";
 import { MdDarkMode, MdLightMode, MdLogout } from "react-icons/md";
-import { IoPersonSharp } from "react-icons/io5";
+import { IoPersonSharp, IoHomeSharp } from "react-icons/io5";
 import { FaGithub } from "react-icons/fa6";
 import useTheme from "@hooks/useTheme.ts";
+
 const Sidebar = () => {
   const routes = [
     {
       path: "/",
       label: "홈",
-      icon: <FaHome />,
+      icon: <IoHomeSharp />,
     },
     {
       path: "/questions",
@@ -23,7 +24,7 @@ const Sidebar = () => {
       icon: <FaLayerGroup />,
     },
     {
-      path: "/login",
+      path: "/mypage",
       label: "마이페이지",
       icon: <IoPersonSharp />,
     },

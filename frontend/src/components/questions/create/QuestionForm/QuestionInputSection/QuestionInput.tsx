@@ -11,7 +11,7 @@ const QuestionInput = () => {
   const questionList = useQuestionFormStore((state) => state.questionList);
 
   const changeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value.slice(0, 100);
+    const newValue = e.target.value.slice(0, 200);
     setInputValue(newValue);
   };
 
@@ -52,7 +52,7 @@ const QuestionInput = () => {
         value={inputValue}
         onChange={changeHandler}
         onKeyDown={enterHandler}
-        maxLength={100}
+        maxLength={200}
         rows={1}
       />
       <button
