@@ -88,9 +88,7 @@ const LoginPage = () => {
                       <div className="w-full border-t border-gray-300"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                      <span className="px-2 bg-gray-50 text-gray-500">
-                        또는
-                      </span>
+                      <span className="px-2 bg-white text-gray-500">또는</span>
                     </div>
                   </div>
                   {/* OAuth 로그인 버튼 */}
