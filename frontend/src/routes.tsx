@@ -29,7 +29,7 @@ export const routes = [
   },
   {
     element: <QuestionDetailPage />,
-    path: "/questions/:questionId"
+    path: "/questions/:questionId",
   },
   {
     element: <LoginPage />,
