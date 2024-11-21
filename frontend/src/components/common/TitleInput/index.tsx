@@ -18,15 +18,17 @@ const TitleInput = ({
 
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setValue(newValue);
-    setCharCount(newValue.length);
-    onChange(newValue);
+    if (newValue.length <= maxLength) {
+      setValue(newValue);
+      setCharCount(newValue.length);
+      onChange(newValue);
+    }
   };
 
   const getCounterColor = () => {
     if (charCount === 0) return 'text-gray-500';
     if (charCount < minLength) return 'text-point-1';
-    if (charCount > maxLength) return 'text-point-1';
+    if (charCount === maxLength) return 'text-point-1';
     return 'text-gray-500';
   };
 
