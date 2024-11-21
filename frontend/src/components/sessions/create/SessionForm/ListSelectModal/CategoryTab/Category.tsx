@@ -1,4 +1,4 @@
-import useSessionFormStore from "../../../../../../stores/useSessionFormStore";
+import useSessionFormStore from "@/stores/useSessionFormStore";
 
 interface Props {
   tabName: "myList" | "savedList";

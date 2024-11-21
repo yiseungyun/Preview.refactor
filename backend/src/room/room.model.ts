@@ -6,6 +6,7 @@ export interface Room {
     maxParticipants: number;
     createdAt: number;
     host: string;
+    questionListId;
 }
 
 export interface MemberConnection {

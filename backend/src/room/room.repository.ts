@@ -15,9 +15,8 @@ export class RoomRepository {
 
     async getAllRoom(): Promise<Record<string, Room>> {
         const redisMap = await this.redisService.getMap("room:*");
-        console.log(redisMap);
 
-        return Object.entries(redisMap).reduce(
+        return Object.entries(redisMap ?? {}).reduce(
             (acc, [roomId, room]) => {
                 acc[roomId.split(":")[1]] = room as Room;
                 return acc;
@@ -115,7 +114,8 @@ export class RoomRepository {
     }
 
     async createRoom(dto: CreateRoomDto) {
-        const { title, socketId, maxParticipants, status } = dto;
+        const { title, socketId, maxParticipants, status, questionListId } =
+            dto;
         const roomId = generateRoomId();
 
         await this.redisService.set(
@@ -126,6 +126,7 @@ export class RoomRepository {
                 host: socketId,
                 maxParticipants,
                 status,
+                questionListId,
             } as Room,
             6 * HOUR
         );
