@@ -3,11 +3,12 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useToast from "@hooks/useToast.ts";
+import useAuth from "@hooks/useAuth.ts";
 
 const AuthCallbackPage = () => {
   const navigate = useNavigate();
   const toast = useToast();
-
+  const auth = useAuth();
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
     if (code) {
@@ -26,6 +27,7 @@ const AuthCallbackPage = () => {
       });
       if (response.data) {
         toast.success("로그인에 성공했습니다.");
+        auth.logIn();
         navigate("/");
       }
     } catch (error) {
