@@ -7,81 +7,67 @@ import { useEffect, useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-interface Question {
+interface QuestionList {
   id: number;
   title: string;
-  questionCount: number;
   usage: number;
-  isStarred: boolean;
-  category: string;
+  isStarred?: boolean;
+  questionCount: number;
+  categoryNames: string[];
 }
 
 const QuestionList = () => {
   const toast = useToast();
   // 더미 데이터
-  const [questionList, setQuestionList] = useState<Question[]>([]);
+  const [questionList, setQuestionList] = useState<QuestionList[]>([]);
   const [questionLoading, setQuestionLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const questionLists = [
-      {
-        id: 1,
-        title: "프론트엔드 기술 면접",
-        questionCount: 25,
-        usage: 128,
-        isStarred: true,
-        category: "Frontend",
-      },
-      {
-        id: 2,
-        title: "React 심화 면접 질문",
-        questionCount: 30,
-        usage: 89,
-        isStarred: false,
-        category: "React",
-      },
-      {
-        id: 3,
-        title: "JavaScript 핵심 개념",
-        questionCount: 40,
-        usage: 156,
-        isStarred: true,
-        category: "JavaScript",
-      },
-      {
-        id: 4,
-        title: "웹 성능 최적화",
-        questionCount: 20,
-        usage: 67,
-        isStarred: false,
-        category: "Performance",
-      },
-      {
-        id: 5,
-        title: "CSS 레이아웃 마스터",
-        questionCount: 15,
-        usage: 45,
-        isStarred: false,
-        category: "CSS",
-      },
-      {
-        id: 6,
-        title: "웹 접근성과 SEO",
-        questionCount: 35,
-        usage: 92,
-        isStarred: true,
-        category: "Accessibility",
-      },
-    ];
-
-    const timeout = setTimeout(() => {
-      setQuestionList(questionLists);
-      setQuestionLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
+    getQuestionList();
+    setQuestionLoading(false);
   }, []);
+
+  const getQuestionList = async () => {
+    try {
+      const response = await axios.get("/api/question-list");
+      console.log(response);
+      const data = response.data.data.allQuestionLists ?? [];
+      setQuestionList(data);
+      throw new Error("에러 발생");
+    } catch (error) {
+      console.error("질문지 리스트 불러오기 실패", error);
+      const questionLists = [
+        {
+          id: 1,
+          title: "프론트엔드 기술 면접",
+          questionCount: 25,
+          usage: 128,
+          isStarred: true,
+          categoryNames: ["Frontend"],
+        },
+        {
+          id: 2,
+          title: "React 심화 면접 질문",
+          questionCount: 30,
+          usage: 89,
+          isStarred: false,
+          categoryNames: ["React"],
+        },
+        {
+          id: 3,
+          title: "JavaScript 핵심 개념",
+          questionCount: 40,
+          usage: 156,
+          isStarred: true,
+          categoryNames: ["JavaScript"],
+        },
+      ];
+      setQuestionList(questionLists);
+    }
+  };
 
   const handleNavigateDetail = (id: number) => {
     toast.error(`질문지 아이디${id} 페이지는 준비중인 기능입니다.`);
@@ -120,8 +106,8 @@ const QuestionList = () => {
             <QuestionsPreviewCard
               key={list.id}
               id={list.id}
-              questionCount={list.questionCount}
-              category={list.category}
+              questionCount={list.questionCount ?? 0}
+              category={list.categoryNames[0]}
               title={list.title}
               isStarred={list.isStarred}
               usage={list.usage}
