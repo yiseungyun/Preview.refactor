@@ -56,7 +56,12 @@ export class QuestionListRepository {
     }
 
     async createQuestions(questionDtos: QuestionDto[]) {
-        return this.dataSource.getRepository(Question).save(questionDtos);
+        try {
+            const result = await this.dataSource.getRepository(Question).save(questionDtos);
+            return result;
+        } catch (error) {
+            throw new Error(error.message);
+        }
     }
 
     async findCategoriesByNames(categoryNames: string[]) {
