@@ -1,5 +1,5 @@
 import Lottie from "react-lottie";
-import snowmanAnimate from "../../public/assets/snowman.json";
+import snowmanAnimate from "/assets/snowman.lottie";
 import { useNavigate } from "react-router-dom";
 
 const ErrorPage = () => {
