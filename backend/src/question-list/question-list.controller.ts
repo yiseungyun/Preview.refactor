@@ -15,6 +15,7 @@ import { QuestionListContentsDto } from "./dto/question-list-contents.dto";
 import { AuthGuard } from "@nestjs/passport";
 import { JwtPayload } from "../auth/jwt/jwt.decorator";
 import { IJwtPayload } from "../auth/jwt/jwt.model";
+import { MyQuestionListDto } from "./dto/my-question-list.dto";
 
 @Controller("question-list")
 export class QuestionListController {
@@ -156,6 +157,29 @@ export class QuestionListController {
             return res.send({
                 success: false,
                 message: "Failed to get question list contents.",
+                error: error.message,
+            });
+        }
+    }
+
+    @Get("my")
+    @UseGuards(AuthGuard("jwt"))
+    async getMyQuestionLists(@Res() res, @JwtPayload() token: IJwtPayload) {
+        try {
+            const userId = token.userId;
+            const myQuestionLists: MyQuestionListDto[] =
+                await this.questionListService.getMyQuestionLists(userId);
+            return res.send({
+                success: true,
+                message: "My question lists received successfully.",
+                data: {
+                    myQuestionLists,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to get my question lists.",
                 error: error.message,
             });
         }

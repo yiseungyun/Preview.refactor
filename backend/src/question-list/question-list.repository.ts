@@ -86,4 +86,10 @@ export class QuestionListRepository {
 
         return user?.username || null;
     }
+
+    getQuestionListsByUserId(userId: number) {
+        return this.dataSource.getRepository(QuestionList).find({
+            where: { userId },
+        });
+    }
 }
