@@ -171,12 +171,21 @@ importers:
       '@tanstack/react-query-devtools':
         specifier: ^5.60.6
         version: 5.61.0(@tanstack/react-query@5.61.0(react@18.3.1))(react@18.3.1)
+      '@tanstack/react-query':
+        specifier: ^5.60.6
+        version: 5.60.6(react@18.3.1)
+      '@tanstack/react-query-devtools':
+        specifier: ^5.60.6
+        version: 5.60.6(@tanstack/react-query@5.60.6(react@18.3.1))(react@18.3.1)
       '@types/react-lottie':
         specifier: ^1.2.10
         version: 1.2.10
       '@types/socket.io-client':
         specifier: ^3.0.0
         version: 3.0.0
+      axios:
+        specifier: ^1.7.7
+        version: 1.7.7
       axios:
         specifier: ^1.7.7
         version: 1.7.7
@@ -1265,6 +1274,23 @@ packages:
 
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
+
+  '@tanstack/query-core@5.60.6':
+    resolution: {integrity: sha512-tI+k0KyCo1EBJ54vxK1kY24LWj673ujTydCZmzEZKAew4NqZzTaVQJEuaG1qKj2M03kUHN46rchLRd+TxVq/zQ==}
+
+  '@tanstack/query-devtools@5.59.20':
+    resolution: {integrity: sha512-vxhuQ+8VV4YWQSFxQLsuM+dnEKRY7VeRzpNabFXdhEwsBYLrjXlF1pM38A8WyKNLqZy8JjyRO8oP4Wd/oKHwuQ==}
+
+  '@tanstack/react-query-devtools@5.60.6':
+    resolution: {integrity: sha512-b55QgJs2PSzOtLdE3p9fxPOPmeXXfkzcsyVBFFyXwINIilSwz/wWoz2D5fwg5Vbp60CX34LccstzryU6Bg6Rqw==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.60.6
+      react: ^18 || ^19
+
+  '@tanstack/react-query@5.60.6':
+    resolution: {integrity: sha512-FUzSDaiPkuZCmuGqrixfRRXJV9u+nrUh9lAlA5Q3ZFrOw1Js1VeBfxi1NIcJO3ZWJdKceBqKeBJdNcWStCYZnw==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@sqltools/formatter@1.2.5':
     resolution: {integrity: sha512-Uy0+khmZqUrUGm5dmMqVlnvufZRSK0FbYzVgp0UMstm+F5+W2/jnEEQyc9vo1ZR/E5ZI/B1WjjoTqBqwJL6Krw==}
@@ -5776,17 +5802,19 @@ snapshots:
 
   '@sqltools/formatter@1.2.5': {}
 
+  '@sqltools/formatter@1.2.5': {}
+
   '@tanstack/query-core@5.60.6': {}
 
   '@tanstack/query-devtools@5.59.20': {}
 
-  '@tanstack/react-query-devtools@5.61.0(@tanstack/react-query@5.61.0(react@18.3.1))(react@18.3.1)':
+  '@tanstack/react-query-devtools@5.60.6(@tanstack/react-query@5.60.6(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tanstack/query-devtools': 5.59.20
-      '@tanstack/react-query': 5.61.0(react@18.3.1)
+      '@tanstack/react-query': 5.60.6(react@18.3.1)
       react: 18.3.1
 
-  '@tanstack/react-query@5.61.0(react@18.3.1)':
+  '@tanstack/react-query@5.60.6(react@18.3.1)':
     dependencies:
       '@tanstack/query-core': 5.60.6
       react: 18.3.1
@@ -6412,6 +6440,14 @@ snapshots:
       picocolors: 1.1.1
       postcss: 8.4.47
       postcss-value-parser: 4.2.0
+
+  axios@1.7.7:
+    dependencies:
+      follow-redirects: 1.15.9
+      form-data: 4.0.1
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
 
   aws-ssl-profiles@1.1.2: {}
 

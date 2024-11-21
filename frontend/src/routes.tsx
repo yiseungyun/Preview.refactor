@@ -1,6 +1,7 @@
 import App from "./App.tsx";
 import CreateQuestionPage from "./pages/CreateQuestionPage.tsx";
 import CreateSessionPage from "./pages/CreateSessionPage.tsx";
+import QuestionDetailPage from "./pages/QuestionDetailPage.tsx";
 import SessionListPage from "./pages/SessionListPage.tsx";
 import SessionPage from "./pages/SessionPage";
 import ErrorPage from "@/pages/ErrorPage.tsx";
@@ -25,6 +26,10 @@ export const routes = [
   {
     element: <QuestionListPage />,
     path: "/questions",
+  },
+  {
+    element: <QuestionDetailPage />,
+    path: "/questions/:questionId",
   },
   {
     element: <LoginPage />,

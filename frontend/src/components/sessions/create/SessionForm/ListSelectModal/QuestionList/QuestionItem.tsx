@@ -122,10 +122,10 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
           <div className={"h-fit"}>
             <LoadingIndicator loadingState={questionLoading} />
           </div>
-          {questions.map((item) => {
+          {questions.map((item,index) => {
             return (
-              <p key={item.id} className="text-medium-r text-gray-600">
-                {item.content}
+              <p key={item.id} className="text-medium-r p-0.5 text-gray-600">
+                Q{index+1}. {item.content}
               </p>
             );
           })}

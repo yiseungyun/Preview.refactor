@@ -2,7 +2,8 @@ import QuestionItem from "./QuestionItem";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
-
+import { QUESTION_PER_PAGE } from "../constant";
+        
 interface QuestionList {
   id: number;
   title: string;
@@ -12,7 +13,7 @@ interface QuestionList {
   categoryNames: string[];
 }
 
-const QuestionList = () => {
+const QuestionList = ({ page }: { page: number }) => {
   const [questionList, setQuestionList] = useState<QuestionList[]>([]);
   const [questionLoading, setQuestionLoading] = useState(true);
 
@@ -33,8 +34,11 @@ const QuestionList = () => {
   };
   // const { tab } = useSessionFormStore();
 
+  const startIndex = (page - 1) * QUESTION_PER_PAGE;
+  const endIndex = startIndex + QUESTION_PER_PAGE;
+
   return (
-    <div className="mb-4">
+    <div className="mb-4 h-80 overflow-y-auto">
       <LoadingIndicator loadingState={questionLoading} />
       {/*{data[tab].map((item, id) => {*/}
       {/*  return (*/}
@@ -43,7 +47,7 @@ const QuestionList = () => {
       {/*    </div>*/}
       {/*  );*/}
       {/*})}*/}
-      {questionList.map((item, id) => {
+      {questionList.slice(startIndex, endIndex).map((item, id) => {
         return (
           <div key={id}>
             <QuestionItem item={item} />
