@@ -1,7 +1,7 @@
 import useAuthStore from "@stores/useAuthStore.ts";
 
 const useAuth = () => {
-  const { isLoggedIn, login, logout } = useAuthStore();
+  const { isLoggedIn, nickname, login, logout, setNickname } = useAuthStore();
 
   const logIn = () => {
     login();
@@ -11,7 +11,7 @@ const useAuth = () => {
     logout();
   };
 
-  return { isLoggedIn, logIn, logOut };
+  return { isLoggedIn, nickname, logIn, logOut, setNickname };
 };
 
 export default useAuth;

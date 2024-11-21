@@ -25,10 +25,17 @@ const AuthCallbackPage = () => {
       const response = await axios.post("/api/auth/github", {
         code: code,
       });
-      if (response.data) {
+      if (response.data.success) {
         toast.success("로그인에 성공했습니다.");
         auth.logIn();
-        navigate("/");
+        try {
+          const response = await axios.get("api/auth/whoami");
+          auth.setNickname(response.data.nickname);
+        } catch (error) {
+          console.error("Failed to get user info", error);
+        } finally {
+          navigate("/");
+        }
       }
     } catch (error) {
       console.error("Failed to sending auth code to server", error);

@@ -23,7 +23,7 @@ const Sidebar = () => {
       icon: <FaLayerGroup />,
     },
     {
-      path: "/login",
+      path: "/mypage",
       label: "마이페이지",
       icon: <IoPersonSharp />,
     },

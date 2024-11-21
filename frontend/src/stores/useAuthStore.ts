@@ -6,6 +6,7 @@ interface AuthState {
   nickname: string;
   login: () => void;
   logout: () => void;
+  setNickname: (nickname: string) => void;
 }
 
 const useAuthStore = create(
@@ -15,6 +16,7 @@ const useAuthStore = create(
       nickname: "",
       login: () => set({ isLoggedIn: true }),
       logout: () => set({ isLoggedIn: false }),
+      setNickname: (nickname: string) => set({ nickname }),
     }),
     {
       name: "authState",
