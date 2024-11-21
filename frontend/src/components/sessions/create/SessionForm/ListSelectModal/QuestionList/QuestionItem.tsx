@@ -3,6 +3,7 @@ import { ImCheckmark } from "react-icons/im";
 import useSessionFormStore from "@/stores/useSessionFormStore";
 import axios from "axios";
 import { useState } from "react";
+import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 
 interface Question {
   id: number;
@@ -32,6 +33,7 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
   } = useSessionFormStore();
 
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [questionLoading, setQuestionLoading] = useState(true);
   const isSelected = questionId === item.id;
   const isListOpen = selectedOpenId === item.id;
 
@@ -58,6 +60,7 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
 
   const getQuestionListDetail = async () => {
     try {
+      setQuestionLoading(true);
       const response = await axios.post(`/api/question-list/contents`, {
         questionListId: item.id,
       });
@@ -67,6 +70,7 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
       console.log(questionsData);
       setQuestionMap({ ...questionMap, [item.id]: questionsData });
       setQuestions(questionsData);
+      setQuestionLoading(false);
     } catch (e) {
       console.error("질문지 리스트 디테일 불러오기 실패", e);
     }
@@ -114,7 +118,10 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
         </button>
       </div>
       {isListOpen ? (
-        <div className="bg-gray-50 px-20 py-5">
+        <div className="bg-gray-50 px-20 py-5 transition-all">
+          <div className={"h-fit"}>
+            <LoadingIndicator loadingState={questionLoading} />
+          </div>
           {questions.map((item) => {
             return (
               <p key={item.id} className="text-medium-r text-gray-600">
