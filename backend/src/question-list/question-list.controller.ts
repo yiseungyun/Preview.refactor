@@ -12,6 +12,8 @@ import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { CreateQuestionDto } from "./dto/create-question.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
 import { AuthGuard } from "@nestjs/passport";
+import { JwtPayload } from "../auth/jwt/jwt.decorator";
+import { IJwtPayload } from "../auth/jwt/jwt.model";
 
 @Controller("question-list")
 export class QuestionListController {
@@ -41,6 +43,7 @@ export class QuestionListController {
     @Post()
     @UseGuards(AuthGuard("jwt"))
     async createQuestionList(
+        @JwtPayload() token: IJwtPayload,
         @Req() req,
         @Res() res,
         @Body()
@@ -59,7 +62,7 @@ export class QuestionListController {
                 title,
                 categoryNames,
                 isPublic,
-                userId: req.user.userId,
+                userId: token.userId,
             };
 
             // 질문지 생성
