@@ -11,10 +11,10 @@ const TitleInput = ({
   placeholder,
   onChange,
   minLength = 5,
-  maxLength = 20
+  maxLength = 20,
 }: TitleProps) => {
   const [charCount, setCharCount] = useState<number>(0);
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState<string>("");
 
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
@@ -26,10 +26,10 @@ const TitleInput = ({
   };
 
   const getCounterColor = () => {
-    if (charCount === 0) return 'text-gray-500';
-    if (charCount < minLength) return 'text-point-1';
-    if (charCount === maxLength) return 'text-point-1';
-    return 'text-gray-500';
+    if (charCount === 0) return "text-gray-500";
+    if (charCount < minLength) return "text-point-1";
+    if (charCount === maxLength) return "text-point-1";
+    return "text-gray-500";
   };
 
   const getMessage = () => {
@@ -40,7 +40,9 @@ const TitleInput = ({
     <div className="relative w-full">
       <input
         value={value}
-        className={"text-medium-m w-full h-11 p-4 pr-20 border-custom-s rounded-custom-m"}
+        className={
+          "text-medium-m w-full h-11 p-4 pr-20 border-custom-s rounded-custom-m"
+        }
         placeholder={placeholder}
         onChange={changeHandler}
         minLength={minLength}
