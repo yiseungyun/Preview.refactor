@@ -1,7 +1,7 @@
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { DotLottiePlayer } from "@dotlottie/react-player";
 
-import mainSnowman from "../../public/assets/noondeumyum.lottie";
+import mainSnowman from "/assets/noondeumyum.lottie";
 
 const LoginPage = () => {
   const handleOAuthLogin = (provider: "github" | "google") => {
