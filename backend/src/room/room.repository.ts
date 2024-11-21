@@ -15,11 +15,8 @@ export class RoomRepository {
 
     async getAllRoom(): Promise<Record<string, Room>> {
         const redisMap = await this.redisService.getMap("room:*");
-        console.log(redisMap);
 
-        if (!redisMap) return {};
-
-        return Object.entries(redisMap).reduce(
+        return Object.entries(redisMap ?? {}).reduce(
             (acc, [roomId, room]) => {
                 acc[roomId.split(":")[1]] = room as Room;
                 return acc;
