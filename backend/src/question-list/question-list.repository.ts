@@ -5,6 +5,7 @@ import { Question } from "./question.entity";
 import { QuestionDto } from "./dto/question.dto";
 import { Category } from "./category.entity";
 import { QuestionListDto } from "./dto/question-list.dto";
+import { User } from "../user/user.entity";
 
 @Injectable()
 export class QuestionListRepository {
@@ -76,5 +77,13 @@ export class QuestionListRepository {
         return this.dataSource.getRepository(Question).find({
             where: { questionListId: questionListId },
         });
+    }
+
+    async getUsernameById(userId: number) {
+        const user = await this.dataSource.getRepository(User).findOne({
+            where: { id: userId },
+        });
+
+        return user?.username || null;
     }
 }

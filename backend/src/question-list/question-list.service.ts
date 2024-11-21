@@ -123,13 +123,16 @@ export class QuestionListService {
                 questionListId
             );
 
+        const username =
+            await this.questionListRepository.getUsernameById(userId);
+
         const questionListContents: QuestionListContentsDto = {
             id,
             title,
             contents,
             categoryNames,
             usage,
-            userId,
+            username,
         };
 
         return questionListContents;

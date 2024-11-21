@@ -6,5 +6,5 @@ export interface QuestionListContentsDto {
     categoryNames: string[];
     contents: Question[];
     usage: number;
-    userId: number;
+    username: string;
 }
