@@ -1,16 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { QuestionListRepository } from "./question-list.repository";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
-import { CreateQuestionDto } from "./dto/create-question.dto";
-import { QuestionDto } from "./dto/question.dto";
-import { QuestionListDto } from "./dto/question-list.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
 import { QuestionListContentsDto } from "./dto/question-list-contents.dto";
 import { MyQuestionListDto } from "./dto/my-question-list.dto";
+import { DataSource } from "typeorm";
+import { QuestionList } from "./question-list.entity";
+import { Question } from "./question.entity";
 
 @Injectable()
 export class QuestionListService {
     constructor(
+        private readonly dataSource: DataSource,
         private readonly questionListRepository: QuestionListRepository
     ) {}
 
@@ -85,40 +86,45 @@ export class QuestionListService {
 
     // 질문 생성 메서드
     async createQuestionList(createQuestionListDto: CreateQuestionListDto) {
-        const { title, categoryNames, isPublic, userId } =
+        const { title, contents, categoryNames, isPublic, userId } =
             createQuestionListDto;
-        const categories =
-            await this.questionListRepository.findCategoriesByNames(
-                categoryNames
-            );
 
-        if (categories.length !== categoryNames.length) {
-            throw new Error("Some category names were not found.");
+        const categories = await this.findCategoriesByNames(categoryNames);
+
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.startTransaction();
+
+        try {
+            const questionListDto = new QuestionList();
+            questionListDto.title = title;
+            questionListDto.categories = categories;
+            questionListDto.isPublic = isPublic;
+            questionListDto.userId = userId;
+
+            const createdQuestionList =
+                await queryRunner.manager.save(questionListDto);
+
+            const questions = contents.map((content, index) => {
+                const question = new Question();
+                question.content = content;
+                question.index = index;
+                question.questionList = createdQuestionList;
+
+                return question;
+            });
+
+            const createdQuestions =
+                await queryRunner.manager.save(questions);
+
+            await queryRunner.commitTransaction();
+
+            return { createdQuestionList, createdQuestions };
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw new Error(error.message);
+        } finally {
+            await queryRunner.release();
         }
-
-        const questionListDto: QuestionListDto = {
-            title,
-            categories,
-            isPublic,
-            userId,
-        };
-
-        return this.questionListRepository.createQuestionList(questionListDto);
-    }
-
-    async createQuestions(createQuestionDto: CreateQuestionDto) {
-        const { contents, questionListId } = createQuestionDto;
-        const questionDtos = contents.map((content, index) => {
-            const question: QuestionDto = {
-                content,
-                index,
-                questionListId,
-            };
-
-            return question;
-        });
-
-        return await this.questionListRepository.createQuestions(questionDtos);
     }
 
     async getQuestionListContents(questionListId: number) {
@@ -181,5 +187,18 @@ export class QuestionListService {
             myQuestionLists.push(questionList);
         }
         return myQuestionLists;
+    }
+
+    async findCategoriesByNames(categoryNames: string[]) {
+        const categories =
+            await this.questionListRepository.findCategoriesByNames(
+                categoryNames
+            );
+
+        if (categories.length !== categoryNames.length) {
+            throw new Error("Some category names were not found.");
+        }
+
+        return categories;
     }
 }

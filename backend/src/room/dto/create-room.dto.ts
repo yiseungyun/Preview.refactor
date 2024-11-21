@@ -4,4 +4,5 @@ export interface CreateRoomDto {
     nickname: string;
     socketId: string;
     maxParticipants?: number;
+    questionListId: number;
 }

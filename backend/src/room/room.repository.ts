@@ -114,7 +114,8 @@ export class RoomRepository {
     }
 
     async createRoom(dto: CreateRoomDto) {
-        const { title, socketId, maxParticipants, status } = dto;
+        const { title, socketId, maxParticipants, status, questionListId } =
+            dto;
         const roomId = generateRoomId();
 
         await this.redisService.set(
@@ -125,6 +126,7 @@ export class RoomRepository {
                 host: socketId,
                 maxParticipants,
                 status,
+                questionListId,
             } as Room,
             6 * HOUR
         );
