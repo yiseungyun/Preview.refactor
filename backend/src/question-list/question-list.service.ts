@@ -1,12 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { QuestionListRepository } from "./question-list.repository";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
-import { QuestionDto } from "./dto/question.dto";
-import { QuestionListDto } from "./dto/question-list.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
 import { QuestionListContentsDto } from "./dto/question-list-contents.dto";
 import { MyQuestionListDto } from "./dto/my-question-list.dto";
-import { DataSource, QueryRunner } from "typeorm";
+import { DataSource } from "typeorm";
 import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
 
