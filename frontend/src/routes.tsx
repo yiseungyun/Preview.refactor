@@ -4,7 +4,7 @@ import CreateSessionPage from "./pages/CreateSessionPage.tsx";
 import SessionListPage from "./pages/SessionListPage.tsx";
 import SessionPage from "./pages/SessionPage";
 import ErrorPage from "@/pages/ErrorPage.tsx";
-import LoginPage from "@/pages/LoginPage.tsx";
+import LoginPage from "@/pages/Login/LoginPage.tsx";
 import QuestionListPage from "@/pages/QuestionListPage.tsx";
 import AuthCallbackPage from "@/pages/Login/AuthCallbackPage.tsx";
 
