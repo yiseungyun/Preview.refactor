@@ -5,7 +5,7 @@ interface QuestionCardProps {
   title: string;
   questionCount: number;
   usage: number;
-  isStarred: boolean;
+  isStarred?: boolean;
   category: string;
   onClick: () => void;
 }
@@ -14,7 +14,7 @@ const QuestionCard = ({
   title,
   questionCount,
   usage,
-  isStarred,
+  isStarred = false,
   category,
   onClick,
 }: QuestionCardProps) => {

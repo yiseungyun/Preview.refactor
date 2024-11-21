@@ -20,7 +20,6 @@ const useToast = () => {
         removeToast(newToast.id);
         timerIDs.current = timerIDs.current.filter((timerId) => timerId !== id);
       }, DURATION);
-      timerIDs.current.push(id);
     },
     [createToast, removeToast]
   );

@@ -1,6 +1,6 @@
-import Lottie from "react-lottie";
-import snowmanAnimate from "../../public/assets/snowman.json";
+import snowmanAnimate from "/assets/snowman.lottie";
 import { useNavigate } from "react-router-dom";
+import { DotLottiePlayer } from "@dotlottie/react-player";
 
 const ErrorPage = () => {
   const navigate = useNavigate();
@@ -24,14 +24,13 @@ const ErrorPage = () => {
           >
             4
           </span>
-          <Lottie
-            options={{
-              animationData: snowmanAnimate,
-              loop: true,
-              autoplay: true,
-            }}
-            ariaRole={undefined}
-            isClickToPauseDisabled={true}
+          <DotLottiePlayer
+            className={"w-full"}
+            src={snowmanAnimate}
+            autoplay
+            loop
+            speed={0.7}
+            style={{ height: 700 }}
           />
           <span
             className={
