@@ -34,7 +34,7 @@ const SessionForm = () => {
       title: sessionName,
       status: access ?? "PUBLIC",
       category,
-      questionId,
+      questionListId: questionId,
       maxParticipants: participant,
     };
 
@@ -43,6 +43,7 @@ const SessionForm = () => {
       maxParticipants: roomData.maxParticipants,
       status: roomData.status,
       category: roomData.category,
+      questionListId: roomData.questionListId,
     });
   };
 
