@@ -92,4 +92,14 @@ export class QuestionListRepository {
             where: { userId },
         });
     }
+
+    getQuestionCountByQuestionListId(questionListId: number) {
+        return this.dataSource
+            .getRepository(Question)
+            .createQueryBuilder("question")
+            .where("question.questionListId = :questionListId", {
+                questionListId,
+            })
+            .getCount();
+    }
 }

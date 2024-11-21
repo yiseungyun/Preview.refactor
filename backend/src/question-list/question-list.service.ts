@@ -21,9 +21,14 @@ export class QuestionListService {
             await this.questionListRepository.findPublicQuestionLists();
 
         for (const publicQuestionList of publicQuestionLists) {
-            const { id, title } = publicQuestionList;
+            const { id, title, usage } = publicQuestionList;
             const categoryNames: string[] =
                 await this.questionListRepository.findCategoryNamesByQuestionListId(
+                    id
+                );
+
+            const questionCount =
+                await this.questionListRepository.getQuestionCountByQuestionListId(
                     id
                 );
 
@@ -31,6 +36,8 @@ export class QuestionListService {
                 id,
                 title,
                 categoryNames,
+                usage,
+                questionCount,
             };
             allQuestionLists.push(questionList);
         }
@@ -53,9 +60,14 @@ export class QuestionListService {
             );
 
         for (const publicQuestionList of publicQuestionLists) {
-            const { id, title } = publicQuestionList;
+            const { id, title, usage } = publicQuestionList;
             const categoryNames: string[] =
                 await this.questionListRepository.findCategoryNamesByQuestionListId(
+                    id
+                );
+
+            const questionCount =
+                await this.questionListRepository.getQuestionCountByQuestionListId(
                     id
                 );
 
@@ -63,6 +75,8 @@ export class QuestionListService {
                 id,
                 title,
                 categoryNames,
+                usage,
+                questionCount,
             };
             allQuestionLists.push(questionList);
         }
