@@ -26,6 +26,40 @@ export const createDataSource = async (): Promise<DataSource> => {
         transactionalDataSource = addTransactionalDataSource(
             new DataSource(typeOrmConfig)
         );
+
+        await transactionalDataSource.initialize();
+        await seedDatabase(transactionalDataSource);
     }
     return transactionalDataSource;
+};
+
+const seedDatabase = async (dataSource: DataSource) => {
+    const categoryRepository = dataSource.getRepository(Category);
+
+    const categories = [
+        "자료구조",
+        "운영체제",
+        "데이터베이스",
+        "컴퓨터구조",
+        "네트워크",
+        "백엔드",
+        "프론트엔드",
+        "알고리즘",
+        "보안",
+    ];
+
+    // 이미 데이터가 있을 경우 시딩하지 않음
+    const existingCount = await categoryRepository.count();
+    if (existingCount > 0) {
+        return;
+    }
+
+    // 카테고리 데이터 삽입
+    const categoryEntities = categories.map((name) => {
+        const category = new Category();
+        category.name = name;
+        return category;
+    });
+
+    await categoryRepository.save(categoryEntities);
 };
