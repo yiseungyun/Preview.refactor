@@ -40,7 +40,7 @@ export class QuestionList {
         cascade: true,
     })
     @JoinTable({
-        name: "questionListCategory",
+        name: "question_list_category",
         joinColumn: {
             name: "questionListId",
             referencedColumnName: "id",
