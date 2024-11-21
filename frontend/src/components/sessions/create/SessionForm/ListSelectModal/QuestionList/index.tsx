@@ -23,39 +23,12 @@ const QuestionList = () => {
   const getQuestionList = async () => {
     try {
       const response = await axios.get("/api/question-list");
-      console.log(response);
       const data = response.data.data.allQuestionLists ?? [];
       setQuestionList(data);
       setQuestionLoading(false);
     } catch (error) {
       console.error("질문지 리스트 불러오기 실패", error);
-      const questionLists = [
-        {
-          id: 1,
-          title: "프론트엔드 기술 면접",
-          questionCount: 25,
-          usage: 128,
-          isStarred: true,
-          categoryNames: ["Frontend"],
-        },
-        {
-          id: 2,
-          title: "요청에 실패해서 더미 데이터입니다.",
-          questionCount: 30,
-          usage: 89,
-          isStarred: false,
-          categoryNames: ["React"],
-        },
-        {
-          id: 3,
-          title: "JavaScript 핵심 개념",
-          questionCount: 40,
-          usage: 156,
-          isStarred: true,
-          categoryNames: ["JavaScript"],
-        },
-      ];
-      setQuestionList(questionLists);
+      setQuestionList([]);
     }
   };
   // const { tab } = useSessionFormStore();
