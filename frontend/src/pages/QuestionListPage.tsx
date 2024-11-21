@@ -8,6 +8,8 @@ import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import useAuth from "@hooks/useAuth.ts";
+
 
 interface QuestionList {
   id: number;
@@ -24,6 +26,8 @@ const QuestionList = () => {
   const [questionList, setQuestionList] = useState<QuestionList[]>([]);
   const [questionLoading, setQuestionLoading] = useState(true);
   const navigate = useNavigate();
+
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     getQuestionList();
@@ -72,6 +76,14 @@ const QuestionList = () => {
     toast.error(`질문지 아이디${id} 페이지는 준비중인 기능입니다.`);
   };
 
+  const handleNavigateCreate = () => {
+    if (isLoggedIn) {
+      navigate("/questions/create");
+    } else {
+      toast.error("로그인이 필요한 기능입니다.");
+    }
+  };
+
   return (
     <section className="flex w-screen min-h-screen">
       <Sidebar />
@@ -93,7 +105,7 @@ const QuestionList = () => {
               className={
                 "flex justify-center items-center fill-current min-w-11 min-h-11 bg-green-200 rounded-custom-m box-border"
               }
-              onClick={() => navigate("/questions/create")}
+              onClick={handleNavigateCreate}
             >
               <IoMdAdd className="w-[1.35rem] h-[1.35rem] text-gray-white" />
             </button>

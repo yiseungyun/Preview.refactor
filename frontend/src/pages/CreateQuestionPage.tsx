@@ -1,9 +1,21 @@
 import QuestionForm from "@/components/questions/create/QuestionForm";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import useAuth from "@hooks/useAuth.ts";
+import { useEffect } from "react";
+import useToast from "@hooks/useToast.ts";
 
 const CreateQuestionPage = () => {
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      toast.error("로그인이 필요한 서비스입니다.");
+      navigate("/questions");
+    }
+  }, [isLoggedIn]);
 
   return (
     <div className="m-20">

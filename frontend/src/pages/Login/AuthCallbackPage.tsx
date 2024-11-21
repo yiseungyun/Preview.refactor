@@ -3,11 +3,12 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useToast from "@hooks/useToast.ts";
+import useAuth from "@hooks/useAuth.ts";
 
 const AuthCallbackPage = () => {
   const navigate = useNavigate();
   const toast = useToast();
-
+  const auth = useAuth();
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
     if (code) {
@@ -24,9 +25,17 @@ const AuthCallbackPage = () => {
       const response = await axios.post("/api/auth/github", {
         code: code,
       });
-      if (response.data) {
+      if (response.data.success) {
         toast.success("로그인에 성공했습니다.");
-        navigate("/");
+        auth.logIn();
+        try {
+          const response = await axios.get("api/auth/whoami");
+          auth.setNickname(response.data.nickname);
+        } catch (error) {
+          console.error("Failed to get user info", error);
+        } finally {
+          navigate("/");
+        }
       }
     } catch (error) {
       console.error("Failed to sending auth code to server", error);
