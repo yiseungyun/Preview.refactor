@@ -2,6 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { RoomRepository } from "./room.repository";
 import { CreateRoomDto } from "./dto/create-room.dto";
 import { MemberConnection } from "./room.model";
+import { QuestionListRepository } from "../question-list/question-list.repository";
+import { InjectRepository } from "@nestjs/typeorm";
+import { QuestionList } from "../question-list/question-list.entity";
 
 /**
  * 비즈니스 로직 처리를 좀 더 하게 하기 위한 클래스로 설정
@@ -12,7 +15,10 @@ import { MemberConnection } from "./room.model";
 export class RoomService {
     private static MAX_MEMBERS = 5;
 
-    constructor(private readonly roomRepository: RoomRepository) {}
+    constructor(
+        private readonly roomRepository: RoomRepository,
+        private readonly questionListRepository: QuestionListRepository
+    ) {}
 
     async getPublicRoom() {
         const rooms = await this.roomRepository.getAllRoom();
@@ -28,15 +34,29 @@ export class RoomService {
     }
 
     async createRoom(dto: CreateRoomDto) {
-        const { title, status, maxParticipants, socketId, nickname } = dto;
+        const {
+            title,
+            status,
+            maxParticipants,
+            socketId,
+            nickname,
+            questionListId,
+        } = dto;
         const roomId = await this.roomRepository.createRoom({
             title,
             status: status ?? "PUBLIC",
             maxParticipants: maxParticipants ?? RoomService.MAX_MEMBERS,
             socketId,
             nickname: nickname ?? "Master",
+            questionListId,
         });
+
         await this.roomRepository.addUser(roomId, dto.socketId, dto.nickname);
+        const questionListContents =
+            await this.questionListRepository.getContentsByQuestionListId(
+                questionListId
+            );
+
         return {
             roomId,
             roomMetadata: {
@@ -45,6 +65,7 @@ export class RoomService {
                 maxParticipants: maxParticipants ?? RoomService.MAX_MEMBERS,
                 host: socketId,
                 nickname: nickname ?? "Master",
+                questionListContents,
             },
         };
     }

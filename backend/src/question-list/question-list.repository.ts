@@ -75,7 +75,7 @@ export class QuestionListRepository {
 
     getContentsByQuestionListId(questionListId: number) {
         return this.dataSource.getRepository(Question).find({
-            where: { questionListId: questionListId },
+            where: { questionListId },
         });
     }
 

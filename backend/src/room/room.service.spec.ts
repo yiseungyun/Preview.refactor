@@ -58,6 +58,7 @@ describe("RoomService", () => {
                 title: "Test Room",
                 socketId: "socket-123",
                 nickname: "User1",
+                questionListId: 1,
             };
             const mockRoomId = "room-123";
 

@@ -51,7 +51,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage(EVENT_NAME.CREATE_ROOM)
     async handleCreateRoom(client: Socket, data: any) {
-        const { title, nickname, status, maxParticipants } = data; // unknown 으로 받고, Dto와 Pipe로 검증받기
+        const { title, nickname, status, maxParticipants, questionListId } =
+            data; // unknown 으로 받고, Dto와 Pipe로 검증받기
         try {
             const roomData = await this.roomService.createRoom({
                 title,
@@ -59,6 +60,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 socketId: client.id,
                 nickname,
                 maxParticipants,
+                questionListId,
             });
 
             client.join(roomData.roomId);
