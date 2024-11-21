@@ -27,7 +27,6 @@ const QuestionList = () => {
 
   useEffect(() => {
     getQuestionList();
-    setQuestionLoading(false);
   }, []);
 
   const getQuestionList = async () => {
@@ -36,7 +35,7 @@ const QuestionList = () => {
       console.log(response);
       const data = response.data.data.allQuestionLists ?? [];
       setQuestionList(data);
-      throw new Error("에러 발생");
+      setQuestionLoading(false);
     } catch (error) {
       console.error("질문지 리스트 불러오기 실패", error);
       const questionLists = [
@@ -50,7 +49,7 @@ const QuestionList = () => {
         },
         {
           id: 2,
-          title: "React 심화 면접 질문",
+          title: "요청에 실패해서 더미 데이터입니다.",
           questionCount: 30,
           usage: 89,
           isStarred: false,
@@ -115,6 +114,12 @@ const QuestionList = () => {
             />
           ))}
         </div>
+        {!questionLoading && questionList.length === 0 && (
+          <div className={"p-2 text-xl text-gray-500"}>
+            이런! 아직 질문지가 없습니다! 처음으로 생성해보시는 것은 어떤가요?
+            ☃️
+          </div>
+        )}
       </div>
     </section>
   );
