@@ -40,10 +40,10 @@
       ]
     },
     "types": [
-      "node"
+      "node", "vite/client"
     ]
   },
   "include": [
-    "src"
+    "src", "vite-env.d.ts"
   ]
 }
