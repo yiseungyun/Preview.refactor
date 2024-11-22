@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuth from "@hooks/useAuth.ts";
 
-
 interface QuestionList {
   id: number;
   title: string;
@@ -73,7 +72,7 @@ const QuestionList = () => {
   };
 
   const handleNavigateDetail = (id: number) => {
-    toast.error(`질문지 아이디${id} 페이지는 준비중인 기능입니다.`);
+    navigate(`/questions/${id}`);
   };
 
   const handleNavigateCreate = () => {
