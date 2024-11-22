@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { createQuestionList } from "@/api/questions/create";
-import useToast from "@/hooks/useToast";
+import { createQuestionList } from "@/api/questions/create.ts";
+import useToast from "@hooks/useToast.ts";
 import { useNavigate } from "react-router-dom";
 
 export const useCreateQuestion = () => {

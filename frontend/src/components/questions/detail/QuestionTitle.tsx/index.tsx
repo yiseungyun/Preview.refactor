@@ -1,4 +1,4 @@
-import { useGetQuestion } from "@/hooks/useGetQuestion";
+import { useGetQuestion } from "@hooks/api/useGetQuestion.ts";
 import { MdEdit } from "react-icons/md";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { FaRegBookmark } from "react-icons/fa";

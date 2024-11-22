@@ -3,7 +3,7 @@ import Sidebar from "@/components/common/Sidebar";
 import { sectionWithSidebar } from "@/constraints/LayoutConstant";
 import QuestionTitle from "@/components/questions/detail/QuestionTitle.tsx";
 import QuestionList from "@/components/questions/detail/QuestionList.tsx";
-import { useGetQuestion } from "@/hooks/useGetQuestion";
+import { useGetQuestion } from "@hooks/api/useGetQuestion.ts";
 import ButtonSection from "@/components/questions/detail/ButtonSection.tsx";
 
 const QuestionDetailPage = () => {
