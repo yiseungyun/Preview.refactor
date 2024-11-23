@@ -9,6 +9,7 @@ import { IoMdAdd } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuth from "@hooks/useAuth.ts";
+import CreateButton from "@components/common/CreateButton.tsx";
 
 interface QuestionList {
   id: number;
@@ -86,7 +87,7 @@ const QuestionList = () => {
   return (
     <section className="flex w-screen min-h-screen">
       <Sidebar />
-      <div className="max-w-7xl w-full px-12 pt-20">
+      <div className="max-w-5xl w-full px-12 pt-20">
         <div className="mb-12">
           <h1 className="text-bold-l text-gray-black dark:text-white mb-6">
             질문지 목록
@@ -100,14 +101,11 @@ const QuestionList = () => {
                 { label: "CS", value: "CS" },
               ]}
             />
-            <button
-              className={
-                "flex justify-center items-center fill-current min-w-11 min-h-11 bg-green-200 rounded-custom-m box-border"
-              }
+            <CreateButton
               onClick={handleNavigateCreate}
-            >
-              <IoMdAdd className="w-[1.35rem] h-[1.35rem] text-gray-white" />
-            </button>
+              text={"새로운 질문지"}
+              icon={IoMdAdd}
+            />
           </div>
         </div>
         <LoadingIndicator loadingState={questionLoading} />

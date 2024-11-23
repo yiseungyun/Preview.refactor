@@ -6,6 +6,7 @@ import Sidebar from "@components/common/Sidebar.tsx";
 import Select from "@components/common/Select.tsx";
 import SessionList from "@components/sessions/list/SessionList.tsx";
 import axios from "axios";
+import CreateButton from "@components/common/CreateButton.tsx";
 
 interface Session {
   id: number;
@@ -55,10 +56,10 @@ const SessionListPage = () => {
   return (
     <section className={"flex w-screen h-screen"}>
       <Sidebar />
-      <div className={"flex flex-col gap-8 max-w-7xl px-12 pt-20"}>
+      <div className={"flex flex-col gap-8 max-w-5xl w-full px-12 pt-20"}>
         <div>
           <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
-          <div className={"h-11 flex gap-2 w-[47.5rem]"}>
+          <div className={"h-11 flex gap-2 w-full"}>
             <SearchBar text="세션을 검색하세요" />
             <Select
               options={[
@@ -67,14 +68,11 @@ const SessionListPage = () => {
                 { label: "CS", value: "CS" },
               ]}
             />
-            <button
-              className={
-                "flex justify-center items-center fill-current min-w-11 min-h-11 bg-green-200 rounded-custom-m box-border"
-              }
-              onClick={() => navigate("/sessions/create")}
-            >
-              <IoMdAdd className="w-[1.35rem] h-[1.35rem] text-gray-white" />
-            </button>
+            <CreateButton
+              onClick={() => navigate("/session/create")}
+              text={"새로운 세션"}
+              icon={IoMdAdd}
+            />
           </div>
         </div>
         <SessionList
