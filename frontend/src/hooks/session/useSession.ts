@@ -60,7 +60,12 @@ export const useSession = (sessionId: string) => {
   usePeerConnectionCleanup(peerConnections);
   useMediaStreamCleanup(stream);
 
-  const { emitReaction, handleReaction } = useReaction(socket, sessionId, setPeers, setReaction);
+  const { emitReaction, handleReaction } = useReaction(
+    socket,
+    sessionId,
+    setPeers,
+    setReaction
+  );
 
   const handleUserExit = useCallback(
     ({ socketId }: { socketId: string }) => {

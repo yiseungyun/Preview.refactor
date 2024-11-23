@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { QUESTION_PER_PAGE } from "../constant";
-        
+
 interface QuestionList {
   id: number;
   title: string;

@@ -62,4 +62,4 @@ export const useReaction = (
   };
 
   return { emitReaction, handleReaction };
-}
+};
