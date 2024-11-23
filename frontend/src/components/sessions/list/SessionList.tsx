@@ -63,7 +63,7 @@ const SessionList = ({
             {sessionList.length <= 0 ? (
               <li>아직 아무도 세션을 열지 않았어요..!</li>
             ) : (
-              renderSessionList(false)
+              renderSessionList()
             )}
           </>
         )}
