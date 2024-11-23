@@ -28,15 +28,21 @@ const QuestionList = () => {
   const navigate = useNavigate();
 
   const { isLoggedIn } = useAuth();
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   useEffect(() => {
-    getQuestionList();
-  }, []);
+    getQuestionList(selectedCategory);
+  }, [selectedCategory]);
 
-  const getQuestionList = async () => {
+  const getQuestionList = async (category?: string) => {
     try {
-      const response = await axios.get("/api/question-list");
-      console.log(response);
+      const response =
+        category !== "전체"
+          ? await axios.post(`/api/question-list/category`, {
+              categoryName: category,
+            })
+          : await axios.get("/api/question-list");
+      console.log(category, response);
       const data = response.data.data.allQuestionLists ?? [];
       setQuestionList(data);
       setQuestionLoading(false);
@@ -95,9 +101,11 @@ const QuestionList = () => {
           <div className="flex gap-2 items-stretch justify-between">
             <SearchBar text={"질문지 검색하기"} />
             <Select
+              setValue={setSelectedCategory}
               options={[
-                { label: "FE", value: "FE" },
-                { label: "BE", value: "BE" },
+                { label: "전체", value: "전체" },
+                { label: "FE", value: "프론트엔드" },
+                { label: "BE", value: "백엔드" },
                 { label: "CS", value: "CS" },
               ]}
             />
