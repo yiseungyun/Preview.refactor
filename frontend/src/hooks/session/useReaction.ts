@@ -2,6 +2,8 @@ import { Dispatch, SetStateAction, useCallback, useRef } from "react";
 import { Socket } from "socket.io-client";
 import { PeerConnection } from "../type/session";
 
+const REACTION_DURATION = 3000;
+
 export const useReaction = (
   socket: Socket | null,
   sessionId: string,
@@ -51,13 +53,13 @@ export const useReaction = (
       reactionTimeouts.current[senderId] = setTimeout(() => {
         setReaction("");
         delete reactionTimeouts.current[senderId];
-      }, 3000);
+      }, REACTION_DURATION);
     } else {
       addReaction(senderId, reaction);
       reactionTimeouts.current[senderId] = setTimeout(() => {
         addReaction(senderId, "");
         delete reactionTimeouts.current[senderId];
-      }, 3000);
+      }, REACTION_DURATION);
     }
   };
 
