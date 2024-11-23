@@ -1,19 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useToast from "@/hooks/useToast";
-import useMediaDevices from "@/hooks/useMediaDevices";
-import usePeerConnection from "@/hooks/usePeerConnection";
-import useSocket from "../useSocket";
+import useToast from "@hooks/useToast";
+import useMediaDevices from "@hooks/session/useMediaDevices";
+import usePeerConnection from "@hooks/session/usePeerConnection";
+import useSocket from "@hooks/useSocket";
 import {
   AllUsersResponse,
   Participant,
   ResponseMasterChanged,
   RoomMetadata,
-} from "../type/session";
-import { useMediaStreamCleanup } from "./useMediaStreamCleanup";
-import { usePeerConnectionCleanup } from "./usePeerConnectionCleanup";
+} from "@hooks/type/session";
+import { useMediaStreamCleanup } from "@hooks/session/useMediaStreamCleanup";
+import { usePeerConnectionCleanup } from "@hooks/session/usePeerConnectionCleanup";
+import { useReaction } from "@hooks/session/useReaction";
 
-export const useSession = (sessionId: string | undefined) => {
+export const useSession = (sessionId: string) => {
   const { socket } = useSocket();
   const navigate = useNavigate();
   const toast = useToast();
@@ -58,6 +59,8 @@ export const useSession = (sessionId: string | undefined) => {
 
   usePeerConnectionCleanup(peerConnections);
   useMediaStreamCleanup(stream);
+
+  const { emitReaction, handleReaction } = useReaction(socket, sessionId, setPeers, setReaction);
 
   const handleUserExit = useCallback(
     ({ socketId }: { socketId: string }) => {
@@ -168,32 +171,6 @@ export const useSession = (sessionId: string | undefined) => {
       }
     };
 
-    const handleReaction = ({
-      senderId,
-      reaction,
-    }: {
-      senderId: string;
-      reaction: string;
-    }) => {
-      if (reactionTimeouts.current[senderId]) {
-        clearTimeout(reactionTimeouts.current[senderId]);
-      }
-
-      if (senderId === socket.id) {
-        setReaction(reaction);
-        reactionTimeouts.current[senderId] = setTimeout(() => {
-          setReaction("");
-          delete reactionTimeouts.current[senderId];
-        }, 3000);
-      } else {
-        addReaction(senderId, reaction);
-        reactionTimeouts.current[senderId] = setTimeout(() => {
-          addReaction(senderId, "");
-          delete reactionTimeouts.current[senderId];
-        }, 3000);
-      }
-    };
-
     socket.on("all_users", handleAllUsers);
     socket.on("getOffer", handleGetOffer);
     socket.on("getAnswer", handleGetAnswer);
@@ -247,11 +224,6 @@ export const useSession = (sessionId: string | undefined) => {
       return;
     }
 
-    if (!sessionId) {
-      toast.error("세션 ID가 필요합니다.");
-      return;
-    }
-
     if (!nickname) {
       toast.error("닉네임을 입력해주세요.");
       return;
@@ -268,29 +240,6 @@ export const useSession = (sessionId: string | undefined) => {
 
     socket.emit("join_room", { roomId: sessionId, nickname });
   };
-
-  const emitReaction = useCallback(
-    (reactionType: string) => {
-      if (socket) {
-        socket.emit("reaction", {
-          roomId: sessionId,
-          reaction: reactionType,
-        });
-      }
-    },
-    [socket, sessionId]
-  );
-
-  const addReaction = useCallback(
-    (senderId: string, reactionType: string) => {
-      setPeers((prev) =>
-        prev.map((peer) =>
-          peer.peerId === senderId ? { ...peer, reaction: reactionType } : peer
-        )
-      );
-    },
-    [setPeers]
-  );
 
   const participants: Participant[] = useMemo(
     () => [

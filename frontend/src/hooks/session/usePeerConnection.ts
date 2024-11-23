@@ -1,18 +1,11 @@
 import { useRef, useState } from "react";
 import { Socket } from "socket.io-client";
+import { PeerConnection } from "../type/session";
 
 interface User {
   id?: string;
   nickname: string;
   isHost?: boolean;
-}
-
-interface PeerConnection {
-  peerId: string; // 연결된 상대의 ID
-  peerNickname: string; // 상대의 닉네임
-  stream: MediaStream; // 상대방의 비디오/오디오 스트림
-  isHost?: boolean; // 호스트 여부
-  reaction?: string;
 }
 
 // 피어 간 연결 수립 역할을 하는 커스텀 훅

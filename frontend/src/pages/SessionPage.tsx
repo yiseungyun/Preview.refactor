@@ -8,6 +8,7 @@ import SessionHeader from "@/components/session/SessionHeader";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
+  if (!sessionId) return null;
   const { socket } = useSocket();
   const {
     nickname,
