@@ -36,12 +36,9 @@ const SessionListPage = () => {
     try {
       const response = await axios.get("/api/rooms");
       if (Array.isArray(response.data)) {
-        setSessionList(
-          response.data.filter((session) => !session.inProgress) ?? []
-        );
-        setInProgressList(
-          response.data.filter((session) => session.inProgress) ?? []
-        );
+        const sessions = response.data ?? [];
+        setSessionList(sessions.filter((session) => !session.inProgress));
+        setInProgressList(sessions.filter((session) => session.inProgress));
         setListLoading(false);
         setInProgressListLoading(false);
       } else {
