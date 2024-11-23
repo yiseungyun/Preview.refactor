@@ -3,13 +3,15 @@ import { useNavigate } from "react-router-dom";
 import useToast from "@/hooks/useToast";
 import useMediaDevices from "@/hooks/useMediaDevices";
 import usePeerConnection from "@/hooks/usePeerConnection";
-import useSocket from "./useSocket";
+import useSocket from "../useSocket";
 import {
   AllUsersResponse,
   Participant,
   ResponseMasterChanged,
   RoomMetadata,
-} from "./type/session";
+} from "../type/session";
+import { useMediaStreamCleanup } from "./useMediaStreamCleanup";
+import { usePeerConnectionCleanup } from "./usePeerConnectionCleanup";
 
 export const useSession = (sessionId: string | undefined) => {
   const { socket } = useSocket();
@@ -49,31 +51,13 @@ export const useSession = (sessionId: string | undefined) => {
   } = useMediaDevices();
 
   useEffect(() => {
-    const connections = peerConnections;
-    return () => {
-      Object.values(connections.current).forEach((pc) => {
-        pc.ontrack = null;
-        pc.onicecandidate = null;
-        pc.oniceconnectionstatechange = null;
-        pc.onconnectionstatechange = null;
-        pc.close();
-      });
-    };
-  }, [peerConnections]);
-
-  useEffect(() => {
     if (selectedAudioDeviceId || selectedVideoDeviceId) {
       getMedia();
     }
   }, [selectedAudioDeviceId, selectedVideoDeviceId, getMedia]);
 
-  useEffect(() => {
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [stream]);
+  usePeerConnectionCleanup(peerConnections);
+  useMediaStreamCleanup(stream);
 
   const handleUserExit = useCallback(
     ({ socketId }: { socketId: string }) => {
