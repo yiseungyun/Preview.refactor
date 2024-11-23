@@ -46,35 +46,7 @@ const SessionListPage = () => {
       }
     } catch (e) {
       console.error("세션리스트 불러오기 실패", e);
-      const sessionData: Session[] = [
-        {
-          id: 1,
-          title: "프론트엔드 초보만 들어올 수 있음",
-          category: "프론트엔드",
-          inProgress: false,
-          host: {
-            nickname: "J133 네모정",
-            socketId: "2222",
-          },
-          participant: 1,
-          maxParticipant: 4,
-          createdAt: 1231231230,
-        },
-        {
-          id: 2,
-          title: "백엔드 고수만 들어올 수 있음",
-          category: "백엔드",
-          inProgress: true,
-          host: {
-            nickname: "J187 카드뮴",
-            socketId: "2221232",
-          },
-          participant: 1,
-          maxParticipant: 2,
-          createdAt: 1231231230,
-        },
-      ];
-      setSessionList(sessionData);
+      setSessionList([]);
       setListLoading(false);
       setInProgressListLoading(false);
     }
