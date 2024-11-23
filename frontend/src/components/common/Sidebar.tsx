@@ -1,15 +1,16 @@
-import { Link } from "react-router-dom";
-import { ReactElement, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { FaClipboardList, FaLayerGroup } from "react-icons/fa";
 import { MdDarkMode, MdLightMode, MdLogin, MdLogout } from "react-icons/md";
 import { IoPersonSharp, IoHomeSharp } from "react-icons/io5";
 import { FaGithub } from "react-icons/fa6";
 import useTheme from "@hooks/useTheme.ts";
 import useAuth from "@hooks/useAuth.ts";
+import { IconType } from "react-icons";
 
 const Sidebar = () => {
   const { isLoggedIn, logOut } = useAuth();
-
+  const navigate = useNavigate();
   const handleLogout = () => {
     logOut();
   };
@@ -18,34 +19,34 @@ const Sidebar = () => {
     {
       path: "/",
       label: "홈",
-      icon: <IoHomeSharp />,
+      icon: IoHomeSharp,
     },
     {
       path: "/questions",
       label: "질문지 리스트",
-      icon: <FaClipboardList />,
+      icon: FaClipboardList,
     },
     {
       path: "/sessions",
       label: "스터디 세션 목록",
-      icon: <FaLayerGroup />,
+      icon: FaLayerGroup,
     },
     {
       path: "/mypage",
       label: "마이페이지",
-      icon: <IoPersonSharp />,
+      icon: IoPersonSharp,
     },
     isLoggedIn
       ? {
           path: null,
           label: "로그아웃",
-          icon: <MdLogout />,
+          icon: MdLogout,
           onClick: handleLogout,
         }
       : {
           path: "/login",
           label: "로그인",
-          icon: <MdLogin />,
+          icon: MdLogin,
         },
   ];
 
@@ -82,7 +83,14 @@ const Sidebar = () => {
                 label={route.label}
                 icon={route.icon}
                 isSelected={selected === route.path}
-                onClick={route.onClick}
+                onClick={
+                  route.path
+                    ? () =>
+                        navigate(route.path, {
+                          state: { from: route.path ?? "/" },
+                        })
+                    : route.onClick
+                }
               />
             );
           })}
@@ -119,7 +127,7 @@ const Sidebar = () => {
 interface SidebarMenuProps {
   path: string | null;
   label: string;
-  icon?: ReactElement;
+  icon?: IconType;
   isSelected?: boolean;
   onClick?: () => void;
 }
@@ -127,7 +135,7 @@ interface SidebarMenuProps {
 const SidebarMenu = ({
   path,
   label,
-  icon,
+  icon: Icon,
   isSelected = false,
   onClick,
 }: SidebarMenuProps) => {
@@ -139,13 +147,11 @@ const SidebarMenu = ({
     <li
       className={`${activeClass} flex items-center flex-nowrap text-nowrap px-4 p-2 w-full rounded-lg cursor-pointer`}
       aria-label={label + "(으)로 이동하는 버튼"}
+      onClick={onClick}
     >
       {path === null ? (
-        <div
-          onClick={onClick}
-          className={"inline-flex gap-3 items-center w-full"}
-        >
-          {icon}
+        <div className={"inline-flex gap-3 items-center w-full"}>
+          {Icon && <Icon />}
           <span>{label}</span>
         </div>
       ) : (
@@ -154,7 +160,7 @@ const SidebarMenu = ({
           to={path}
           state={{ from: path ?? "/" }}
         >
-          {icon}
+          {Icon && <Icon />}
           <span>{label}</span>
         </Link>
       )}
