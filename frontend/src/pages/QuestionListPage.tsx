@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuth from "@hooks/useAuth.ts";
 import CreateButton from "@components/common/CreateButton.tsx";
+import { options } from "@/constraints/CategoryData.ts";
 
 interface QuestionList {
   id: number;
@@ -28,7 +29,7 @@ const QuestionList = () => {
   const navigate = useNavigate();
 
   const { isLoggedIn } = useAuth();
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("전체");
 
   useEffect(() => {
     getQuestionList(selectedCategory);
@@ -100,15 +101,7 @@ const QuestionList = () => {
           </h1>
           <div className="flex gap-2 items-stretch justify-between">
             <SearchBar text={"질문지 검색하기"} />
-            <Select
-              setValue={setSelectedCategory}
-              options={[
-                { label: "전체", value: "전체" },
-                { label: "FE", value: "프론트엔드" },
-                { label: "BE", value: "백엔드" },
-                { label: "CS", value: "CS" },
-              ]}
-            />
+            <Select setValue={setSelectedCategory} options={options} />
             <CreateButton
               onClick={handleNavigateCreate}
               text={"새로운 질문지"}
