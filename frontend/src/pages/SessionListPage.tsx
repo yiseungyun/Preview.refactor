@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
-import SessionCard from "@/components/sessions/SessionCard.tsx";
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 import SearchBar from "@/components/common/SearchBar.tsx";
-import useToast from "@/hooks/useToast";
 import Sidebar from "@components/common/Sidebar.tsx";
 import Select from "@components/common/Select.tsx";
+import SessionList from "@components/sessions/list/SessionList.tsx";
 import axios from "axios";
-import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 
 interface Session {
   id: number;
@@ -25,10 +23,10 @@ interface Session {
 
 const SessionListPage = () => {
   const [sessionList, setSessionList] = useState<Session[]>([]);
+  const [inProgressList, setInProgressList] = useState<Session[]>([]);
   const [listLoading, setListLoading] = useState(true);
   const [inProgressListLoading, setInProgressListLoading] = useState(true);
   const navigate = useNavigate();
-  const toast = useToast();
 
   useEffect(() => {
     getSessionList();
@@ -38,7 +36,12 @@ const SessionListPage = () => {
     try {
       const response = await axios.get("/api/rooms");
       if (Array.isArray(response.data)) {
-        setSessionList(response.data ?? []);
+        setSessionList(
+          response.data.filter((session) => !session.inProgress) ?? []
+        );
+        setInProgressList(
+          response.data.filter((session) => session.inProgress) ?? []
+        );
         setListLoading(false);
         setInProgressListLoading(false);
       } else {
@@ -80,29 +83,6 @@ const SessionListPage = () => {
     }
   };
 
-  const renderSessionList = (isInProgress: boolean) => {
-    return sessionList.map((session) => {
-      return (
-        session.inProgress === isInProgress && (
-          <SessionCard
-            key={session.id}
-            inProgress={session.inProgress}
-            category={session.category}
-            title={session.title}
-            host={session.host.nickname ?? "익명"}
-            questionListId={1}
-            participant={session.participant}
-            maxParticipant={session.maxParticipant}
-            onEnter={() => {
-              toast.success("세션에 참가했습니다.");
-              navigate(`/session/${session.id}`);
-            }}
-          />
-        )
-      );
-    });
-  };
-
   return (
     <section className={"flex w-screen h-screen"}>
       <Sidebar />
@@ -128,38 +108,16 @@ const SessionListPage = () => {
             </button>
           </div>
         </div>
-        <div>
-          <h2 className={"text-semibold-l mb-4"}>공개된 세션 목록</h2>
-          <ul>
-            {listLoading ? (
-              <LoadingIndicator loadingState={listLoading} />
-            ) : (
-              <>
-                {sessionList.length <= 0 ? (
-                  <li>아직 아무도 세션을 열지 않았어요..!</li>
-                ) : (
-                  renderSessionList(false)
-                )}
-              </>
-            )}
-          </ul>
-        </div>
-        <div>
-          <h2 className={"text-semibold-l mb-4"}>진행 중인 세션 목록</h2>
-          <ul>
-            {listLoading ? (
-              <LoadingIndicator loadingState={inProgressListLoading} />
-            ) : (
-              <>
-                {sessionList.length <= 0 ? (
-                  <li>아직 아무도 세션을 열지 않았어요..!</li>
-                ) : (
-                  renderSessionList(true)
-                )}
-              </>
-            )}
-          </ul>
-        </div>
+        <SessionList
+          listTitle={"열려있는 공개 세션 목록"}
+          listLoading={listLoading}
+          sessionList={sessionList}
+        />
+        <SessionList
+          listTitle={"진행 중인 세션 목록"}
+          listLoading={inProgressListLoading}
+          sessionList={inProgressList}
+        />
       </div>
     </section>
   );
