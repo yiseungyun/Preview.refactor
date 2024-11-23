@@ -6,7 +6,7 @@ import useToast from "@hooks/useToast.ts";
 import { useEffect, useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { IoMdAdd } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import useAuth from "@hooks/useAuth.ts";
 import CreateButton from "@components/common/CreateButton.tsx";
@@ -30,10 +30,21 @@ const QuestionList = () => {
 
   const { isLoggedIn } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<string>("전체");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     getQuestionList(selectedCategory);
+    if (selectedCategory !== "전체") {
+      console.log("selectedCategory", selectedCategory);
+      setSearchParams({ category: selectedCategory });
+    }
   }, [selectedCategory]);
+
+  useEffect(() => {
+    if (searchParams.get("category")) {
+      setSelectedCategory(searchParams.get("category") ?? "전체");
+    }
+  }, [searchParams]);
 
   const getQuestionList = async (category?: string) => {
     try {
@@ -43,39 +54,12 @@ const QuestionList = () => {
               categoryName: category,
             })
           : await axios.get("/api/question-list");
-      console.log(category, response);
       const data = response.data.data.allQuestionLists ?? [];
       setQuestionList(data);
       setQuestionLoading(false);
     } catch (error) {
       console.error("질문지 리스트 불러오기 실패", error);
-      const questionLists = [
-        {
-          id: 1,
-          title: "프론트엔드 기술 면접",
-          questionCount: 25,
-          usage: 128,
-          isStarred: true,
-          categoryNames: ["Frontend"],
-        },
-        {
-          id: 2,
-          title: "요청에 실패해서 더미 데이터입니다.",
-          questionCount: 30,
-          usage: 89,
-          isStarred: false,
-          categoryNames: ["React"],
-        },
-        {
-          id: 3,
-          title: "JavaScript 핵심 개념",
-          questionCount: 40,
-          usage: 156,
-          isStarred: true,
-          categoryNames: ["JavaScript"],
-        },
-      ];
-      setQuestionList(questionLists);
+      setQuestionList([]);
     }
   };
 
@@ -101,7 +85,11 @@ const QuestionList = () => {
           </h1>
           <div className="flex gap-2 items-stretch justify-between">
             <SearchBar text={"질문지 검색하기"} />
-            <Select setValue={setSelectedCategory} options={options} />
+            <Select
+              value={selectedCategory}
+              setValue={setSelectedCategory}
+              options={options}
+            />
             <CreateButton
               onClick={handleNavigateCreate}
               text={"새로운 질문지"}
