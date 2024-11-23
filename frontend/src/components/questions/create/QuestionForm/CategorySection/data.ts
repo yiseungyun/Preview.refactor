@@ -11,4 +11,28 @@ export const options = [
     value: "프론트엔드",
     label: "프론트엔드",
   },
+  {
+    value: "백엔드",
+    label: "백엔드",
+  },
+  {
+    value: "데이터베이스",
+    label: "데이터베이스",
+  },
+  {
+    value: "자료구조",
+    label: "자료구조",
+  },
+  {
+    value: "알고리즘",
+    label: "알고리즘",
+  },
+  {
+    value: "보안",
+    label: "보안",
+  },
+  {
+    value: "기타",
+    label: "기타",
+  },
 ];
