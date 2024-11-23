@@ -15,7 +15,7 @@ const CreateButton = ({ onClick, text, icon: Icon }: ButtonProps) => {
       onClick={onClick}
       aria-label={`${text} 만들기`}
     >
-      {text} {Icon && <Icon />}
+      {text} {Icon && <Icon className={"text-xl"} />}
     </button>
   );
 };
