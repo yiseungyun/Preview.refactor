@@ -7,12 +7,15 @@ import { FaGithub } from "react-icons/fa6";
 import useTheme from "@hooks/useTheme.ts";
 import useAuth from "@hooks/useAuth.ts";
 import { IconType } from "react-icons";
+import useToast from "@hooks/useToast.ts";
 
 const Sidebar = () => {
   const { isLoggedIn, logOut } = useAuth();
+  const toast = useToast();
   const navigate = useNavigate();
   const handleLogout = () => {
     logOut();
+    toast.error("로그아웃 되었습니다.");
   };
 
   const routes = [
