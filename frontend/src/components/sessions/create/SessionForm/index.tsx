@@ -1,14 +1,14 @@
 import AccessSection from "./AccessSection";
 import CategorySection from "./CategorySection";
 import ParticipantSection from "./ParticipantSection";
-import NameSection from "./NameSection";
+import TitleSection from "./TitleSection";
 import QuestionListSection from "./QuestionListSection";
 import ListSelectModal from "./ListSelectModal";
 import useSessionFormStore from "@/stores/useSessionFormStore";
-import useSocketStore from "@/stores/useSocketStore";
 import { useNavigate } from "react-router-dom";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import useToast from "@/hooks/useToast";
+import useSocket from "@/hooks/useSocket";
 
 interface RoomCreatedResponse {
   success?: boolean;
@@ -17,22 +17,12 @@ interface RoomCreatedResponse {
 }
 
 const SessionForm = () => {
-  const { socket, connect } = useSocketStore();
+  const { socket } = useSocket();
   const { category, sessionName, questionId, participant, access } =
     useSessionFormStore();
   const isValid = useSessionFormStore((state) => state.isFormValid());
   const navigate = useNavigate();
   const toast = useToast();
-
-  const initializeSocket = useCallback(() => {
-    if (!socket) {
-      connect(import.meta.env.VITE_SIGNALING_SERVER_URL);
-    }
-  }, [connect, socket]);
-
-  useEffect(() => {
-    initializeSocket();
-  }, [initializeSocket]);
 
   const submitHandler = () => {
     if (!isValid || !socket) {
@@ -44,7 +34,7 @@ const SessionForm = () => {
       title: sessionName,
       status: access ?? "PUBLIC",
       category,
-      questionId,
+      questionListId: questionId,
       maxParticipants: participant,
     };
 
@@ -53,6 +43,7 @@ const SessionForm = () => {
       maxParticipants: roomData.maxParticipants,
       status: roomData.status,
       category: roomData.category,
+      questionListId: roomData.questionListId,
     });
   };
 
@@ -77,10 +68,10 @@ const SessionForm = () => {
   }, [socket, navigate]);
 
   return (
-    <div className="flex flex-col gap-8 p-8 bg-gray-white shadow-8 w-47.5 rounded-custom-l">
+    <div className="flex flex-col gap-7 p-8 bg-gray-white shadow-8 w-47.5 rounded-custom-l">
       <ListSelectModal />
       <CategorySection />
-      <NameSection />
+      <TitleSection />
       <QuestionListSection />
       <ParticipantSection />
       <AccessSection />

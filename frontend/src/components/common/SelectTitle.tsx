@@ -3,7 +3,7 @@ interface Props {
 }
 
 const SelectTitle = ({ title }: Props) => {
-  return <p className="text-semibold-l mb-3">{title}</p>;
+  return <p className="text-semibold-m mb-3">{title}</p>;
 };
 
 export default SelectTitle;

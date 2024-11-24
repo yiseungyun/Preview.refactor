@@ -1,6 +1,6 @@
-import Lottie from "react-lottie";
-import snowmanAnimate from "../../public/assets/snowman.json";
+import snowmanAnimate from "/assets/snowman.lottie";
 import { useNavigate } from "react-router-dom";
+import { DotLottiePlayer } from "@dotlottie/react-player";
 
 const ErrorPage = () => {
   const navigate = useNavigate();
@@ -24,18 +24,17 @@ const ErrorPage = () => {
           >
             4
           </span>
-          <Lottie
-            options={{
-              animationData: snowmanAnimate,
-              loop: true,
-              autoplay: true,
-            }}
-            ariaRole={undefined}
-            isClickToPauseDisabled={true}
+          <DotLottiePlayer
+            className={"w-full"}
+            src={snowmanAnimate}
+            autoplay
+            loop
+            speed={0.7}
+            style={{ height: 700 }}
           />
           <span
             className={
-              "text-9xl [text-shadow:_0_2px_2px_rgb(0_0_0_/_40%)] absolute right-80 top-1/2  font-bold"
+              "text-9xl [text-shadow:_0_2px_2px_rgb(0_0_0_/_40%)] absolute right-80 top-1/2 font-bold"
             }
           >
             4
@@ -43,15 +42,15 @@ const ErrorPage = () => {
         </div>
         <div
           className={
-            "absolute bottom-16 left-1/2 transform -translate-x-1/2 z-20 pointer-events-nones"
+            "absolute bottom-12 left-1/2 transform -translate-x-1/2 z-20 pointer-events-nones"
           }
         >
           <p className={"font-light text-xl"}>
-            이런! 요청하신 데이터를 찾을 수 없었어요!
+            이런! 요청하신 데이터를 찾을 수 없어요!
           </p>
           <button
             className={
-              " bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg mt-4 "
+              "text-semibold-l text-green-500 hover:text-green-600 p-2 rounded-lg mt-4"
             }
             onClick={() => navigate("/sessions")}
           >

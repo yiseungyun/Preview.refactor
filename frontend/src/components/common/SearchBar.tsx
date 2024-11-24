@@ -5,11 +5,11 @@ interface Props {
 
 const SearchBar = ({ text }: Props) => {
   return (
-    <div className="relative w-full mb-6 h-11 flex items-center text-gray-400">
+    <div className="relative w-full  h-11 flex items-center text-gray-400">
       <IoIosSearch className="absolute left-4 w-5 h-5" />
       <input
         className={
-          "rounded-custom-m pl-10 px-4 w-full h-full border border-gray-200 text-medium-r"
+          "rounded-custom-m pl-10 px-4 w-full h-full border border-gray-200 text-medium-m"
         }
         type="text"
         placeholder={text}

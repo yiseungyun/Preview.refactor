@@ -4,9 +4,12 @@ import {
     Column,
     ManyToOne,
     OneToMany,
+    ManyToMany,
+    JoinTable,
 } from "typeorm";
 import { User } from "../user/user.entity";
 import { Question } from "./question.entity";
+import { Category } from "./category.entity";
 
 @Entity()
 export class QuestionList {
@@ -32,4 +35,16 @@ export class QuestionList {
 
     @OneToMany(() => Question, (question) => question.questionList)
     questions: Question[];
+
+    @ManyToMany(() => Category, (category) => category.questionLists, {
+        cascade: true,
+    })
+    @JoinTable({
+        name: "question_list_category",
+        joinColumn: {
+            name: "questionListId",
+            referencedColumnName: "id",
+        },
+    })
+    categories: Category[];
 }

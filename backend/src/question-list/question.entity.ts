@@ -3,7 +3,7 @@ import { QuestionList } from "./question-list.entity";
 
 @Entity()
 export class Question {
-    private static CONTENT_MAX_LEN = 20;
+    private static CONTENT_MAX_LEN = 200;
 
     @PrimaryGeneratedColumn()
     id: number;
