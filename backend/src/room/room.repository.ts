@@ -1,166 +1,64 @@
 import { Injectable } from "@nestjs/common";
-import { RedisService } from "../redis/redis.service";
-import { MemberConnection, Room } from "./room.model";
-import { generateRoomId } from "../utils/generateRoomId";
-import { HOUR } from "../utils/time";
-import { CreateRoomDto } from "./dto/create-room.dto";
+import { InjectRepository } from "nestjs-redis-om";
+import { Repository } from "redis-om";
+import { RoomEntity } from "@/room/room.entity";
+import { RoomDto } from "@/room/dto/room.dto";
 
-/**
- * `room:` 과 같은 태그를 사용하는 부분
- * 실제 더 복잡한 비즈니스 로직을 처리할 수 있도록 함수를 일반화 하려고 합니다.
- */
 @Injectable()
 export class RoomRepository {
-    constructor(private readonly redisService: RedisService) {}
+    public constructor(
+        @InjectRepository(RoomEntity)
+        private readonly roomRepository: Repository<RoomEntity>
+    ) {}
 
-    async getAllRoom(): Promise<Record<string, Room>> {
-        const redisMap = await this.redisService.getMap("room:*");
-        console.log(redisMap);
-
-        return Object.entries(redisMap).reduce(
-            (acc, [roomId, room]) => {
-                acc[roomId.split(":")[1]] = room as Room;
-                return acc;
-            },
-            {} as Record<string, Room>
-        );
+    // TODO : .from 메서드 구현 필요?
+    public async getAllRoom(): Promise<RoomDto[]> {
+        const allRooms = await this.roomRepository.search().return.all();
+        return allRooms.map((room: RoomEntity) => ({
+            connectionList: JSON.parse(room.connectionList),
+            createdAt: room.createdAt,
+            host: room.host,
+            maxParticipants: room.maxParticipants,
+            status: room.status,
+            title: room.title,
+            roomId: room.roomId,
+        }));
     }
 
-    async getRoomMemberConnection(callerId: string, roomId: string) {
-        const room = await this.getRoomById(roomId);
-        const connectionMap = await this.redisService.getMap(
-            `join:${roomId}:*`
-        );
-
-        if (!connectionMap) return {};
-
-        return Object.entries(connectionMap).reduce(
-            (acc, [socketId, connection]) => {
-                socketId = socketId.split(":")[2];
-
-                acc[socketId] = {
-                    ...(connection as MemberConnection),
-                    isHost: room.host === socketId,
-                } as MemberConnection; // 현재 as 키워드를 사용했지만, 별도의 검증 로직이 필요합니다.
-                return acc;
-            },
-            {} as Record<string, MemberConnection>
-        );
-    }
-
-    async checkHost(socketId: string) {
-        const roomId = await this.findMyRoomId(socketId);
-
-        const room = JSON.parse(await this.redisService.get(`room:${roomId}`));
-        if (!room) return false;
-        return socketId === room.host;
-    }
-
-    async getRoomById(roomId: string) {
-        const room = JSON.parse(await this.redisService.get(`room:${roomId}`));
-
-        if (!room) return null;
-
-        return room as Room;
-    }
-
-    async findMyRoomId(socketId: string) {
-        const keys = await this.redisService.getKeys(`join:*:${socketId}`);
-        if (!keys.length) return null;
-        return keys[0].split(":")[1];
-    }
-
-    async getRoomMemberCount(roomId: string) {
-        const keys = await this.redisService.getKeys(`join:${roomId}:*`);
-
-        return keys.length;
-    }
-
-    async getNewHost(roomId: string) {
-        const memberKeys = await this.redisService.getKeys(`join:${roomId}:*`);
-        const members = [];
-        for (const key of memberKeys) {
-            const socketId = key.split(":")[2];
-            const value = await this.redisService.get(
-                `join:${roomId}:${socketId}`
-            );
-            const result = JSON.parse(value);
-            members.push({
-                socketId,
-                joinTime: result.joinTime,
-                nickname: result.nickname,
-            });
-        }
-
-        const sortedMembers = members.sort((a, b) => a.joinTime - b.joinTime);
-        return sortedMembers[0] as {
-            joinTime: number;
-            nickname: string;
-            socketId: string;
+    public async getRoom(id: string): Promise<RoomDto> {
+        const room = await this.roomRepository.search().where("roomId").eq(id).return.first();
+        console.log(room);
+        if (!room.roomId) return null;
+        console.log(room.roomId, room.connectionList);
+        return {
+            connectionList: JSON.parse(room.connectionList),
+            createdAt: room.createdAt,
+            host: room.host,
+            maxParticipants: room.maxParticipants,
+            status: room.status,
+            title: room.title,
+            roomId: room.roomId,
         };
     }
 
-    async setNewHost(roomId: string, newHostId: string) {
-        const room = JSON.parse(await this.redisService.get(`room:${roomId}`));
-        const roomTTL = await this.redisService.getTTL(`room:${roomId}`);
+    public async setRoom(dto: RoomDto): Promise<void> {
+        const room = new RoomEntity();
+        room.roomId = dto.roomId;
+        room.title = dto.title;
+        room.status = dto.status;
+        room.connectionList = JSON.stringify(dto.connectionList);
+        room.maxParticipants = dto.maxParticipants;
+        room.createdAt = Date.now();
+        room.host = dto.host;
 
-        await this.redisService.set(
-            `room:${roomId}`,
-            {
-                ...room,
-                host: newHostId,
-            },
-            roomTTL
-        );
+        await this.roomRepository.save(room.roomId, room);
     }
 
-    async createRoom(dto: CreateRoomDto) {
-        const { title, socketId, maxParticipants, status } = dto;
-        const roomId = generateRoomId();
+    public async removeRoom(id: string): Promise<void> {
+        const entities = await this.roomRepository.search().where("roomId").equals(id).return.all();
 
-        await this.redisService.set(
-            `room:${roomId}`,
-            {
-                title,
-                createdAt: Date.now(),
-                host: socketId,
-                maxParticipants,
-                status,
-            } as Room,
-            6 * HOUR
-        );
-
-        return roomId;
-    }
-
-    async addUser(roomId: string, socketId: string, nickname: string) {
-        const connections = await this.redisService.getKeys(
-            `join:*:${socketId}`
-        );
-
-        if (connections.length > 0) {
-            // overlapped connection error
+        for await (const entity of entities) {
+            await this.roomRepository.remove(entity.roomId);
         }
-
-        const roomTTL = await this.redisService.getTTL(`room:${roomId}`);
-
-        await this.redisService.set(
-            `join:${roomId}:${socketId}`,
-            {
-                joinTime: Date.now(),
-                nickname,
-            } as MemberConnection,
-            roomTTL
-        );
-    }
-
-    async deleteUser(socketId: string) {
-        const keys = await this.redisService.getKeys(`join:*:${socketId}`);
-
-        await this.redisService.delete(...keys);
-    }
-
-    async deleteRoom(roomId: string) {
-        await this.redisService.delete(`room:${roomId}`);
     }
 }
