@@ -8,12 +8,8 @@ import {
 } from "@nestjs/websockets";
 import { Server } from "socket.io";
 
-@WebSocketGateway({
-    cors: {
-        origin: "*", // CORS 설정
-    },
-})
-export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
+@WebSocketGateway()
+export class SigServerGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;
 
@@ -70,18 +66,5 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
             candidate: data.candidate,
             candidateSendID: data.candidateSendID,
         });
-    }
-
-    @SubscribeMessage("reaction")
-    handleReaction(
-        socket: any,
-        data: {
-            roomId: string;
-            reaction: string;
-        }
-    ) {
-        this.server
-            .to(data.roomId)
-            .emit("reaction", { senderId: socket.id, reaction: data.reaction });
     }
 }
