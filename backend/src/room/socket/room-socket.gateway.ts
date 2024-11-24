@@ -8,6 +8,7 @@ import {
     MessageBody,
     ConnectedSocket,
 } from "@nestjs/websockets";
+import "dotenv/config";
 import { Server, Socket } from "socket.io";
 import { RoomService } from "../services/room.service";
 import { Logger, UsePipes, ValidationPipe } from "@nestjs/common";
@@ -46,8 +47,8 @@ export class RoomSocketGateway implements OnGatewayConnection, OnGatewayDisconne
 
     public async afterInit() {
         const pubClient = new Redis({
-            host: "localhost",
-            port: 6379,
+            host: process.env.REDIS_HOST,
+            port: parseInt(process.env.REDIS_PORT),
         });
 
         const subClient = pubClient.duplicate();
