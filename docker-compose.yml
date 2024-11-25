@@ -16,11 +16,12 @@ services:
     volumes:
       - ./mysql-data:/var/lib/mysql
 
-  redis:
+  redis-stack:
     image: redis/redis-stack:latest
+    container_name: redis-stack
     ports:
-      - "6379:6379"  # Redis port
-      - "8001:8001"  # RedisInsight port
+      - "6379:6379"
+      - "8001:8001"
     volumes:
-      - redis_data:/data
-    restart: unless-stopped
+      - ./redis-stack.conf:/usr/local/etc/redis/redis-stack.conf
+      - ./redis-stack-data/:/data
