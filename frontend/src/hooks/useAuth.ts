@@ -1,7 +1,8 @@
 import useAuthStore from "@stores/useAuthStore.ts";
 
 const useAuth = () => {
-  const { isLoggedIn, nickname, login, logout, setNickname } = useAuthStore();
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const { nickname, login, logout, setNickname } = useAuthStore();
 
   const logIn = () => {
     login();
