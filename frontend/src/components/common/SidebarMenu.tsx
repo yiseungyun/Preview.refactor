@@ -31,7 +31,11 @@ const SidebarMenu = ({
       className={`${activeClass} flex items-center flex-nowrap text-nowrap px-4 p-2 w-full rounded-lg cursor-pointer`}
       aria-label={label + "(으)로 이동하는 버튼"}
     >
-      <Link className={"inline-flex gap-3 items-center w-full"} to={path} onClick={handleClick}>
+      <Link
+        className={"inline-flex gap-3 items-center w-full"}
+        to={path}
+        onClick={handleClick}
+      >
         {icon}
         <span>{label}</span>
       </Link>

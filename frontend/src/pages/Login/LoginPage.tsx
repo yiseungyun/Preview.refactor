@@ -14,7 +14,7 @@ const LoginPage = () => {
     if (isLoggedIn) {
       navigate("/");
     }
-  }, [isLoggedIn])
+  }, [isLoggedIn]);
 
   const handleOAuthLogin = (provider: "github" | "google") => {
     if (provider === "github") {

@@ -25,7 +25,7 @@ const commonRoutes = [
     path: "/sessions",
     label: "스터디 세션 목록",
     icon: <FaLayerGroup />,
-  }
+  },
 ];
 
 export const authenticatedRoutes = (logoutHandler: () => void): Route[] => [

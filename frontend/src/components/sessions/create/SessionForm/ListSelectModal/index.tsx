@@ -1,11 +1,11 @@
 import { useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import CategoryTap from "./CategoryTab";
-import SearchBar from "@/components/common/SearchBar";
-import useModalStore from "@/stores/useModalStore";
-import useModal from "@/hooks/useModal";
+import CategoryTap from "@/components/sessions/create/SessionForm/ListSelectModal/CategoryTab";
+import SearchBar from "@components/common/SearchBar";
+import useModalStore from "@stores/useModalStore";
+import useModal from "@hooks/useModal";
 import QuestionList from "./QuestionList";
-import useSessionFormStore from "@/stores/useSessionFormStore";
+import useSessionFormStore from "@stores/useSessionFormStore";
 import Pagination from "./Pagination";
 
 const ListSelectModal = () => {

@@ -16,7 +16,7 @@ const CreateSessionPage = () => {
   }, []);
 
   return (
-    <section className={`${sectionWithSidebar}`}>
+    <section className={sectionWithSidebar}>
       <Sidebar />
       <div className={"p-20"}>
         <button

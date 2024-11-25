@@ -4,7 +4,11 @@ import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { FaGithub } from "react-icons/fa6";
 import useTheme from "@hooks/useTheme.ts";
 import useAuth from "@/hooks/useAuth";
-import { authenticatedRoutes, Route, unauthenticatedRoutes } from "./routesData";
+import {
+  authenticatedRoutes,
+  Route,
+  unauthenticatedRoutes,
+} from "./routesData";
 import SidebarMenu from "./SidebarMenu";
 
 const Sidebar = () => {
@@ -21,10 +25,12 @@ const Sidebar = () => {
   const logoutHandler = () => {
     logOut();
     navigate("/");
-  }
+  };
 
   useEffect(() => {
-    setCurrentRoutes(isLoggedIn ? authenticatedRoutes(logoutHandler) : unauthenticatedRoutes);
+    setCurrentRoutes(
+      isLoggedIn ? authenticatedRoutes(logoutHandler) : unauthenticatedRoutes
+    );
   }, [isLoggedIn]);
 
   return (

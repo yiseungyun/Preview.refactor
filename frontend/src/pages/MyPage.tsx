@@ -5,8 +5,10 @@ import { useNavigate } from "react-router-dom";
 import useToast from "@hooks/useToast.ts";
 import Sidebar from "@components/common/Sidebar.tsx";
 import axios from "axios";
+import Profile from "@components/mypage/Profile";
+import QuestionList from "@components/mypage/QuestionList";
 
-interface UserInfo {
+export interface UserInfo {
   nickname: string;
 }
 
@@ -47,9 +49,14 @@ const MyPage = () => {
   return (
     <section className={sectionWithSidebar}>
       <Sidebar />
-      <div className={"p-20"}>
-        <h1 className={"text-4xl "}>My Page</h1>
-        <p>유저 정보: {userInfo && userInfo.nickname}</p>
+      <div className={"flex flex-col max-w-7xl px-12 pt-20"}>
+        <h1 className={"text-bold-l mb-6"}>마이페이지</h1>
+        <div
+          className={"flex flex-col gap-8 w-47.5 p-8 bg-white shadow-8 rounded-custom-l"}
+        >
+          <Profile userInfo={userInfo} />
+          <QuestionList />
+        </div>
       </div>
     </section>
   );
