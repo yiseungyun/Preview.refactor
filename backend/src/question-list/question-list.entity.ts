@@ -7,7 +7,7 @@ import {
     ManyToMany,
     JoinTable,
 } from "typeorm";
-import { User } from "../user/user.entity";
+import { User } from "@/user/user.entity";
 import { Question } from "./question.entity";
 import { Category } from "./category.entity";
 
@@ -42,9 +42,12 @@ export class QuestionList {
     @JoinTable({
         name: "question_list_category",
         joinColumn: {
-            name: "questionListId",
+            name: "question_list_id",
             referencedColumnName: "id",
         },
     })
     categories: Category[];
+
+    @ManyToMany(() => User, (user) => user.scrappedQuestionLists)
+    scrappedByUsers: User[];
 }

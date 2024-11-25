@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { QuestionList } from "../question-list/question-list.entity";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    OneToMany,
+    ManyToMany,
+    JoinTable,
+} from "typeorm";
+import { QuestionList } from "@/question-list/question-list.entity";
 
 @Entity()
 export class User {
@@ -28,4 +35,17 @@ export class User {
 
     @OneToMany(() => QuestionList, (questionList) => questionList.user)
     questionLists: QuestionList[];
+
+    @ManyToMany(
+        () => QuestionList,
+        (questionList) => questionList.scrappedByUsers
+    )
+    @JoinTable({
+        name: "user_question_list",
+        joinColumn: {
+            name: "user_id",
+            referencedColumnName: "id",
+        },
+    })
+    scrappedQuestionLists: QuestionList[];
 }
