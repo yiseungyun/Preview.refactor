@@ -69,8 +69,11 @@ export class RoomSocketGateway implements OnGatewayConnection, OnGatewayDisconne
     }
 
     @SubscribeMessage(LISTEN_EVENT.JOIN)
-    @UsePipes(ValidationPipe)
-    public async handleJoinRoom(client: Socket, dto: JoinRoomDto) {
+    @UsePipes(new ValidationPipe({ transform: true }))
+    public async handleJoinRoom(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() dto: JoinRoomDto
+    ) {
         await this.roomService.joinRoom({ ...dto, socketId: client.id });
     }
 
@@ -86,8 +89,11 @@ export class RoomSocketGateway implements OnGatewayConnection, OnGatewayDisconne
     }
 
     @SubscribeMessage(LISTEN_EVENT.REACTION)
-    @UsePipes(ValidationPipe)
-    public async handleReaction(client: Socket, dto: ReactionDto) {
+    @UsePipes(new ValidationPipe({ transform: true }))
+    public async handleReaction(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() dto: ReactionDto
+    ) {
         const room = await this.roomRepository.getRoom(dto.socketId);
         if (!room) return;
         this.socketService.emitToRoom(room.roomId, EMIT_EVENT.REACTION, dto);
