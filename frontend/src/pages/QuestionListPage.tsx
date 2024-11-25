@@ -12,6 +12,7 @@ import useAuth from "@hooks/useAuth.ts";
 import CreateButton from "@components/common/CreateButton.tsx";
 import { options } from "@/constraints/CategoryData.ts";
 
+
 interface QuestionList {
   id: number;
   title: string;

@@ -1,79 +1,59 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import { useNavigate } from "react-router-dom";
-import useToast from "@/hooks/useToast";
-import useMediaDevices from "@/hooks/useMediaDevices";
-import usePeerConnection from "@/hooks/usePeerConnection";
-import useSocket from "./useSocket";
+import useToast from "@hooks/useToast";
+import { Socket } from "socket.io-client";
 import {
   AllUsersResponse,
-  Participant,
   ResponseMasterChanged,
   RoomMetadata,
-} from "./type/session";
+  PeerConnection,
+} from "@hooks/type/session";
 
-export const useSession = (sessionId: string | undefined) => {
-  const { socket } = useSocket();
+interface UseSocketEventsProps {
+  socket: Socket | null;
+  stream: MediaStream | null;
+  nickname: string;
+  sessionId: string;
+  createPeerConnection: (
+    socketId: string,
+    nickname: string,
+    stream: MediaStream,
+    isOffer: boolean,
+    userData: { nickname: string; isHost: boolean }
+  ) => RTCPeerConnection | null;
+  closePeerConnection: (socketId: string) => void;
+  peerConnections: MutableRefObject<{ [key: string]: RTCPeerConnection }>;
+  setPeers: Dispatch<SetStateAction<PeerConnection[]>>;
+  setIsHost: Dispatch<SetStateAction<boolean>>;
+  setRoomMetadata: Dispatch<SetStateAction<RoomMetadata | null>>;
+  handleReaction: (data: { senderId: string; reaction: string }) => void;
+}
+
+export const useSocketEvents = ({
+  socket,
+  stream,
+  nickname,
+  createPeerConnection,
+  closePeerConnection,
+  peerConnections,
+  setPeers,
+  setIsHost,
+  setRoomMetadata,
+  handleReaction,
+}: UseSocketEventsProps) => {
   const navigate = useNavigate();
   const toast = useToast();
-
-  const {
-    createPeerConnection,
-    closePeerConnection,
-    peers,
-    setPeers,
-    peerConnections,
-  } = usePeerConnection(socket!);
-
-  const [nickname, setNickname] = useState<string>("");
-  const [reaction, setReaction] = useState("");
-  const [roomMetadata, setRoomMetadata] = useState<RoomMetadata | null>(null);
-  const [isHost, setIsHost] = useState<boolean>(false);
 
   const reactionTimeouts = useRef<{
     [key: string]: ReturnType<typeof setTimeout>;
   }>({});
-
-  const {
-    userVideoDevices,
-    userAudioDevices,
-    selectedAudioDeviceId,
-    selectedVideoDeviceId,
-    stream,
-    isVideoOn,
-    isMicOn,
-    handleMicToggle,
-    handleVideoToggle,
-    setSelectedAudioDeviceId,
-    setSelectedVideoDeviceId,
-    getMedia,
-  } = useMediaDevices();
-
-  useEffect(() => {
-    const connections = peerConnections;
-    return () => {
-      Object.values(connections.current).forEach((pc) => {
-        pc.ontrack = null;
-        pc.onicecandidate = null;
-        pc.oniceconnectionstatechange = null;
-        pc.onconnectionstatechange = null;
-        pc.close();
-      });
-    };
-  }, [peerConnections]);
-
-  useEffect(() => {
-    if (selectedAudioDeviceId || selectedVideoDeviceId) {
-      getMedia();
-    }
-  }, [selectedAudioDeviceId, selectedVideoDeviceId, getMedia]);
-
-  useEffect(() => {
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [stream]);
 
   const handleUserExit = useCallback(
     ({ socketId }: { socketId: string }) => {
@@ -104,7 +84,7 @@ export const useSession = (sessionId: string | undefined) => {
         toast.success(`${data.masterNickname}님이 호스트가 되었습니다.`);
       }
     },
-    [socket, toast, setPeers]
+    [socket, toast, setPeers, setIsHost]
   );
 
   const setupSocketListeners = useCallback(() => {
@@ -139,7 +119,7 @@ export const useSession = (sessionId: string | undefined) => {
         data.offerSendNickname,
         stream,
         false,
-        { nickname }
+        { nickname, isHost: false }
       );
       if (!pc) return;
 
@@ -184,32 +164,6 @@ export const useSession = (sessionId: string | undefined) => {
       }
     };
 
-    const handleReaction = ({
-      senderId,
-      reaction,
-    }: {
-      senderId: string;
-      reaction: string;
-    }) => {
-      if (reactionTimeouts.current[senderId]) {
-        clearTimeout(reactionTimeouts.current[senderId]);
-      }
-
-      if (senderId === socket.id) {
-        setReaction(reaction);
-        reactionTimeouts.current[senderId] = setTimeout(() => {
-          setReaction("");
-          delete reactionTimeouts.current[senderId];
-        }, 3000);
-      } else {
-        addReaction(senderId, reaction);
-        reactionTimeouts.current[senderId] = setTimeout(() => {
-          addReaction(senderId, "");
-          delete reactionTimeouts.current[senderId];
-        }, 3000);
-      }
-    };
-
     socket.on("all_users", handleAllUsers);
     socket.on("getOffer", handleGetOffer);
     socket.on("getAnswer", handleGetAnswer);
@@ -250,93 +204,11 @@ export const useSession = (sessionId: string | undefined) => {
     handleHostChange,
     handleUserExit,
     handleRoomFinished,
+    handleReaction,
   ]);
 
   useEffect(() => {
     const cleanup = setupSocketListeners();
     return () => cleanup?.();
   }, [setupSocketListeners]);
-
-  const joinRoom = async () => {
-    if (!socket) {
-      toast.error("소켓 연결이 필요합니다.");
-      return;
-    }
-
-    if (!sessionId) {
-      toast.error("세션 ID가 필요합니다.");
-      return;
-    }
-
-    if (!nickname) {
-      toast.error("닉네임을 입력해주세요.");
-      return;
-    }
-
-    const mediaStream = await getMedia();
-    if (!mediaStream) {
-      toast.error(
-        "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
-      );
-      navigate("/sessions");
-      return;
-    }
-
-    socket.emit("join_room", { roomId: sessionId, nickname });
-  };
-
-  const emitReaction = useCallback(
-    (reactionType: string) => {
-      if (socket) {
-        socket.emit("reaction", {
-          roomId: sessionId,
-          reaction: reactionType,
-        });
-      }
-    },
-    [socket, sessionId]
-  );
-
-  const addReaction = useCallback(
-    (senderId: string, reactionType: string) => {
-      setPeers((prev) =>
-        prev.map((peer) =>
-          peer.peerId === senderId ? { ...peer, reaction: reactionType } : peer
-        )
-      );
-    },
-    [setPeers]
-  );
-
-  const participants: Participant[] = useMemo(
-    () => [
-      { nickname, isHost },
-      ...peers.map((peer) => ({
-        nickname: peer.peerNickname,
-        isHost: peer.isHost || false,
-      })),
-    ],
-    [nickname, isHost, peers]
-  );
-
-  return {
-    nickname,
-    setNickname,
-    reaction,
-    peers,
-    userVideoDevices,
-    userAudioDevices,
-    isVideoOn,
-    isMicOn,
-    stream,
-    roomMetadata,
-    isHost,
-    participants,
-    handleMicToggle,
-    handleVideoToggle,
-    setSelectedAudioDeviceId,
-    setSelectedVideoDeviceId,
-    joinRoom,
-    emitReaction,
-  };
 };
