@@ -1,23 +1,38 @@
 import { IoChevronDownSharp } from "react-icons/io5";
 
-type Option = {
+type Option<T> = {
   label: string;
-  value: string;
+  value: T;
 };
 
-interface SelectProps {
-  options: Option[];
+interface SelectProps<T> {
+  value: T;
+  setValue: (value: T) => void;
+  options: Option<T>[];
   backgroundColor?: string;
 }
 
-const Select = ({ options, backgroundColor = "bg-green-200" }: SelectProps) => {
+const Select = <T,>({
+  value,
+  setValue,
+  options,
+  backgroundColor = "bg-green-200",
+}: SelectProps<T>) => {
   return (
-    <div className="relative inline-block items-center">
+    <div className="relative inline-flex gap-2 items-center">
       <select
-        className={`rounded-custom-m ${backgroundColor} text-semibold-r text-gray-white appearance-none pl-5 pr-11 h-full`}
+        defaultValue={value as string}
+        onChange={(e) => setValue(e.target.value as T)}
+        className={`rounded-custom-m ${backgroundColor} text-semibold-r text-gray-white appearance-none pl-4 pr-8 h-full`}
       >
         {options.map((option) => (
-          <option key={option.value}>{option.label}</option>
+          <option
+            key={option.value as string}
+            value={option.value as string}
+            selected={option.value === value}
+          >
+            {option.label}
+          </option>
         ))}
       </select>
       <span className="absolute top-1/2 -translate-y-1/2 right-3 pointer-events-none">

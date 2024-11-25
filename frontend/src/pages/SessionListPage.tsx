@@ -7,6 +7,7 @@ import Select from "@components/common/Select.tsx";
 import SessionList from "@components/sessions/list/SessionList.tsx";
 import axios from "axios";
 import CreateButton from "@components/common/CreateButton.tsx";
+import { options } from "@/constraints/CategoryData.ts";
 
 interface Session {
   id: number;
@@ -28,10 +29,11 @@ const SessionListPage = () => {
   const [listLoading, setListLoading] = useState(true);
   const [inProgressListLoading, setInProgressListLoading] = useState(true);
   const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState<string>("전체");
 
   useEffect(() => {
     getSessionList();
-  }, []);
+  }, [selectedCategory]);
 
   const getSessionList = async () => {
     try {
@@ -61,15 +63,9 @@ const SessionListPage = () => {
           <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
           <div className={"h-11 flex gap-2 w-full"}>
             <SearchBar text="세션을 검색하세요" />
-            <Select
-              options={[
-                { label: "FE", value: "FE" },
-                { label: "BE", value: "BE" },
-                { label: "CS", value: "CS" },
-              ]}
-            />
+            <Select setValue={setSelectedCategory} options={options} />
             <CreateButton
-              onClick={() => navigate("/session/create")}
+              onClick={() => navigate("/sessions/create")}
               text={"새로운 세션"}
               icon={IoMdAdd}
             />
