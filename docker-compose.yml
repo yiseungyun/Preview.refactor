@@ -23,5 +23,4 @@ services:
       - "6379:6379"
       - "8001:8001"
     volumes:
-      - ./redis-stack.conf:/usr/local/etc/redis/redis-stack.conf
-      - ./redis-stack-data/:/data
+      - ./redis-data/:/data
