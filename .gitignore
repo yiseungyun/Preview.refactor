@@ -8,3 +8,8 @@ node_modules
 # husky 관련
 .husky/_
 .husky/.gitignore
+
+# docker-compose 관련 파일
+
+mysql-data
+redis-data

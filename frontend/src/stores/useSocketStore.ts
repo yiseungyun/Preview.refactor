@@ -10,7 +10,7 @@ interface SocketStore {
 const useSocketStore = create<SocketStore>((set) => ({
   socket: null,
   connect: (socketURL) => {
-    const newSocket = io(socketURL || "http://localhost:3000");
+    const newSocket = io(socketURL);
 
     newSocket.on("connect", socketConnectHandler);
     newSocket.on("connect_error", socketErrorHandler);

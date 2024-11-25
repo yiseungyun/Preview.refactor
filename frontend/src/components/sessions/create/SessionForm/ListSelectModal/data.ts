@@ -6,10 +6,11 @@ interface Question {
 interface ListItem {
   id: number;
   user_name: string;
-  category: string;
+  categoryNames: string[];
   title: string;
-  count: number;
+  questionCount: number;
   questions: Question[];
+  usage: number;
 }
 
 interface Data {
@@ -22,9 +23,10 @@ export const data: Data = {
     {
       id: 1,
       user_name: "네모정",
-      category: "프론트엔드",
+      categoryNames: ["프론트엔드"],
       title: "프론트엔드 면접 질문이심1",
-      count: 2,
+      questionCount: 2,
+      usage: 10,
       questions: [
         {
           id: 3,
@@ -39,9 +41,10 @@ export const data: Data = {
     {
       id: 2,
       user_name: "승윤최고",
-      category: "프론트엔드",
+      categoryNames: ["프론트엔드"],
       title: "프론트엔드 면접 질문이심2",
-      count: 10,
+      questionCount: 10,
+      usage: 2,
       questions: [
         {
           id: 5,
@@ -56,9 +59,10 @@ export const data: Data = {
     {
       id: 3,
       user_name: "사용자",
-      category: "프론트엔드",
+      categoryNames: ["프론트엔드"],
       title: "프론트엔드 면접 질문이심3",
-      count: 10,
+      questionCount: 10,
+      usage: 2,
       questions: [
         {
           id: 7,
@@ -73,9 +77,10 @@ export const data: Data = {
     {
       id: 4,
       user_name: "사용자",
-      category: "프론트엔드",
+      categoryNames: ["프론트엔드"],
       title: "프론트엔드 면접 질문이심3",
-      count: 10,
+      questionCount: 10,
+      usage: 10,
       questions: [
         {
           id: 123,
@@ -92,9 +97,10 @@ export const data: Data = {
     {
       id: 4,
       user_name: "사용자",
-      category: "프론트엔드",
+      categoryNames: ["프론트엔드"],
       title: "백엔드 면접 질문이심1",
-      count: 10,
+      questionCount: 10,
+      usage: 2,
       questions: [
         {
           id: 9,
@@ -109,9 +115,10 @@ export const data: Data = {
     {
       id: 5,
       user_name: "사용자",
-      category: "프론트엔드",
+      categoryNames: ["프론트엔드"],
       title: "백엔드 면접 질문이심2",
-      count: 3,
+      usage: 10,
+      questionCount: 3,
       questions: [
         {
           id: 11,

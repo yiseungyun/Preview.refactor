@@ -2,9 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { DataSource, In } from "typeorm";
 import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
-import { QuestionDto } from "./dto/question.dto";
 import { Category } from "./category.entity";
-import { QuestionListDto } from "./dto/question-list.dto";
 import { User } from "../user/user.entity";
 
 @Injectable()
@@ -49,16 +47,6 @@ export class QuestionListRepository {
             : [];
     }
 
-    createQuestionList(questionListDto: QuestionListDto) {
-        return this.dataSource
-            .getRepository(QuestionList)
-            .save(questionListDto);
-    }
-
-    async createQuestions(questionDtos: QuestionDto[]) {
-        return this.dataSource.getRepository(Question).save(questionDtos);
-    }
-
     async findCategoriesByNames(categoryNames: string[]) {
         return this.dataSource.getRepository(Category).find({
             where: {
@@ -75,7 +63,7 @@ export class QuestionListRepository {
 
     getContentsByQuestionListId(questionListId: number) {
         return this.dataSource.getRepository(Question).find({
-            where: { questionListId: questionListId },
+            where: { questionListId },
         });
     }
 

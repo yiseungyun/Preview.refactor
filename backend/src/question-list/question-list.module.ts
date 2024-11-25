@@ -6,5 +6,6 @@ import { QuestionListRepository } from "./question-list.repository";
 @Module({
     controllers: [QuestionListController],
     providers: [QuestionListService, QuestionListRepository],
+    exports: [QuestionListRepository],
 })
 export class QuestionListModule {}

@@ -109,7 +109,6 @@ const useMediaDevices = () => {
   const handleVideoToggle = async () => {
     try {
       // 비디오 껐다키기
-
       if (stream) {
         for (const videoTrack of stream.getVideoTracks()) {
           if (videoTrack.enabled) {

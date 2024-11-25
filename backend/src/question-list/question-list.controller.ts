@@ -62,27 +62,16 @@ export class QuestionListController {
             // 질문지 DTO 준비
             const createQuestionListDto: CreateQuestionListDto = {
                 title,
+                contents,
                 categoryNames,
                 isPublic,
                 userId: token.userId,
             };
 
             // 질문지 생성
-            const createdQuestionList =
+            const { createdQuestionList, createdQuestions } =
                 await this.questionListService.createQuestionList(
                     createQuestionListDto
-                );
-
-            // 질문 DTO 준비
-            const createQuestionDto: CreateQuestionDto = {
-                contents,
-                questionListId: createdQuestionList.id,
-            };
-
-            // 질문 생성
-            const createdQuestions =
-                await this.questionListService.createQuestions(
-                    createQuestionDto
                 );
 
             return res.send({
