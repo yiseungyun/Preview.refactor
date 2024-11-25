@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- 배경 원 -->
+  <circle cx="100" cy="100" r="98" fill="#F1FBF7"  stroke-width="4"/>
+  
+  <!-- 눈사람 몸체 -->
+  <g>
+    <!-- 하단 몸체 -->
+    <circle cx="100" cy="120" r="45" fill="white" stroke="#3F3F3F" stroke-width="4"/>
+    <!-- 상단 머리 -->
+    <circle cx="100" cy="65" r="35" fill="white" stroke="#3F3F3F" stroke-width="4"/>
+    
+    <!-- 눈 -->
+    <circle cx="90" cy="60" r="4" fill="#3F3F3F"/>
+    <circle cx="110" cy="60" r="4" fill="#3F3F3F"/>
+    
+    <!-- 미소 -->
+    <path d="M85 75 Q100 85 115 75" fill="none" stroke="#3F3F3F" stroke-width="3" stroke-linecap="round"/>
+    
+    <!-- 단추 -->
+    <circle cx="100" cy="105" r="4" fill="#01BF6F"/>
+    <circle cx="100" cy="120" r="4" fill="#01BF6F"/>
+    <circle cx="100" cy="135" r="4" fill="#01BF6F"/>
+    
+    <!-- 목도리 -->
+    <path d="M70 90 Q100 100 130 90" fill="none" stroke="#01BF6F" stroke-width="8" stroke-linecap="round"/>
+    <path d="M75 90 L65 110" fill="none" stroke="#01BF6F" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  
+  <!-- 노트북/태블릿 -->
+  <path d="M70 150 L130 150 L125 165 L75 165 Z" fill="#004327" stroke="#004327" stroke-width="2"/>
+  <rect x="75" y="130" width="50" height="20" fill="#004327" stroke="#004327" stroke-width="2" rx="2"/>
+</svg>

@@ -1,5 +1,17 @@
 export const options = [
   {
+    value: "전체",
+    label: "전체",
+  },
+  {
+    value: "프론트엔드",
+    label: "FE",
+  },
+  {
+    value: "백엔드",
+    label: "BE",
+  },
+  {
     value: "운영체제",
     label: "운영체제",
   },
@@ -8,16 +20,8 @@ export const options = [
     label: "네트워크",
   },
   {
-    value: "프론트엔드",
-    label: "프론트엔드",
-  },
-  {
-    value: "백엔드",
-    label: "백엔드",
-  },
-  {
     value: "데이터베이스",
-    label: "데이터베이스",
+    label: "DB",
   },
   {
     value: "자료구조",

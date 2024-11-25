@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 
 type MediaStreamType = "video" | "audio";
+interface PeerConnectionsMap {
+  [key: string]: RTCPeerConnection;
+}
 
 const useMediaDevices = () => {
   // 유저의 미디어 장치 리스트
@@ -21,6 +24,7 @@ const useMediaDevices = () => {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [videoLoading, setVideoLoading] = useState<boolean>(false);
+  // const [audioLoading, setAudioLoading] = useState<boolean>(false);
 
   // 미디어 온오프 상태
   const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
@@ -52,6 +56,16 @@ const useMediaDevices = () => {
     };
 
     getUserDevices();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+    };
   }, []);
 
   // 미디어 스트림 가져오기: 자신의 스트림을 가져옴
@@ -106,71 +120,98 @@ const useMediaDevices = () => {
   };
 
   // 미디어 스트림 토글 관련
-  const handleVideoToggle = async () => {
+  const handleVideoToggle = async (peerConnections: PeerConnectionsMap) => {
     try {
-      // 비디오 껐다키기
+      if (!stream) return;
 
-      if (stream) {
+      // 비디오 껐다키기
+      if (isVideoOn) {
         for (const videoTrack of stream.getVideoTracks()) {
-          if (videoTrack.enabled) {
-            // 비디오 끄기
-            videoTrack.stop();
-            videoTrack.enabled = false;
-          } else {
-            // 새로운 비디오 스트림 생성
-            const videoStream = await getMediaStream("video");
-            if (videoStream) {
-              setVideoLoading(true);
-              streamRef.current?.getVideoTracks().forEach((track) => {
-                streamRef.current?.removeTrack(track);
-              });
-              videoStream?.getVideoTracks().forEach((track) => {
-                streamRef.current?.addTrack(track);
-                console.log("새로운 비디오 트랙을 추가했습니다.");
-              });
-            } else {
-              console.error("비디오 스트림을 생성하지 못했습니다.");
-            }
-            setVideoLoading(false);
-            setStream(streamRef.current);
+          // 비디오 끄기
+          if (!videoTrack.enabled) {
+            setIsVideoOn((prev) => !prev);
+            return;
           }
+          videoTrack.stop();
+
+          const blackCanvas = document.createElement("canvas");
+          blackCanvas.width = 640;
+          blackCanvas.height = 480;
+          const ctx = blackCanvas.getContext("2d");
+          ctx!.fillRect(0, 0, blackCanvas.width, blackCanvas.height);
+
+          const blackStream = blackCanvas.captureStream();
+          const blackTrack = blackStream.getVideoTracks()[0];
+          Object.values(peerConnections).forEach((pc) => {
+            const sender = pc
+              .getSenders()
+              .find((s) => s.track!.kind === "video");
+            if (sender) {
+              sender.replaceTrack(blackTrack);
+            }
+          });
         }
+        setIsVideoOn((prev) => !prev);
+      } else {
+        const videoStream = await getMediaStream("video");
+        if (!videoStream) return;
+
+        const newVideoTrack = videoStream.getVideoTracks()[0];
+
+        if (videoStream) {
+          setVideoLoading(true);
+          if (streamRef.current) {
+            const oldVideoTracks = streamRef.current.getVideoTracks();
+            oldVideoTracks.forEach((track) =>
+              streamRef.current?.removeTrack(track)
+            );
+
+            streamRef.current.addTrack(newVideoTrack);
+            setStream(streamRef.current);
+
+            Object.values(peerConnections).forEach((pc) => {
+              const sender = pc
+                .getSenders()
+                .find((s) => s.track?.kind === "video");
+              if (sender) {
+                sender.replaceTrack(newVideoTrack);
+              }
+            });
+          }
+        } else {
+          console.error("비디오 스트림을 생성하지 못했습니다.");
+        }
+        setVideoLoading(false);
+        setIsVideoOn((prev) => !prev);
       }
-      setIsVideoOn((prev) => !prev);
     } catch (error) {
-      console.error("Error stopping video stream", error);
+      console.error("비디오 스트림을 토글 할 수 없었습니다.", error);
     }
   };
 
   const handleMicToggle = async () => {
     try {
-      if (stream) {
+      if (!stream) return;
+
+      if (isMicOn) {
         for (const audioTrack of stream.getAudioTracks()) {
-          if (audioTrack.enabled) {
-            // 오디오 끄기
-            audioTrack.stop();
-            audioTrack.enabled = false;
-          } else {
-            // 새로운 오디오 스트림 생성
-            const audioStream = await getMediaStream("audio");
-            if (audioStream) {
-              streamRef.current?.getAudioTracks().forEach((track) => {
-                streamRef.current?.removeTrack(track);
-              });
-              audioStream?.getAudioTracks().forEach((track) => {
-                streamRef.current?.addTrack(track);
-                console.log("새로운 오디오 트랙을 추가했습니다.");
-              });
-            } else {
-              console.error("오디오 스트림을 생성하지 못했습니다.");
-            }
-            setStream(streamRef.current);
+          if (!audioTrack.enabled) {
+            setIsMicOn((prev) => !prev);
+            return;
           }
+          // 오디오 끄기
+          audioTrack.enabled = false;
         }
+        setIsMicOn((prev) => !prev);
+      } else {
+        for (const audioTrack of stream.getAudioTracks()) {
+          // 오디오 켜기
+          audioTrack.enabled = true;
+        }
+        setIsMicOn((prev) => !prev);
       }
-      setIsMicOn((prev) => !prev);
     } catch (error) {
-      console.error("Error stopping mic stream", error);
+      console.error("오디오 스트림을 토글 할 수 없었습니다.", error);
     }
   };
 

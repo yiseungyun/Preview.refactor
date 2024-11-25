@@ -6,9 +6,11 @@ import useToast from "@hooks/useToast.ts";
 import { useEffect, useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { IoMdAdd } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import useAuth from "@hooks/useAuth.ts";
+import CreateButton from "@components/common/CreateButton.tsx";
+import { options } from "@/constraints/CategoryData.ts";
 
 
 interface QuestionList {
@@ -28,52 +30,42 @@ const QuestionList = () => {
   const navigate = useNavigate();
 
   const { isLoggedIn } = useAuth();
+  const [selectedCategory, setSelectedCategory] = useState<string>("전체");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    getQuestionList();
-  }, []);
+    getQuestionList(selectedCategory);
+    if (selectedCategory !== "전체") {
+      console.log("selectedCategory", selectedCategory);
+      setSearchParams({ category: selectedCategory });
+    }
+  }, [selectedCategory]);
 
-  const getQuestionList = async () => {
+  useEffect(() => {
+    if (searchParams.get("category")) {
+      setSelectedCategory(searchParams.get("category") ?? "전체");
+    }
+  }, [searchParams]);
+
+  const getQuestionList = async (category?: string) => {
     try {
-      const response = await axios.get("/api/question-list");
-      console.log(response);
+      const response =
+        category !== "전체"
+          ? await axios.post(`/api/question-list/category`, {
+              categoryName: category,
+            })
+          : await axios.get("/api/question-list");
       const data = response.data.data.allQuestionLists ?? [];
       setQuestionList(data);
       setQuestionLoading(false);
     } catch (error) {
       console.error("질문지 리스트 불러오기 실패", error);
-      const questionLists = [
-        {
-          id: 1,
-          title: "프론트엔드 기술 면접",
-          questionCount: 25,
-          usage: 128,
-          isStarred: true,
-          categoryNames: ["Frontend"],
-        },
-        {
-          id: 2,
-          title: "요청에 실패해서 더미 데이터입니다.",
-          questionCount: 30,
-          usage: 89,
-          isStarred: false,
-          categoryNames: ["React"],
-        },
-        {
-          id: 3,
-          title: "JavaScript 핵심 개념",
-          questionCount: 40,
-          usage: 156,
-          isStarred: true,
-          categoryNames: ["JavaScript"],
-        },
-      ];
-      setQuestionList(questionLists);
+      setQuestionList([]);
     }
   };
 
   const handleNavigateDetail = (id: number) => {
-    toast.error(`질문지 아이디${id} 페이지는 준비중인 기능입니다.`);
+    navigate(`/questions/${id}`);
   };
 
   const handleNavigateCreate = () => {
@@ -87,7 +79,7 @@ const QuestionList = () => {
   return (
     <section className="flex w-screen min-h-screen">
       <Sidebar />
-      <div className="max-w-7xl w-full px-12 pt-20">
+      <div className="max-w-5xl w-full px-12 pt-20">
         <div className="mb-12">
           <h1 className="text-bold-l text-gray-black dark:text-white mb-6">
             질문지 목록
@@ -95,20 +87,15 @@ const QuestionList = () => {
           <div className="flex gap-2 items-stretch justify-between">
             <SearchBar text={"질문지 검색하기"} />
             <Select
-              options={[
-                { label: "FE", value: "FE" },
-                { label: "BE", value: "BE" },
-                { label: "CS", value: "CS" },
-              ]}
+              value={selectedCategory}
+              setValue={setSelectedCategory}
+              options={options}
             />
-            <button
-              className={
-                "flex justify-center items-center fill-current min-w-11 min-h-11 bg-green-200 rounded-custom-m box-border"
-              }
+            <CreateButton
               onClick={handleNavigateCreate}
-            >
-              <IoMdAdd className="w-[1.35rem] h-[1.35rem] text-gray-white" />
-            </button>
+              text={"새로운 질문지"}
+              icon={IoMdAdd}
+            />
           </div>
         </div>
         <LoadingIndicator loadingState={questionLoading} />
