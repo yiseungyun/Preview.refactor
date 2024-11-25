@@ -1,13 +1,14 @@
-import VideoContainer from "@/components/session/VideoContainer.tsx";
+import VideoContainer from "@components/session/VideoContainer.tsx";
 import { useParams } from "react-router-dom";
-import SessionSidebar from "@/components/session/SessionSidebar.tsx";
-import SessionToolbar from "@/components/session/SessionToolbar.tsx";
-import { useSession } from "@/hooks/useSession";
-import useSocket from "@/hooks/useSocket";
-import SessionHeader from "@/components/session/SessionHeader";
+import SessionSidebar from "@components/session/SessionSidebar.tsx";
+import SessionToolbar from "@components/session/SessionToolbar.tsx";
+import { useSession } from "@hooks/session/useSession";
+import useSocket from "@hooks/useSocket";
+import SessionHeader from "@components/session/SessionHeader";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
+  if (!sessionId) return null;
   const { socket } = useSocket();
   const {
     nickname,

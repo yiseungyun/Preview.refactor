@@ -1,8 +1,8 @@
 import { renderHook } from "@testing-library/react";
-import { useSession } from "@/hooks/useSession";
-import useSocketStore from "@/stores/useSocketStore";
-import useMediaDevices from "@/hooks/useMediaDevices";
-import usePeerConnection from "@/hooks/usePeerConnection";
+import { useSession } from "@hooks/session/useSession";
+import useSocketStore from "@stores/useSocketStore";
+import useMediaDevices from "@hooks/session/useMediaDevices";
+import usePeerConnection from "@hooks/session/usePeerConnection";
 import { useNavigate } from "react-router-dom";
 import { act } from "react";
 import {
@@ -12,12 +12,12 @@ import {
   mockSocket,
   mockSocketStore,
   mockToast,
-} from "./mocks/useSession.mock";
+} from "@hooks/__test__/mocks/useSession.mock";
 
 // jest.mock: 실제 모듈대신 mock 모듈을 사용하도록 설정
-jest.mock("@/hooks/useMediaDevices");
+jest.mock("@hooks/session/useMediaDevices");
 
-jest.mock("@/hooks/usePeerConnection", () => ({
+jest.mock("@hooks/session/usePeerConnection", () => ({
   __esModule: true,
   default: jest.fn().mockReturnValue({
     createPeerConnection: jest.fn(),
@@ -28,7 +28,7 @@ jest.mock("@/hooks/usePeerConnection", () => ({
   }),
 }));
 
-jest.mock("@/hooks/useToast", () => ({
+jest.mock("@hooks/useToast", () => ({
   __esModule: true,
   default: () => mockToast,
 }));
@@ -37,12 +37,12 @@ jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn(),
 }));
 
-jest.mock("@/stores/useSocketStore", () => ({
+jest.mock("@stores/useSocketStore", () => ({
   __esModule: true,
   default: jest.fn(() => mockSocketStore),
 }));
 
-jest.mock("@/hooks/useSocket", () => ({
+jest.mock("@hooks/useSocket", () => ({
   __esModule: true,
   default: () => {
     const store = useSocketStore();
@@ -141,16 +141,6 @@ describe("useSession Hook 테스트", () => {
         roomId: "test-session",
         nickname: "test-user",
       });
-    });
-
-    it("세션 ID가 없이 스터디룸 입장", async () => {
-      const { result } = renderHook(() => useSession(undefined));
-
-      await act(async () => {
-        await result.current.joinRoom();
-      });
-
-      expect(mockToast.error).toHaveBeenCalledWith("세션 ID가 필요합니다.");
     });
 
     it("닉네임 없이 스터디룸 입장", async () => {
