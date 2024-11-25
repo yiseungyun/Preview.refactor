@@ -1,27 +1,16 @@
 import {
     WebSocketGateway,
     WebSocketServer,
-    OnGatewayConnection,
-    OnGatewayDisconnect,
     SubscribeMessage,
     MessageBody,
 } from "@nestjs/websockets";
 import { Server } from "socket.io";
-import { Logger } from "@nestjs/common";
 import { EMIT_EVENT, LISTEN_EVENT } from "@/signaling-server/sig-server.event";
 
 @WebSocketGateway()
-export class SigServerGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class SigServerGateway {
     @WebSocketServer()
     private server: Server;
-
-    handleConnection(socket: any) {
-        Logger.log(`Client connected in signaling server: ${socket.id}`);
-    }
-
-    handleDisconnect(socket: any) {
-        Logger.log(`Client disconnected signaling server: ${socket.id}`);
-    }
 
     @SubscribeMessage(LISTEN_EVENT.OFFER)
     handleOffer(
