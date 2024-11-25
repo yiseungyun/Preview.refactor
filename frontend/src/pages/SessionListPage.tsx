@@ -63,7 +63,11 @@ const SessionListPage = () => {
           <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
           <div className={"h-11 flex gap-2 w-full"}>
             <SearchBar text="세션을 검색하세요" />
-            <Select setValue={setSelectedCategory} options={options} />
+            <Select
+              value={"FE"}
+              setValue={setSelectedCategory}
+              options={options}
+            />
             <CreateButton
               onClick={() => navigate("/sessions/create")}
               text={"새로운 세션"}
