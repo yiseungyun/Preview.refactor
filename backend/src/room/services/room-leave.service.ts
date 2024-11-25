@@ -18,7 +18,7 @@ export class RoomLeaveService {
 
     async leaveRoom(socket: Socket) {
         const rooms = await this.socketRepository.getRoomOfSocket(socket.id);
-        console.log(rooms);
+
         for await (const roomId of rooms.joinedRooms)
             await this.processRoomLeave(socket.id, roomId);
     }
@@ -28,8 +28,7 @@ export class RoomLeaveService {
         if (!room) return;
 
         await this.leaveSocket(socketId, room);
-        console.log(room.host, socketId);
-        console.log("방장이 나갔나요?", room.host === socketId);
+
         if (room.host === socketId) await this.handleHostChange(socketId, room);
         else this.socketService.emitToRoom(room.roomId, EMIT_EVENT.QUIT, { socketId });
 

@@ -27,9 +27,9 @@ export class RoomRepository {
 
     public async getRoom(id: string): Promise<RoomDto> {
         const room = await this.roomRepository.search().where("roomId").eq(id).return.first();
-        console.log(room);
+
         if (!room.roomId) return null;
-        console.log(room.roomId, room.connectionList);
+
         return {
             connectionList: JSON.parse(room.connectionList),
             createdAt: room.createdAt,
