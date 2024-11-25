@@ -78,6 +78,7 @@ export class RoomService {
         // TODO : 에러를 보내기 ->  Exception 생성해서 분류
         if (this.isFullRoom(room)) return socket.emit(EMIT_EVENT.FULL, {});
 
+        // TODO : join room 하는 단계가 3가지가 같이 혼재 -> 이것만 따로 묶어보기?
         socket.join(roomId);
         await this.socketRepository.joinRoom(socket.id, roomId);
         room.connectionList.push({
