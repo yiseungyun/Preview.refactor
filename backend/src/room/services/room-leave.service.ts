@@ -31,7 +31,7 @@ export class RoomLeaveService {
             (connection) => connection.socketId !== socketId
         );
 
-        if (!room.connectionList.length) return this.deleteRoom(socketId);
+        if (!room.connectionList.length) return this.deleteRoom(room.roomId);
 
         await this.roomRepository.setRoom(room);
 
