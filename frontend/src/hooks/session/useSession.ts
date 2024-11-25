@@ -9,6 +9,7 @@ import { useMediaStreamCleanup } from "@hooks/session/useMediaStreamCleanup";
 import { usePeerConnectionCleanup } from "@hooks/session/usePeerConnectionCleanup";
 import { useReaction } from "@hooks/session/useReaction";
 import { useSocketEvents } from "./useSocketEvents";
+import { Socket } from "socket.io-client";
 
 export const useSession = (sessionId: string) => {
   const { socket } = useSocket();
@@ -73,14 +74,24 @@ export const useSession = (sessionId: string) => {
     handleReaction,
   });
 
-  const joinRoom = async () => {
+  const isValidUser = (
+    socket: Socket | null,
+    nickname: string
+  ): socket is Socket => {
     if (!socket) {
       toast.error("소켓 연결이 필요합니다.");
-      return;
+      return false;
     }
-
     if (!nickname) {
       toast.error("닉네임을 입력해주세요.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const joinRoom = async () => {
+    if (!isValidUser(socket, nickname)) {
       return;
     }
 
