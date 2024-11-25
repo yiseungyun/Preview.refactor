@@ -1,6 +1,4 @@
-import { UserInfo } from "@/pages/MyPage";
-
-const Profile = (userInfo: UserInfo) => {
+const Profile = ({ nickname }: { nickname: string }) => {
   return (
     <div className="flex flex-row gap-8">
       <div className="relative bg-gray-50 rounded-full w-32 h-32 border-2 border-gray-100 overflow-hidden">
@@ -11,9 +9,9 @@ const Profile = (userInfo: UserInfo) => {
         <div className="flex flex-row mb-2">
           <p className="text-gray-black text-semibold-l">회원 정보</p>
         </div>
-        <p className="text-gray-black text-medium-xl">{userInfo?.nickname}</p>
+        <p className="text-gray-black text-medium-xl">{nickname}</p>
         <span className="text-gray-600 text-medium-l">
-          {userInfo?.nickname}님의 관심분야를 등록해보세요!
+          {nickname}님의 관심분야를 등록해보세요!
         </span>
       </div>
     </div>
