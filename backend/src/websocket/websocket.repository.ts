@@ -2,17 +2,17 @@ import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { InjectRepository } from "nestjs-redis-om";
 import { Repository } from "redis-om";
-import { RoomSocketEntity } from "@/room/socket/room-socket.entity";
+import { WebsocketEntity } from "@/websocket/websocket.entity";
 
 @Injectable()
-export class RoomSocketRepository {
+export class WebsocketRepository {
     public constructor(
-        @InjectRepository(RoomSocketEntity)
-        private readonly socketRepository: Repository<RoomSocketEntity>
+        @InjectRepository(WebsocketEntity)
+        private readonly socketRepository: Repository<WebsocketEntity>
     ) {}
 
     public async register(socket: Socket) {
-        const entity = new RoomSocketEntity();
+        const entity = new WebsocketEntity();
         entity.id = socket.id;
         entity.joinedRooms = [];
         await this.socketRepository.remove(entity.id);
