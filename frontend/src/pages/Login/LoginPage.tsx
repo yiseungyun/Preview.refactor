@@ -2,8 +2,20 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 import { DotLottiePlayer } from "@dotlottie/react-player";
 
 import mainSnowman from "/assets/noondeumyum.lottie";
+import useAuth from "@hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const LoginPage = () => {
+  const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn])
+
   const handleOAuthLogin = (provider: "github" | "google") => {
     if (provider === "github") {
       // 깃허브 로그인
