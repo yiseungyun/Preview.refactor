@@ -1,8 +1,47 @@
-export interface CreateRoomDto {
+import { IsEnum, IsNotEmpty, IsNumber, Max, Min } from "class-validator";
+import { RoomStatus } from "@/room/room.entity";
+
+export class CreateRoomDto {
+    @IsNotEmpty()
     title: string;
-    status: "PUBLIC" | "PRIVATE";
+
+    @IsEnum(RoomStatus, {
+        message: "Status must be either PUBLIC or PRIVATE",
+    })
+    status: RoomStatus;
+
+    @IsNotEmpty()
     nickname: string;
+
+    @IsNumber()
+    @Min(1)
+    @Max(5)
+    maxParticipants: number;
+
+    @IsNumber()
+    questionListId: number;
+}
+
+export class CreateRoomInternalDto {
+    @IsNotEmpty()
+    title: string;
+
+    @IsEnum(RoomStatus, {
+        message: "Status must be either PUBLIC or PRIVATE",
+    })
+    status: RoomStatus;
+
+    @IsNotEmpty()
+    nickname: string;
+
+    @IsNotEmpty()
     socketId: string;
-    maxParticipants?: number;
+
+    @IsNumber()
+    @Min(1)
+    @Max(5)
+    maxParticipants: number;
+
+    @IsNumber()
     questionListId: number;
 }

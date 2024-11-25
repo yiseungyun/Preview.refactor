@@ -9,6 +9,10 @@ const useAuth = () => {
 
   const logOut = () => {
     logout();
+    setNickname("");
+    useAuthStore.persist.clearStorage();
+    document.cookie = "accessToken=; Max-Age=0; path=/;";
+    document.cookie = "refreshToken=; Max-Age=0; path=/;";
   };
 
   return { isLoggedIn, nickname, logIn, logOut, setNickname };

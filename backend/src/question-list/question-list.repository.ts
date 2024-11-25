@@ -35,16 +35,12 @@ export class QuestionListRepository {
     }
 
     async findCategoryNamesByQuestionListId(questionListId: number) {
-        const questionList = await this.dataSource
-            .getRepository(QuestionList)
-            .findOne({
-                where: { id: questionListId },
-                relations: ["categories"], // 질문지와 관련된 카테고리도 함께 조회
-            });
-        console.log(questionList);
-        return questionList
-            ? questionList.categories.map((category) => category.name)
-            : [];
+        const questionList = await this.dataSource.getRepository(QuestionList).findOne({
+            where: { id: questionListId },
+            relations: ["categories"], // 질문지와 관련된 카테고리도 함께 조회
+        });
+
+        return questionList ? questionList.categories.map((category) => category.name) : [];
     }
 
     async findCategoriesByNames(categoryNames: string[]) {
