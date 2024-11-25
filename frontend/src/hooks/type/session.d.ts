@@ -25,6 +25,7 @@ export interface ResponseMasterChanged {
 }
 
 export interface Participant {
+  id?: string;
   nickname: string;
   isHost: boolean;
 }
