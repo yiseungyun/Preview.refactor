@@ -7,21 +7,23 @@ import {
     MessageBody,
 } from "@nestjs/websockets";
 import { Server } from "socket.io";
+import { Logger } from "@nestjs/common";
+import { EMIT_EVENT, LISTEN_EVENT } from "@/signaling-server/sig-server.event";
 
 @WebSocketGateway()
 export class SigServerGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
-    server: Server;
+    private server: Server;
 
     handleConnection(socket: any) {
-        console.log(`Client connected in signaling server: ${socket.id}`);
+        Logger.log(`Client connected in signaling server: ${socket.id}`);
     }
 
     handleDisconnect(socket: any) {
-        console.log(`Client disconnected signaling server: ${socket.id}`);
+        Logger.log(`Client disconnected signaling server: ${socket.id}`);
     }
 
-    @SubscribeMessage("offer")
+    @SubscribeMessage(LISTEN_EVENT.OFFER)
     handleOffer(
         @MessageBody()
         data: {
@@ -31,14 +33,14 @@ export class SigServerGateway implements OnGatewayConnection, OnGatewayDisconnec
             offerSendNickname: string;
         }
     ) {
-        this.server.to(data.offerReceiveID).emit("getOffer", {
+        this.server.to(data.offerReceiveID).emit(EMIT_EVENT.OFFER, {
             sdp: data.sdp,
             offerSendID: data.offerSendID,
             offerSendNickname: data.offerSendNickname,
         });
     }
 
-    @SubscribeMessage("answer")
+    @SubscribeMessage(LISTEN_EVENT.ANSWER)
     handleAnswer(
         @MessageBody()
         data: {
@@ -47,13 +49,13 @@ export class SigServerGateway implements OnGatewayConnection, OnGatewayDisconnec
             answerSendID: string;
         }
     ) {
-        this.server.to(data.answerReceiveID).emit("getAnswer", {
+        this.server.to(data.answerReceiveID).emit(EMIT_EVENT.ANSWER, {
             sdp: data.sdp,
             answerSendID: data.answerSendID,
         });
     }
 
-    @SubscribeMessage("candidate")
+    @SubscribeMessage(LISTEN_EVENT.CANDIDATE)
     handleCandidate(
         @MessageBody()
         data: {
@@ -62,7 +64,7 @@ export class SigServerGateway implements OnGatewayConnection, OnGatewayDisconnec
             candidateSendID: string;
         }
     ) {
-        this.server.to(data.candidateReceiveID).emit("getCandidate", {
+        this.server.to(data.candidateReceiveID).emit(LISTEN_EVENT.ANSWER, {
             candidate: data.candidate,
             candidateSendID: data.candidateSendID,
         });
