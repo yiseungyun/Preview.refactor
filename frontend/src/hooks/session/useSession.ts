@@ -131,7 +131,7 @@ export const useSession = (sessionId: string) => {
     roomMetadata,
     isHost,
     participants,
-    handleMicToggle: () => handleMicToggle(peerConnections.current),
+    handleMicToggle: () => handleMicToggle(),
     handleVideoToggle: () => handleVideoToggle(peerConnections.current),
     setSelectedAudioDeviceId,
     setSelectedVideoDeviceId,
