@@ -7,7 +7,7 @@ import Select from "@components/common/Select.tsx";
 import SessionList from "@components/sessions/list/SessionList.tsx";
 import axios from "axios";
 import CreateButton from "@components/common/CreateButton.tsx";
-import { options } from "@/constraints/CategoryData.ts";
+import { options } from "@/constants/CategoryData.ts";
 
 interface Session {
   id: number;
