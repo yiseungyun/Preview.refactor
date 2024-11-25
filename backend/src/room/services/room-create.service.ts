@@ -38,7 +38,7 @@ export class RoomCreateService {
 
         await this.roomRepository.setRoom(roomDto);
 
-        await this.roomJoinService.joinRoom({ roomId, socketId, nickname });
+        await this.roomJoinService.joinRoom({ roomId, socketId, nickname }, true);
 
         this.socketService.emitToRoom(roomId, EMIT_EVENT.CREATE, roomDto);
     }

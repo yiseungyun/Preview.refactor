@@ -14,7 +14,7 @@ export class RoomJoinService {
         private readonly socketRepository: WebsocketRepository
     ) {}
 
-    public async joinRoom(dto: JoinRoomInternalDto) {
+    public async joinRoom(dto: JoinRoomInternalDto, isCreate: boolean = false) {
         const { roomId, socketId, nickname } = dto;
 
         const room = await this.roomRepository.getRoom(roomId);
@@ -37,7 +37,7 @@ export class RoomJoinService {
         await this.roomRepository.setRoom(room);
 
         // TODO: 성공 / 실패 여부를 전송하는데 있어서 결과에 따라 다르게 해야하는데.. 어떻게 관심 분리를 할까?
-        this.socketService.emitToRoom(roomId, EMIT_EVENT.JOIN, room);
+        if (!isCreate) this.socketService.emitToRoom(roomId, EMIT_EVENT.JOIN, room);
     }
 
     private isFullRoom(room: RoomDto): boolean {
