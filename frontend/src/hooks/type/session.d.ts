@@ -3,20 +3,31 @@ export type RoomStatus = "PUBLIC" | "PRIVATE";
 export interface RoomMetadata {
   title: string;
   status: RoomStatus;
+  participants: number;
   maxParticipants: number;
   createdAt: number;
-  host: string;
+  inProgress: boolean;
+  host: Connection;
+  category: string | string[];
 }
 
-export interface AllUsersResponse {
-  roomMetadata: RoomMetadata;
-  users: {
-    [socketId: string]: {
-      joinTime: number;
-      nickname: string;
-      isHost: boolean;
-    };
-  };
+export interface RoomJoinResponse {
+  category: string;
+  inProgress: boolean;
+  createdAt: number;
+  host: Connection;
+  participants: number;
+  maxParticipants: number;
+  status: "PUBLIC" | "PRIVATE";
+  title: string;
+  id: string;
+  connectionList: Connection[];
+}
+
+export interface Connection {
+  socketId: string;
+  createdAt: number;
+  nickname: string;
 }
 
 export interface ResponseMasterChanged {
