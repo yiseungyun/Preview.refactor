@@ -10,7 +10,7 @@ export class RoomController {
         const rooms = await this.roomService.getPublicRoom();
         return rooms.map((room) => ({
             ...room,
-            connectionList: undefined,
+            connectionMap: undefined,
         }));
     }
 }

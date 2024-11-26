@@ -27,11 +27,9 @@ export class RoomLeaveService {
         const room = await this.roomRepository.getRoom(roomId);
         if (!room) return;
 
-        room.connectionList = room.connectionList.filter(
-            (connection) => connection.socketId !== socketId
-        );
+        delete room.connectionMap[socketId];
 
-        if (!room.connectionList.length) return this.deleteRoom(room.id);
+        if (!Object.keys(room.connectionMap).length) return this.deleteRoom(room.id);
 
         await this.roomRepository.setRoom(room);
 

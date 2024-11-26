@@ -15,9 +15,9 @@ export class RoomRepository {
     public async getAllRoom(): Promise<RoomDto[]> {
         const allRooms = await this.roomRepository.search().return.all();
         return allRooms.map((room: RoomEntity) => {
-            const connectionList = JSON.parse(room.connectionList);
+            const connectionMap = JSON.parse(room.connectionMap);
             return {
-                connectionList: JSON.parse(room.connectionList),
+                connectionMap: JSON.parse(room.connectionMap),
                 createdAt: room.createdAt,
                 host: JSON.parse(room.host),
                 maxParticipants: room.maxParticipants,
@@ -26,7 +26,7 @@ export class RoomRepository {
                 id: room.id,
                 category: room.category,
                 inProgress: room.inProgress,
-                participants: connectionList.length,
+                participants: Object.keys(connectionMap).length,
             };
         });
     }
@@ -36,15 +36,15 @@ export class RoomRepository {
 
         if (!room) return null;
 
-        const connectionList = JSON.parse(room.connectionList);
+        const connectionMap = JSON.parse(room.connectionMap);
 
         return {
             category: room.category,
             inProgress: room.inProgress,
-            connectionList,
+            connectionMap,
             createdAt: room.createdAt,
             host: JSON.parse(room.host),
-            participants: connectionList.length,
+            participants: Object.keys(connectionMap).length,
             maxParticipants: room.maxParticipants,
             status: room.status,
             title: room.title,
@@ -59,7 +59,7 @@ export class RoomRepository {
         room.inProgress = dto.inProgress;
         room.title = dto.title;
         room.status = dto.status;
-        room.connectionList = JSON.stringify(dto.connectionList);
+        room.connectionMap = JSON.stringify(dto.connectionMap);
         room.maxParticipants = dto.maxParticipants;
         room.createdAt = Date.now();
         room.host = JSON.stringify(dto.host);

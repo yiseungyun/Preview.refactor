@@ -38,7 +38,7 @@ export class RoomEntity extends Entity {
     @Field({ type: "string" })
     host: string;
 
-    // Connection[]
+    // Record<string, Connection>
     @Field({ type: "string" })
-    connectionList: string;
+    connectionMap: string;
 }
