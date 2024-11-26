@@ -7,7 +7,7 @@ export interface RoomMetadata {
   maxParticipants: number;
   createdAt: number;
   inProgress: boolean;
-  host: Connection;
+  host: UserInfo;
   category: string | string[];
 }
 
@@ -15,24 +15,24 @@ export interface RoomJoinResponse {
   category: string;
   inProgress: boolean;
   createdAt: number;
-  host: Connection;
+  host: UserInfo;
   participants: number;
   maxParticipants: number;
   status: "PUBLIC" | "PRIVATE";
   title: string;
   id: string;
-  connectionList: Connection[];
+  connectionList: UserInfo[];
 }
 
-export interface Connection {
+export interface UserInfo {
   socketId: string;
   createdAt: number;
   nickname: string;
 }
 
 export interface ResponseMasterChanged {
-  masterNickname: string;
-  masterSocketId: string;
+  socketId: string;
+  nickname: string;
 }
 
 export interface Participant {
