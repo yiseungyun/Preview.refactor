@@ -3,7 +3,7 @@ import { DataSource, In } from "typeorm";
 import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
 import { Category } from "./category.entity";
-import { User } from "../user/user.entity";
+import { User } from "@/user/user.entity";
 
 @Injectable()
 export class QuestionListRepository {
@@ -35,12 +35,16 @@ export class QuestionListRepository {
     }
 
     async findCategoryNamesByQuestionListId(questionListId: number) {
-        const questionList = await this.dataSource.getRepository(QuestionList).findOne({
-            where: { id: questionListId },
-            relations: ["categories"], // 질문지와 관련된 카테고리도 함께 조회
-        });
+        const questionList = await this.dataSource
+            .getRepository(QuestionList)
+            .findOne({
+                where: { id: questionListId },
+                relations: ["categories"], // 질문지와 관련된 카테고리도 함께 조회
+            });
 
-        return questionList ? questionList.categories.map((category) => category.name) : [];
+        return questionList
+            ? questionList.categories.map((category) => category.name)
+            : [];
     }
 
     async findCategoriesByNames(categoryNames: string[]) {
@@ -85,5 +89,24 @@ export class QuestionListRepository {
                 questionListId,
             })
             .getCount();
+    }
+
+    scrapQuestionList(questionListId: number, userId: number) {
+        return this.dataSource
+            .createQueryBuilder()
+            .insert()
+            .into("user_question_list")
+            .values({
+                user_id: userId,
+                question_list_id: questionListId,
+            })
+            .orIgnore()
+            .execute();
+    }
+
+    getScrappedQuestionListsByUser(user: User) {
+        return this.dataSource.getRepository(QuestionList).find({
+            where: { scrappedByUsers: user },
+        });
     }
 }
