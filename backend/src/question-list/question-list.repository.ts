@@ -4,6 +4,7 @@ import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
 import { Category } from "./category.entity";
 import { User } from "@/user/user.entity";
+import { PaginateQuery } from "nestjs-paginate";
 
 @Injectable()
 export class QuestionListRepository {
@@ -18,9 +19,10 @@ export class QuestionListRepository {
     }
 
     findPublicQuestionLists() {
-        return this.dataSource.getRepository(QuestionList).find({
-            where: { isPublic: true },
-        });
+        return this.dataSource
+            .getRepository(QuestionList)
+            .createQueryBuilder("question_list")
+            .where("question_list.is_public = :isPublic", { isPublic: true });
     }
 
     async getCategoryIdByName(categoryName: string) {
@@ -33,13 +35,12 @@ export class QuestionListRepository {
     }
 
     findPublicQuestionListsByCategoryId(categoryId: number) {
-        return this.dataSource.getRepository(QuestionList).find({
-            where: {
-                isPublic: true,
-                categories: { id: categoryId },
-            },
-            relations: ["categories"],
-        });
+        return this.dataSource
+            .getRepository(QuestionList)
+            .createQueryBuilder("question_list")
+            .innerJoin("question_list.categories", "category")
+            .where("question_list.is_public = :isPublic", { isPublic: true })
+            .andWhere("category.id = :categoryId", { categoryId });
     }
 
     async findCategoryNamesByQuestionListId(questionListId: number) {
@@ -66,9 +67,10 @@ export class QuestionListRepository {
     }
 
     getContentsByQuestionListId(questionListId: number) {
-        return this.dataSource.getRepository(Question).find({
-            where: { questionListId },
-        });
+        return this.dataSource
+            .getRepository(Question)
+            .createQueryBuilder("question")
+            .where("question.question_list_id = :questionListId", { questionListId });
     }
 
     async getUsernameById(userId: number) {

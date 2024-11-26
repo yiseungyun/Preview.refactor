@@ -8,6 +8,7 @@ import { MyQuestionListDto } from "./dto/my-question-list.dto";
 import { Question } from "./question.entity";
 import { Transactional } from "typeorm-transactional";
 import { QuestionList } from "@/question-list/question-list.entity";
+import { paginate, PaginateQuery } from "nestjs-paginate";
 
 @Injectable()
 export class QuestionListService {
@@ -16,12 +17,16 @@ export class QuestionListService {
         private readonly userRepository: UserRepository
     ) {}
 
-    async getAllQuestionLists() {
+    async getAllQuestionLists(query: PaginateQuery) {
         const allQuestionLists: GetAllQuestionListDto[] = [];
 
         const publicQuestionLists = await this.questionListRepository.findPublicQuestionLists();
+        const result = await paginate(query, publicQuestionLists, {
+            sortableColumns: ["usage"],
+            defaultSortBy: [["usage", "DESC"]],
+        });
 
-        for (const publicQuestionList of publicQuestionLists) {
+        for (const publicQuestionList of result.data) {
             const { id, title, usage } = publicQuestionList;
             const categoryNames: string[] =
                 await this.questionListRepository.findCategoryNamesByQuestionListId(id);
@@ -38,22 +43,26 @@ export class QuestionListService {
             };
             allQuestionLists.push(questionList);
         }
-        return allQuestionLists;
+        return { allQuestionLists, meta: result.meta };
     }
 
-    async getAllQuestionListsByCategoryName(categoryName: string) {
+    async getAllQuestionListsByCategoryName(categoryName: string, query: PaginateQuery) {
         const allQuestionLists: GetAllQuestionListDto[] = [];
 
         const categoryId = await this.questionListRepository.getCategoryIdByName(categoryName);
 
         if (!categoryId) {
-            return [];
+            return {};
         }
 
         const publicQuestionLists =
             await this.questionListRepository.findPublicQuestionListsByCategoryId(categoryId);
+        const result = await paginate(query, publicQuestionLists, {
+            sortableColumns: ["usage"],
+            defaultSortBy: [["usage", "DESC"]],
+        });
 
-        for (const publicQuestionList of publicQuestionLists) {
+        for (const publicQuestionList of result.data) {
             const { id, title, usage } = publicQuestionList;
             const categoryNames: string[] =
                 await this.questionListRepository.findCategoryNamesByQuestionListId(id);
@@ -70,7 +79,7 @@ export class QuestionListService {
             };
             allQuestionLists.push(questionList);
         }
-        return allQuestionLists;
+        return { allQuestionLists, meta: result.meta };
     }
 
     // 질문 생성 메서드
@@ -105,28 +114,34 @@ export class QuestionListService {
         return { createdQuestionList, createdQuestions };
     }
 
-    async getQuestionListContents(questionListId: number) {
+    async getQuestionListContents(questionListId: number, query: PaginateQuery) {
         const questionList = await this.questionListRepository.getQuestionListById(questionListId);
-        const { id, title, usage, userId } = questionList;
+        const { id, title, usage, isPublic, userId } = questionList;
+        if (!isPublic) {
+            throw new Error("This is private question list.");
+        }
 
         const contents =
             await this.questionListRepository.getContentsByQuestionListId(questionListId);
+        const result = await paginate(query, contents, {
+            sortableColumns: ["index"],
+            defaultSortBy: [["index", "ASC"]],
+        });
 
         const categoryNames =
             await this.questionListRepository.findCategoryNamesByQuestionListId(questionListId);
 
         const username = await this.questionListRepository.getUsernameById(userId);
-
         const questionListContents: QuestionListContentsDto = {
             id,
             title,
-            contents,
+            contents: result.data,
             categoryNames,
             usage,
             username,
         };
 
-        return questionListContents;
+        return { questionListContents, meta: result.meta };
     }
 
     async getMyQuestionLists(userId: number) {
@@ -138,12 +153,9 @@ export class QuestionListService {
             const categoryNames: string[] =
                 await this.questionListRepository.findCategoryNamesByQuestionListId(id);
 
-            const contents = await this.questionListRepository.getContentsByQuestionListId(id);
-
             const questionList: MyQuestionListDto = {
                 id,
                 title,
-                contents,
                 categoryNames,
                 isPublic,
                 usage,
