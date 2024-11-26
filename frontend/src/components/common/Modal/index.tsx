@@ -32,12 +32,19 @@ const Modal = ({
     closeModal();
   };
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === dialogRef.current) {
+      closeModal();
+    }
+  };
+
   if (!isModalOpen) return null;
 
   return (
     <dialog
       ref={dialogRef}
       className="flex flex-col w-27.5 rounded-custom-l shadow-8 p-8 gap-4"
+      onMouseDown={handleMouseDown}
     >
       <ModalTitle title={title} subtitle={subtitle} />
       <div className="flex w-full gap-2">
