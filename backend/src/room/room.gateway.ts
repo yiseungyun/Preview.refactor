@@ -18,8 +18,9 @@ import { ReactionDto } from "@/room/dto/reaction.dto";
 import { RoomLeaveService } from "@/room/services/room-leave.service";
 import { RoomCreateService } from "@/room/services/room-create.service";
 import { RoomJoinService } from "@/room/services/room-join.service";
+import { websocketConfig } from "@/websocket/websocket.config";
 
-@WebSocketGateway()
+@WebSocketGateway(websocketConfig)
 export class RoomGateway implements OnGatewayDisconnect {
     private logger: Logger = new Logger("Room Gateway");
 
