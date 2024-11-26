@@ -19,8 +19,8 @@ export class RoomEntity extends Entity {
     @Field({ type: "string" })
     title: string;
 
-    @Field({ type: "string" })
-    category: string;
+    @Field({ type: "string[]" })
+    category: string[];
 
     @Field({ type: "boolean" })
     inProgress: boolean;
