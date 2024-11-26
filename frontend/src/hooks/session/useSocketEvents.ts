@@ -169,15 +169,17 @@ export const useSocketEvents = ({
       }
     };
 
+    const handleRoomFull = () => {
+      toast.error("해당 세션은 이미 유저가 가득 찼습니다.");
+      navigate("/sessions");
+    };
+
     socket.on(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
     socket.on(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
     socket.on(SIGNAL_LISTEN_EVENT.CANDIDATE, handleGetCandidate);
     socket.on(SESSION_LISTEN_EVENT.JOIN, handleAllUsers);
     socket.on(SESSION_LISTEN_EVENT.QUIT, handleUserExit);
-    socket.on(SESSION_LISTEN_EVENT.FULL, () => {
-      toast.error("해당 세션은 이미 유저가 가득 찼습니다.");
-      navigate("/sessions");
-    });
+    socket.on(SESSION_LISTEN_EVENT.FULL, handleRoomFull);
     socket.on(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
     socket.on(SESSION_LISTEN_EVENT.REACTION, handleReaction);
     socket.on(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
@@ -187,8 +189,8 @@ export const useSocketEvents = ({
       socket.off(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
       socket.off(SIGNAL_LISTEN_EVENT.CANDIDATE, handleGetCandidate);
       socket.off(SESSION_LISTEN_EVENT.JOIN, handleAllUsers);
-      socket.off(SESSION_LISTEN_EVENT.QUIT);
-      socket.off(SESSION_LISTEN_EVENT.FULL);
+      socket.off(SESSION_LISTEN_EVENT.QUIT, handleUserExit);
+      socket.off(SESSION_LISTEN_EVENT.FULL, handleRoomFull);
       socket.off(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
       socket.off(SESSION_LISTEN_EVENT.REACTION, handleReaction);
       socket.off(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
