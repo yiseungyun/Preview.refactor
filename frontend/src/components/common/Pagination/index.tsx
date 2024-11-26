@@ -1,6 +1,6 @@
 import { MdArrowBackIosNew } from "react-icons/md";
 import { MdArrowForwardIos } from "react-icons/md";
-import { MAX_BUTTON } from "../constant";
+import { MAX_BUTTON } from "../../sessions/create/SessionForm/ListSelectModal/constant";
 
 interface PagenationProps {
   currentPage: number;
@@ -32,7 +32,7 @@ const Pagination = ({
   const showNextButton = endPage < totalPage;
 
   return (
-    <div className="flex justify-center gap-1 my-6">
+    <div className="flex justify-center gap-1 my-2">
       <button
         onClick={() => onPageChange(startPage - 1)}
         className={`px-2 py-1 text-gray-black ${!showPrevButton && "invisible"}`}

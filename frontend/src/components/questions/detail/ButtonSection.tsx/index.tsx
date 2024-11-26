@@ -1,4 +1,4 @@
-import Button from "./Button";
+import Button from "@components/common/Button";
 import { FaBookmark } from "react-icons/fa";
 import { IoMdShare } from "react-icons/io";
 

@@ -1,13 +1,11 @@
-import useSessionFormStore from "@stores/useSessionFormStore";
-
 interface Props {
   tabName: "myList" | "savedList";
   tabText: "나의 질문지" | "저장된 질문지";
+  tab: "myList" | "savedList";
+  setTab: (tab: "myList" | "savedList") => void;
 }
 
-const Category = ({ tabName, tabText }: Props) => {
-  const { tab, setTab } = useSessionFormStore();
-
+const Category = ({ tabName, tabText, tab, setTab }: Props) => {
   return (
     <button
       className={`flex flex-row gap-1

@@ -7,10 +7,16 @@ import OAuthContainer from "@components/login/OAuthContainer.tsx";
 import DefaultAuthFormContainer from "@components/login/DefaultAuthFormContainer.tsx";
 
 const LoginPage = () => {
-  const { guestLogIn } = useAuth();
+  const { isLoggedIn, guestLogIn } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn]);
+  
   const handleOAuthLogin = (provider: "github" | "guest") => {
     if (provider === "github") {
       // 깃허브 로그인
