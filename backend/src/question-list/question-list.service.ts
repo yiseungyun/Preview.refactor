@@ -172,10 +172,13 @@ export class QuestionListService {
         return categories;
     }
 
-    async scrapQuestionList(questionListId: number, userId: number) {
-        // 유효한 유저 id 인지 확인
+    async getScrappedQuestionLists(userId: number) {
         const user = await this.userRepository.getUserByUserId(userId);
-        if (!user) throw new Error("User not found.");
+        return await this.questionListRepository.getScrappedQuestionListsByUser(user);
+    }
+
+    async scrapQuestionList(questionListId: number, userId: number) {
+        const user = await this.userRepository.getUserByUserId(userId);
 
         // 유효한 question list id 인지 확인
         const questionList = await this.questionListRepository.getQuestionListById(questionListId);

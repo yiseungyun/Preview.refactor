@@ -159,6 +159,29 @@ export class QuestionListController {
         }
     }
 
+    @Get("scrap")
+    @UseGuards(AuthGuard("jwt"))
+    async getScrappedQuestionLists(@Res() res, @JwtPayload() token: IJwtPayload) {
+        try {
+            const userId = token.userId;
+            const scrappedQuestionLists =
+                await this.questionListService.getScrappedQuestionLists(userId);
+            return res.send({
+                success: true,
+                message: "Scrapped question lists received successfully.",
+                data: {
+                    scrappedQuestionLists,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to get scrapped question lists.",
+                error: error.message,
+            });
+        }
+    }
+
     @Post("scrap")
     @UseGuards(AuthGuard("jwt"))
     async scrapQuestionList(
