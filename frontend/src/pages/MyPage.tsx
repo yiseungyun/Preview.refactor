@@ -1,4 +1,3 @@
-import { sectionWithSidebar } from "@/constraints/LayoutConstant.ts";
 import { useEffect } from "react";
 import useAuth from "@hooks/useAuth.ts";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +6,7 @@ import Sidebar from "@components/common/Sidebar.tsx";
 import Profile from "@components/mypage/Profile";
 import QuestionSection from "@/components/mypage/QuestionSection";
 import ProfileEditModal from "@/components/mypage/ProfileEditModal";
+import { sectionWithSidebar } from "@/constants/LayoutConstant";
 
 const MyPage = () => {
   const { isLoggedIn, nickname } = useAuth();

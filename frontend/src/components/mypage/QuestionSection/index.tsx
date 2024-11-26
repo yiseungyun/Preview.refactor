@@ -30,7 +30,7 @@ const QuestionSection = () => {
   return (
     <div className="flex flex-col gap-2 mt-2">
       <CategoryTap tab={tab} setTab={setTab} />
-      <QuestionList />
+      <QuestionList tab={tab} />
       <Pagination {...getCurrentPageProps()} />
     </div>
   );
