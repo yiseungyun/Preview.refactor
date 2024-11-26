@@ -11,8 +11,9 @@ import Redis from "ioredis";
 import { createAdapter } from "@socket.io/redis-adapter";
 import { WebsocketService } from "@/websocket/websocket.service";
 import { WebsocketRepository } from "@/websocket/websocket.repository";
+import { websocketConfig } from "@/websocket/websocket.config";
 
-@WebSocketGateway()
+@WebSocketGateway(websocketConfig)
 export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
     @WebSocketServer()
     private server: Server;
