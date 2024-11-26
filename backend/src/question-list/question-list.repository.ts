@@ -95,6 +95,10 @@ export class QuestionListRepository {
             .getCount();
     }
 
+    deleteQuestionList(questionListId: number) {
+        return this.dataSource.getRepository(QuestionList).delete(questionListId);
+    }
+
     scrapQuestionList(questionListId: number, userId: number) {
         return this.dataSource
             .createQueryBuilder()

@@ -159,6 +159,40 @@ export class QuestionListController {
         }
     }
 
+    @Delete("/:questionListId")
+    @UseGuards(AuthGuard("jwt"))
+    async deleteQuestionList(
+        @Res() res,
+        @JwtPayload() token: IJwtPayload,
+        @Param("questionListId") questionListId: number
+    ) {
+        try {
+            const userId = token.userId;
+            const result = await this.questionListService.deleteQuestionList(
+                questionListId,
+                userId
+            );
+
+            if (result.affected) {
+                return res.send({
+                    success: true,
+                    message: "Question list is deleted successfully.",
+                });
+            } else {
+                return res.send({
+                    success: true,
+                    message: "Failed to delete question list.",
+                });
+            }
+        } catch (error) {
+            return res.send({
+                success: true,
+                message: "Failed to delete question list.",
+                error: error.message,
+            });
+        }
+    }
+
     @Get("scrap")
     @UseGuards(AuthGuard("jwt"))
     async getScrappedQuestionLists(@Res() res, @JwtPayload() token: IJwtPayload) {

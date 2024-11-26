@@ -163,6 +163,13 @@ export class QuestionListService {
         return categories;
     }
 
+    async deleteQuestionList(questionListId: number, userId: number) {
+        const user = await this.userRepository.getUserByUserId(userId);
+        if (!user) throw new Error("User not found.");
+
+        return await this.questionListRepository.deleteQuestionList(questionListId);
+    }
+
     async getScrappedQuestionLists(userId: number) {
         const user = await this.userRepository.getUserByUserId(userId);
         return await this.questionListRepository.getScrappedQuestionListsByUser(user);
