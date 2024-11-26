@@ -9,6 +9,11 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import useToast from "@/hooks/useToast";
 import useSocket from "@/hooks/useSocket";
+import {
+  SESSION_EMIT_EVENT,
+  SESSION_LISTEN_EVENT,
+} from "@/constants/WebSocket/SessionEvent.ts";
+import useAuth from "@hooks/useAuth.ts";
 
 interface RoomCreatedResponse {
   success?: boolean;
@@ -18,6 +23,7 @@ interface RoomCreatedResponse {
 
 const SessionForm = () => {
   const { socket } = useSocket();
+  const { nickname } = useAuth();
   const { category, sessionName, questionId, participant, access } =
     useSessionFormStore();
   const isValid = useSessionFormStore((state) => state.isFormValid());
@@ -38,11 +44,12 @@ const SessionForm = () => {
       maxParticipants: participant,
     };
 
-    socket?.emit("create_room", {
+    socket?.emit(SESSION_EMIT_EVENT.CREATE, {
       title: roomData.title,
-      maxParticipants: roomData.maxParticipants,
-      status: roomData.status,
       category: roomData.category,
+      status: roomData.status,
+      nickname: nickname || "방장",
+      maxParticipants: roomData.maxParticipants,
       questionListId: roomData.questionListId,
     });
   };
@@ -59,10 +66,10 @@ const SessionForm = () => {
         navigate(`/sessions`);
       }
     };
-    socket.on("room_created", roomCreatedHandler);
+    socket.on(SESSION_LISTEN_EVENT.CREATE, roomCreatedHandler);
 
     return () => {
-      socket.off("room_created", roomCreatedHandler);
+      socket.off(SESSION_LISTEN_EVENT.CREATE, roomCreatedHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, navigate]);
