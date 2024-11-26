@@ -1,4 +1,4 @@
-import { sectionWithSidebar } from "@/constraints/LayoutConstant.ts";
+import { sectionWithSidebar } from "@/constants/LayoutConstant.ts";
 import { useEffect, useState } from "react";
 import useAuth from "@hooks/useAuth.ts";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,8 @@ const MyPage = () => {
   useEffect(() => {
     if (!isLoggedIn) {
       toast.error("로그인이 필요한 서비스입니다.");
-      navigate("/login");
+
+      navigate("/login", { replace: true });
     } else {
       if (auth.nickname) {
         setUserInfo({ nickname: auth.nickname });

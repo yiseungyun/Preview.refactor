@@ -3,7 +3,7 @@ import AccessSection from "./AccessSection";
 import CategorySection from "./CategorySection";
 import TitleSection from "./TitleSection";
 import QuestionInputSection from "./QuestionInputSection";
-import { useCreateQuestion } from "@/hooks/useCreateQuestion";
+import { useCreateQuestion } from "@hooks/api/useCreateQuestion.ts";
 
 const QuestionForm = () => {
   const isValid = useQuestionFormStore((state) => state.isFormValid());

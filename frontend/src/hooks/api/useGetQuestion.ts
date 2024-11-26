@@ -1,4 +1,4 @@
-import fetchQuestion from "@/api/questions/getQuestion";
+import fetchQuestion from "@/api/questions/getQuestion.ts";
 import { useQuery } from "@tanstack/react-query";
 
 interface QuestionContent {
