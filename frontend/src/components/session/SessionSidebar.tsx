@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import useToast from "../../hooks/useToast";
 import { TbCrown } from "react-icons/tb";
+import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 
 interface ParticipantsData {
   nickname: string;
@@ -32,14 +33,14 @@ const SessionSidebar = ({
   const toast = useToast();
 
   const existHandler = () => {
-    socket?.emit("leave_room", { roomId });
+    socket?.emit(SESSION_EMIT_EVENT.LEAVE, { roomId });
     toast.success("메인 화면으로 이동합니다.");
     navigate("/sessions");
   };
 
   const destroyAndExitHandler = () => {
-    socket?.off("room_finished");
-    socket?.emit("finish_room", { roomId });
+    socket?.off(SESSION_EMIT_EVENT.FINISH);
+    socket?.emit(SESSION_EMIT_EVENT.FINISH, { roomId });
     toast.success("메인 화면으로 이동합니다.");
     navigate("/sessions");
   };
