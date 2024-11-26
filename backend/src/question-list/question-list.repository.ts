@@ -9,6 +9,14 @@ import { User } from "@/user/user.entity";
 export class QuestionListRepository {
     constructor(private dataSource: DataSource) {}
 
+    createQuestionList(questionList: QuestionList) {
+        return this.dataSource.getRepository(QuestionList).save(questionList);
+    }
+
+    async createQuestions(questions: Question[]) {
+        return this.dataSource.getRepository(Question).save(questions);
+    }
+
     findPublicQuestionLists() {
         return this.dataSource.getRepository(QuestionList).find({
             where: { isPublic: true },
@@ -35,16 +43,12 @@ export class QuestionListRepository {
     }
 
     async findCategoryNamesByQuestionListId(questionListId: number) {
-        const questionList = await this.dataSource
-            .getRepository(QuestionList)
-            .findOne({
-                where: { id: questionListId },
-                relations: ["categories"], // 질문지와 관련된 카테고리도 함께 조회
-            });
+        const questionList = await this.dataSource.getRepository(QuestionList).findOne({
+            where: { id: questionListId },
+            relations: ["categories"], // 질문지와 관련된 카테고리도 함께 조회
+        });
 
-        return questionList
-            ? questionList.categories.map((category) => category.name)
-            : [];
+        return questionList ? questionList.categories.map((category) => category.name) : [];
     }
 
     async findCategoriesByNames(categoryNames: string[]) {
