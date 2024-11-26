@@ -5,10 +5,19 @@ import SessionToolbar from "@components/session/SessionToolbar.tsx";
 import { useSession } from "@hooks/session/useSession";
 import useSocket from "@hooks/useSocket";
 import SessionHeader from "@components/session/SessionHeader";
+import { useEffect } from "react";
+import useToast from "@hooks/useToast.ts";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
-  if (!sessionId) return null;
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!sessionId) {
+      toast.error("유효하지 않은 세션 아이디입니다.");
+    }
+  }, []);
+
   const { socket } = useSocket();
   const {
     nickname,
@@ -29,7 +38,7 @@ const SessionPage = () => {
     setSelectedVideoDeviceId,
     joinRoom,
     emitReaction,
-  } = useSession(sessionId);
+  } = useSession(sessionId!);
 
   return (
     <section className="w-screen h-screen flex flex-col max-w-[1440px]">
