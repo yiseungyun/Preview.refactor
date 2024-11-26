@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useCallback, useRef } from "react";
 import { Socket } from "socket.io-client";
 import { PeerConnection } from "../type/session";
+import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 
 const REACTION_DURATION = 3000;
 
@@ -17,7 +18,7 @@ export const useReaction = (
   const emitReaction = useCallback(
     (reactionType: string) => {
       if (socket) {
-        socket.emit("reaction", {
+        socket.emit(SESSION_EMIT_EVENT.REACTION, {
           roomId: sessionId,
           reaction: reactionType,
         });
