@@ -1,17 +1,27 @@
-import { FaGithub, FaGoogle } from "react-icons/fa";
+import { FaGithub, FaRegUserCircle } from "react-icons/fa";
 import { DotLottiePlayer } from "@dotlottie/react-player";
 
 import mainSnowman from "/assets/noondeumyum.lottie";
+import useAuth from "@hooks/useAuth.ts";
+import { useNavigate } from "react-router-dom";
+import useToast from "@hooks/useToast.ts";
 
 const LoginPage = () => {
-  const handleOAuthLogin = (provider: "github" | "google") => {
+  const { guestLogIn } = useAuth();
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const handleOAuthLogin = (provider: "github" | "guest") => {
     if (provider === "github") {
       // 깃허브 로그인
       window.location.assign(
         `https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_OAUTH_GITHUB_ID}&redirect_uri=${import.meta.env.VITE_OAUTH_GITHUB_CALLBACK}`
       );
-    } else if (provider === "google") {
-      // 구글 로그인
+    } else if (provider === "guest") {
+      // 게스트 로그인
+      guestLogIn();
+      toast.success("게스트로 로그인되었습니다.");
+      navigate("/");
     }
   };
 
@@ -87,7 +97,7 @@ const LoginPage = () => {
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-gray-300"></div>
                     </div>
-                    <div className="relative flex justify-center text-sm">
+                    <div className="relative flex justify-center tsnowmanext-sm">
                       <span className="px-2 bg-white text-gray-500">또는</span>
                     </div>
                   </div>
@@ -101,11 +111,12 @@ const LoginPage = () => {
                     GitHub으로 계속하기
                   </button>
                   <button
+                    onClick={() => handleOAuthLogin("guest")}
                     type="button"
                     className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-400 transition-colors font-medium text-lg shadow-16 flex items-center justify-center gap-3"
                   >
-                    <FaGoogle className="w-5 h-5" />
-                    Google으로 그만하기
+                    <FaRegUserCircle className="w-5 h-5" />
+                    GUEST로 계속하기
                   </button>
                 </form>
               </div>
