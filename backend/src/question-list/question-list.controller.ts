@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { QuestionListService } from "./question-list.service";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
@@ -208,6 +208,42 @@ export class QuestionListController {
             return res.send({
                 success: false,
                 message: "Failed to scrap question list.",
+                error: error.message,
+            });
+        }
+    }
+
+    @Delete("scrap")
+    @UseGuards(AuthGuard("jwt"))
+    async unscrapQuestionList(
+        @Res() res,
+        @JwtPayload() token: IJwtPayload,
+        @Body() body: { questionListId: number }
+    ) {
+        try {
+            const userId = token.userId;
+            const { questionListId } = body;
+
+            const unscrappedQuestionList = await this.questionListService.unscrapQuestionList(
+                questionListId,
+                userId
+            );
+
+            if (unscrappedQuestionList.affected) {
+                return res.send({
+                    success: true,
+                    message: "Question list unscrapped successfully.",
+                });
+            } else {
+                return res.send({
+                    success: false,
+                    message: "Failed to unscrap question list.",
+                });
+            }
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to unscrap question list.",
                 error: error.message,
             });
         }

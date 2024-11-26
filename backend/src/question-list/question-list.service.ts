@@ -193,4 +193,8 @@ export class QuestionListService {
 
         return questionList;
     }
+
+    async unscrapQuestionList(questionListId: number, userId: number) {
+        return await this.questionListRepository.unscrapQuestionList(questionListId, userId);
+    }
 }

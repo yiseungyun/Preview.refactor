@@ -113,4 +113,14 @@ export class QuestionListRepository {
             where: { scrappedByUsers: user },
         });
     }
+
+    unscrapQuestionList(questionListId: number, userId: number) {
+        return this.dataSource
+            .createQueryBuilder()
+            .delete()
+            .from("user_question_list")
+            .where("user_id = :userId", { userId })
+            .andWhere("question_list_id = :questionListId", { questionListId })
+            .execute();
+    }
 }
