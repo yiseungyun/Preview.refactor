@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { QuestionListService } from "./question-list.service";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
@@ -213,17 +213,15 @@ export class QuestionListController {
         }
     }
 
-    @Delete("scrap")
+    @Delete("scrap/:questionListId")
     @UseGuards(AuthGuard("jwt"))
     async unscrapQuestionList(
         @Res() res,
         @JwtPayload() token: IJwtPayload,
-        @Body() body: { questionListId: number }
+        @Param("questionListId") questionListId: number
     ) {
         try {
             const userId = token.userId;
-            const { questionListId } = body;
-
             const unscrappedQuestionList = await this.questionListService.unscrapQuestionList(
                 questionListId,
                 userId
