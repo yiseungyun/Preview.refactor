@@ -4,7 +4,6 @@ import useModalStore from "@/stores/useModalStore";
 import { useRef } from "react";
 import { IoMdClose } from "react-icons/io";
 import ButtonSection from "./ButtonSection";
-import InterestInput from "./InterestInput";
 import useAuth from "@/hooks/useAuth";
 
 const ProfileEditModal = () => {
@@ -38,19 +37,27 @@ const ProfileEditModal = () => {
       </div>
       <div className="flex flex-col px-8 gap-4 pb-4">
         <div className="w-full flex flex-col gap-2">
+          <p className="text-semibold-l text-gray-black">아바타</p>
+        </div>
+        <div className="w-full flex flex-col gap-2">
           <p className="text-semibold-l text-gray-black">닉네임</p>
           <TitleInput
             placeholder="닉네임을 입력해주세요"
             initValue={nickname}
-            onChange={() => {
-              console.log("TitleInput");
-            }}
+            onChange={() => {}}
             minLength={2}
           />
         </div>
         <div className="w-full flex flex-col gap-2">
-          <p className="text-semibold-l text-gray-black">관심분야</p>
-          <InterestInput />
+          <p className="text-semibold-l text-gray-black">비밀번호 변경</p>
+          <input
+            className={
+              "text-medium-m w-full h-11 p-4 pr-20 border-custom-s rounded-custom-m"
+            }
+            placeholder={""}
+            minLength={8}
+            maxLength={20}
+          />
         </div>
       </div>
       <ButtonSection />

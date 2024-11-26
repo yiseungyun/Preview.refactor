@@ -18,9 +18,6 @@ const Profile = ({ nickname }: { nickname: string }) => {
           </button>
         </div>
         <p className="text-gray-black text-medium-xl">{nickname}</p>
-        <span className="text-gray-600 text-medium-l">
-          {nickname}님의 관심분야를 등록해보세요!
-        </span>
       </div>
     </div>
   );

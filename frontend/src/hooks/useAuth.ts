@@ -1,4 +1,6 @@
 import useAuthStore from "@stores/useAuthStore.ts";
+import axios from "axios";
+import { useEffect } from "react";
 
 const useAuth = () => {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
@@ -18,6 +20,12 @@ const useAuth = () => {
       return null;
     }
   };
+
+  useEffect(() => {
+    if (isLoggedIn && !nickname) {
+      getUserInfo();
+    }
+  }, [isLoggedIn, nickname]);
 
   const logIn = () => {
     login();
