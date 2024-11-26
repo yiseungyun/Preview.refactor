@@ -1,5 +1,7 @@
+import "dotenv/config";
+
 export const websocketConfig = {
     cors: {
-        origin: "*",
+        origin: process.env.DOMAIN || "*",
     },
 };
