@@ -16,7 +16,7 @@ export class RoomJoinService {
 
     public async joinRoom(dto: JoinRoomInternalDto, isCreate: boolean = false) {
         const { roomId, socketId, nickname } = dto;
-        console.log(roomId);
+
         const room = await this.roomRepository.getRoom(roomId);
         const socket = this.socketService.getSocket(socketId);
 
