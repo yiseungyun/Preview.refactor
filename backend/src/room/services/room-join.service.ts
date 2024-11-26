@@ -36,6 +36,9 @@ export class RoomJoinService {
 
         await this.roomRepository.setRoom(room);
 
+        room.connectionList = room.connectionList.filter(
+            (connection) => connection.socketId !== dto.socketId
+        );
         // TODO: 성공 / 실패 여부를 전송하는데 있어서 결과에 따라 다르게 해야하는데.. 어떻게 관심 분리를 할까?
         if (!isCreate) this.socketService.emitToRoom(roomId, EMIT_EVENT.JOIN, room);
     }

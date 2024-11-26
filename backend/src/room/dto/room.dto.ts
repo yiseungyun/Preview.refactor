@@ -9,7 +9,7 @@ export interface Connection {
 export interface RoomDto {
     id: string;
     title: string;
-    category: string;
+    category: string[];
     inProgress: boolean;
     host: Connection;
     status: RoomStatus;
