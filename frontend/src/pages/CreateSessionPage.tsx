@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import useSessionFormStore from "@/stores/useSessionFormStore";
 import Sidebar from "@components/common/Sidebar.tsx";
-import { sectionWithSidebar } from "@/constraints/LayoutConstant.ts";
+import { sectionWithSidebar } from "@/constants/LayoutConstant.ts";
 
 const CreateSessionPage = () => {
   const navigate = useNavigate();

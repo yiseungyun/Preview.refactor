@@ -15,6 +15,11 @@ import {
   RoomMetadata,
   PeerConnection,
 } from "@hooks/type/session";
+import {
+  SIGNAL_EMIT_EVENT,
+  SIGNAL_LISTEN_EVENT,
+} from "@/constants/WebSocket/SignalingEvent.ts";
+import { SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 
 interface UseSocketEventsProps {
   socket: Socket | null;
@@ -128,7 +133,7 @@ export const useSocketEvents = ({
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
 
-        socket.emit("answer", {
+        socket.emit(SIGNAL_EMIT_EVENT.ANSWER, {
           answerReceiveID: data.offerSendID,
           sdp: answer,
           answerSendID: socket.id,
@@ -164,29 +169,29 @@ export const useSocketEvents = ({
       }
     };
 
-    socket.on("all_users", handleAllUsers);
-    socket.on("getOffer", handleGetOffer);
-    socket.on("getAnswer", handleGetAnswer);
-    socket.on("getCandidate", handleGetCandidate);
-    socket.on("user_exit", handleUserExit);
-    socket.on("room_full", () => {
+    socket.on(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
+    socket.on(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
+    socket.on(SIGNAL_LISTEN_EVENT.CANDIDATE, handleGetCandidate);
+    socket.on(SESSION_LISTEN_EVENT.JOIN, handleAllUsers);
+    socket.on(SESSION_LISTEN_EVENT.QUIT, handleUserExit);
+    socket.on(SESSION_LISTEN_EVENT.FULL, () => {
       toast.error("해당 세션은 이미 유저가 가득 찼습니다.");
       navigate("/sessions");
     });
-    socket.on("master_changed", handleHostChange);
-    socket.on("reaction", handleReaction);
-    socket.on("room_finished", handleRoomFinished);
+    socket.on(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
+    socket.on(SESSION_LISTEN_EVENT.REACTION, handleReaction);
+    socket.on(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
 
     return () => {
-      socket.off("all_users", handleAllUsers);
-      socket.off("getOffer", handleGetOffer);
-      socket.off("getAnswer", handleGetAnswer);
-      socket.off("getCandidate", handleGetCandidate);
-      socket.off("user_exit");
-      socket.off("room_full");
-      socket.off("master_changed", handleHostChange);
-      socket.off("room_finished", handleRoomFinished);
-      socket.off("reaction", handleReaction);
+      socket.off(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
+      socket.off(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
+      socket.off(SIGNAL_LISTEN_EVENT.CANDIDATE, handleGetCandidate);
+      socket.off(SESSION_LISTEN_EVENT.JOIN, handleAllUsers);
+      socket.off(SESSION_LISTEN_EVENT.QUIT);
+      socket.off(SESSION_LISTEN_EVENT.FULL);
+      socket.off(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
+      socket.off(SESSION_LISTEN_EVENT.REACTION, handleReaction);
+      socket.off(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
 
       if (reactionTimeouts.current) {
         Object.values(reactionTimeouts.current).forEach(clearTimeout);

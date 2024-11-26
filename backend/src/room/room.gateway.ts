@@ -1,62 +1,39 @@
 import {
     WebSocketGateway,
-    WebSocketServer,
-    OnGatewayConnection,
     OnGatewayDisconnect,
     SubscribeMessage,
-    OnGatewayInit,
     MessageBody,
     ConnectedSocket,
 } from "@nestjs/websockets";
 import "dotenv/config";
-import { Server, Socket } from "socket.io";
-import { RoomService } from "../services/room.service";
+import { Socket } from "socket.io";
+import { RoomService } from "./services/room.service";
 import { Logger, UsePipes, ValidationPipe } from "@nestjs/common";
-import { EMIT_EVENT, LISTEN_EVENT } from "@/room/socket/room-socket.events";
+import { EMIT_EVENT, LISTEN_EVENT } from "@/room/room.events";
 import { CreateRoomDto } from "@/room/dto/create-room.dto";
-import { RoomSocketService } from "@/room/socket/room-socket.service";
+import { WebsocketService } from "@/websocket/websocket.service";
 import { JoinRoomDto } from "@/room/dto/join-room.dto";
 import { RoomRepository } from "@/room/room.repository";
 import { ReactionDto } from "@/room/dto/reaction.dto";
-import { RoomSocketRepository } from "@/room/socket/room-socket.repository";
-import Redis from "ioredis";
-import { createAdapter } from "@socket.io/redis-adapter";
+import { RoomLeaveService } from "@/room/services/room-leave.service";
+import { RoomCreateService } from "@/room/services/room-create.service";
+import { RoomJoinService } from "@/room/services/room-join.service";
 
 @WebSocketGateway()
-export class RoomSocketGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
-    @WebSocketServer()
-    private server: Server;
+export class RoomGateway implements OnGatewayDisconnect {
+    private logger: Logger = new Logger("Room Gateway");
 
     public constructor(
         private readonly roomService: RoomService,
-        private readonly socketService: RoomSocketService,
-        private readonly socketRepository: RoomSocketRepository,
+        private readonly roomLeaveService: RoomLeaveService,
+        private readonly roomCreateService: RoomCreateService,
+        private readonly roomJoinService: RoomJoinService,
+        private readonly socketService: WebsocketService,
         private readonly roomRepository: RoomRepository
     ) {}
 
-    public async handleConnection(client: Socket) {
-        Logger.log(`Client connected: ${client.id}`);
-        await this.socketRepository.register(client);
-    }
-
     public async handleDisconnect(client: Socket) {
-        Logger.log(`Client disconnected: ${client.id}`);
         await this.handleLeaveRoom(client);
-        await this.socketRepository.clean(client);
-    }
-
-    public async afterInit() {
-        const pubClient = new Redis({
-            host: process.env.REDIS_HOST,
-            port: parseInt(process.env.REDIS_PORT),
-        });
-
-        const subClient = pubClient.duplicate();
-
-        const redisAdapter = createAdapter(pubClient, subClient);
-        this.server.adapter(redisAdapter);
-
-        this.roomService.setServer(this.server);
     }
 
     @SubscribeMessage(LISTEN_EVENT.CREATE)
@@ -65,7 +42,8 @@ export class RoomSocketGateway implements OnGatewayConnection, OnGatewayDisconne
         @ConnectedSocket() client: Socket,
         @MessageBody() dto: CreateRoomDto
     ) {
-        await this.roomService.createRoom({ ...dto, socketId: client.id });
+        // TODO: try - catch 로 에러 핸들링을 통해 이벤트 Emit 을 여기서 하기
+        await this.roomCreateService.createRoom({ ...dto, socketId: client.id });
     }
 
     @SubscribeMessage(LISTEN_EVENT.JOIN)
@@ -74,12 +52,12 @@ export class RoomSocketGateway implements OnGatewayConnection, OnGatewayDisconne
         @ConnectedSocket() client: Socket,
         @MessageBody() dto: JoinRoomDto
     ) {
-        await this.roomService.joinRoom({ ...dto, socketId: client.id });
+        await this.roomJoinService.joinRoom({ ...dto, socketId: client.id });
     }
 
     @SubscribeMessage(LISTEN_EVENT.LEAVE)
     public async handleLeaveRoom(client: Socket) {
-        await this.roomService.leaveRoom(client);
+        await this.roomLeaveService.leaveRoom(client);
     }
 
     @SubscribeMessage(LISTEN_EVENT.FINISH)

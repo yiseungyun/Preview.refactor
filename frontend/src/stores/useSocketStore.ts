@@ -11,7 +11,7 @@ const useSocketStore = create<SocketStore>((set) => ({
   socket: null,
   connect: (socketURL) => {
     const newSocket = io(socketURL);
-
+    console.log(newSocket);
     newSocket.on("connect", socketConnectHandler);
     newSocket.on("connect_error", socketErrorHandler);
     set({ socket: newSocket });

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { PeerConnection } from "../type/session";
+import { SIGNAL_EMIT_EVENT } from "@/constants/WebSocket/SignalingEvent.ts";
 
 interface User {
   id?: string;
@@ -48,7 +49,7 @@ const usePeerConnection = (socket: Socket) => {
       // 가능한 연결 경로를 찾을 때마다 상대에게 알려줌
       pc.onicecandidate = (e: RTCPeerConnectionIceEvent) => {
         if (e.candidate && socket) {
-          socket.emit("candidate", {
+          socket.emit(SIGNAL_EMIT_EVENT.CANDIDATE, {
             candidateReceiveID: peerSocketId,
             candidate: e.candidate,
             candidateSendID: socket.id,
@@ -100,7 +101,7 @@ const usePeerConnection = (socket: Socket) => {
           .then((offer) => pc.setLocalDescription(offer))
           .then(() => {
             if (socket && pc.localDescription) {
-              socket.emit("offer", {
+              socket.emit(SIGNAL_EMIT_EVENT.OFFER, {
                 offerReceiveID: peerSocketId,
                 sdp: pc.localDescription,
                 offerSendID: socket.id,
