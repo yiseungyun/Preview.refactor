@@ -1,11 +1,4 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    OneToMany,
-    ManyToMany,
-    JoinTable,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { QuestionList } from "@/question-list/question-list.entity";
 
 @Entity()
@@ -33,13 +26,15 @@ export class User {
     @Column({ nullable: true, unique: true })
     githubId: number;
 
-    @OneToMany(() => QuestionList, (questionList) => questionList.user)
+    @OneToMany(() => QuestionList, (questionList) => questionList.user, {
+        cascade: true,
+    })
     questionLists: QuestionList[];
 
-    @ManyToMany(
-        () => QuestionList,
-        (questionList) => questionList.scrappedByUsers
-    )
+    @ManyToMany(() => QuestionList, (questionList) => questionList.scrappedByUsers, {
+        cascade: true,
+        onDelete: "CASCADE",
+    })
     @JoinTable({
         name: "user_question_list",
         joinColumn: {

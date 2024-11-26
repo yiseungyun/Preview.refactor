@@ -17,6 +17,8 @@ export class Question {
     @Column()
     questionListId: number;
 
-    @ManyToOne(() => QuestionList, (questionList) => questionList.questions)
+    @ManyToOne(() => QuestionList, (questionList) => questionList.questions, {
+        onDelete: "CASCADE",
+    })
     questionList: QuestionList;
 }

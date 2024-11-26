@@ -30,14 +30,19 @@ export class QuestionList {
     @Column()
     userId: number;
 
-    @ManyToOne(() => User, (user) => user.questionLists)
+    @ManyToOne(() => User, (user) => user.questionLists, {
+        onDelete: "CASCADE",
+    })
     user: User;
 
-    @OneToMany(() => Question, (question) => question.questionList)
+    @OneToMany(() => Question, (question) => question.questionList, {
+        cascade: true,
+    })
     questions: Question[];
 
     @ManyToMany(() => Category, (category) => category.questionLists, {
         cascade: true,
+        onDelete: "CASCADE",
     })
     @JoinTable({
         name: "question_list_category",
