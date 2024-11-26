@@ -56,7 +56,7 @@ const QuestionInput = () => {
         rows={1}
       />
       <button
-        className="absolute right-4 flex gap-2 text-gray-500 text-semibold-s hover:text-gray-black transition-colors"
+        className="absolute right-4 flex gap-2 text-gray-500 text-semibold-r hover:text-gray-black transition-colors"
         onClick={addHandler}
       >
         추가
