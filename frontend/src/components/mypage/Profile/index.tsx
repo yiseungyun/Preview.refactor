@@ -1,3 +1,5 @@
+import { MdEdit } from "react-icons/md";
+
 const Profile = ({ nickname }: { nickname: string }) => {
   return (
     <div className="flex flex-row gap-8">
@@ -6,8 +8,11 @@ const Profile = ({ nickname }: { nickname: string }) => {
         <div className="absolute rounded-custom-3xl w-32 h-32 bg-gray-500 top-[4.75rem]"></div>
       </div>
       <div className="flex flex-col my-2">
-        <div className="flex flex-row mb-2">
+        <div className="flex flex-row mb-2 items-center gap-2">
           <p className="text-gray-black text-semibold-l">회원 정보</p>
+          <button>
+            <MdEdit className="w-5 h-5 text-gray-400" />
+          </button>
         </div>
         <p className="text-gray-black text-medium-xl">{nickname}</p>
         <span className="text-gray-600 text-medium-l">
