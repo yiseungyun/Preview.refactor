@@ -16,7 +16,7 @@ const MyPage = () => {
   useEffect(() => {
     if (!isLoggedIn) {
       toast.error("로그인이 필요한 서비스입니다.");
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
   }, [isLoggedIn, navigate, toast]);
 

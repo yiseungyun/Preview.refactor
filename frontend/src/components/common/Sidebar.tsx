@@ -60,7 +60,14 @@ const Sidebar = () => {
                 label={route.label}
                 icon={route.icon}
                 isSelected={selected === route.path}
-                onClick={route.onClick}
+                onClick={
+                  route.path
+                    ? () =>
+                        navigate(route.path, {
+                          state: { from: route.path ?? "/" },
+                        })
+                    : route.onClick
+                }
               />
             );
           })}
@@ -93,5 +100,6 @@ const Sidebar = () => {
     </nav>
   );
 };
+
 
 export default Sidebar;

@@ -4,7 +4,15 @@ import { useEffect } from "react";
 
 const useAuth = () => {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  const { nickname, login, logout, setNickname } = useAuthStore();
+  const {
+    nickname,
+    login,
+    logout,
+    setNickname,
+    isGuest,
+    guestLogin,
+    guestLogout,
+  } = useAuthStore();
 
   const getUserInfo = async () => {
     try {
@@ -27,15 +35,35 @@ const useAuth = () => {
     }
   }, [isLoggedIn, nickname]);
 
+
   const logIn = () => {
     login();
   };
 
   const logOut = () => {
     logout();
+    setNickname("");
+
+    useAuthStore.persist.clearStorage();
+    document.cookie = "accessToken=; Max-Age=0; path=/;";
+    document.cookie = "refreshToken=; Max-Age=0; path=/;";
   };
 
-  return { isLoggedIn, nickname, logIn, logOut, setNickname };
+  const guestLogIn = () => {
+    setNickname("게스트 사용자");
+    guestLogin();
+  };
+
+  return {
+    isLoggedIn,
+    nickname,
+    logIn,
+    logOut,
+    setNickname,
+    isGuest,
+    guestLogIn,
+    guestLogout,
+  };
 };
 
 export default useAuth;

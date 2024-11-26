@@ -16,11 +16,11 @@ services:
     volumes:
       - ./mysql-data:/var/lib/mysql
 
-  redis:
-    image: redis:latest
-    container_name: redis
+  redis-stack:
+    image: redis/redis-stack:latest
+    container_name: redis-stack
     ports:
-      - '6379:6379'
-    command: redis-server --port 6379
+      - "6379:6379"
+      - "8001:8001"
     volumes:
-      - ./redis-data:/data
+      - ./redis-data/:/data
