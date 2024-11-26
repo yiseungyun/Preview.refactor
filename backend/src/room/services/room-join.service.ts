@@ -16,13 +16,13 @@ export class RoomJoinService {
 
     public async joinRoom(dto: JoinRoomInternalDto, isCreate: boolean = false) {
         const { roomId, socketId, nickname } = dto;
-
+        console.log(roomId);
         const room = await this.roomRepository.getRoom(roomId);
         const socket = this.socketService.getSocket(socketId);
 
         if (!socket) throw new Error("Invalid Socket");
 
-        if (room.roomId === null) throw new Error("Redis: RoomEntity Entity type error");
+        if (!room) throw new Error("RoomEntity Not found");
 
         if (this.isFullRoom(room)) return socket.emit(EMIT_EVENT.FULL, {});
 
