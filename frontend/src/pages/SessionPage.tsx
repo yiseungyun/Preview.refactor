@@ -119,6 +119,7 @@ const SessionPage = () => {
             setSelectedAudioDeviceId={setSelectedAudioDeviceId}
             isVideoOn={isVideoOn}
             isMicOn={isMicOn}
+            videoLoading={videoLoading}
           />
         </div>
         <SessionSidebar

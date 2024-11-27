@@ -17,6 +17,7 @@ interface Props {
   setSelectedAudioDeviceId: (deviceId: string) => void;
   isVideoOn: boolean;
   isMicOn: boolean;
+  videoLoading: boolean;
 }
 const SessionToolbar = ({
   handleVideoToggle,
@@ -28,6 +29,7 @@ const SessionToolbar = ({
   setSelectedAudioDeviceId,
   isVideoOn,
   isMicOn,
+  videoLoading,
 }: Props) => {
   return (
     <div
@@ -43,8 +45,9 @@ const SessionToolbar = ({
       </button>
       <div className={"inline-flex center-buttons gap-2"}>
         <button
+          disabled={videoLoading}
           onClick={handleVideoToggle}
-          className="h-full aspect-square bg-green-500 hover:bg-green-600 text-white p-3 rounded-full"
+          className="h-full aspect-square bg-green-500 hover:bg-green-600 text-white p-3 rounded-full disabled:opacity-50"
           aria-label={isVideoOn ? `비디오 끄기` : "비디오 켜기"}
         >
           {isVideoOn ? <BsCameraVideo /> : <BsCameraVideoOff />}
