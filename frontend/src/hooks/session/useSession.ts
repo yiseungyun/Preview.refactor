@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import useToast from "@hooks/useToast";
 import useMediaDevices from "@hooks/session/useMediaDevices";
 import usePeerConnection from "@hooks/session/usePeerConnection";
@@ -15,7 +14,6 @@ import useAuth from "@hooks/useAuth.ts";
 
 export const useSession = (sessionId: string) => {
   const { socket } = useSocket();
-  const navigate = useNavigate();
   const toast = useToast();
 
   const {
@@ -107,8 +105,15 @@ export const useSession = (sessionId: string) => {
       toast.error(
         "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
       );
-      navigate("/sessions");
       return;
+    } else if (mediaStream.getVideoTracks().length === 0) {
+      toast.error(
+        "비디오 장치를 찾을 수 없습니다. 비디오 장치 없이 세션에 참가합니다."
+      );
+    } else if (mediaStream.getAudioTracks().length === 0) {
+      toast.error(
+        "오디오 장치를 찾을 수 없습니다. 오디오 장치 없이 세션에 참가합니다."
+      );
     }
 
     socket.emit(SESSION_EMIT_EVENT.JOIN, { roomId: sessionId, nickname });

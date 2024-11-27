@@ -29,7 +29,7 @@ const LoadingIndicator = ({
             autoplay={true}
             loop={true}
             speed={1.5}
-            style={{ width: 120, height: 120 }}
+            style={{ width: 120, height: 120, opacity: 0.8 }}
           />
         );
     }

@@ -67,8 +67,40 @@ const useMediaDevices = () => {
       }
     };
   }, []);
+  //
+  // // 미디어 스트림 가져오기: 자신의 스트림을 가져옴
+  // const getMedia = async () => {
+  //   try {
+  //     if (streamRef.current) {
+  //       // 이미 스트림이 있으면 종료
+  //       streamRef.current.getTracks().forEach((track) => {
+  //         track.stop();
+  //       });
+  //       setStream(null);
+  //     }
+  //     setVideoLoading(true);
+  //     const myStream = await navigator.mediaDevices.getUserMedia({
+  //       video: selectedVideoDeviceId
+  //         ? { deviceId: selectedVideoDeviceId }
+  //         : true,
+  //       audio: selectedAudioDeviceId
+  //         ? { deviceId: selectedAudioDeviceId }
+  //         : true,
+  //     });
+  //
+  //     streamRef.current = myStream;
+  //     setStream(myStream);
+  //     return myStream;
+  //   } catch (error) {
+  //     console.error(
+  //       "미디어 스트림을 가져오는 도중 문제가 발생했습니다.",
+  //       error
+  //     );
+  //   } finally {
+  //     setVideoLoading(false);
+  //   }
+  // };
 
-  // 미디어 스트림 가져오기: 자신의 스트림을 가져옴
   const getMedia = async () => {
     try {
       if (streamRef.current) {
@@ -79,23 +111,57 @@ const useMediaDevices = () => {
         setStream(null);
       }
       setVideoLoading(true);
-      const myStream = await navigator.mediaDevices.getUserMedia({
-        video: selectedVideoDeviceId
-          ? { deviceId: selectedVideoDeviceId }
-          : true,
-        audio: selectedAudioDeviceId
-          ? { deviceId: selectedAudioDeviceId }
-          : true,
-      });
 
-      streamRef.current = myStream;
-      setStream(myStream);
-      return myStream;
+      // 비디오와 오디오 스트림을 따로 가져오기
+      let videoStream = null;
+      let audioStream = null;
+
+      try {
+        videoStream = await navigator.mediaDevices.getUserMedia({
+          video: selectedVideoDeviceId
+            ? { deviceId: selectedVideoDeviceId }
+            : true,
+          audio: false,
+        });
+      } catch (videoError) {
+        console.warn("비디오 스트림을 가져오는데 실패했습니다:", videoError);
+      }
+
+      try {
+        audioStream = await navigator.mediaDevices.getUserMedia({
+          video: false,
+          audio: selectedAudioDeviceId
+            ? { deviceId: selectedAudioDeviceId }
+            : true,
+        });
+      } catch (audioError) {
+        console.warn("오디오 스트림을 가져오는데 실패했습니다:", audioError);
+      }
+
+      // 스트림 병합 또는 개별 스트림 사용
+      let combinedStream = null;
+      const tracks = [
+        ...(videoStream?.getVideoTracks() || []),
+        ...(audioStream?.getAudioTracks() || []),
+      ];
+
+      if (tracks.length > 0) {
+        combinedStream = new MediaStream(tracks);
+        streamRef.current = combinedStream;
+        console.log(combinedStream);
+        setStream(combinedStream);
+        return combinedStream;
+      } else {
+        throw new Error(
+          "비디오와 오디오 스트림을 모두 가져오는데 실패했습니다."
+        );
+      }
     } catch (error) {
       console.error(
         "미디어 스트림을 가져오는 도중 문제가 발생했습니다.",
         error
       );
+      // 에러 처리 로직 (예: 사용자에게 알림)
     } finally {
       setVideoLoading(false);
     }
