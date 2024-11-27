@@ -7,7 +7,7 @@ export class RoomHostService {
     public constructor(private readonly roomRepository: RoomRepository) {}
 
     private getNewHost(room: RoomDto) {
-        return room.connectionList[0];
+        return Object.values(room.connectionMap).sort((a, b) => a.createAt - b.createAt)[0];
     }
 
     public async delegateHost(roomId: string) {
@@ -16,12 +16,10 @@ export class RoomHostService {
 
         const newHost = this.getNewHost(room);
 
-        const found = room.connectionList.find(
-            (connection) => connection.socketId === newHost.socketId
-        );
+        const found = room.connectionMap[newHost.socketId];
         if (!found) throw new Error("invalid new host id");
 
-        room.host = newHost.socketId;
+        room.host = newHost;
 
         await this.roomRepository.setRoom(room);
         return newHost;

@@ -3,8 +3,7 @@ import SessionForm from "@/components/sessions/create/SessionForm";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import useSessionFormStore from "@/stores/useSessionFormStore";
-import Sidebar from "@components/common/Sidebar.tsx";
-import { sectionWithSidebar } from "@/constants/LayoutConstant.ts";
+import SidebarPageLayout from "@components/layout/SidebarPageLayout.tsx";
 
 const CreateSessionPage = () => {
   const navigate = useNavigate();
@@ -16,8 +15,7 @@ const CreateSessionPage = () => {
   }, []);
 
   return (
-    <section className={`${sectionWithSidebar}`}>
-      <Sidebar />
+    <SidebarPageLayout>
       <div className={"p-20"}>
         <button
           className="flex items-center gap-4 mb-5 text-gray-black text-medium-l"
@@ -32,7 +30,7 @@ const CreateSessionPage = () => {
         </p>
         <SessionForm />
       </div>
-    </section>
+    </SidebarPageLayout>
   );
 };
 

@@ -12,8 +12,8 @@ interface Session {
     nickname?: string;
     socketId: string;
   };
-  participant: number; // 현재 참여자
-  maxParticipant: number;
+  participants: number; // 현재 참여자
+  maxParticipants: number;
   createdAt: number;
 }
 
@@ -41,8 +41,8 @@ const SessionList = ({
           title={session.title}
           host={session.host.nickname ?? "익명"}
           questionListId={1}
-          participant={session.participant}
-          maxParticipant={session.maxParticipant}
+          participant={session.participants}
+          maxParticipant={session.maxParticipants}
           onEnter={() => {
             toast.success("세션에 참가했습니다.");
             navigate(`/session/${session.id}`);
@@ -55,17 +55,12 @@ const SessionList = ({
   return (
     <div>
       <h2 className={"text-semibold-l mb-4"}>{listTitle}</h2>
+      {listLoading && <LoadingIndicator loadingState={listLoading} />}
       <ul className={"flex flex-col gap-4"}>
-        {listLoading ? (
-          <LoadingIndicator loadingState={listLoading} />
+        {!listLoading && sessionList.length <= 0 ? (
+          <li key={-1}>아직 아무도 세션을 열지 않았어요..!</li>
         ) : (
-          <>
-            {sessionList.length <= 0 ? (
-              <li>아직 아무도 세션을 열지 않았어요..!</li>
-            ) : (
-              renderSessionList()
-            )}
-          </>
+          renderSessionList()
         )}
       </ul>
     </div>

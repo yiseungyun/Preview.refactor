@@ -16,7 +16,7 @@ const SessionPage = () => {
     if (!sessionId) {
       toast.error("유효하지 않은 세션 아이디입니다.");
     }
-  }, []);
+  }, [sessionId, toast]);
 
   const { socket } = useSocket();
   const {
@@ -43,6 +43,7 @@ const SessionPage = () => {
   return (
     <section className="w-screen h-screen flex flex-col max-w-[1440px]">
       <div className="w-full flex gap-2 p-1 bg-white">
+        {/*{!username && (*/}
         <input
           type="text"
           placeholder="Nickname"
@@ -50,6 +51,7 @@ const SessionPage = () => {
           onChange={(e) => setNickname(e.target.value)}
           className="border p-2 mr-2"
         />
+        {/*)}*/}
         <button
           onClick={joinRoom}
           className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -57,6 +59,7 @@ const SessionPage = () => {
           Join Room
         </button>
       </div>
+
       <div className={"w-screen flex flex-grow"}>
         <div
           className={
@@ -99,7 +102,7 @@ const SessionPage = () => {
           <SessionToolbar
             handleVideoToggle={handleVideoToggle}
             handleMicToggle={handleMicToggle}
-            handleReaction={emitReaction}
+            emitReaction={emitReaction}
             userVideoDevices={userVideoDevices}
             userAudioDevices={userAudioDevices}
             setSelectedVideoDeviceId={setSelectedVideoDeviceId}

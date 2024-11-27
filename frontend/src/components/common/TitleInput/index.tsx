@@ -2,6 +2,7 @@ import { useState } from "react";
 
 interface TitleProps {
   placeholder: string;
+  initValue?: string;
   onChange: (title: string) => void;
   minLength?: number;
   maxLength?: number;
@@ -9,12 +10,15 @@ interface TitleProps {
 
 const TitleInput = ({
   placeholder,
+  initValue,
   onChange,
   minLength = 5,
   maxLength = 20,
 }: TitleProps) => {
-  const [charCount, setCharCount] = useState<number>(0);
-  const [value, setValue] = useState<string>("");
+  const [charCount, setCharCount] = useState<number>(
+    initValue ? initValue.length : 0
+  );
+  const [value, setValue] = useState<string>(initValue ?? "");
 
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;

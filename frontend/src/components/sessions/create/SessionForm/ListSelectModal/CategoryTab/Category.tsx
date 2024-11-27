@@ -1,8 +1,8 @@
-import useSessionFormStore from "@/stores/useSessionFormStore";
+import useSessionFormStore from "@stores/useSessionFormStore";
 
 interface Props {
   tabName: "myList" | "savedList";
-  tabText: "내 질문지" | "저장된 질문지";
+  tabText: "나의 질문지" | "저장된 질문지";
 }
 
 const Category = ({ tabName, tabText }: Props) => {
