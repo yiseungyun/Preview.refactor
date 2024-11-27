@@ -1,7 +1,7 @@
 import { useState } from "react";
-import CategoryTap from "./CategoryTap";
-import QuestionList from "./QuestionList";
-import Pagination from "@/components/common/Pagination";
+import CategoryTap from "@components/MyPage/CategoryTab";
+import QuestionList from "@components/MyPage/QuestionList";
+import Pagination from "@components/common/Pagination";
 
 type TabName = "myList" | "savedList";
 

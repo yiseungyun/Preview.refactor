@@ -1,6 +1,6 @@
 import useModalStore from "@stores/useModalStore";
 import { MdEdit } from "react-icons/md";
-import ProfileIcon from "./ProfileIcon";
+import ProfileIcon from "../../../components/MyPage/ProfileIcon";
 
 const Profile = ({ nickname }: { nickname: string }) => {
   const { openModal } = useModalStore();

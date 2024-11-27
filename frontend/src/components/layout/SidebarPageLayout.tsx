@@ -6,12 +6,15 @@ interface SidebarPageLayoutProps {
   childrenClassName?: string;
 }
 
-const SidebarPageLayout = ({ children, childrenClassName = "" }: SidebarPageLayoutProps) => {
+const SidebarPageLayout = ({
+  children,
+  childrenClassName = "",
+}: SidebarPageLayoutProps) => {
   return (
     <section className={sectionWithSidebar}>
       <Sidebar />
       <div className={childrenClassName}>{children}</div>
-    </section >
+    </section>
   );
 };
 

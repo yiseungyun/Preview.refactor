@@ -3,7 +3,7 @@ import useModal from "@/hooks/useModal";
 import useModalStore from "@/stores/useModalStore";
 import { useRef } from "react";
 import { IoMdClose } from "react-icons/io";
-import ButtonSection from "./ButtonSection";
+import ButtonSection from "../../../components/MyPage/ButtonSection";
 import useAuth from "@/hooks/useAuth";
 
 const ProfileEditModal = () => {

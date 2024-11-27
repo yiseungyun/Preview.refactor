@@ -3,7 +3,6 @@ import { MdEdit } from "react-icons/md";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { FaBookmark } from "react-icons/fa";
 import Category from "./Category";
-
 interface ItemProps {
   type: "my" | "saved";
 }
