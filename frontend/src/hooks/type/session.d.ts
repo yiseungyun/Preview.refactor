@@ -21,7 +21,7 @@ export interface RoomJoinResponse {
   status: "PUBLIC" | "PRIVATE";
   title: string;
   id: string;
-  connectionList: UserInfo[];
+  connectionMap: { [socketId: string]: UserInfo };
 }
 
 export interface UserInfo {
