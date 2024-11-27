@@ -83,9 +83,13 @@ export class QuestionListRepository {
     }
 
     getQuestionListsByUserId(userId: number) {
-        return this.dataSource.getRepository(QuestionList).find({
-            where: { userId },
-        });
+        // return this.dataSource.getRepository(QuestionList).find({
+        //     where: { userId },
+        // });
+        return this.dataSource
+            .getRepository(QuestionList)
+            .createQueryBuilder("question_list")
+            .where("question_list.userId = :userId", { userId });
     }
 
     getQuestionCountByQuestionListId(questionListId: number) {

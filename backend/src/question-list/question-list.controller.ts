@@ -156,16 +156,23 @@ export class QuestionListController {
 
     @Get("my")
     @UseGuards(AuthGuard("jwt"))
-    async getMyQuestionLists(@Res() res, @JwtPayload() token: IJwtPayload) {
+    async getMyQuestionLists(
+        @Query() query: PaginateQuery,
+        @Res() res,
+        @JwtPayload() token: IJwtPayload
+    ) {
         try {
             const userId = token.userId;
-            const myQuestionLists: MyQuestionListDto[] =
-                await this.questionListService.getMyQuestionLists(userId);
+            const { myQuestionLists, meta } = await this.questionListService.getMyQuestionLists(
+                userId,
+                query
+            );
             return res.send({
                 success: true,
                 message: "My question lists received successfully.",
                 data: {
                     myQuestionLists,
+                    meta,
                 },
             });
         } catch (error) {
