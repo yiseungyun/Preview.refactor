@@ -38,9 +38,9 @@ export class RoomJoinService {
 
         await this.roomRepository.setRoom(room);
 
-        delete room.connectionMap[socketId];
+        room.connectionMap[socketId] = undefined;
         // TODO: 성공 / 실패 여부를 전송하는데 있어서 결과에 따라 다르게 해야하는데.. 어떻게 관심 분리를 할까?
-        this.socketService.emitToRoom(roomId, EMIT_EVENT.JOIN, room);
+        socket.emit(EMIT_EVENT.JOIN, room);
     }
 
     private isFullRoom(room: RoomDto): boolean {
