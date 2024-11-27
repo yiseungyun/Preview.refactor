@@ -78,6 +78,7 @@ const useMediaDevices = () => {
         });
         setStream(null);
       }
+      setVideoLoading(true);
       const myStream = await navigator.mediaDevices.getUserMedia({
         video: selectedVideoDeviceId
           ? { deviceId: selectedVideoDeviceId }
@@ -95,6 +96,8 @@ const useMediaDevices = () => {
         "미디어 스트림을 가져오는 도중 문제가 발생했습니다.",
         error
       );
+    } finally {
+      setVideoLoading(false);
     }
   };
 
@@ -123,6 +126,7 @@ const useMediaDevices = () => {
   const handleVideoToggle = async (peerConnections: PeerConnectionsMap) => {
     try {
       if (!stream) return;
+      setVideoLoading(true);
 
       // 비디오 껐다키기
       if (isVideoOn) {
@@ -142,7 +146,7 @@ const useMediaDevices = () => {
 
           const blackStream = blackCanvas.captureStream();
           const blackTrack = blackStream.getVideoTracks()[0];
-          Object.values(peerConnections).forEach((pc) => {
+          Object.values(peerConnections || {}).forEach((pc) => {
             const sender = pc
               .getSenders()
               .find((s) => s.track!.kind === "video");
@@ -159,7 +163,6 @@ const useMediaDevices = () => {
         const newVideoTrack = videoStream.getVideoTracks()[0];
 
         if (videoStream) {
-          setVideoLoading(true);
           if (streamRef.current) {
             const oldVideoTracks = streamRef.current.getVideoTracks();
             oldVideoTracks.forEach((track) =>
@@ -169,7 +172,7 @@ const useMediaDevices = () => {
             streamRef.current.addTrack(newVideoTrack);
             setStream(streamRef.current);
 
-            Object.values(peerConnections).forEach((pc) => {
+            Object.values(peerConnections || {}).forEach((pc) => {
               const sender = pc
                 .getSenders()
                 .find((s) => s.track?.kind === "video");
@@ -181,11 +184,12 @@ const useMediaDevices = () => {
         } else {
           console.error("비디오 스트림을 생성하지 못했습니다.");
         }
-        setVideoLoading(false);
         setIsVideoOn((prev) => !prev);
       }
     } catch (error) {
       console.error("비디오 스트림을 토글 할 수 없었습니다.", error);
+    } finally {
+      setVideoLoading(false);
     }
   };
 

@@ -43,6 +43,7 @@ export const useSession = (sessionId: string) => {
     setSelectedAudioDeviceId,
     setSelectedVideoDeviceId,
     getMedia,
+    videoLoading,
   } = useMediaDevices();
 
   useEffect(() => {
@@ -143,5 +144,6 @@ export const useSession = (sessionId: string) => {
     setSelectedVideoDeviceId,
     joinRoom,
     emitReaction,
+    videoLoading,
   };
 };

@@ -5,6 +5,7 @@ import {
   BsCameraVideoOff,
 } from "react-icons/bs";
 import DisplayMediaStream from "./DisplayMediaStream.tsx";
+import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 
 interface VideoContainerProps {
   nickname: string;
@@ -13,6 +14,7 @@ interface VideoContainerProps {
   isLocal: boolean;
   reaction: string;
   stream: MediaStream;
+  videoLoading?: boolean;
 }
 
 const VideoContainer = ({
@@ -22,6 +24,7 @@ const VideoContainer = ({
   isLocal,
   reaction,
   stream,
+  videoLoading,
 }: VideoContainerProps) => {
   const renderReaction = (reactionType: string) => {
     switch (reactionType) {
@@ -62,6 +65,15 @@ const VideoContainer = ({
             {renderVideoIcon()}
           </div>
         </div>
+        {videoLoading && (
+          <div
+            className={
+              "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white animate-pulse text-3xl"
+            }
+          >
+            <LoadingIndicator loadingState={videoLoading} type={"spinner"} />
+          </div>
+        )}
       </div>
       {
         <div

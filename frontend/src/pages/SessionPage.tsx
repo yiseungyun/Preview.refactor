@@ -38,6 +38,7 @@ const SessionPage = () => {
     setSelectedVideoDeviceId,
     joinRoom,
     emitReaction,
+    videoLoading,
   } = useSession(sessionId!);
 
   return (
@@ -87,6 +88,7 @@ const SessionPage = () => {
                 isLocal={true}
                 reaction={reaction || ""}
                 stream={stream!}
+                videoLoading={videoLoading}
               />
             </div>
             <div
