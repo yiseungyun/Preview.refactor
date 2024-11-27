@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const fetchQuestionContent = async (questionListId: number) => {
+const getQuestionContent = async (questionListId: number) => {
   const { data } = await axios.post("/api/question-list/contents", {
     questionListId,
   });
@@ -12,4 +12,4 @@ const fetchQuestionContent = async (questionListId: number) => {
   return data.data.questionListContents;
 };
 
-export default fetchQuestionContent;
+export default getQuestionContent;
