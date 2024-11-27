@@ -9,6 +9,7 @@ import { Question } from "./question.entity";
 import { Transactional } from "typeorm-transactional";
 import { QuestionList } from "@/question-list/question-list.entity";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
+import { EditQuestionDto } from "@/question-list/dto/edit-question.dto";
 
 @Injectable()
 export class QuestionListService {
@@ -200,6 +201,27 @@ export class QuestionListService {
             throw new Error("You do not have permission to delete this question list.");
 
         return await this.questionListRepository.deleteQuestionList(questionListId);
+    }
+
+    async addQuestion(editQuestionDto: EditQuestionDto) {
+        const { id, content, userId } = editQuestionDto;
+        const user = await this.userRepository.getUserByUserId(userId);
+        if (!user) throw new Error("User not found.");
+
+        const questionList = await this.questionListRepository.getQuestionListById(id);
+        if (!questionList) throw new Error("Question list not found.");
+        if (questionList.userId !== userId)
+            throw new Error("You do not have permission to delete this question list.");
+
+        const existingQuestionsCount =
+            await this.questionListRepository.getQuestionCountByQuestionListId(id);
+        const question = new Question();
+        question.content = content;
+        question.index = existingQuestionsCount;
+        question.questionListId = id;
+
+        await this.questionListRepository.updateQuestion(question);
+        return await this.getQuestionListContents(id);
     }
 
     async getScrappedQuestionLists(userId: number) {

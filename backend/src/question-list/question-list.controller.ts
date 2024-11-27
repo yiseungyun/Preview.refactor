@@ -19,6 +19,7 @@ import { JwtPayload } from "@/auth/jwt/jwt.decorator";
 import { IJwtPayload } from "@/auth/jwt/jwt.model";
 import { MyQuestionListDto } from "./dto/my-question-list.dto";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
+import { EditQuestionDto } from "@/question-list/dto/edit-question.dto";
 
 @Controller("question-list")
 export class QuestionListController {
@@ -236,6 +237,41 @@ export class QuestionListController {
             return res.send({
                 success: true,
                 message: "Failed to delete question list.",
+                error: error.message,
+            });
+        }
+    }
+
+    @Post("/:questionListId/question")
+    @UseGuards(AuthGuard("jwt"))
+    async addQuestion(
+        @Res() res,
+        @JwtPayload() token: IJwtPayload,
+        @Body() body: { content: string },
+        @Param("questionListId") questionListId: number
+    ) {
+        try {
+            const userId = token.userId;
+            const { content } = body;
+            const editQuestionDto: EditQuestionDto = {
+                id: questionListId,
+                content,
+                userId,
+            };
+
+            const result = await this.questionListService.addQuestion(editQuestionDto);
+
+            return res.send({
+                success: true,
+                message: "The new question is added to the list successfully.",
+                data: {
+                    questionList: result,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to add the new question to the list.",
                 error: error.message,
             });
         }

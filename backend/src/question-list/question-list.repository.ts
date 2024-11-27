@@ -104,6 +104,10 @@ export class QuestionListRepository {
         return this.dataSource.getRepository(QuestionList).delete(questionListId);
     }
 
+    updateQuestion(question: Question) {
+        return this.dataSource.getRepository(Question).save(question);
+    }
+
     scrapQuestionList(questionListId: number, userId: number) {
         return this.dataSource
             .createQueryBuilder()
