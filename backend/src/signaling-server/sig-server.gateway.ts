@@ -54,7 +54,7 @@ export class SigServerGateway {
             candidateSendID: string;
         }
     ) {
-        this.server.to(data.candidateReceiveID).emit(LISTEN_EVENT.ANSWER, {
+        this.server.to(data.candidateReceiveID).emit(EMIT_EVENT.CANDIDATE, {
             candidate: data.candidate,
             candidateSendID: data.candidateSendID,
         });
