@@ -19,7 +19,7 @@ import { JwtPayload } from "@/auth/jwt/jwt.decorator";
 import { IJwtPayload } from "@/auth/jwt/jwt.model";
 import { MyQuestionListDto } from "./dto/my-question-list.dto";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
-import { EditQuestionDto } from "@/question-list/dto/edit-question.dto";
+import { QuestionDto } from "@/question-list/dto/question.dto";
 
 @Controller("question-list")
 export class QuestionListController {
@@ -253,13 +253,13 @@ export class QuestionListController {
         try {
             const userId = token.userId;
             const { content } = body;
-            const editQuestionDto: EditQuestionDto = {
-                id: questionListId,
+            const questionDto: QuestionDto = {
                 content,
+                questionListId,
                 userId,
             };
 
-            const result = await this.questionListService.addQuestion(editQuestionDto);
+            const result = await this.questionListService.addQuestion(questionDto);
 
             return res.send({
                 success: true,
@@ -272,6 +272,43 @@ export class QuestionListController {
             return res.send({
                 success: false,
                 message: "Failed to add the new question to the list.",
+                error: error.message,
+            });
+        }
+    }
+
+    @Patch("/:questionListId/question/:questionId")
+    @UseGuards(AuthGuard("jwt"))
+    async updateQuestion(
+        @Res() res,
+        @JwtPayload() token: IJwtPayload,
+        @Body() body: { content: string },
+        @Param() params: { questionListId: number, questionId: number }
+    ) {
+        try {
+            const userId = token.userId;
+            const { content } = body;
+            const { questionListId, questionId } = params;
+            const questionDto: QuestionDto = {
+                id: questionId,
+                content,
+                questionListId,
+                userId,
+            };
+
+            const result = await this.questionListService.updateQuestion(questionDto);
+
+            return res.send({
+                success: true,
+                message: "Question is updated successfully.",
+                data: {
+                    questionList: result,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to update question.",
                 error: error.message,
             });
         }
