@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "nestjs-redis-om";
+import { InjectRepository } from "@moozeh/nestjs-redis-om";
 import { Repository } from "redis-om";
 import { RoomEntity } from "@/room/room.entity";
 import { RoomDto } from "@/room/dto/room.dto";
