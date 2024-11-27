@@ -43,7 +43,7 @@ const SessionPage = () => {
 
   return (
     <section className="w-screen h-screen flex flex-col overflow-y-hidden">
-      <div className="w-full flex gap-2 p-1 bg-white">
+      <div className="w-full flex gap-2 p-1 bg-white shrink-0">
         {/*{!username && (*/}
         <input
           type="text"
@@ -73,12 +73,12 @@ const SessionPage = () => {
           />
           <div
             className={
-              "max-w-[1440px] mx-auto  flex flex-col gap-4 justify-between items-center w-full flex-grow transition-all py-4"
+              "w-full flex flex-col gap-4 justify-between items-center flex-grow transition-all py-4"
             }
           >
             <div
               className={
-                "speaker  px-6 flex w-full h-1/2  justify-center gap-4"
+                "speaker  w-full flex gap-4 px-6 h-1/2 justify-center items-center"
               }
             >
               <VideoContainer
@@ -93,7 +93,7 @@ const SessionPage = () => {
             </div>
             <div
               className={
-                "listeners w-full flex gap-4 px-6 h-1/2   justify-center"
+                "listeners w-full flex gap-4 px-6 h-1/2 justify-center items-center  "
               }
             >
               {peers.map((peer) => (

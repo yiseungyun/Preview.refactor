@@ -34,7 +34,7 @@ const SessionToolbar = ({
   return (
     <div
       className={
-        "session-footer h-16 inline-flex w-full justify-between items-center border-t px-6"
+        "session-footer h-16 inline-flex w-full justify-between items-center border-t px-6 shrink-0"
       }
     >
       <button
