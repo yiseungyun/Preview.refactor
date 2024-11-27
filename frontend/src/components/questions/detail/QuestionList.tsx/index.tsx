@@ -1,4 +1,4 @@
-import { useGetQuestion } from "@hooks/api/useGetQuestion.ts";
+import { useGetQuestion } from "@/hooks/api/useGetQuestionContent";
 import QuestionItem from "./QuestionItem";
 
 const QuestionList = ({ questionId }: { questionId: string }) => {
