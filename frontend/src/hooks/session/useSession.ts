@@ -27,7 +27,6 @@ export const useSession = (sessionId: string) => {
   } = usePeerConnection(socket!);
   const { nickname: username } = useAuth();
   const [nickname, setNickname] = useState<string>("");
-  const [reaction, setReaction] = useState("");
   const [roomMetadata, setRoomMetadata] = useState<RoomMetadata | null>(null);
   const [isHost, setIsHost] = useState<boolean>(false);
 
@@ -61,11 +60,10 @@ export const useSession = (sessionId: string) => {
   usePeerConnectionCleanup(peerConnections);
   useMediaStreamCleanup(stream);
 
-  const { emitReaction, handleReaction } = useReaction(
+  const { reaction, emitReaction, handleReaction } = useReaction(
     socket,
     sessionId,
-    setPeers,
-    setReaction
+    setPeers
   );
 
   useSocketEvents({
