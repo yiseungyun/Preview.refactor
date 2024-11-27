@@ -83,9 +83,6 @@ export class QuestionListRepository {
     }
 
     getQuestionListsByUserId(userId: number) {
-        // return this.dataSource.getRepository(QuestionList).find({
-        //     where: { userId },
-        // });
         return this.dataSource
             .getRepository(QuestionList)
             .createQueryBuilder("question_list")
@@ -116,9 +113,11 @@ export class QuestionListRepository {
     }
 
     getScrappedQuestionListsByUser(user: User) {
-        return this.dataSource.getRepository(QuestionList).find({
-            where: { scrappedByUsers: user },
-        });
+        return this.dataSource
+            .getRepository(QuestionList)
+            .createQueryBuilder("question_list")
+            .innerJoin("question_list.scrappedByUsers", "user")
+            .where("user.id = :userId", { userId: user.id });
     }
 
     unscrapQuestionList(questionListId: number, userId: number) {

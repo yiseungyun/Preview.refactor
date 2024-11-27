@@ -175,9 +175,15 @@ export class QuestionListService {
         return categories;
     }
 
-    async getScrappedQuestionLists(userId: number) {
+    async getScrappedQuestionLists(userId: number, query: PaginateQuery) {
         const user = await this.userRepository.getUserByUserId(userId);
-        return await this.questionListRepository.getScrappedQuestionListsByUser(user);
+        const scrappedQuestionLists =
+            await this.questionListRepository.getScrappedQuestionListsByUser(user);
+        const result = await paginate(query, scrappedQuestionLists, {
+            sortableColumns: ["usage"],
+            defaultSortBy: [["usage", "DESC"]],
+        });
+        return { scrappedQuestionLists: result.data, meta: result.meta };
     }
 
     async scrapQuestionList(questionListId: number, userId: number) {
@@ -195,8 +201,9 @@ export class QuestionListService {
         if (isMyQuestionList) throw new Error("Can't scrap my question list.");
 
         // 스크랩하려는 질문지가 이미 스크랩한 질문지인지 확인
-        const alreadyScrappedQuestionLists =
-            await this.questionListRepository.getScrappedQuestionListsByUser(user);
+        const alreadyScrappedQuestionLists = await this.questionListRepository
+            .getScrappedQuestionListsByUser(user)
+            .getMany();
         const isAlreadyScrapped = alreadyScrappedQuestionLists.some(
             (list) => list.id === questionListId
         );
