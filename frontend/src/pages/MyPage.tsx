@@ -25,7 +25,7 @@ const MyPage = () => {
       <Sidebar />
       <div
         className={
-          "flex flex-col max-w-7xl px-12 pt-20 pb-8 overflow-auto no-scrollbar"
+          "flex flex-col flex-shrink-0 w-7xl px-12 pt-20 pb-8 overflow-auto no-scrollbar"
         }
       >
         <h1 className={"text-bold-l mb-6 text-gray-black dark:text-white"}>
@@ -33,7 +33,7 @@ const MyPage = () => {
         </h1>
         <div
           className={
-            "flex flex-col gap-8 w-47.5 px-8 pt-8 pb-6 bg-white shadow-8 rounded-custom-l"
+            "flex flex-col gap-8 w-5xl px-8 pt-8 pb-6 bg-white shadow-8 rounded-custom-l"
           }
         >
           <ProfileEditModal />

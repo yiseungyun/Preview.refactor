@@ -4,9 +4,10 @@ interface ButtonProps {
   text: string;
   type: "gray" | "green";
   icon?: IconType;
+  onClick: () => void;
 }
 
-const Button = ({ text, type, icon: Icon }: ButtonProps) => {
+const Button = ({ text, type, icon: Icon, onClick }: ButtonProps) => {
   const buttonColor =
     type === "gray"
       ? "bg-gray-200 text-gray-black"
@@ -15,6 +16,7 @@ const Button = ({ text, type, icon: Icon }: ButtonProps) => {
   return (
     <button
       className={`w-full h-12 flex flex-row items-center justify-center gap-2 rounded-custom-m text-semibold-m ${buttonColor}`}
+      onClick={onClick}
     >
       {Icon ? <Icon /> : null}
       {text}
