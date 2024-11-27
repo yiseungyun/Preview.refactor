@@ -1,11 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 
 type MediaStreamType = "video" | "audio";
 interface PeerConnectionsMap {
   [key: string]: RTCPeerConnection;
 }
 
-const useMediaDevices = () => {
+type DataChannels = MutableRefObject<{ [peerId: string]: RTCDataChannel }>;
+interface DataChannelMessage {
+  type: "audio" | "video";
+  status: boolean;
+}
+
+const useMediaDevices = (dataChannels: DataChannels) => {
   // 유저의 미디어 장치 리스트
   const [userAudioDevices, setUserAudioDevices] = useState<MediaDeviceInfo[]>(
     []
@@ -67,39 +73,6 @@ const useMediaDevices = () => {
       }
     };
   }, []);
-  //
-  // // 미디어 스트림 가져오기: 자신의 스트림을 가져옴
-  // const getMedia = async () => {
-  //   try {
-  //     if (streamRef.current) {
-  //       // 이미 스트림이 있으면 종료
-  //       streamRef.current.getTracks().forEach((track) => {
-  //         track.stop();
-  //       });
-  //       setStream(null);
-  //     }
-  //     setVideoLoading(true);
-  //     const myStream = await navigator.mediaDevices.getUserMedia({
-  //       video: selectedVideoDeviceId
-  //         ? { deviceId: selectedVideoDeviceId }
-  //         : true,
-  //       audio: selectedAudioDeviceId
-  //         ? { deviceId: selectedAudioDeviceId }
-  //         : true,
-  //     });
-  //
-  //     streamRef.current = myStream;
-  //     setStream(myStream);
-  //     return myStream;
-  //   } catch (error) {
-  //     console.error(
-  //       "미디어 스트림을 가져오는 도중 문제가 발생했습니다.",
-  //       error
-  //     );
-  //   } finally {
-  //     setVideoLoading(false);
-  //   }
-  // };
 
   const getMedia = async () => {
     try {
@@ -188,6 +161,12 @@ const useMediaDevices = () => {
     }
   };
 
+  const sendMessageToDataChannels = (message: DataChannelMessage) => {
+    Object.values(dataChannels.current).forEach((channel) => {
+      channel.send(JSON.stringify(message));
+    });
+  };
+
   // 미디어 스트림 토글 관련
   const handleVideoToggle = async (peerConnections: PeerConnectionsMap) => {
     try {
@@ -222,6 +201,10 @@ const useMediaDevices = () => {
           });
         }
         setIsVideoOn((prev) => !prev);
+        sendMessageToDataChannels({
+          type: "video",
+          status: false,
+        });
       } else {
         const videoStream = await getMediaStream("video");
         if (!videoStream) return;
@@ -251,6 +234,10 @@ const useMediaDevices = () => {
           console.error("비디오 스트림을 생성하지 못했습니다.");
         }
         setIsVideoOn((prev) => !prev);
+        sendMessageToDataChannels({
+          type: "video",
+          status: true,
+        });
       }
     } catch (error) {
       console.error("비디오 스트림을 토글 할 수 없었습니다.", error);
@@ -269,16 +256,23 @@ const useMediaDevices = () => {
             setIsMicOn((prev) => !prev);
             return;
           }
-          // 오디오 끄기
           audioTrack.enabled = false;
+
+          setIsMicOn((prev) => !prev);
+          sendMessageToDataChannels({
+            type: "audio",
+            status: false,
+          });
         }
-        setIsMicOn((prev) => !prev);
       } else {
         for (const audioTrack of stream.getAudioTracks()) {
-          // 오디오 켜기
           audioTrack.enabled = true;
         }
         setIsMicOn((prev) => !prev);
+        sendMessageToDataChannels({
+          type: "audio",
+          status: true,
+        });
       }
     } catch (error) {
       console.error("오디오 스트림을 토글 할 수 없었습니다.", error);

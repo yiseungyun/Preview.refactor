@@ -22,6 +22,8 @@ export const useSession = (sessionId: string) => {
     peers,
     setPeers,
     peerConnections,
+    dataChannels,
+    peerMediaStatus,
   } = usePeerConnection(socket!);
   const { nickname: username } = useAuth();
   const [nickname, setNickname] = useState<string>("");
@@ -42,7 +44,7 @@ export const useSession = (sessionId: string) => {
     setSelectedVideoDeviceId,
     getMedia,
     videoLoading,
-  } = useMediaDevices();
+  } = useMediaDevices(dataChannels);
 
   useEffect(() => {
     if (username) {
@@ -150,5 +152,6 @@ export const useSession = (sessionId: string) => {
     joinRoom,
     emitReaction,
     videoLoading,
+    peerMediaStatus,
   };
 };

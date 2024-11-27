@@ -39,6 +39,7 @@ const SessionPage = () => {
     joinRoom,
     emitReaction,
     videoLoading,
+    peerMediaStatus,
   } = useSession(sessionId!);
 
   return (
@@ -100,8 +101,16 @@ const SessionPage = () => {
                 <VideoContainer
                   key={peer.peerId}
                   nickname={peer.peerNickname}
-                  isMicOn={true}
-                  isVideoOn={true}
+                  isMicOn={
+                    peerMediaStatus[peer.peerId]
+                      ? peerMediaStatus[peer.peerId].audio
+                      : true
+                  }
+                  isVideoOn={
+                    peerMediaStatus[peer.peerId]
+                      ? peerMediaStatus[peer.peerId].video
+                      : true
+                  }
                   isLocal={false}
                   reaction={peer.reaction || ""}
                   stream={peer.stream}
