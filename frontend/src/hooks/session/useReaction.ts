@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, useCallback, useRef } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import { Socket } from "socket.io-client";
 import { PeerConnection } from "../type/session";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
@@ -20,7 +26,7 @@ export const useReaction = (
       if (socket) {
         socket.emit(SESSION_EMIT_EVENT.REACTION, {
           roomId: sessionId,
-          reaction: reactionType,
+          reactionType: reactionType,
         });
       }
     },
@@ -39,30 +45,38 @@ export const useReaction = (
   );
 
   const handleReaction = ({
-    senderId,
-    reaction,
+    socketId,
+    reactionType,
   }: {
-    senderId: string;
-    reaction: string;
+    socketId: string;
+    reactionType: string;
   }) => {
-    if (reactionTimeouts.current[senderId]) {
-      clearTimeout(reactionTimeouts.current[senderId]);
+    if (reactionTimeouts.current[socketId]) {
+      clearTimeout(reactionTimeouts.current[socketId]);
     }
 
-    if (senderId === socket?.id) {
-      setReaction(reaction);
-      reactionTimeouts.current[senderId] = setTimeout(() => {
+    if (socketId === socket?.id) {
+      setReaction(reactionType);
+      reactionTimeouts.current[socketId] = setTimeout(() => {
         setReaction("");
-        delete reactionTimeouts.current[senderId];
+        delete reactionTimeouts.current[socketId];
       }, REACTION_DURATION);
     } else {
-      addReaction(senderId, reaction);
-      reactionTimeouts.current[senderId] = setTimeout(() => {
-        addReaction(senderId, "");
-        delete reactionTimeouts.current[senderId];
+      addReaction(socketId, reactionType);
+      reactionTimeouts.current[socketId] = setTimeout(() => {
+        addReaction(socketId, "");
+        delete reactionTimeouts.current[socketId];
       }, REACTION_DURATION);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      Object.values(reactionTimeouts.current).forEach((timeout) =>
+        clearTimeout(timeout)
+      );
+    };
+  }, []);
 
   return { emitReaction, handleReaction };
 };
