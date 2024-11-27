@@ -7,7 +7,7 @@ export const useCreateQuestionList = () => {
   const toast = useToast();
   const navigate = useNavigate();
 
-  return useMutation({
+  const { mutate: createQuestions } = useMutation({
     mutationFn: createQuestionList,
     onSuccess: (response) => {
       const questionListId = response.data.createdQuestionList.id;
@@ -18,4 +18,6 @@ export const useCreateQuestionList = () => {
       toast.error("질문지 생성에 실패했습니다.");
     },
   });
+
+  return createQuestions;
 };

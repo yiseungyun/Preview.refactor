@@ -10,7 +10,7 @@ const QuestionForm = () => {
   const { category, questionTitle, access, questionList } =
     useQuestionFormStore();
 
-  const mutation = useCreateQuestionList();
+  const createQuestions = useCreateQuestionList();
 
   const submitHandler = () => {
     const requestData = {
@@ -20,7 +20,7 @@ const QuestionForm = () => {
       isPublic: access === "PUBLIC",
     };
 
-    mutation.mutate(requestData);
+    createQuestions(requestData);
   };
 
   return (
