@@ -5,6 +5,7 @@ import DrawingSnowman from "@components/common/Animate/DrawingSnowman.tsx";
 import Divider from "@components/common/Divider.tsx";
 import OAuthContainer from "@components/login/OAuthContainer.tsx";
 import DefaultAuthFormContainer from "@components/login/DefaultAuthFormContainer.tsx";
+import { useEffect } from "react";
 
 const LoginPage = () => {
   const { isLoggedIn, guestLogIn } = useAuth();
@@ -16,7 +17,7 @@ const LoginPage = () => {
       navigate("/");
     }
   }, [isLoggedIn]);
-  
+
   const handleOAuthLogin = (provider: "github" | "guest") => {
     if (provider === "github") {
       // 깃허브 로그인
