@@ -167,11 +167,9 @@ export class QuestionListService {
     async updateQuestionList(updateQuestionListDto: UpdateQuestionListDto) {
         const { id, title, categoryNames, isPublic, userId } = updateQuestionListDto;
         const user = await this.userRepository.getUserByUserId(userId);
-        console.log(user);
         if (!user) throw new Error("User not found.");
 
         const questionList = await this.questionListRepository.getQuestionListById(id);
-        console.log(questionList);
         if (!questionList) throw new Error("Question list not found.");
         if (questionList.userId !== userId)
             throw new Error("You do not have permission to edit this question list.");
@@ -195,6 +193,11 @@ export class QuestionListService {
     async deleteQuestionList(questionListId: number, userId: number) {
         const user = await this.userRepository.getUserByUserId(userId);
         if (!user) throw new Error("User not found.");
+
+        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        if (!questionList) throw new Error("Question list not found.");
+        if (questionList.userId !== userId)
+            throw new Error("You do not have permission to delete this question list.");
 
         return await this.questionListRepository.deleteQuestionList(questionListId);
     }
