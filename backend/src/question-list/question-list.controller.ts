@@ -128,7 +128,6 @@ export class QuestionListController {
 
     @Post("contents")
     async getQuestionListContents(
-        @Query() query: PaginateQuery,
         @Res() res,
         @Body()
         body: {
@@ -137,14 +136,13 @@ export class QuestionListController {
     ) {
         try {
             const { questionListId } = body;
-            const { questionListContents, meta } =
-                await this.questionListService.getQuestionListContents(questionListId, query);
+            const questionListContents: QuestionListContentsDto =
+                await this.questionListService.getQuestionListContents(questionListId);
             return res.send({
                 success: true,
                 message: "Question list contents received successfully.",
                 data: {
                     questionListContents,
-                    meta,
                 },
             });
         } catch (error) {

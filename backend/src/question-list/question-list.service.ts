@@ -114,7 +114,7 @@ export class QuestionListService {
         return { createdQuestionList, createdQuestions };
     }
 
-    async getQuestionListContents(questionListId: number, query: PaginateQuery) {
+    async getQuestionListContents(questionListId: number) {
         const questionList = await this.questionListRepository.getQuestionListById(questionListId);
         const { id, title, usage, isPublic, userId } = questionList;
         if (!isPublic) {
@@ -123,10 +123,6 @@ export class QuestionListService {
 
         const contents =
             await this.questionListRepository.getContentsByQuestionListId(questionListId);
-        const result = await paginate(query, contents, {
-            sortableColumns: ["index"],
-            defaultSortBy: [["index", "ASC"]],
-        });
 
         const categoryNames =
             await this.questionListRepository.findCategoryNamesByQuestionListId(questionListId);
@@ -135,13 +131,13 @@ export class QuestionListService {
         const questionListContents: QuestionListContentsDto = {
             id,
             title,
-            contents: result.data,
+            contents,
             categoryNames,
             usage,
             username,
         };
 
-        return { questionListContents, meta: result.meta };
+        return questionListContents;
     }
 
     async getMyQuestionLists(userId: number) {

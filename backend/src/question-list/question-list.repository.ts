@@ -70,7 +70,8 @@ export class QuestionListRepository {
         return this.dataSource
             .getRepository(Question)
             .createQueryBuilder("question")
-            .where("question.question_list_id = :questionListId", { questionListId });
+            .where("question.question_list_id = :questionListId", { questionListId })
+            .getMany();
     }
 
     async getUsernameById(userId: number) {
