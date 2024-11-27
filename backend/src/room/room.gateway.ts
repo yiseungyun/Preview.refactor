@@ -19,6 +19,7 @@ import { RoomLeaveService } from "@/room/services/room-leave.service";
 import { RoomCreateService } from "@/room/services/room-create.service";
 import { RoomJoinService } from "@/room/services/room-join.service";
 import { websocketConfig } from "@/websocket/websocket.config";
+import { FinishRoomDto } from "@/room/dto/finish-room.dto";
 
 @WebSocketGateway(websocketConfig)
 export class RoomGateway implements OnGatewayDisconnect {
@@ -62,8 +63,9 @@ export class RoomGateway implements OnGatewayDisconnect {
     }
 
     @SubscribeMessage(LISTEN_EVENT.FINISH)
-    public async handleFinishRoom(client: Socket) {
-        const roomId = await this.roomService.finishRoom(client.id);
+    @UsePipes(new ValidationPipe({ transform: true }))
+    public async handleFinishRoom(@MessageBody() dto: FinishRoomDto) {
+        const roomId = await this.roomService.finishRoom(dto.roomId);
         this.socketService.emitToRoom(roomId, EMIT_EVENT.FINISH);
     }
 
