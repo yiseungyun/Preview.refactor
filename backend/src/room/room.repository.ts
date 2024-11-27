@@ -15,9 +15,9 @@ export class RoomRepository {
     public async getAllRoom(): Promise<RoomDto[]> {
         const allRooms = await this.roomRepository.search().return.all();
         return allRooms.map((room: RoomEntity) => {
-            const connectionMap = JSON.parse(room.connectionMap);
+            const connectionMap = JSON.parse(room.connectionMap || "{}");
             return {
-                connectionMap: JSON.parse(room.connectionMap),
+                connectionMap: JSON.parse(room.connectionMap || "{}"),
                 createdAt: room.createdAt,
                 host: JSON.parse(room.host),
                 maxParticipants: room.maxParticipants,
@@ -36,7 +36,7 @@ export class RoomRepository {
 
         if (!room) return null;
 
-        const connectionMap = JSON.parse(room.connectionMap);
+        const connectionMap = JSON.parse(room.connectionMap || "{}");
 
         return {
             category: room.category,
