@@ -72,7 +72,7 @@ const SessionPage = () => {
           />
           <div
             className={
-              "max-w-[1440px] mx-auto  flex flex-col gap-4 justify-between items-center w-full flex-grow transition-all"
+              "max-w-[1440px] mx-auto  flex flex-col gap-4 justify-between items-center w-full flex-grow transition-all py-4"
             }
           >
             <div

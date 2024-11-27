@@ -50,8 +50,8 @@ const VideoContainer = ({
   };
 
   return (
-    <div className="relative max-w-6xl h-fit">
-      <div className="bg-black rounded-2xl overflow-hidden shadow">
+    <div className="relative max-w-6xl h-full">
+      <div className="bg-black rounded-2xl overflow-hidden aspect-4-3 h-full">
         <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
           <p className="bg-grayscale-500 bg-opacity-50 text-white px-2 py-0.5 rounded">
