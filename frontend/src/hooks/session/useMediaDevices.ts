@@ -98,6 +98,7 @@ const useMediaDevices = (dataChannels: DataChannels) => {
         });
       } catch (videoError) {
         console.warn("비디오 스트림을 가져오는데 실패했습니다:", videoError);
+        setIsVideoOn(false);
       }
 
       try {
@@ -109,6 +110,7 @@ const useMediaDevices = (dataChannels: DataChannels) => {
         });
       } catch (audioError) {
         console.warn("오디오 스트림을 가져오는데 실패했습니다:", audioError);
+        setIsMicOn(false);
       }
 
       // 스트림 병합 또는 개별 스트림 사용
@@ -121,7 +123,6 @@ const useMediaDevices = (dataChannels: DataChannels) => {
       if (tracks.length > 0) {
         combinedStream = new MediaStream(tracks);
         streamRef.current = combinedStream;
-        console.log(combinedStream);
         setStream(combinedStream);
         return combinedStream;
       } else {
