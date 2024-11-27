@@ -1,17 +1,17 @@
-import TitleInput from "@/components/common/TitleInput";
-import useModal from "@/hooks/useModal";
-import useModalStore from "@/stores/useModalStore";
-import { useRef } from "react";
+import TitleInput from "@components/common/TitleInput";
 import { IoMdClose } from "react-icons/io";
-import ButtonSection from "../../../components/MyPage/ButtonSection";
-import useAuth from "@/hooks/useAuth";
+import ButtonSection from "@components/MyPage/ButtonSection";
+import useAuth from "@hooks/useAuth";
 
-const ProfileEditModal = () => {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const { isModalOpen, closeModal } = useModalStore();
+interface UseModalReturn {
+  dialogRef: React.RefObject<HTMLDialogElement>;
+  isOpen: boolean;
+  openModal: () => void;
+  closeModal: () => void;
+}
+
+const ProfileEditModal = ({ modal: { dialogRef, isOpen, closeModal } }: { modal: UseModalReturn }) => {
   const { nickname } = useAuth();
-
-  useModal({ isModalOpen, dialogRef });
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDialogElement>) => {
     if (e.target === dialogRef.current) {
@@ -22,6 +22,8 @@ const ProfileEditModal = () => {
   const closeHandler = () => {
     closeModal();
   };
+
+  if (!isOpen) return null;
 
   return (
     <dialog
@@ -44,7 +46,7 @@ const ProfileEditModal = () => {
           <TitleInput
             placeholder="닉네임을 입력해주세요"
             initValue={nickname}
-            onChange={() => {}}
+            onChange={() => { }}
             minLength={2}
           />
         </div>

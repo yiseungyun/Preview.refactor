@@ -3,58 +3,87 @@ import { MdEdit } from "react-icons/md";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { FaBookmark } from "react-icons/fa";
 import Category from "./Category";
+import { useDeleteQuesitonList } from "@hooks/api/useDeleteQuestionList";
+import Modal from "@components/common/Modal";
+import useModal from "@/hooks/useModal";
+
 interface ItemProps {
+  questionListId: number;
   type: "my" | "saved";
+  page: number;
 }
 
-const QuestionItem = ({ type }: ItemProps) => {
-  const navigate = useNavigate();
+const ITEM_PER_PAGE = 8;
 
-  const deleteHandler = () => {};
+const QuestionItem = ({ questionListId, type, page }: ItemProps) => {
+  const navigate = useNavigate();
+  const modal = useModal();
+  const deleteQuestions = useDeleteQuesitonList({ page, limit: ITEM_PER_PAGE });
+
+  const openDeleteModal = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    modal.openModal();
+  }
+
+  const deleteHandler = () => {
+    deleteQuestions(questionListId);
+  };
 
   return (
-    <div
-      className="flex items-center w-full h-32 p-4 border-custom-s border-gray-200 rounded-custom-m cursor-pointer"
-      onClick={() => {
-        navigate("/questions/1");
-      }}
-    >
-      <div className="relative flex flex-col w-full gap-1">
-        <div className="relative">
-          <div className="flex flex-row gap-1 mb-2">
-            <Category text="네트워크" />
-            <Category text="운영체제" />
-          </div>
-          <div className="px-1">
-            <p className="text-gray-black text-semibold-m">
-              프론트엔드프론트엔드프론트엔드프론트엔드
-            </p>
-            <div className="absolute top-0 right-0 text-gray-400 flex flex-row gap-1">
-              {type === "my" ? (
-                <>
-                  <button
-                    className="w-5 h-5"
-                    onClick={() => navigate("/")} // TODO: 질문지 수정 페이지로 이동
-                  >
-                    <MdEdit className="w-5 h-5 mt-1" />
-                  </button>
-                  <button className="w-5 h-5" onClick={deleteHandler}>
-                    <RiDeleteBin6Fill className="w-5 h-5 mt-1" />
-                  </button>
-                </>
-              ) : (
-                <button className="w-5 h-5">
-                  <FaBookmark className="w-5 h-5 mt-1" />
-                </button>
-              )}
+    <>
+      <Modal
+        modal={modal}
+        title="해당 질문지를 삭제하실건까요?"
+        subtitle="삭제하면 복구할 수 없어요!"
+        leftButton="취소하기"
+        rightButton="삭제하기"
+        type="red"
+        onLeftClick={() => { }}
+        onRightClick={deleteHandler}
+      />
+      <div
+        className="flex items-center w-full h-32 p-4 border-custom-s border-gray-200 rounded-custom-m cursor-pointer"
+        onClick={() => {
+          navigate(`/questions/${questionListId}`);
+        }}
+      >
+        <div className="relative flex flex-col w-full gap-1">
+          <div className="relative">
+            <div className="flex flex-row gap-1 mb-2">
+              <Category text="네트워크" />
+              <Category text="운영체제" />
             </div>
-            <span className="text-gray-600 text-medium-m">
-              작성자 눈드뮴눈드뮴눈드뮴눈드뮴눈드뮴눈드뮴눈드
-            </span>
+            <div className="px-1">
+              <p className="text-gray-black text-semibold-m">
+                프론트엔드프론트엔드프론트엔드프론트엔드
+              </p>
+              <div className="absolute top-0 right-0 text-gray-400 flex flex-row gap-1">
+                {type === "my" ? (
+                  <>
+                    <button
+                      className="w-5 h-5"
+                      onClick={() => navigate("/")} // TODO: 질문지 수정 페이지로 이동
+                    >
+                      <MdEdit className="w-5 h-5 mt-1" />
+                    </button>
+                    <button className="w-5 h-5" onClick={openDeleteModal}>
+                      <RiDeleteBin6Fill className="w-5 h-5 mt-1" />
+                    </button>
+                  </>
+                ) : (
+                  <button className="w-5 h-5">
+                    <FaBookmark className="w-5 h-5 mt-1" />
+                  </button>
+                )}
+              </div>
+              <span className="text-gray-600 text-medium-m">
+                작성자 눈드뮴눈드뮴눈드뮴눈드뮴눈드뮴눈드뮴눈드
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
