@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post, Req, Res, UseGuards } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Query,
+    Req,
+    Res,
+    UseGuards,
+} from "@nestjs/common";
 import { QuestionListService } from "./question-list.service";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
@@ -7,21 +18,23 @@ import { AuthGuard } from "@nestjs/passport";
 import { JwtPayload } from "@/auth/jwt/jwt.decorator";
 import { IJwtPayload } from "@/auth/jwt/jwt.model";
 import { MyQuestionListDto } from "./dto/my-question-list.dto";
+import { PaginateQuery } from "nestjs-paginate";
 
 @Controller("question-list")
 export class QuestionListController {
     constructor(private readonly questionListService: QuestionListService) {}
 
     @Get()
-    async getAllQuestionLists(@Res() res) {
+    async getAllQuestionLists(@Query() query: PaginateQuery, @Res() res) {
         try {
-            const allQuestionLists: GetAllQuestionListDto[] =
-                await this.questionListService.getAllQuestionLists();
+            const { allQuestionLists, meta } =
+                await this.questionListService.getAllQuestionLists(query);
             return res.send({
                 success: true,
                 message: "All question lists received successfully.",
                 data: {
                     allQuestionLists,
+                    meta,
                 },
             });
         } catch (error) {
@@ -82,6 +95,7 @@ export class QuestionListController {
 
     @Post("category")
     async getAllQuestionListsByCategoryName(
+        @Query() query: PaginateQuery,
         @Res() res,
         @Body()
         body: {
@@ -90,13 +104,17 @@ export class QuestionListController {
     ) {
         try {
             const { categoryName } = body;
-            const allQuestionLists: GetAllQuestionListDto[] =
-                await this.questionListService.getAllQuestionListsByCategoryName(categoryName);
+            const { allQuestionLists, meta } =
+                await this.questionListService.getAllQuestionListsByCategoryName(
+                    categoryName,
+                    query
+                );
             return res.send({
                 success: true,
                 message: "All question lists received successfully.",
                 data: {
                     allQuestionLists,
+                    meta,
                 },
             });
         } catch (error) {
@@ -138,16 +156,23 @@ export class QuestionListController {
 
     @Get("my")
     @UseGuards(AuthGuard("jwt"))
-    async getMyQuestionLists(@Res() res, @JwtPayload() token: IJwtPayload) {
+    async getMyQuestionLists(
+        @Query() query: PaginateQuery,
+        @Res() res,
+        @JwtPayload() token: IJwtPayload
+    ) {
         try {
             const userId = token.userId;
-            const myQuestionLists: MyQuestionListDto[] =
-                await this.questionListService.getMyQuestionLists(userId);
+            const { myQuestionLists, meta } = await this.questionListService.getMyQuestionLists(
+                userId,
+                query
+            );
             return res.send({
                 success: true,
                 message: "My question lists received successfully.",
                 data: {
                     myQuestionLists,
+                    meta,
                 },
             });
         } catch (error) {
@@ -161,16 +186,21 @@ export class QuestionListController {
 
     @Get("scrap")
     @UseGuards(AuthGuard("jwt"))
-    async getScrappedQuestionLists(@Res() res, @JwtPayload() token: IJwtPayload) {
+    async getScrappedQuestionLists(
+        @Query() query: PaginateQuery,
+        @Res() res,
+        @JwtPayload() token: IJwtPayload
+    ) {
         try {
             const userId = token.userId;
-            const scrappedQuestionLists =
-                await this.questionListService.getScrappedQuestionLists(userId);
+            const { scrappedQuestionLists, meta } =
+                await this.questionListService.getScrappedQuestionLists(userId, query);
             return res.send({
                 success: true,
                 message: "Scrapped question lists received successfully.",
                 data: {
-                    scrappedQuestionLists,
+                    questionList: scrappedQuestionLists,
+                    meta,
                 },
             });
         } catch (error) {
@@ -201,7 +231,7 @@ export class QuestionListController {
                 success: true,
                 message: "Question list is scrapped successfully.",
                 data: {
-                    scrappedQuestionList,
+                    questionList: scrappedQuestionList,
                 },
             });
         } catch (error) {
