@@ -63,7 +63,7 @@ const Sidebar = () => {
                 onClick={
                   route.path
                     ? () =>
-                        navigate(route.path, {
+                        navigate(route.path!, {
                           state: { from: route.path ?? "/" },
                         })
                     : route.onClick
@@ -100,6 +100,5 @@ const Sidebar = () => {
     </nav>
   );
 };
-
 
 export default Sidebar;

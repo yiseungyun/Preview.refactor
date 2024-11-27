@@ -18,8 +18,8 @@ interface Session {
     nickname?: string;
     socketId: string;
   };
-  participant: number; // 현재 참여자
-  maxParticipant: number;
+  participants: number; // 현재 참여자
+  maxParticipants: number;
   createdAt: number;
 }
 

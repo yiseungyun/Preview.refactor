@@ -38,7 +38,7 @@ interface UseSocketEventsProps {
   setPeers: Dispatch<SetStateAction<PeerConnection[]>>;
   setIsHost: Dispatch<SetStateAction<boolean>>;
   setRoomMetadata: Dispatch<SetStateAction<RoomMetadata | null>>;
-  handleReaction: (data: { senderId: string; reactionType: string }) => void;
+  handleReaction: (data: { socketId: string; reactionType: string }) => void;
 }
 
 export const useSocketEvents = ({
