@@ -25,11 +25,17 @@ export class RoomEntity extends Entity {
     @Field({ type: "boolean" })
     inProgress: boolean;
 
+    @Field({ type: "number" })
+    currentIndex: number;
+
     @Field({ type: "string" })
     status: RoomStatus;
 
     @Field({ type: "number" })
     maxParticipants: number;
+
+    @Field({ type: "number" })
+    maxQuestionListLength: number;
 
     @Field({ type: "number", sortable: true })
     createdAt: number;

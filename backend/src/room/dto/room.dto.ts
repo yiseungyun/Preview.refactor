@@ -5,10 +5,12 @@ export interface RoomDto {
     title: string;
     category: string[];
     inProgress: boolean;
+    currentIndex: number;
     host: Connection;
     status: RoomStatus;
     participants: number;
     maxParticipants: number;
+    maxQuestionListLength: number;
     createdAt: number;
     connectionMap: Record<string, Connection>;
 }
