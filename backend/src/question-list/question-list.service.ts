@@ -8,6 +8,7 @@ import { MyQuestionListDto } from "./dto/my-question-list.dto";
 import { Question } from "./question.entity";
 import { Transactional } from "typeorm-transactional";
 import { QuestionList } from "@/question-list/question-list.entity";
+import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 
 @Injectable()
 export class QuestionListService {
@@ -161,6 +162,34 @@ export class QuestionListService {
         }
 
         return categories;
+    }
+
+    async updateQuestionList(updateQuestionListDto: UpdateQuestionListDto) {
+        const { id, title, categoryNames, isPublic, userId } = updateQuestionListDto;
+        const user = await this.userRepository.getUserByUserId(userId);
+        console.log(user);
+        if (!user) throw new Error("User not found.");
+
+        const questionList = await this.questionListRepository.getQuestionListById(id);
+        console.log(questionList);
+        if (!questionList) throw new Error("Question list not found.");
+        if (questionList.userId !== userId)
+            throw new Error("You do not have permission to edit this question list.");
+
+        if (title) questionList.title = title;
+        if (categoryNames) {
+            questionList.categories =
+                await this.questionListRepository.findCategoriesByNames(categoryNames);
+        }
+        if (isPublic !== undefined) questionList.isPublic = isPublic;
+
+        const updatedQuestionList =
+            await this.questionListRepository.updateQuestionList(questionList);
+        updatedQuestionList.categoryNames =
+            await this.questionListRepository.findCategoryNamesByQuestionListId(id);
+        updatedQuestionList.categories = undefined;
+
+        return updatedQuestionList;
     }
 
     async deleteQuestionList(questionListId: number, userId: number) {

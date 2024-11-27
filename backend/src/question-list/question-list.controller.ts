@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post, Req, Res, UseGuards } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Req,
+    Res,
+    UseGuards,
+} from "@nestjs/common";
 import { QuestionListService } from "./question-list.service";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
@@ -7,6 +18,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { JwtPayload } from "@/auth/jwt/jwt.decorator";
 import { IJwtPayload } from "@/auth/jwt/jwt.model";
 import { MyQuestionListDto } from "./dto/my-question-list.dto";
+import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 
 @Controller("question-list")
 export class QuestionListController {
@@ -62,7 +74,6 @@ export class QuestionListController {
             // 질문지 생성
             const { createdQuestionList, createdQuestions } =
                 await this.questionListService.createQuestionList(createQuestionListDto);
-
             return res.send({
                 success: true,
                 message: "Question list created successfully.",
@@ -154,6 +165,43 @@ export class QuestionListController {
             return res.send({
                 success: false,
                 message: "Failed to get my question lists.",
+                error: error.message,
+            });
+        }
+    }
+
+    @Patch("/:questionListId")
+    @UseGuards(AuthGuard("jwt"))
+    async updateQuestionList(
+        @Res() res,
+        @JwtPayload() token: IJwtPayload,
+        @Param("questionListId") questionListId: number,
+        @Body() body: { title?: string; isPublic?: boolean; categoryNames?: string[] }
+    ) {
+        try {
+            const userId = token.userId;
+            const { title, isPublic, categoryNames } = body;
+            const updateQuestionListDto: UpdateQuestionListDto = {
+                id: questionListId,
+                title,
+                isPublic,
+                categoryNames,
+                userId,
+            };
+
+            const updatedQuestionList =
+                await this.questionListService.updateQuestionList(updateQuestionListDto);
+            return res.send({
+                success: true,
+                message: "Question list is updated successfully.",
+                data: {
+                    questionList: updatedQuestionList,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to update question list.",
                 error: error.message,
             });
         }

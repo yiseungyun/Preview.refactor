@@ -4,6 +4,7 @@ import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
 import { Category } from "./category.entity";
 import { User } from "@/user/user.entity";
+import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 
 @Injectable()
 export class QuestionListRepository {
@@ -93,6 +94,10 @@ export class QuestionListRepository {
                 questionListId,
             })
             .getCount();
+    }
+
+    updateQuestionList(updateQuestionListDto: UpdateQuestionListDto) {
+        return this.dataSource.getRepository(QuestionList).save(updateQuestionListDto);
     }
 
     deleteQuestionList(questionListId: number) {
