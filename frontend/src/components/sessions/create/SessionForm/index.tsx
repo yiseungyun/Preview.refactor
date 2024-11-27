@@ -47,7 +47,7 @@ const SessionForm = () => {
 
     socket?.emit(SESSION_EMIT_EVENT.CREATE, {
       title: roomData.title,
-      category: roomData.category,
+      category: [roomData.category],
       status: roomData.status,
       nickname: nickname || "방장",
       maxParticipants: roomData.maxParticipants,
