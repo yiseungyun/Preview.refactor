@@ -3,7 +3,7 @@ import { IconType } from "react-icons";
 interface ButtonProps {
   text: string;
   type: "gray" | "green";
-  icon: IconType;
+  icon?: IconType;
 }
 
 const Button = ({ text, type, icon: Icon }: ButtonProps) => {
@@ -14,9 +14,9 @@ const Button = ({ text, type, icon: Icon }: ButtonProps) => {
 
   return (
     <button
-      className={`w-full h-11 flex flex-row items-center justify-center gap-2 rounded-custom-m text-semibold-m ${buttonColor}`}
+      className={`w-full h-12 flex flex-row items-center justify-center gap-2 rounded-custom-m text-semibold-m ${buttonColor}`}
     >
-      <Icon />
+      {Icon ? <Icon /> : null}
       {text}
     </button>
   );

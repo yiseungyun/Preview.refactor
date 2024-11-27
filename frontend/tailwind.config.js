@@ -39,6 +39,7 @@ export default {
         "custom-s": "0.25rem",
         "custom-m": "0.5rem",
         "custom-l": "0.875rem",
+        "custom-3xl": "3.5rem",
       },
       boxShadow: {
         8: "0 0 0.2rem 0.125rem rgba(182, 182, 182, 0.08)",
@@ -53,6 +54,7 @@ export default {
         "bold-s": ["1.125rem", { lineHeight: "auto", fontWeight: "700" }],
 
         // SemiBold(600) sizes
+        "semibold-xl": ["1.375rem", { lineHeight: "auto", fontWeight: "600" }],
         "semibold-l": ["1.25rem", { lineHeight: "auto", fontWeight: "600" }],
         "semibold-m": ["1.125rem", { lineHeight: "auto", fontWeight: "600" }],
         "semibold-r": ["1rem", { lineHeight: "auto", fontWeight: "600" }],

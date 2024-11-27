@@ -12,7 +12,7 @@ import "dotenv/config";
 
 import { createDataSource, typeOrmConfig } from "./config/typeorm.config";
 import { QuestionListModule } from "./question-list/question-list.module";
-import { RedisOmModule } from "nestjs-redis-om";
+import { RedisOmModule } from "@moozeh/nestjs-redis-om";
 import { SigServerModule } from "@/signaling-server/sig-server.module";
 
 @Module({

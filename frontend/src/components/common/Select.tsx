@@ -26,11 +26,7 @@ const Select = <T,>({
         className={`rounded-custom-m ${backgroundColor} text-semibold-r text-gray-white appearance-none pl-4 pr-8 h-full`}
       >
         {options.map((option) => (
-          <option
-            key={option.value as string}
-            value={option.value as string}
-            selected={option.value === value}
-          >
+          <option key={option.value as string} value={option.value as string}>
             {option.label}
           </option>
         ))}

@@ -1,4 +1,13 @@
-import { IsEnum, IsNotEmpty, IsNumber, Max, Min } from "class-validator";
+import {
+    ArrayMaxSize,
+    ArrayMinSize,
+    IsArray,
+    IsEnum,
+    IsNotEmpty,
+    IsNumber,
+    Max,
+    Min,
+} from "class-validator";
 import { RoomStatus } from "@/room/room.entity";
 
 export class CreateRoomDto {
@@ -12,6 +21,12 @@ export class CreateRoomDto {
 
     @IsNotEmpty()
     nickname: string;
+
+    @IsNotEmpty()
+    @IsArray()
+    @ArrayMaxSize(3)
+    @ArrayMinSize(1)
+    category: string[];
 
     @IsNumber()
     @Min(1)
@@ -33,6 +48,12 @@ export class CreateRoomInternalDto {
 
     @IsNotEmpty()
     nickname: string;
+
+    @IsNotEmpty()
+    @IsArray()
+    @ArrayMaxSize(3)
+    @ArrayMinSize(1)
+    category: string[];
 
     @IsNotEmpty()
     socketId: string;

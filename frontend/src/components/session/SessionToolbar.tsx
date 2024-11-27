@@ -10,7 +10,7 @@ import {
 interface Props {
   handleVideoToggle: () => void;
   handleMicToggle: () => void;
-  handleReaction: (reactionType: string) => void;
+  emitReaction: (reactionType: string) => void;
   userVideoDevices: MediaDeviceInfo[];
   userAudioDevices: MediaDeviceInfo[];
   setSelectedVideoDeviceId: (deviceId: string) => void;
@@ -21,7 +21,7 @@ interface Props {
 const SessionToolbar = ({
   handleVideoToggle,
   handleMicToggle,
-  handleReaction,
+  emitReaction,
   userVideoDevices,
   userAudioDevices,
   setSelectedVideoDeviceId,
@@ -57,7 +57,7 @@ const SessionToolbar = ({
           {isMicOn ? <BsMic /> : <BsMicMute />}
         </button>
         <button
-          onClick={() => handleReaction("thumbs_up")}
+          onClick={() => emitReaction("thumbs_up")}
           className="h-full aspect-square bg-white text-green-500 border box-border border-accent-gray-50 hover:bg-grayscale-50 p-3 rounded-full"
           aria-label={"좋아요"}
         >

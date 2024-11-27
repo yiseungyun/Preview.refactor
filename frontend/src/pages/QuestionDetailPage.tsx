@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "@/components/common/Sidebar";
-import { sectionWithSidebar } from "@/constraints/LayoutConstant";
+import { sectionWithSidebar } from "@/constants/LayoutConstant.ts";
 import QuestionTitle from "@/components/questions/detail/QuestionTitle.tsx";
 import QuestionList from "@/components/questions/detail/QuestionList.tsx";
 import { useGetQuestion } from "@hooks/api/useGetQuestion.ts";

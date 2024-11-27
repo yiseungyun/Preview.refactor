@@ -3,28 +3,48 @@ export type RoomStatus = "PUBLIC" | "PRIVATE";
 export interface RoomMetadata {
   title: string;
   status: RoomStatus;
+  participants: number;
   maxParticipants: number;
   createdAt: number;
-  host: string;
+  inProgress: boolean;
+  host: UserInfo;
+  category: string | string[];
 }
 
-export interface AllUsersResponse {
-  roomMetadata: RoomMetadata;
-  users: {
-    [socketId: string]: {
-      joinTime: number;
-      nickname: string;
-      isHost: boolean;
-    };
-  };
+export interface RoomJoinResponse {
+  category: string;
+  inProgress: boolean;
+  createdAt: number;
+  host: UserInfo;
+  participants: number;
+  maxParticipants: number;
+  status: "PUBLIC" | "PRIVATE";
+  title: string;
+  id: string;
+  connectionMap: { [socketId: string]: UserInfo };
+}
+
+export interface UserInfo {
+  socketId: string;
+  createdAt: number;
+  nickname: string;
 }
 
 export interface ResponseMasterChanged {
-  masterNickname: string;
-  masterSocketId: string;
+  socketId: string;
+  nickname: string;
 }
 
 export interface Participant {
+  id?: string;
   nickname: string;
   isHost: boolean;
+}
+
+export interface PeerConnection {
+  peerId: string; // 연결된 상대의 ID
+  peerNickname: string; // 상대의 닉네임
+  stream: MediaStream; // 상대방의 비디오/오디오 스트림
+  isHost?: boolean; // 호스트 여부
+  reaction?: string;
 }

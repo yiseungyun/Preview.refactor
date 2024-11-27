@@ -18,8 +18,10 @@ import { ReactionDto } from "@/room/dto/reaction.dto";
 import { RoomLeaveService } from "@/room/services/room-leave.service";
 import { RoomCreateService } from "@/room/services/room-create.service";
 import { RoomJoinService } from "@/room/services/room-join.service";
+import { websocketConfig } from "@/websocket/websocket.config";
+import { FinishRoomDto } from "@/room/dto/finish-room.dto";
 
-@WebSocketGateway()
+@WebSocketGateway(websocketConfig)
 export class RoomGateway implements OnGatewayDisconnect {
     private logger: Logger = new Logger("Room Gateway");
 
@@ -61,8 +63,9 @@ export class RoomGateway implements OnGatewayDisconnect {
     }
 
     @SubscribeMessage(LISTEN_EVENT.FINISH)
-    public async handleFinishRoom(client: Socket) {
-        const roomId = await this.roomService.finishRoom(client.id);
+    @UsePipes(new ValidationPipe({ transform: true }))
+    public async handleFinishRoom(@MessageBody() dto: FinishRoomDto) {
+        const roomId = await this.roomService.finishRoom(dto.roomId);
         this.socketService.emitToRoom(roomId, EMIT_EVENT.FINISH);
     }
 
@@ -72,8 +75,13 @@ export class RoomGateway implements OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody() dto: ReactionDto
     ) {
-        const room = await this.roomRepository.getRoom(dto.socketId);
+        const room = await this.roomRepository.getRoom(dto.roomId);
+
         if (!room) return;
-        this.socketService.emitToRoom(room.roomId, EMIT_EVENT.REACTION, dto);
+
+        this.socketService.emitToRoom(room.id, EMIT_EVENT.REACTION, {
+            socketId: client.id,
+            reactionType: dto.reactionType,
+        });
     }
 }
