@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import CategoryTap from "./CategoryTab";
-import SearchBar from "@/components/common/SearchBar";
-import useModalStore from "@/stores/useModalStore";
-import useModal from "@/hooks/useModal";
+import CategoryTap from "@components/sessions/create/SessionForm/ListSelectModal/CategoryTab";
+import SearchBar from "@components/common/SearchBar";
+import useModalStore from "@stores/useModalStore";
+import useModal from "@hooks/useModal";
 import QuestionList from "./QuestionList";
-import useSessionFormStore from "@/stores/useSessionFormStore";
-import Pagination from "./Pagination";
+import useSessionFormStore from "@stores/useSessionFormStore";
+import Pagination from "@components/common/Pagination";
 
 const ListSelectModal = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -41,7 +41,7 @@ const ListSelectModal = () => {
   };
 
   return (
-    <dialog ref={dialogRef} className="w-42.5 rounded-custom-l shadow-8">
+    <dialog ref={dialogRef} className="w-42.5 rounded-custom-l shadow-8 pb-5">
       <div className="flex p-8">
         <h3 className="text-bold-m text-gray-black mr-6">질문 리스트</h3>
         <CategoryTap />

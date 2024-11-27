@@ -7,7 +7,7 @@ import Select from "@components/common/Select.tsx";
 import SessionList from "@components/sessions/list/SessionList.tsx";
 import axios from "axios";
 import CreateButton from "@components/common/CreateButton.tsx";
-import { options } from "@/constraints/CategoryData.ts";
+import { options } from "@/constants/CategoryData.ts";
 
 interface Session {
   id: number;
@@ -18,8 +18,8 @@ interface Session {
     nickname?: string;
     socketId: string;
   };
-  participant: number; // 현재 참여자
-  maxParticipant: number;
+  participants: number; // 현재 참여자
+  maxParticipants: number;
   createdAt: number;
 }
 

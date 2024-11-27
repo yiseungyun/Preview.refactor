@@ -10,11 +10,16 @@ import { useNavigate } from "react-router-dom";
 import useToast from "@hooks/useToast";
 import { Socket } from "socket.io-client";
 import {
-  AllUsersResponse,
+  RoomJoinResponse,
   ResponseMasterChanged,
   RoomMetadata,
   PeerConnection,
 } from "@hooks/type/session";
+import {
+  SIGNAL_EMIT_EVENT,
+  SIGNAL_LISTEN_EVENT,
+} from "@/constants/WebSocket/SignalingEvent.ts";
+import { SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 
 interface UseSocketEventsProps {
   socket: Socket | null;
@@ -27,13 +32,13 @@ interface UseSocketEventsProps {
     stream: MediaStream,
     isOffer: boolean,
     userData: { nickname: string; isHost: boolean }
-  ) => RTCPeerConnection | null;
+  ) => Promise<RTCPeerConnection | null>;
   closePeerConnection: (socketId: string) => void;
   peerConnections: MutableRefObject<{ [key: string]: RTCPeerConnection }>;
   setPeers: Dispatch<SetStateAction<PeerConnection[]>>;
   setIsHost: Dispatch<SetStateAction<boolean>>;
   setRoomMetadata: Dispatch<SetStateAction<RoomMetadata | null>>;
-  handleReaction: (data: { senderId: string; reaction: string }) => void;
+  handleReaction: (data: { socketId: string; reactionType: string }) => void;
 }
 
 export const useSocketEvents = ({
@@ -70,18 +75,16 @@ export const useSocketEvents = ({
 
   const handleHostChange = useCallback(
     (data: ResponseMasterChanged) => {
-      if (socket && data.masterSocketId === socket.id) {
+      if (socket && data.socketId === socket.id) {
         setIsHost(true);
         toast.success("당신이 호스트가 되었습니다.");
       } else {
         setPeers((prev) =>
           prev.map((peer) =>
-            peer.peerId === data.masterSocketId
-              ? { ...peer, isHost: true }
-              : peer
+            peer.peerId === data.socketId ? { ...peer, isHost: true } : peer
           )
         );
-        toast.success(`${data.masterNickname}님이 호스트가 되었습니다.`);
+        toast.success(`${data.nickname}님이 호스트가 되었습니다.`);
       }
     },
     [socket, toast, setPeers, setIsHost]
@@ -90,21 +93,43 @@ export const useSocketEvents = ({
   const setupSocketListeners = useCallback(() => {
     if (!socket || !stream) return;
 
-    const handleAllUsers = ({ roomMetadata, users }: AllUsersResponse) => {
-      if (!roomMetadata || !users) {
-        console.error("Invalid data received from server:", {
-          roomMetadata,
-          users,
-        });
-        return;
-      }
+    const handleAllUsers = (data: RoomJoinResponse) => {
+      console.log("전체 유저의 정보를 받아옵니다.", data);
+      const {
+        id,
+        category,
+        host,
+        createdAt,
+        inProgress,
+        participants,
+        maxParticipants,
+        status,
+        title,
+        connectionMap,
+      } = data;
+
+      const roomMetadata = {
+        id,
+        title,
+        category,
+        host,
+        status,
+        participants,
+        maxParticipants,
+        createdAt,
+        inProgress,
+      };
 
       setRoomMetadata(roomMetadata);
-      setIsHost(roomMetadata.host === socket.id);
-      Object.entries(users).forEach(([socketId, userInfo]) => {
+      setIsHost(roomMetadata.host.socketId === socket.id);
+
+      console.log(connectionMap);
+
+      Object.entries(connectionMap).forEach(([socketId, userInfo]) => {
+        console.log("socketId", socketId, "connection", userInfo);
         createPeerConnection(socketId, userInfo.nickname, stream, true, {
           nickname,
-          isHost: userInfo.isHost,
+          isHost: roomMetadata.host.socketId === userInfo.socketId,
         });
       });
     };
@@ -114,7 +139,7 @@ export const useSocketEvents = ({
       offerSendID: string;
       offerSendNickname: string;
     }) => {
-      const pc = createPeerConnection(
+      const pc = await createPeerConnection(
         data.offerSendID,
         data.offerSendNickname,
         stream,
@@ -128,7 +153,7 @@ export const useSocketEvents = ({
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
 
-        socket.emit("answer", {
+        socket.emit(SIGNAL_EMIT_EVENT.ANSWER, {
           answerReceiveID: data.offerSendID,
           sdp: answer,
           answerSendID: socket.id,
@@ -142,8 +167,14 @@ export const useSocketEvents = ({
       sdp: RTCSessionDescription;
       answerSendID: string;
     }) => {
+      console.log(data);
       const pc = peerConnections.current[data.answerSendID];
       if (!pc) return;
+
+      if (pc.signalingState === "stable") {
+        console.warn("Connection already in stable state, ignoring answer");
+        return;
+      }
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
       } catch (error) {
@@ -164,29 +195,31 @@ export const useSocketEvents = ({
       }
     };
 
-    socket.on("all_users", handleAllUsers);
-    socket.on("getOffer", handleGetOffer);
-    socket.on("getAnswer", handleGetAnswer);
-    socket.on("getCandidate", handleGetCandidate);
-    socket.on("user_exit", handleUserExit);
-    socket.on("room_full", () => {
+    const handleRoomFull = () => {
       toast.error("해당 세션은 이미 유저가 가득 찼습니다.");
       navigate("/sessions");
-    });
-    socket.on("master_changed", handleHostChange);
-    socket.on("reaction", handleReaction);
-    socket.on("room_finished", handleRoomFinished);
+    };
+
+    socket.on(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
+    socket.on(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
+    socket.on(SIGNAL_LISTEN_EVENT.CANDIDATE, handleGetCandidate);
+    socket.on(SESSION_LISTEN_EVENT.JOIN, handleAllUsers);
+    socket.on(SESSION_LISTEN_EVENT.QUIT, handleUserExit);
+    socket.on(SESSION_LISTEN_EVENT.FULL, handleRoomFull);
+    socket.on(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
+    socket.on(SESSION_LISTEN_EVENT.REACTION, handleReaction);
+    socket.on(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
 
     return () => {
-      socket.off("all_users", handleAllUsers);
-      socket.off("getOffer", handleGetOffer);
-      socket.off("getAnswer", handleGetAnswer);
-      socket.off("getCandidate", handleGetCandidate);
-      socket.off("user_exit");
-      socket.off("room_full");
-      socket.off("master_changed", handleHostChange);
-      socket.off("room_finished", handleRoomFinished);
-      socket.off("reaction", handleReaction);
+      socket.off(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
+      socket.off(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
+      socket.off(SIGNAL_LISTEN_EVENT.CANDIDATE, handleGetCandidate);
+      socket.off(SESSION_LISTEN_EVENT.JOIN, handleAllUsers);
+      socket.off(SESSION_LISTEN_EVENT.QUIT, handleUserExit);
+      socket.off(SESSION_LISTEN_EVENT.FULL, handleRoomFull);
+      socket.off(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
+      socket.off(SESSION_LISTEN_EVENT.REACTION, handleReaction);
+      socket.off(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
 
       if (reactionTimeouts.current) {
         Object.values(reactionTimeouts.current).forEach(clearTimeout);

@@ -2,7 +2,7 @@ import { IsNotEmpty } from "class-validator";
 
 export class ReactionDto {
     @IsNotEmpty()
-    socketId: string;
+    roomId: string;
 
     @IsNotEmpty()
     reactionType: string;

@@ -50,7 +50,7 @@ const SessionCard = ({
               {participant}/{maxParticipant}명
             </span>
           </div>
-          {!inProgress ? (
+          {!inProgress && (
             <button
               className={
                 "text-semibold-r text-green-500 inline-flex items-center gap-[0.5rem] hover:gap-[0.375rem] transition-all"
@@ -60,7 +60,7 @@ const SessionCard = ({
               <span>참여하기</span>{" "}
               <IoArrowForwardSharp className="w-[1.25rem] h-[1.25rem] text-green-500" />
             </button>
-          ) : null}
+          )}
         </div>
       </div>
     </li>

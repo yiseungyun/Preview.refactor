@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { PeerConnection } from "../type/session";
+import { SIGNAL_EMIT_EVENT } from "@/constants/WebSocket/SignalingEvent.ts";
 
 interface User {
   id?: string;
@@ -25,7 +26,7 @@ const usePeerConnection = (socket: Socket) => {
   };
 
   // Peer Connection 생성
-  const createPeerConnection = (
+  const createPeerConnection = async (
     peerSocketId: string,
     peerNickname: string,
     stream: MediaStream,
@@ -33,6 +34,18 @@ const usePeerConnection = (socket: Socket) => {
     localUser: User
   ) => {
     try {
+      console.log("새로운 Peer Connection 생성:", {
+        peerSocketId,
+        peerNickname,
+        isOffer,
+        localUser,
+      });
+
+      if (peerConnections.current[peerSocketId]) {
+        console.log("이미 존재하는 Peer Connection:", peerSocketId);
+        return peerConnections.current[peerSocketId];
+      }
+
       // 유저 사이의 통신 선로를 생성
       // STUN: 공개 주소를 알려주는 서버
       // ICE: 두 피어 간의 최적의 경로를 찾아줌
@@ -48,7 +61,7 @@ const usePeerConnection = (socket: Socket) => {
       // 가능한 연결 경로를 찾을 때마다 상대에게 알려줌
       pc.onicecandidate = (e: RTCPeerConnectionIceEvent) => {
         if (e.candidate && socket) {
-          socket.emit("candidate", {
+          socket.emit(SIGNAL_EMIT_EVENT.CANDIDATE, {
             candidateReceiveID: peerSocketId,
             candidate: e.candidate,
             candidateSendID: socket.id,
@@ -71,6 +84,7 @@ const usePeerConnection = (socket: Socket) => {
       // 상대방 스트림 수신 -> 기존 연결인지 확인 -> 스트림 정보 업데이트/추가
       pc.ontrack = (e) => {
         console.log("Received remote track:", e.streams[0]);
+        console.log("변경된 peers", peers);
         setPeers((prev) => {
           // 이미 존재하는 피어인지 확인
           const exists = prev.find((p) => p.peerId === peerSocketId);
@@ -95,20 +109,41 @@ const usePeerConnection = (socket: Socket) => {
 
       // Offer를 생성해야 하는 경우에만 Offer 생성
       // Offer: 초대 - Offer 생성 -> 자신의 설정 저장 -> 상대에게 전송
+      // if (isOffer) {
+      //   pc.createOffer()
+      //     .then((offer) => pc.setLocalDescription(offer))
+      //     .then(() => {
+      //       if (socket && pc.localDescription) {
+      //         socket.emit(SIGNAL_EMIT_EVENT.OFFER, {
+      //           offerReceiveID: peerSocketId,
+      //           sdp: pc.localDescription,
+      //           offerSendID: socket.id,
+      //           offerSendNickname: localUser.nickname,
+      //         });
+      //       }
+      //     })
+      //     .catch((error) => console.error("Error creating offer:", error));
+      // }
+
       if (isOffer) {
-        pc.createOffer()
-          .then((offer) => pc.setLocalDescription(offer))
-          .then(() => {
-            if (socket && pc.localDescription) {
-              socket.emit("offer", {
-                offerReceiveID: peerSocketId,
-                sdp: pc.localDescription,
-                offerSendID: socket.id,
-                offerSendNickname: localUser.nickname,
-              });
-            }
-          })
-          .catch((error) => console.error("Error creating offer:", error));
+        try {
+          const offer = await pc.createOffer();
+          console.log("Created offer for:", peerSocketId);
+
+          await pc.setLocalDescription(offer);
+          console.log("Set local description for:", peerSocketId);
+
+          if (socket && pc.localDescription) {
+            socket.emit(SIGNAL_EMIT_EVENT.OFFER, {
+              offerReceiveID: peerSocketId,
+              sdp: pc.localDescription,
+              offerSendID: socket.id,
+              offerSendNickname: localUser.nickname,
+            });
+          }
+        } catch (error) {
+          console.error("Error in offer creation:", error);
+        }
       }
 
       peerConnections.current[peerSocketId] = pc;

@@ -3,11 +3,19 @@ import { DataSource, In } from "typeorm";
 import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
 import { Category } from "./category.entity";
-import { User } from "../user/user.entity";
+import { User } from "@/user/user.entity";
 
 @Injectable()
 export class QuestionListRepository {
     constructor(private dataSource: DataSource) {}
+
+    createQuestionList(questionList: QuestionList) {
+        return this.dataSource.getRepository(QuestionList).save(questionList);
+    }
+
+    async createQuestions(questions: Question[]) {
+        return this.dataSource.getRepository(Question).save(questions);
+    }
 
     findPublicQuestionLists() {
         return this.dataSource.getRepository(QuestionList).find({
@@ -85,5 +93,34 @@ export class QuestionListRepository {
                 questionListId,
             })
             .getCount();
+    }
+
+    scrapQuestionList(questionListId: number, userId: number) {
+        return this.dataSource
+            .createQueryBuilder()
+            .insert()
+            .into("user_question_list")
+            .values({
+                user_id: userId,
+                question_list_id: questionListId,
+            })
+            .orIgnore()
+            .execute();
+    }
+
+    getScrappedQuestionListsByUser(user: User) {
+        return this.dataSource.getRepository(QuestionList).find({
+            where: { scrappedByUsers: user },
+        });
+    }
+
+    unscrapQuestionList(questionListId: number, userId: number) {
+        return this.dataSource
+            .createQueryBuilder()
+            .delete()
+            .from("user_question_list")
+            .where("user_id = :userId", { userId })
+            .andWhere("question_list_id = :questionListId", { questionListId })
+            .execute();
     }
 }

@@ -1,17 +1,14 @@
-import { RoomStatus } from "@/room/room.entity";
-
-export interface Connection {
-    socketId: string;
-    createAt: number;
-    nickname: string;
-}
+import { Connection, RoomStatus } from "@/room/room.entity";
 
 export interface RoomDto {
-    roomId: string;
+    id: string;
     title: string;
+    category: string[];
+    inProgress: boolean;
+    host: Connection;
     status: RoomStatus;
+    participants: number;
     maxParticipants: number;
     createdAt: number;
-    host: string;
-    connectionList: Connection[];
+    connectionMap: Record<string, Connection>;
 }
