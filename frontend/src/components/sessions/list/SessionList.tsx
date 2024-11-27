@@ -12,8 +12,8 @@ interface Session {
     nickname?: string;
     socketId: string;
   };
-  participant: number; // 현재 참여자
-  maxParticipant: number;
+  participants: number; // 현재 참여자
+  maxParticipants: number;
   createdAt: number;
 }
 
@@ -41,8 +41,8 @@ const SessionList = ({
           title={session.title}
           host={session.host.nickname ?? "익명"}
           questionListId={1}
-          participant={session.participant}
-          maxParticipant={session.maxParticipant}
+          participant={session.participants}
+          maxParticipant={session.maxParticipants}
           onEnter={() => {
             toast.success("세션에 참가했습니다.");
             navigate(`/session/${session.id}`);

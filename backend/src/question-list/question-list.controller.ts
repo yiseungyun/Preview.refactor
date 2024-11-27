@@ -1,20 +1,11 @@
-import {
-    Body,
-    Controller,
-    Get,
-    Post,
-    Req,
-    Res,
-    UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { QuestionListService } from "./question-list.service";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
-import { CreateQuestionDto } from "./dto/create-question.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
 import { QuestionListContentsDto } from "./dto/question-list-contents.dto";
 import { AuthGuard } from "@nestjs/passport";
-import { JwtPayload } from "../auth/jwt/jwt.decorator";
-import { IJwtPayload } from "../auth/jwt/jwt.model";
+import { JwtPayload } from "@/auth/jwt/jwt.decorator";
+import { IJwtPayload } from "@/auth/jwt/jwt.model";
 import { MyQuestionListDto } from "./dto/my-question-list.dto";
 
 @Controller("question-list")
@@ -70,9 +61,7 @@ export class QuestionListController {
 
             // 질문지 생성
             const { createdQuestionList, createdQuestions } =
-                await this.questionListService.createQuestionList(
-                    createQuestionListDto
-                );
+                await this.questionListService.createQuestionList(createQuestionListDto);
 
             return res.send({
                 success: true,
@@ -102,9 +91,7 @@ export class QuestionListController {
         try {
             const { categoryName } = body;
             const allQuestionLists: GetAllQuestionListDto[] =
-                await this.questionListService.getAllQuestionListsByCategoryName(
-                    categoryName
-                );
+                await this.questionListService.getAllQuestionListsByCategoryName(categoryName);
             return res.send({
                 success: true,
                 message: "All question lists received successfully.",
@@ -132,9 +119,7 @@ export class QuestionListController {
         try {
             const { questionListId } = body;
             const questionListContents: QuestionListContentsDto =
-                await this.questionListService.getQuestionListContents(
-                    questionListId
-                );
+                await this.questionListService.getQuestionListContents(questionListId);
             return res.send({
                 success: true,
                 message: "Question list contents received successfully.",
@@ -169,6 +154,94 @@ export class QuestionListController {
             return res.send({
                 success: false,
                 message: "Failed to get my question lists.",
+                error: error.message,
+            });
+        }
+    }
+
+    @Get("scrap")
+    @UseGuards(AuthGuard("jwt"))
+    async getScrappedQuestionLists(@Res() res, @JwtPayload() token: IJwtPayload) {
+        try {
+            const userId = token.userId;
+            const scrappedQuestionLists =
+                await this.questionListService.getScrappedQuestionLists(userId);
+            return res.send({
+                success: true,
+                message: "Scrapped question lists received successfully.",
+                data: {
+                    scrappedQuestionLists,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to get scrapped question lists.",
+                error: error.message,
+            });
+        }
+    }
+
+    @Post("scrap")
+    @UseGuards(AuthGuard("jwt"))
+    async scrapQuestionList(
+        @Res() res,
+        @JwtPayload() token: IJwtPayload,
+        @Body() body: { questionListId: number }
+    ) {
+        try {
+            const userId = token.userId;
+            const { questionListId } = body;
+            const scrappedQuestionList = await this.questionListService.scrapQuestionList(
+                questionListId,
+                userId
+            );
+
+            return res.send({
+                success: true,
+                message: "Question list is scrapped successfully.",
+                data: {
+                    scrappedQuestionList,
+                },
+            });
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to scrap question list.",
+                error: error.message,
+            });
+        }
+    }
+
+    @Delete("scrap/:questionListId")
+    @UseGuards(AuthGuard("jwt"))
+    async unscrapQuestionList(
+        @Res() res,
+        @JwtPayload() token: IJwtPayload,
+        @Param("questionListId") questionListId: number
+    ) {
+        try {
+            const userId = token.userId;
+            const unscrappedQuestionList = await this.questionListService.unscrapQuestionList(
+                questionListId,
+                userId
+            );
+
+            if (unscrappedQuestionList.affected) {
+                return res.send({
+                    success: true,
+                    message: "Question list unscrapped successfully.",
+                });
+            } else {
+                return res.send({
+                    success: false,
+                    message: "Failed to unscrap question list.",
+                });
+            }
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to unscrap question list.",
                 error: error.message,
             });
         }

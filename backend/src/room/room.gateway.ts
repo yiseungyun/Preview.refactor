@@ -73,8 +73,13 @@ export class RoomGateway implements OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody() dto: ReactionDto
     ) {
-        const room = await this.roomRepository.getRoom(dto.socketId);
+        const room = await this.roomRepository.getRoom(dto.roomId);
+
         if (!room) return;
-        this.socketService.emitToRoom(room.roomId, EMIT_EVENT.REACTION, dto);
+
+        this.socketService.emitToRoom(room.id, EMIT_EVENT.REACTION, {
+            socketId: client.id,
+            reactionType: dto.reactionType,
+        });
     }
 }

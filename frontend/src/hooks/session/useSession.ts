@@ -11,6 +11,7 @@ import { useReaction } from "@hooks/session/useReaction";
 import { useSocketEvents } from "./useSocketEvents";
 import { Socket } from "socket.io-client";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
+import useAuth from "@hooks/useAuth.ts";
 
 export const useSession = (sessionId: string) => {
   const { socket } = useSocket();
@@ -24,7 +25,7 @@ export const useSession = (sessionId: string) => {
     setPeers,
     peerConnections,
   } = usePeerConnection(socket!);
-
+  const { nickname: username } = useAuth();
   const [nickname, setNickname] = useState<string>("");
   const [reaction, setReaction] = useState("");
   const [roomMetadata, setRoomMetadata] = useState<RoomMetadata | null>(null);
@@ -44,6 +45,12 @@ export const useSession = (sessionId: string) => {
     setSelectedVideoDeviceId,
     getMedia,
   } = useMediaDevices();
+
+  useEffect(() => {
+    if (username) {
+      setNickname(username);
+    }
+  }, [setNickname, username]);
 
   useEffect(() => {
     if (selectedAudioDeviceId || selectedVideoDeviceId) {
