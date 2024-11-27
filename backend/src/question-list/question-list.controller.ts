@@ -199,7 +199,7 @@ export class QuestionListController {
                 success: true,
                 message: "Scrapped question lists received successfully.",
                 data: {
-                    scrappedQuestionLists,
+                    questionList: scrappedQuestionLists,
                     meta,
                 },
             });
@@ -231,7 +231,7 @@ export class QuestionListController {
                 success: true,
                 message: "Question list is scrapped successfully.",
                 data: {
-                    scrappedQuestionList,
+                    questionList: scrappedQuestionList,
                 },
             });
         } catch (error) {
