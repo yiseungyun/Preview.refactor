@@ -50,7 +50,7 @@ const VideoContainer = ({
   };
 
   return (
-    <div className="relative flex-grow max-w-4xl">
+    <div className="relative max-w-6xl h-fit">
       <div className="bg-black rounded-2xl overflow-hidden shadow">
         <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">

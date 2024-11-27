@@ -41,7 +41,7 @@ const SessionPage = () => {
   } = useSession(sessionId!);
 
   return (
-    <section className="w-screen h-screen flex flex-col max-w-[1440px]">
+    <section className="w-screen h-screen flex flex-col overflow-y-hidden">
       <div className="w-full flex gap-2 p-1 bg-white">
         {/*{!username && (*/}
         <input
@@ -60,22 +60,26 @@ const SessionPage = () => {
         </button>
       </div>
 
-      <div className={"w-screen flex flex-grow"}>
+      <div className={"w-full flex flex-grow"}>
         <div
           className={
-            "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r border-t items-center"
+            "camera-area flex flex-col h-full flex-grow justify-between bg-gray-50 border-r border-t items-center overflow-hidden"
           }
         >
+          <SessionHeader
+            roomMetadata={roomMetadata}
+            participantsCount={peers.length + 1}
+          />
           <div
             className={
-              "flex flex-col gap-4 justify-between items-center w-full"
+              "max-w-[1440px] mx-auto  flex flex-col gap-4 justify-between items-center w-full flex-grow transition-all"
             }
           >
-            <SessionHeader
-              roomMetadata={roomMetadata}
-              participantsCount={peers.length + 1}
-            />
-            <div className={"speaker max-w-4xl px-6 flex w-full"}>
+            <div
+              className={
+                "speaker  px-6 flex w-full h-1/2  justify-center gap-4"
+              }
+            >
               <VideoContainer
                 nickname={nickname}
                 isMicOn={isMicOn}
@@ -85,7 +89,11 @@ const SessionPage = () => {
                 stream={stream!}
               />
             </div>
-            <div className={"listeners w-full flex gap-2 px-6"}>
+            <div
+              className={
+                "listeners w-full flex gap-4 px-6 h-1/2   justify-center"
+              }
+            >
               {peers.map((peer) => (
                 <VideoContainer
                   key={peer.peerId}
