@@ -2,7 +2,7 @@ import { Global, Module } from "@nestjs/common";
 import { WebsocketService } from "@/websocket/websocket.service";
 import { WebsocketGateway } from "@/websocket/websocket.gateway";
 import { WebsocketRepository } from "@/websocket/websocket.repository";
-import { RedisOmModule } from "nestjs-redis-om";
+import { RedisOmModule } from "@moozeh/nestjs-redis-om";
 import { RoomEntity } from "@/room/room.entity";
 import { WebsocketEntity } from "@/websocket/websocket.entity";
 

@@ -10,29 +10,31 @@ import {
 interface Props {
   handleVideoToggle: () => void;
   handleMicToggle: () => void;
-  handleReaction: (reactionType: string) => void;
+  emitReaction: (reactionType: string) => void;
   userVideoDevices: MediaDeviceInfo[];
   userAudioDevices: MediaDeviceInfo[];
   setSelectedVideoDeviceId: (deviceId: string) => void;
   setSelectedAudioDeviceId: (deviceId: string) => void;
   isVideoOn: boolean;
   isMicOn: boolean;
+  videoLoading: boolean;
 }
 const SessionToolbar = ({
   handleVideoToggle,
   handleMicToggle,
-  handleReaction,
+  emitReaction,
   userVideoDevices,
   userAudioDevices,
   setSelectedVideoDeviceId,
   setSelectedAudioDeviceId,
   isVideoOn,
   isMicOn,
+  videoLoading,
 }: Props) => {
   return (
     <div
       className={
-        "session-footer h-16 inline-flex w-full justify-between items-center border-t px-6"
+        "session-footer h-16 inline-flex w-full justify-between items-center border-t px-6 shrink-0"
       }
     >
       <button
@@ -43,8 +45,9 @@ const SessionToolbar = ({
       </button>
       <div className={"inline-flex center-buttons gap-2"}>
         <button
+          disabled={videoLoading}
           onClick={handleVideoToggle}
-          className="h-full aspect-square bg-green-500 hover:bg-green-600 text-white p-3 rounded-full"
+          className="h-full aspect-square bg-green-500 hover:bg-green-600 text-white p-3 rounded-full disabled:opacity-50"
           aria-label={isVideoOn ? `비디오 끄기` : "비디오 켜기"}
         >
           {isVideoOn ? <BsCameraVideo /> : <BsCameraVideoOff />}
@@ -57,7 +60,7 @@ const SessionToolbar = ({
           {isMicOn ? <BsMic /> : <BsMicMute />}
         </button>
         <button
-          onClick={() => handleReaction("thumbs_up")}
+          onClick={() => emitReaction("thumbs_up")}
           className="h-full aspect-square bg-white text-green-500 border box-border border-accent-gray-50 hover:bg-grayscale-50 p-3 rounded-full"
           aria-label={"좋아요"}
         >

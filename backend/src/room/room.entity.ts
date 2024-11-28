@@ -1,4 +1,4 @@
-import { Entity, Field, Schema } from "nestjs-redis-om";
+import { Entity, Field, Schema } from "@moozeh/nestjs-redis-om";
 
 export interface Connection {
     socketId: string;
@@ -14,10 +14,19 @@ export enum RoomStatus {
 @Schema("room", {})
 export class RoomEntity extends Entity {
     @Field({ type: "string", indexed: true })
-    roomId: string;
+    id: string;
 
     @Field({ type: "string" })
     title: string;
+
+    @Field({ type: "string[]" })
+    category: string[];
+
+    @Field({ type: "boolean" })
+    inProgress: boolean;
+
+    @Field({ type: "number" })
+    currentIndex: number;
 
     @Field({ type: "string" })
     status: RoomStatus;
@@ -25,12 +34,20 @@ export class RoomEntity extends Entity {
     @Field({ type: "number" })
     maxParticipants: number;
 
+    @Field({ type: "number" })
+    questionListId: number;
+
+    @Field({ type: "number" })
+    maxQuestionListLength: number;
+
     @Field({ type: "number", sortable: true })
     createdAt: number;
 
+    // Connection
     @Field({ type: "string" })
     host: string;
 
+    // Record<string, Connection>
     @Field({ type: "string" })
-    connectionList: string;
+    connectionMap: string;
 }

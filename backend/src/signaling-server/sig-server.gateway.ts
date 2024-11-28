@@ -6,8 +6,9 @@ import {
 } from "@nestjs/websockets";
 import { Server } from "socket.io";
 import { EMIT_EVENT, LISTEN_EVENT } from "@/signaling-server/sig-server.event";
+import { websocketConfig } from "@/websocket/websocket.config";
 
-@WebSocketGateway()
+@WebSocketGateway(websocketConfig)
 export class SigServerGateway {
     @WebSocketServer()
     private server: Server;
@@ -53,7 +54,7 @@ export class SigServerGateway {
             candidateSendID: string;
         }
     ) {
-        this.server.to(data.candidateReceiveID).emit(LISTEN_EVENT.ANSWER, {
+        this.server.to(data.candidateReceiveID).emit(EMIT_EVENT.CANDIDATE, {
             candidate: data.candidate,
             candidateSendID: data.candidateSendID,
         });

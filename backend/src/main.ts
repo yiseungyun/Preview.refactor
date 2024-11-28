@@ -1,9 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import {
-    initializeTransactionalContext,
-    StorageDriver,
-} from "typeorm-transactional";
+import { initializeTransactionalContext, StorageDriver } from "typeorm-transactional";
 import * as cookieParser from "cookie-parser";
 
 async function bootstrap() {

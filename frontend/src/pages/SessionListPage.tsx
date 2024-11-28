@@ -7,7 +7,7 @@ import Select from "@components/common/Select.tsx";
 import SessionList from "@components/sessions/list/SessionList.tsx";
 import axios from "axios";
 import CreateButton from "@components/common/CreateButton.tsx";
-import { options } from "@/constraints/CategoryData.ts";
+import { options } from "@/constants/CategoryData.ts";
 
 interface Session {
   id: number;
@@ -18,8 +18,8 @@ interface Session {
     nickname?: string;
     socketId: string;
   };
-  participant: number; // 현재 참여자
-  maxParticipant: number;
+  participants: number; // 현재 참여자
+  maxParticipants: number;
   createdAt: number;
 }
 
@@ -63,7 +63,11 @@ const SessionListPage = () => {
           <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
           <div className={"h-11 flex gap-2 w-full"}>
             <SearchBar text="세션을 검색하세요" />
-            <Select setValue={setSelectedCategory} options={options} />
+            <Select
+              value={"FE"}
+              setValue={setSelectedCategory}
+              options={options}
+            />
             <CreateButton
               onClick={() => navigate("/sessions/create")}
               text={"새로운 세션"}

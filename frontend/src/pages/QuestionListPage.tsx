@@ -10,7 +10,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import useAuth from "@hooks/useAuth.ts";
 import CreateButton from "@components/common/CreateButton.tsx";
-import { options } from "@/constraints/CategoryData.ts";
+import { options } from "@/constants/CategoryData.ts";
 
 interface QuestionList {
   id: number;
