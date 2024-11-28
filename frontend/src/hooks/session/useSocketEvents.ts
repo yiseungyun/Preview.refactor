@@ -19,9 +19,9 @@ import {
 import {
   SIGNAL_EMIT_EVENT,
   SIGNAL_LISTEN_EVENT,
-} from "@/constants/WebSocket/SignalingEvent.ts";
-import { SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
-import { STUDY_LISTEN_EVENT } from "@/constants/WebSocket/StudyEvent.ts";
+} from "@/constants/WebSocket/SignalingEvent";
+import { SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent";
+import { STUDY_LISTEN_EVENT } from "@/constants/WebSocket/StudyEvent";
 
 interface UseSocketEventsProps {
   socket: Socket | null;

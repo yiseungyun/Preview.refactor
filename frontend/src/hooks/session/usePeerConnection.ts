@@ -189,7 +189,6 @@ const usePeerConnection = (socket: Socket) => {
       };
 
       // Offer를 생성해야 하는 경우에만 Offer 생성
-      // Offer: 초대 - Offer 생성 -> 자신의 설정 저장 -> 상대에게 전송
       if (isOffer) {
         try {
           const offer = await pc.createOffer();

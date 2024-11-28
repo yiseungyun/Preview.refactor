@@ -8,6 +8,9 @@ import { MyQuestionListDto } from "./dto/my-question-list.dto";
 import { Question } from "./question.entity";
 import { Transactional } from "typeorm-transactional";
 import { QuestionList } from "@/question-list/question-list.entity";
+import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
+import { QuestionDto } from "@/question-list/dto/question.dto";
+import { DeleteQuestionDto } from "@/question-list/dto/delete-question.dto";
 import { paginate, PaginateQuery } from "nestjs-paginate";
 
 @Injectable()
@@ -173,6 +176,120 @@ export class QuestionListService {
         }
 
         return categories;
+    }
+
+    async updateQuestionList(updateQuestionListDto: UpdateQuestionListDto) {
+        const { id, title, categoryNames, isPublic, userId } = updateQuestionListDto;
+        const user = await this.userRepository.getUserByUserId(userId);
+        if (!user) throw new Error("User not found.");
+
+        const questionList = await this.questionListRepository.getQuestionListById(id);
+        if (!questionList) throw new Error("Question list not found.");
+        if (questionList.userId !== userId)
+            throw new Error("You do not have permission to edit this question list.");
+
+        if (title) questionList.title = title;
+        if (categoryNames) {
+            questionList.categories =
+                await this.questionListRepository.findCategoriesByNames(categoryNames);
+        }
+        if (isPublic !== undefined) questionList.isPublic = isPublic;
+
+        const updatedQuestionList =
+            await this.questionListRepository.updateQuestionList(questionList);
+        updatedQuestionList.categoryNames =
+            await this.questionListRepository.findCategoryNamesByQuestionListId(id);
+        updatedQuestionList.categories = undefined;
+
+        return updatedQuestionList;
+    }
+
+    async deleteQuestionList(questionListId: number, userId: number) {
+        const user = await this.userRepository.getUserByUserId(userId);
+        if (!user) throw new Error("User not found.");
+
+        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        if (!questionList) throw new Error("Question list not found.");
+        if (questionList.userId !== userId)
+            throw new Error("You do not have permission to delete this question list.");
+
+        return await this.questionListRepository.deleteQuestionList(questionListId);
+    }
+
+    async addQuestion(questionDto: QuestionDto) {
+        const { content, questionListId, userId } = questionDto;
+        const user = await this.userRepository.getUserByUserId(userId);
+        if (!user) throw new Error("User not found.");
+
+        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        if (!questionList) throw new Error("Question list not found.");
+        if (questionList.userId !== userId)
+            throw new Error("You do not have permission to add a question to this question list.");
+
+        const existingQuestionsCount =
+            await this.questionListRepository.getQuestionCountByQuestionListId(questionListId);
+        const question = new Question();
+        question.content = content;
+        question.index = existingQuestionsCount;
+        question.questionListId = questionListId;
+
+        await this.questionListRepository.saveQuestion(question);
+        return await this.getQuestionListContents(questionListId);
+    }
+
+    async updateQuestion(questionDto: QuestionDto) {
+        const { id, content, questionListId, userId } = questionDto;
+
+        const question = await this.questionListRepository.getQuestionById(id);
+        if (!question) throw new Error("Question not found.");
+
+        const user = await this.userRepository.getUserByUserId(userId);
+        if (!user) throw new Error("User not found.");
+
+        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        if (!questionList) throw new Error("Question list not found.");
+        if (questionList.userId !== userId)
+            throw new Error(
+                "You do not have permission to update the question in this question list."
+            );
+
+        const existingQuestion = await this.questionListRepository.getQuestionById(id);
+        existingQuestion.content = content;
+
+        await this.questionListRepository.saveQuestion(existingQuestion);
+        return await this.getQuestionListContents(questionListId);
+    }
+
+    @Transactional()
+    async deleteQuestion(deleteQuestionDto: DeleteQuestionDto) {
+        const { id, questionListId, userId } = deleteQuestionDto;
+
+        const question = await this.questionListRepository.getQuestionById(id);
+        if (!question) throw new Error("Question not found.");
+
+        const user = await this.userRepository.getUserByUserId(userId);
+        if (!user) throw new Error("User not found.");
+
+        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        if (!questionList) throw new Error("Question list not found.");
+        if (questionList.userId !== userId)
+            throw new Error(
+                "You do not have permission to delete the question in this question list."
+            );
+
+        const questionIndex = question.index;
+
+        const questionsToUpdate = await this.questionListRepository.getQuestionsAfterIndex(
+            questionListId,
+            questionIndex
+        );
+
+        for (const q of questionsToUpdate) {
+            q.index -= 1;
+            await this.questionListRepository.saveQuestion(q);
+        }
+
+        return await this.questionListRepository.deleteQuestion(question);
     }
 
     async getScrappedQuestionLists(userId: number, query: PaginateQuery) {

@@ -3,8 +3,8 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { Transactional } from "typeorm-transactional";
 import { UserRepository } from "../../user/user.repository";
 import { DAY, HOUR } from "../../utils/time";
-import { User } from "../../user/user.entity";
-import { IJwtToken } from "./jwt.model";
+import { IJwtToken, IJwtTokenPair } from "./jwt.model";
+import { UserInternalDto } from "@/user/dto/user.dto";
 
 @Injectable()
 export class JwtService {
@@ -17,53 +17,16 @@ export class JwtService {
     ) {}
 
     @Transactional()
-    public async createJwtToken(id: number) {
-        const user = await this.userRepository.getUserByUserId(id);
+    public async createJwtToken(userData: UserInternalDto): Promise<IJwtTokenPair> {
+        const accessToken = await this.createAccessToken(userData);
+        const refreshToken = await this.createRefreshToken(userData.id);
 
-        const accessToken = await this.createAccessToken(user);
-        const refreshToken = await this.createRefreshToken(id);
-
-        user.refreshToken = refreshToken.token;
-
-        await this.userRepository.updateUser(user);
+        userData.refreshToken = refreshToken.token;
+        await this.userRepository.updateUser(userData);
 
         return {
             accessToken,
             refreshToken,
-        };
-    }
-
-    public async createAccessToken(user: User): Promise<IJwtToken> {
-        const accessToken = this.parent.sign(
-            {
-                userId: user.id,
-                username: user.username,
-            },
-            {
-                secret: process.env.JWT_ACCESS_TOKEN_SECRET_KEY,
-                expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
-            }
-        );
-
-        return {
-            token: accessToken,
-            expireTime: Date.now() + JwtService.ACCESS_TOKEN_TIME,
-        };
-    }
-
-    public async createRefreshToken(id: number): Promise<IJwtToken> {
-        const refreshToken = this.parent.sign(
-            {},
-            {
-                secret: process.env.JWT_REFRESH_TOKEN_SECRET_KEY,
-                expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
-                audience: String(id),
-            }
-        );
-
-        return {
-            token: refreshToken,
-            expireTime: Date.now() + JwtService.REFRESH_TOKEN_TIME,
         };
     }
 
@@ -75,5 +38,38 @@ export class JwtService {
             throw new UnauthorizedException("Refresh token expired!");
 
         return this.createAccessToken(user);
+    }
+
+    private async createAccessToken(user: UserInternalDto): Promise<IJwtToken> {
+        const accessToken = this.parent.sign(
+            {
+                userId: user.id,
+                username: user.username,
+                loginType: user.loginType,
+            },
+            {
+                secret: process.env.JWT_ACCESS_TOKEN_SECRET_KEY,
+            }
+        );
+
+        return {
+            token: accessToken,
+            expireTime: JwtService.ACCESS_TOKEN_TIME,
+        };
+    }
+
+    private async createRefreshToken(id: number): Promise<IJwtToken> {
+        const refreshToken = this.parent.sign(
+            {},
+            {
+                secret: process.env.JWT_REFRESH_TOKEN_SECRET_KEY,
+                audience: String(id),
+            }
+        );
+
+        return {
+            token: refreshToken,
+            expireTime: JwtService.REFRESH_TOKEN_TIME,
+        };
     }
 }
