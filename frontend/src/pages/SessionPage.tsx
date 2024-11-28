@@ -7,6 +7,7 @@ import useSocket from "@hooks/useSocket";
 import SessionHeader from "@components/session/SessionHeader";
 import { useEffect } from "react";
 import useToast from "@hooks/useToast.ts";
+import { STUDY_EMIT_EVENT } from "@/constants/WebSocket/StudyEvent.ts";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
@@ -41,6 +42,39 @@ const SessionPage = () => {
     videoLoading,
     peerMediaStatus,
   } = useSession(sessionId!);
+
+  const requestChangeIndex = (
+    type: "next" | "prev" | "current" | "move",
+    index?: number
+  ) => {
+    if (socket) {
+      if (isHost && roomMetadata) {
+        switch (type) {
+          case "next":
+            socket.emit(STUDY_EMIT_EVENT.NEXT, { roomId: sessionId });
+            break;
+          case "prev":
+            socket.emit(STUDY_EMIT_EVENT.INDEX, {
+              roomId: sessionId,
+              index: roomMetadata.currentIndex - 1,
+            });
+            break;
+          case "current":
+            socket.emit(STUDY_EMIT_EVENT.CURRENT, { roomId: sessionId });
+            break;
+          case "move":
+            socket.emit(STUDY_EMIT_EVENT.INDEX, { roomId: sessionId, index });
+            break;
+        }
+      }
+    }
+  };
+
+  const startStudySession = () => {
+    if (socket) {
+      socket.emit(STUDY_EMIT_EVENT.START, { roomId: sessionId });
+    }
+  };
 
   return (
     <section className="w-screen h-screen flex flex-col overflow-y-hidden">
@@ -119,6 +153,7 @@ const SessionPage = () => {
             </div>
           </div>
           <SessionToolbar
+            requestChangeIndex={requestChangeIndex}
             handleVideoToggle={handleVideoToggle}
             handleMicToggle={handleMicToggle}
             emitReaction={emitReaction}
@@ -129,11 +164,15 @@ const SessionPage = () => {
             isVideoOn={isVideoOn}
             isMicOn={isMicOn}
             videoLoading={videoLoading}
+            isHost={isHost}
+            isInProgress={roomMetadata?.inProgress ?? false}
+            startStudySession={startStudySession}
           />
         </div>
         <SessionSidebar
           socket={socket}
-          question={"Restful API에 대해서 설명해주세요."}
+          questionList={roomMetadata?.questionListContents ?? []}
+          currentIndex={roomMetadata?.currentIndex ?? -1}
           participants={participants}
           roomId={sessionId}
           isHost={isHost}
