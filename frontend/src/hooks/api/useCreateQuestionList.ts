@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { createQuestionList } from "@/api/questions/createQuestionList";
+import { createQuestionList } from "@/api/question-list/createQuestionList";
 import useToast from "@hooks/useToast.ts";
 import { useNavigate } from "react-router-dom";
 

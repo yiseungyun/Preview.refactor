@@ -1,4 +1,4 @@
-import { getQuestionList } from "@/api/question-list/getQuestionList";
+import getScrapQuestionList from "@/api/question-list/getScrapQuestionList";
 import { useQuery } from "@tanstack/react-query";
 
 interface UseGetQuestionListProps {
@@ -6,13 +6,13 @@ interface UseGetQuestionListProps {
   limit: number;
 }
 
-export const useCreateQuestionList = ({
+export const useGetScrapQuestionList = ({
   page,
   limit,
 }: UseGetQuestionListProps) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["questions", page, limit],
-    queryFn: () => getQuestionList({ page, limit }),
+    queryKey: ["scrapQuestions", page, limit],
+    queryFn: () => getScrapQuestionList({ page, limit }),
   });
 
   return {

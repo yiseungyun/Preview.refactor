@@ -1,6 +1,6 @@
 import useToast from "../useToast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteQuestionList } from "@/api/questions/deleteQuestionList";
+import { deleteQuestionList } from "@/api/question-list/deleteQuestionList";
 
 interface UseDeleteQuestionList {
   page: Number;

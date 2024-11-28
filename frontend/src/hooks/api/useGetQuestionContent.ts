@@ -1,4 +1,4 @@
-import getQuestionContent from "@/api/questions/getQuestionContent";
+import getQuestionContent from "@/api/question-list/getQuestionContent";
 import { useQuery } from "@tanstack/react-query";
 
 interface QuestionContent {
