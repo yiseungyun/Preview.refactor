@@ -18,7 +18,10 @@ export const useDeleteQuesitonList = ({
     mutationFn: deleteQuestionList,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["questions", page, limit],
+        queryKey: ["myQuestions", page, limit],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["scrapQuestions", page, limit],
       });
     },
     onError: () => {
