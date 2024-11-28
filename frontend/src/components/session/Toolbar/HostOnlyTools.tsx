@@ -69,7 +69,7 @@ const HostOnlyTools = ({
                 setChangeCooldown(true);
               }}
               className={
-                "relative inline-flex items-center bg-transparent rounded-xl border h-10 px-3 py-2 text-medium-xs disabled:opacity-50"
+                "relative inline-flex items-center bg-transparent rounded-xl border h-10 px-3 py-2 text-medium-xs disabled:opacity-50 overflow-hidden"
               }
               aria-label={"이전 질문 버튼"}
               disabled={changeCooldown}
