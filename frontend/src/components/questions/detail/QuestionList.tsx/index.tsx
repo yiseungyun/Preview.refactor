@@ -5,12 +5,11 @@ const QuestionList = ({ questionId }: { questionId: string }) => {
   const {
     data: question,
     isLoading,
-    isError,
     error,
-  } = useGetQuestionContent(questionId);
+  } = useGetQuestionContent(Number(questionId));
 
   if (isLoading) return <div>로딩 중</div>;
-  if (isError) return <div>에러가 발생했습니다: {error.message}</div>;
+  if (error) return <div>에러가 발생</div>;
   if (!question) return null;
 
   return (

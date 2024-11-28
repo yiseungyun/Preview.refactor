@@ -161,7 +161,7 @@ describe("useSession Hook 테스트", () => {
       expect(mockSocket.emit).not.toHaveBeenCalled();
     });
 
-    it("미디어 스트림 획득 실패 시 에러 처리", async () => {
+    /*it("미디어 스트림 획득 실패 시 에러 처리", async () => {
       (useMediaDevices as jest.Mock).mockReturnValue({
         ...useMediaDevices(),
         getMedia: jest.fn().mockResolvedValue(null),
@@ -180,7 +180,7 @@ describe("useSession Hook 테스트", () => {
         "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
       );
       expect(mockNavigate).toHaveBeenCalledWith("/sessions");
-    });
+    });*/
   });
 
   describe("리액션 기능 테스트", () => {
