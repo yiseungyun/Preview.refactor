@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { User } from "./user.entity";
 import { DataSource } from "typeorm";
-import { CreateUserDto } from "./dto/create-user.dto";
+import { CreateUserInternalDto } from "./dto/create-user.dto";
 import { UserDto } from "./dto/user.dto";
 
 @Injectable()
@@ -24,7 +24,16 @@ export class UserRepository {
             .getOne();
     }
 
-    createUser(createUserDto: CreateUserDto) {
+    // TODO: 로그인 ID로 인덱싱 생성 필요?
+    getUserByLoginId(username: string) {
+        return this.dataSource
+            .getRepository(User)
+            .createQueryBuilder("user")
+            .where("user.login_id = :id", { id: username })
+            .getOne();
+    }
+
+    createUser(createUserDto: CreateUserInternalDto) {
         return this.dataSource.getRepository(User).save(createUserDto);
     }
 

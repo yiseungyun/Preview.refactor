@@ -1,11 +1,11 @@
 import { DataSource, DataSourceOptions } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
-import { User } from "../user/user.entity"; // 엔티티 경로를 수정하세요.
+import { User } from "@/user/user.entity";
 import "dotenv/config";
 import { addTransactionalDataSource } from "typeorm-transactional";
-import { QuestionList } from "../question-list/question-list.entity";
-import { Question } from "../question-list/question.entity";
-import { Category } from "../question-list/category.entity";
+import { QuestionList } from "@/question-list/question-list.entity";
+import { Question } from "@/question-list/question.entity";
+import { Category } from "@/question-list/category.entity";
 
 export const typeOrmConfig: DataSourceOptions = {
     type: "mysql",
@@ -23,9 +23,7 @@ let transactionalDataSource: DataSource | null = null;
 
 export const createDataSource = async (): Promise<DataSource> => {
     if (!transactionalDataSource) {
-        transactionalDataSource = addTransactionalDataSource(
-            new DataSource(typeOrmConfig)
-        );
+        transactionalDataSource = addTransactionalDataSource(new DataSource(typeOrmConfig));
 
         await transactionalDataSource.initialize();
         await seedDatabase(transactionalDataSource);
@@ -46,20 +44,24 @@ const seedDatabase = async (dataSource: DataSource) => {
         "프론트엔드",
         "알고리즘",
         "보안",
+        "기타",
     ];
 
-    // 이미 데이터가 있을 경우 시딩하지 않음
-    const existingCount = await categoryRepository.count();
-    if (existingCount > 0) {
-        return;
-    }
+    // 이미 존재하는 카테고리 이름들을 가져옴
+    const existingCategories = await categoryRepository.find();
+    const existingCategoryNames = new Set(existingCategories.map((cat) => cat.name));
 
-    // 카테고리 데이터 삽입
-    const categoryEntities = categories.map((name) => {
+    // 새로 추가할 카테고리만 필터링
+    const newCategories = categories.filter((name) => !existingCategoryNames.has(name));
+
+    // 새 로추가할 카테고리가 없으면 return
+    if (newCategories.length === 0) return;
+
+    const categoryEntity = newCategories.map((name) => {
         const category = new Category();
         category.name = name;
         return category;
     });
 
-    await categoryRepository.save(categoryEntities);
+    await categoryRepository.save(categoryEntity);
 };

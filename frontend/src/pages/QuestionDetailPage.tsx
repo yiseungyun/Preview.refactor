@@ -3,7 +3,7 @@ import Sidebar from "@/components/common/Sidebar";
 import { sectionWithSidebar } from "@/constants/LayoutConstant.ts";
 import QuestionTitle from "@/components/questions/detail/QuestionTitle.tsx";
 import QuestionList from "@/components/questions/detail/QuestionList.tsx";
-import { useGetQuestion } from "@hooks/api/useGetQuestion.ts";
+import { useGetQuestionContent } from "@/hooks/api/useGetQuestionContent";
 import ButtonSection from "@/components/questions/detail/ButtonSection.tsx";
 import { useEffect } from "react";
 
@@ -14,9 +14,8 @@ const QuestionDetailPage = () => {
   const {
     data: question,
     isLoading,
-    isError,
     error,
-  } = useGetQuestion(questionId!);
+  } = useGetQuestionContent(Number(questionId!));
 
   useEffect(() => {
     if (!questionId) {
@@ -25,7 +24,7 @@ const QuestionDetailPage = () => {
   }, [questionId, navigate]);
 
   if (isLoading) return <div>로딩 중</div>;
-  if (isError) return <div>에러가 발생했습니다: {error.message}</div>;
+  if (error) return <div>에러가 발생</div>;
   if (!question) return null;
 
   return (

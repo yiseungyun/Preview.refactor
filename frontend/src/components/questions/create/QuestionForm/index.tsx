@@ -3,14 +3,14 @@ import AccessSection from "./AccessSection";
 import CategorySection from "./CategorySection";
 import TitleSection from "./TitleSection";
 import QuestionInputSection from "./QuestionInputSection";
-import { useCreateQuestion } from "@hooks/api/useCreateQuestion.ts";
+import { useCreateQuestionList } from "@/hooks/api/useCreateQuestionList";
 
 const QuestionForm = () => {
   const isValid = useQuestionFormStore((state) => state.isFormValid());
   const { category, questionTitle, access, questionList } =
     useQuestionFormStore();
 
-  const mutation = useCreateQuestion();
+  const createQuestions = useCreateQuestionList();
 
   const submitHandler = () => {
     const requestData = {
@@ -20,7 +20,7 @@ const QuestionForm = () => {
       isPublic: access === "PUBLIC",
     };
 
-    mutation.mutate(requestData);
+    createQuestions(requestData);
   };
 
   return (

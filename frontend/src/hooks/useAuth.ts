@@ -1,4 +1,4 @@
-import useAuthStore from "@stores/useAuthStore.ts";
+import useAuthStore from "@stores/useAuthStore";
 import axios from "axios";
 import { useEffect } from "react";
 
@@ -34,7 +34,6 @@ const useAuth = () => {
       getUserInfo();
     }
   }, [isLoggedIn, nickname]);
-
 
   const logIn = () => {
     login();

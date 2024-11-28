@@ -4,19 +4,21 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useState,
 } from "react";
 import { Socket } from "socket.io-client";
 import { PeerConnection } from "../type/session";
-import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
+import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 
 const REACTION_DURATION = 3000;
 
 export const useReaction = (
   socket: Socket | null,
   sessionId: string,
-  setPeers: Dispatch<SetStateAction<PeerConnection[]>>,
-  setReaction: (reaction: string) => void
+  setPeers: Dispatch<SetStateAction<PeerConnection[]>>
 ) => {
+  const [reaction, setReaction] = useState("");
+
   const reactionTimeouts = useRef<{
     [key: string]: ReturnType<typeof setTimeout>;
   }>({});
@@ -78,5 +80,5 @@ export const useReaction = (
     };
   }, []);
 
-  return { emitReaction, handleReaction };
+  return { reaction, emitReaction, handleReaction };
 };

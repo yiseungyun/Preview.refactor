@@ -6,10 +6,7 @@ import "dotenv/config";
 import { JwtService } from "../jwt.service";
 
 @Injectable()
-export class RefreshTokenStrategy extends PassportStrategy(
-    Strategy,
-    "jwt-refresh"
-) {
+export class RefreshTokenStrategy extends PassportStrategy(Strategy, "jwt-refresh") {
     constructor(private readonly jwtService: JwtService) {
         super({
             jwtFromRequest: (req: Request) => {
@@ -26,10 +23,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
         const { aud, exp } = payload;
         const refreshToken = req.cookies["refreshToken"];
 
-        const accessToken = await this.jwtService.getNewAccessToken(
-            parseInt(aud),
-            refreshToken
-        );
+        const accessToken = await this.jwtService.getNewAccessToken(parseInt(aud), refreshToken);
 
         return {
             jwtToken: {

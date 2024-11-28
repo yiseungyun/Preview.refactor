@@ -3,13 +3,17 @@ import Sidebar from "@components/common/Sidebar.tsx";
 
 interface SidebarPageLayoutProps {
   children: React.ReactNode;
+  childrenClassName?: string;
 }
 
-const SidebarPageLayout = ({ children }: SidebarPageLayoutProps) => {
+const SidebarPageLayout = ({
+  children,
+  childrenClassName = "",
+}: SidebarPageLayoutProps) => {
   return (
     <section className={sectionWithSidebar}>
       <Sidebar />
-      {children}
+      <div className={childrenClassName}>{children}</div>
     </section>
   );
 };

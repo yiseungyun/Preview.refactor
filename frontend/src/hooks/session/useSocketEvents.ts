@@ -14,12 +14,14 @@ import {
   ResponseMasterChanged,
   RoomMetadata,
   PeerConnection,
+  ProgressResponse,
 } from "@hooks/type/session";
 import {
   SIGNAL_EMIT_EVENT,
   SIGNAL_LISTEN_EVENT,
-} from "@/constants/WebSocket/SignalingEvent.ts";
-import { SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
+} from "@/constants/WebSocket/SignalingEvent";
+import { SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent";
+import { STUDY_LISTEN_EVENT } from "@/constants/WebSocket/StudyEvent";
 
 interface UseSocketEventsProps {
   socket: Socket | null;
@@ -106,6 +108,9 @@ export const useSocketEvents = ({
         status,
         title,
         connectionMap,
+        questionListId,
+        questionListContents,
+        currentIndex,
       } = data;
 
       const roomMetadata = {
@@ -118,12 +123,13 @@ export const useSocketEvents = ({
         maxParticipants,
         createdAt,
         inProgress,
+        questionListId,
+        questionListContents,
+        currentIndex,
       };
 
       setRoomMetadata(roomMetadata);
       setIsHost(roomMetadata.host.socketId === socket.id);
-
-      console.log(connectionMap);
 
       Object.entries(connectionMap).forEach(([socketId, userInfo]) => {
         console.log("socketId", socketId, "connection", userInfo);
@@ -167,7 +173,6 @@ export const useSocketEvents = ({
       sdp: RTCSessionDescription;
       answerSendID: string;
     }) => {
-      console.log(data);
       const pc = peerConnections.current[data.answerSendID];
       if (!pc) return;
 
@@ -200,6 +205,30 @@ export const useSocketEvents = ({
       navigate("/sessions");
     };
 
+    const handleRoomProgress = () => {
+      toast.error("해당 세션은 현재 진행 중입니다.");
+      navigate("/sessions");
+    };
+
+    const handleChangeIndex = (data: { currentIndex: number }) => {
+      const { currentIndex } = data;
+      if (currentIndex >= 0) {
+        setRoomMetadata((prev) => ({ ...prev!, currentIndex }));
+      }
+    };
+
+    const handleProgress = (data: ProgressResponse) => {
+      const { status, inProgress } = data;
+
+      if (status === "success") {
+        setRoomMetadata((prev) => ({ ...prev!, inProgress: inProgress }));
+        if (inProgress) toast.success("방장이 스터디를 시작했습니다.");
+        else toast.error("방장이 스터디를 중지했습니다.");
+      } else {
+        toast.error("세션 진행을 시작하지 못했습니다.");
+      }
+    };
+
     socket.on(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
     socket.on(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
     socket.on(SIGNAL_LISTEN_EVENT.CANDIDATE, handleGetCandidate);
@@ -209,6 +238,12 @@ export const useSocketEvents = ({
     socket.on(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
     socket.on(SESSION_LISTEN_EVENT.REACTION, handleReaction);
     socket.on(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
+    socket.on(STUDY_LISTEN_EVENT.INDEX, handleChangeIndex);
+    socket.on(STUDY_LISTEN_EVENT.CURRENT, handleChangeIndex);
+    socket.on(STUDY_LISTEN_EVENT.NEXT, handleChangeIndex);
+    socket.on(STUDY_LISTEN_EVENT.START, handleProgress);
+    socket.on(STUDY_LISTEN_EVENT.STOP, handleProgress);
+    socket.on(STUDY_LISTEN_EVENT.PROGRESS, handleRoomProgress);
 
     return () => {
       socket.off(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
@@ -220,6 +255,11 @@ export const useSocketEvents = ({
       socket.off(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
       socket.off(SESSION_LISTEN_EVENT.REACTION, handleReaction);
       socket.off(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
+      socket.off(STUDY_LISTEN_EVENT.INDEX, handleChangeIndex);
+      socket.off(STUDY_LISTEN_EVENT.CURRENT, handleChangeIndex);
+      socket.off(STUDY_LISTEN_EVENT.NEXT, handleChangeIndex);
+      socket.off(STUDY_LISTEN_EVENT.START, handleProgress);
+      socket.off(STUDY_LISTEN_EVENT.STOP, handleProgress);
 
       if (reactionTimeouts.current) {
         Object.values(reactionTimeouts.current).forEach(clearTimeout);

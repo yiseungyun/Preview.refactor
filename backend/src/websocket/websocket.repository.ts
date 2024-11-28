@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
-import { InjectRepository } from "nestjs-redis-om";
+import { InjectRepository } from "@moozeh/nestjs-redis-om";
 import { Repository } from "redis-om";
 import { WebsocketEntity } from "@/websocket/websocket.entity";
 

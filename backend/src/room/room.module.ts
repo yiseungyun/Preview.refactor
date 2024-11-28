@@ -3,7 +3,7 @@ import { RoomService } from "./services/room.service";
 import { RoomGateway } from "./room.gateway";
 import { RoomRepository } from "./room.repository";
 import { RoomController } from "./room.controller";
-import { RedisOmModule } from "nestjs-redis-om";
+import { RedisOmModule } from "@moozeh/nestjs-redis-om";
 import { RoomEntity } from "./room.entity";
 import { RoomLeaveService } from "@/room/services/room-leave.service";
 import { RoomHostService } from "@/room/services/room-host.service";

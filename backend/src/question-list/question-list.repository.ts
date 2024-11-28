@@ -4,6 +4,7 @@ import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
 import { Category } from "./category.entity";
 import { User } from "@/user/user.entity";
+import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 
 @Injectable()
 export class QuestionListRepository {
@@ -18,9 +19,10 @@ export class QuestionListRepository {
     }
 
     findPublicQuestionLists() {
-        return this.dataSource.getRepository(QuestionList).find({
-            where: { isPublic: true },
-        });
+        return this.dataSource
+            .getRepository(QuestionList)
+            .createQueryBuilder("question_list")
+            .where("question_list.is_public = :isPublic", { isPublic: true });
     }
 
     async getCategoryIdByName(categoryName: string) {
@@ -33,13 +35,12 @@ export class QuestionListRepository {
     }
 
     findPublicQuestionListsByCategoryId(categoryId: number) {
-        return this.dataSource.getRepository(QuestionList).find({
-            where: {
-                isPublic: true,
-                categories: { id: categoryId },
-            },
-            relations: ["categories"],
-        });
+        return this.dataSource
+            .getRepository(QuestionList)
+            .createQueryBuilder("question_list")
+            .innerJoin("question_list.categories", "category")
+            .where("question_list.is_public = :isPublic", { isPublic: true })
+            .andWhere("category.id = :categoryId", { categoryId });
     }
 
     async findCategoryNamesByQuestionListId(questionListId: number) {
@@ -66,9 +67,11 @@ export class QuestionListRepository {
     }
 
     getContentsByQuestionListId(questionListId: number) {
-        return this.dataSource.getRepository(Question).find({
-            where: { questionListId },
-        });
+        return this.dataSource
+            .getRepository(Question)
+            .createQueryBuilder("question")
+            .where("question.question_list_id = :questionListId", { questionListId })
+            .getMany();
     }
 
     async getUsernameById(userId: number) {
@@ -80,9 +83,10 @@ export class QuestionListRepository {
     }
 
     getQuestionListsByUserId(userId: number) {
-        return this.dataSource.getRepository(QuestionList).find({
-            where: { userId },
-        });
+        return this.dataSource
+            .getRepository(QuestionList)
+            .createQueryBuilder("question_list")
+            .where("question_list.userId = :userId", { userId });
     }
 
     getQuestionCountByQuestionListId(questionListId: number) {
@@ -93,6 +97,38 @@ export class QuestionListRepository {
                 questionListId,
             })
             .getCount();
+    }
+
+    updateQuestionList(updateQuestionListDto: UpdateQuestionListDto) {
+        return this.dataSource.getRepository(QuestionList).save(updateQuestionListDto);
+    }
+
+    deleteQuestionList(questionListId: number) {
+        return this.dataSource.getRepository(QuestionList).delete(questionListId);
+    }
+
+    saveQuestion(question: Question) {
+        return this.dataSource.getRepository(Question).save(question);
+    }
+
+    getQuestionById(questionId: number) {
+        return this.dataSource.getRepository(Question).findOne({
+            where: { id: questionId },
+        });
+    }
+
+    getQuestionsAfterIndex(questionListId: number, index: number) {
+        return this.dataSource
+            .getRepository(Question)
+            .createQueryBuilder("question")
+            .where("question.questionListId = :questionListId", { questionListId })
+            .andWhere("question.index > :index", { index })
+            .orderBy("question.index", "ASC")
+            .getMany();
+    }
+
+    deleteQuestion(question: Question) {
+        return this.dataSource.getRepository(Question).delete(question);
     }
 
     scrapQuestionList(questionListId: number, userId: number) {
@@ -109,9 +145,11 @@ export class QuestionListRepository {
     }
 
     getScrappedQuestionListsByUser(user: User) {
-        return this.dataSource.getRepository(QuestionList).find({
-            where: { scrappedByUsers: user },
-        });
+        return this.dataSource
+            .getRepository(QuestionList)
+            .createQueryBuilder("question_list")
+            .innerJoin("question_list.scrappedByUsers", "user")
+            .where("user.id = :userId", { userId: user.id });
     }
 
     unscrapQuestionList(questionListId: number, userId: number) {

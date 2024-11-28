@@ -1,32 +1,33 @@
-import { useRef } from "react";
-import useModalStore from "@/stores/useModalStore";
-import useModal from "@/hooks/useModal";
 import ModalTitle from "./Title";
 
+interface UseModalReturn {
+  dialogRef: React.RefObject<HTMLDialogElement>;
+  isOpen: boolean;
+  openModal: () => void;
+  closeModal: () => void;
+}
+
 export interface ModalProps {
+  modal: UseModalReturn;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   leftButton: string;
   rightButton: string;
   type: "red" | "green";
-  onLeftClick: () => void;
+  onLeftClick?: () => void;
   onRightClick: () => void;
 }
 
 const Modal = ({
+  modal: { dialogRef, isOpen, closeModal },
   title,
   subtitle,
   leftButton,
   rightButton,
   type,
-  onLeftClick,
+  onLeftClick = () => {},
   onRightClick,
 }: ModalProps) => {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const { isModalOpen, closeModal } = useModalStore();
-
-  useModal({ dialogRef, isModalOpen });
-
   const handleButtonClick = (callback: () => void) => () => {
     callback();
     closeModal();
@@ -38,7 +39,7 @@ const Modal = ({
     }
   };
 
-  if (!isModalOpen) return null;
+  if (!isOpen) return null;
 
   return (
     <dialog

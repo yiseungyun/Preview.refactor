@@ -14,6 +14,7 @@ import {
   SESSION_LISTEN_EVENT,
 } from "@/constants/WebSocket/SessionEvent.ts";
 import useAuth from "@hooks/useAuth.ts";
+import useModal from "@/hooks/useModal";
 
 interface RoomCreatedResponse {
   id?: string;
@@ -30,6 +31,7 @@ const SessionForm = () => {
   const isValid = useSessionFormStore((state) => state.isFormValid());
   const navigate = useNavigate();
   const toast = useToast();
+  const modal = useModal();
 
   const submitHandler = () => {
     if (!isValid || !socket) {
@@ -77,10 +79,10 @@ const SessionForm = () => {
 
   return (
     <div className="flex flex-col gap-7 p-8 bg-gray-white shadow-8 w-47.5 rounded-custom-l">
-      <ListSelectModal />
+      <ListSelectModal modal={modal} />
       <CategorySection />
       <TitleSection />
-      <QuestionListSection />
+      <QuestionListSection openModal={modal.openModal} />
       <ParticipantSection />
       <AccessSection />
       <button

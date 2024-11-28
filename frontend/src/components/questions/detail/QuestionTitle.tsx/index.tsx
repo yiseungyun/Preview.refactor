@@ -1,4 +1,4 @@
-import { useGetQuestion } from "@hooks/api/useGetQuestion.ts";
+import { useGetQuestionContent } from "@/hooks/api/useGetQuestionContent";
 import { MdEdit } from "react-icons/md";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { FaRegBookmark } from "react-icons/fa";
@@ -7,12 +7,11 @@ const QuestionTitle = ({ questionId }: { questionId: string }) => {
   const {
     data: question,
     isLoading,
-    isError,
     error,
-  } = useGetQuestion(questionId);
+  } = useGetQuestionContent(Number(questionId));
 
   if (isLoading) return <div>로딩 중</div>;
-  if (isError) return <div>에러가 발생했습니다: {error.message}</div>;
+  if (error) return <div>에러 발생</div>;
   if (!question) return null;
 
   return (
