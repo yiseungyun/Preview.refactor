@@ -11,6 +11,7 @@ import { useSocketEvents } from "./useSocketEvents";
 import { Socket } from "socket.io-client";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 import useAuth from "@hooks/useAuth";
+import useStudy from "@hooks/session/useStudy";
 
 export const useSession = (sessionId: string) => {
   const { socket } = useSocket();
@@ -64,6 +65,13 @@ export const useSession = (sessionId: string) => {
   const { reaction, emitReaction, handleReaction } = useReaction(
     socket,
     sessionId,
+    setPeers
+  );
+
+  const { requestChangeIndex, stopStudySession, startStudySession } = useStudy(
+    socket,
+    sessionId,
+    setRoomMetadata,
     setPeers
   );
 
@@ -153,5 +161,8 @@ export const useSession = (sessionId: string) => {
     emitReaction,
     videoLoading,
     peerMediaStatus,
+    requestChangeIndex,
+    startStudySession,
+    stopStudySession,
   };
 };
