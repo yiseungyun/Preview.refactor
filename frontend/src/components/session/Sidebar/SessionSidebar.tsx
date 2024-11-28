@@ -89,7 +89,7 @@ const SessionSidebar = ({
               {currentIndex >= 0 ? (
                 <p>
                   <span className={"text-bold-s"}>
-                    Q{questionList[currentIndex].index}.{" "}
+                    Q{questionList[currentIndex].index + 1}.{" "}
                   </span>
                   {questionList[currentIndex].content}
                 </p>
