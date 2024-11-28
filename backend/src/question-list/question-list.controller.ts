@@ -27,23 +27,23 @@ export class QuestionListController {
     constructor(private readonly questionListService: QuestionListService) {}
 
     @Get()
-    async getAllQuestionLists(@Res() res) {
+    async getAllQuestionLists() {
         try {
             const allQuestionLists: GetAllQuestionListDto[] =
                 await this.questionListService.getAllQuestionLists();
-            return res.send({
+            return {
                 success: true,
                 message: "All question lists received successfully.",
                 data: {
                     allQuestionLists,
                 },
-            });
+            };
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to get all question lists.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -76,20 +76,20 @@ export class QuestionListController {
             // 질문지 생성
             const { createdQuestionList, createdQuestions } =
                 await this.questionListService.createQuestionList(createQuestionListDto);
-            return res.send({
+            return {
                 success: true,
                 message: "Question list created successfully.",
                 data: {
                     createdQuestionList,
                     createdQuestions,
                 },
-            });
+            };
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to create question list.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -105,19 +105,19 @@ export class QuestionListController {
             const { categoryName } = body;
             const allQuestionLists: GetAllQuestionListDto[] =
                 await this.questionListService.getAllQuestionListsByCategoryName(categoryName);
-            return res.send({
+            return {
                 success: true,
                 message: "All question lists received successfully.",
                 data: {
                     allQuestionLists,
                 },
-            });
+            };
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to get all question lists.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -133,19 +133,19 @@ export class QuestionListController {
             const { questionListId } = body;
             const questionListContents: QuestionListContentsDto =
                 await this.questionListService.getQuestionListContents(questionListId);
-            return res.send({
+            return {
                 success: true,
                 message: "Question list contents received successfully.",
                 data: {
                     questionListContents,
                 },
-            });
+            };
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to get question list contents.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -156,19 +156,19 @@ export class QuestionListController {
             const userId = token.userId;
             const myQuestionLists: MyQuestionListDto[] =
                 await this.questionListService.getMyQuestionLists(userId);
-            return res.send({
+            return {
                 success: true,
                 message: "My question lists received successfully.",
                 data: {
                     myQuestionLists,
                 },
-            });
+            };
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to get my question lists.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -193,19 +193,19 @@ export class QuestionListController {
 
             const updatedQuestionList =
                 await this.questionListService.updateQuestionList(updateQuestionListDto);
-            return res.send({
+            return {
                 success: true,
                 message: "Question list is updated successfully.",
                 data: {
                     questionList: updatedQuestionList,
                 },
-            });
+            };
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to update question list.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -224,22 +224,22 @@ export class QuestionListController {
             );
 
             if (result.affected) {
-                return res.send({
+                return {
                     success: true,
                     message: "Question list is deleted successfully.",
-                });
+                };
             } else {
-                return res.send({
+                return {
                     success: true,
                     message: "Failed to delete question list.",
-                });
+                };
             }
         } catch (error) {
-            return res.send({
+            return {
                 success: true,
                 message: "Failed to delete question list.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -262,19 +262,19 @@ export class QuestionListController {
 
             const result = await this.questionListService.addQuestion(questionDto);
 
-            return res.send({
+            return {
                 success: true,
                 message: "The new question is added to the list successfully.",
                 data: {
                     questionList: result,
                 },
-            });
+            };
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to add the new question to the list.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -299,19 +299,19 @@ export class QuestionListController {
 
             const result = await this.questionListService.updateQuestion(questionDto);
 
-            return res.send({
+            return {
                 success: true,
                 message: "Question is updated successfully.",
                 data: {
                     questionList: result,
                 },
-            });
+            };
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to update question.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -332,22 +332,22 @@ export class QuestionListController {
             };
             const result = await this.questionListService.deleteQuestion(deleteQuestionDto);
             if (result.affected) {
-                return res.send({
+                return {
                     success: true,
                     message: "Question is deleted successfully.",
-                });
+                };
             } else {
-                return res.send({
+                return {
                     success: true,
                     message: "Failed to delete question.",
-                });
+                };
             }
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to delete question.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -358,19 +358,19 @@ export class QuestionListController {
             const userId = token.userId;
             const scrappedQuestionLists =
                 await this.questionListService.getScrappedQuestionLists(userId);
-            return res.send({
+            return {
                 success: true,
                 message: "Scrapped question lists received successfully.",
                 data: {
                     scrappedQuestionLists,
                 },
-            });
+            };
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to get scrapped question lists.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -389,19 +389,19 @@ export class QuestionListController {
                 userId
             );
 
-            return res.send({
+            return {
                 success: true,
                 message: "Question list is scrapped successfully.",
                 data: {
                     scrappedQuestionList,
                 },
-            });
+            };
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to scrap question list.",
                 error: error.message,
-            });
+            };
         }
     }
 
@@ -420,22 +420,22 @@ export class QuestionListController {
             );
 
             if (unscrappedQuestionList.affected) {
-                return res.send({
+                return {
                     success: true,
                     message: "Question list unscrapped successfully.",
-                });
+                };
             } else {
-                return res.send({
+                return {
                     success: false,
                     message: "Failed to unscrap question list.",
-                });
+                };
             }
         } catch (error) {
-            return res.send({
+            return {
                 success: false,
                 message: "Failed to unscrap question list.",
                 error: error.message,
-            });
+            };
         }
     }
 }
