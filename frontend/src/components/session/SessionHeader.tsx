@@ -41,11 +41,14 @@ const SessionHeader = ({
               `(${participantsCount} / ${roomMetadata.maxParticipants})`}
           </span>
           {roomMetadata.inProgress ? (
-            <span>
+            <span className={"inline-flex items-center ml-4"}>
               <span
-                className={"w-3 h-3 bg-red-700 animate-pulse shadow-red-500"}
+                className={
+                  "inline-block mr-2 rounded-full w-4 h-4 bg-red-700 animate-pulse shadow-red-500"
+                }
               ></span>
-              스터디 진행 중 {uptime}초
+              <span>스터디 진행 중</span>
+              <span className={"ml-2 w-16"}>{uptime}초</span>
             </span>
           ) : (
             <span>
