@@ -1,13 +1,12 @@
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import {
   BsCameraVideo,
   BsCameraVideoOff,
+  BsHandThumbsUp,
   BsMic,
   BsMicMute,
-  BsHandThumbsUp,
 } from "react-icons/bs";
 
-interface Props {
+interface CommonToolsProps {
   handleVideoToggle: () => void;
   handleMicToggle: () => void;
   emitReaction: (reactionType: string) => void;
@@ -19,7 +18,7 @@ interface Props {
   isMicOn: boolean;
   videoLoading: boolean;
 }
-const SessionToolbar = ({
+const CommonTools = ({
   handleVideoToggle,
   handleMicToggle,
   emitReaction,
@@ -30,19 +29,9 @@ const SessionToolbar = ({
   isVideoOn,
   isMicOn,
   videoLoading,
-}: Props) => {
+}: CommonToolsProps) => {
   return (
-    <div
-      className={
-        "session-footer h-16 inline-flex w-full justify-between items-center border-t px-6 shrink-0"
-      }
-    >
-      <button
-        className={"bg-transparent rounded-full border p-3 text-xl"}
-        aria-label={"이전 질문 버튼"}
-      >
-        <FaAngleLeft />
-      </button>
+    <>
       <div className={"inline-flex center-buttons gap-2"}>
         <button
           disabled={videoLoading}
@@ -99,14 +88,8 @@ const SessionToolbar = ({
           )}
         </select>
       </div>
-      <button
-        className={"bg-transparent rounded-full border p-3 text-xl"}
-        aria-label={"다음 질문 버튼"}
-      >
-        <FaAngleRight />
-      </button>
-    </div>
+    </>
   );
 };
 
-export default SessionToolbar;
+export default CommonTools;

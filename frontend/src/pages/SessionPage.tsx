@@ -1,12 +1,13 @@
 import VideoContainer from "@components/session/VideoContainer.tsx";
 import { useParams } from "react-router-dom";
-import SessionSidebar from "@components/session/SessionSidebar.tsx";
-import SessionToolbar from "@components/session/SessionToolbar.tsx";
+import SessionSidebar from "@components/session/Sidebar/SessionSidebar.tsx";
+import SessionToolbar from "@components/session/Toolbar/SessionToolbar.tsx";
 import { useSession } from "@hooks/session/useSession";
 import useSocket from "@hooks/useSocket";
 import SessionHeader from "@components/session/SessionHeader";
 import { useEffect } from "react";
 import useToast from "@hooks/useToast.ts";
+import SidebarContainer from "@components/session/Sidebar/SidebarContainer.tsx";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
@@ -40,6 +41,9 @@ const SessionPage = () => {
     emitReaction,
     videoLoading,
     peerMediaStatus,
+    requestChangeIndex,
+    startStudySession,
+    stopStudySession,
   } = useSession(sessionId!);
 
   return (
@@ -119,6 +123,7 @@ const SessionPage = () => {
             </div>
           </div>
           <SessionToolbar
+            requestChangeIndex={requestChangeIndex}
             handleVideoToggle={handleVideoToggle}
             handleMicToggle={handleMicToggle}
             emitReaction={emitReaction}
@@ -129,15 +134,24 @@ const SessionPage = () => {
             isVideoOn={isVideoOn}
             isMicOn={isMicOn}
             videoLoading={videoLoading}
+            isHost={isHost}
+            isInProgress={roomMetadata?.inProgress ?? false}
+            startStudySession={startStudySession}
+            stopStudySession={stopStudySession}
+            currentIndex={roomMetadata?.currentIndex ?? -1}
+            maxQuestionLength={roomMetadata?.questionListContents.length ?? 0}
           />
         </div>
-        <SessionSidebar
-          socket={socket}
-          question={"Restful API에 대해서 설명해주세요."}
-          participants={participants}
-          roomId={sessionId}
-          isHost={isHost}
-        />
+        <SidebarContainer>
+          <SessionSidebar
+            socket={socket}
+            questionList={roomMetadata?.questionListContents ?? []}
+            currentIndex={roomMetadata?.currentIndex ?? -1}
+            participants={participants}
+            roomId={sessionId}
+            isHost={isHost}
+          />
+        </SidebarContainer>
       </div>
     </section>
   );

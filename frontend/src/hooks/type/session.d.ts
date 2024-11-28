@@ -9,6 +9,9 @@ export interface RoomMetadata {
   inProgress: boolean;
   host: UserInfo;
   category: string | string[];
+  questionListId: number;
+  questionListContents: Question[];
+  currentIndex: number;
 }
 
 export interface RoomJoinResponse {
@@ -22,6 +25,16 @@ export interface RoomJoinResponse {
   title: string;
   id: string;
   connectionMap: { [socketId: string]: UserInfo };
+  questionListId: number;
+  questionListContents: Question[];
+  currentIndex: number;
+}
+
+export interface Question {
+  id: number;
+  content: string;
+  index: number;
+  questionListId: number;
 }
 
 export interface UserInfo {
@@ -47,4 +60,9 @@ export interface PeerConnection {
   stream: MediaStream; // 상대방의 비디오/오디오 스트림
   isHost?: boolean; // 호스트 여부
   reaction?: string;
+}
+
+export interface ProgressResponse {
+  status: "success" | "error";
+  inProgress: boolean;
 }

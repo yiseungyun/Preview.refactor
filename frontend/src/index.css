@@ -56,6 +56,12 @@
   }
 }
 
+.animate-progress {
+  animation: expand 2s ease;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+}
+
 .revealExpand {
   animation: revealExpand 0.2s ease;
   animation-iteration-count: 1;
