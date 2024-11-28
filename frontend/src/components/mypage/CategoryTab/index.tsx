@@ -1,4 +1,4 @@
-import Category from "./Category";
+import Category from "@components/mypage/CategoryTab/Category";
 
 interface TabProps {
   tab: "myList" | "savedList";

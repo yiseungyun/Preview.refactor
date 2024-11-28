@@ -70,9 +70,9 @@ export const useSession = (sessionId: string) => {
 
   const { requestChangeIndex, stopStudySession, startStudySession } = useStudy(
     socket,
+    isHost,
     sessionId,
-    setRoomMetadata,
-    setPeers
+    roomMetadata
   );
 
   useSocketEvents({

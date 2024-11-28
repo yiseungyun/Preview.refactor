@@ -1,6 +1,6 @@
 import { useState } from "react";
-import CategoryTap from "@components/MyPage/CategoryTab";
-import QuestionList from "@components/MyPage/QuestionList";
+import CategoryTap from "@components/mypage/CategoryTab";
+import QuestionList from "@components/mypage/QuestionList";
 import Pagination from "@components/common/Pagination";
 import { useGetMyQuestionList } from "@/hooks/api/useGetMyQuestionList";
 import { useGetScrapQuestionList } from "@/hooks/api/useGetScrapQuestionList";

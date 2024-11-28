@@ -1,5 +1,5 @@
 import { useGetMyQuestionList } from "@/hooks/api/useGetMyQuestionList";
-import QuestionItem from "./QuestionItem";
+import QuestionItem from "@components/mypage/QuestionList/QuestionItem";
 import { useGetScrapQuestionList } from "@/hooks/api/useGetScrapQuestionList";
 
 interface ListProps {

@@ -1,6 +1,13 @@
 import { STUDY_EMIT_EVENT } from "@/constants/WebSocket/StudyEvent.ts";
+import { Socket } from "socket.io-client";
+import { RoomMetadata } from "@hooks/type/session";
 
-const useStudy = (socket, isHost, roomMetadata, sessionId) => {
+const useStudy = (
+  socket: Socket | null,
+  isHost: boolean,
+  sessionId: string,
+  roomMetadata: RoomMetadata | null
+) => {
   const requestChangeIndex = (
     type: "next" | "prev" | "current" | "move",
     index?: number
