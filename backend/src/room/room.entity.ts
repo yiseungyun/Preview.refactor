@@ -35,6 +35,9 @@ export class RoomEntity extends Entity {
     maxParticipants: number;
 
     @Field({ type: "number" })
+    questionListId: number;
+
+    @Field({ type: "number" })
     maxQuestionListLength: number;
 
     @Field({ type: "number", sortable: true })

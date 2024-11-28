@@ -22,6 +22,7 @@ export class RoomRepository {
                 host: JSON.parse(room.host),
                 maxParticipants: room.maxParticipants,
                 maxQuestionListLength: room.maxQuestionListLength,
+                questionListId: room.questionListId,
                 currentIndex: room.currentIndex,
                 status: room.status,
                 title: room.title,
@@ -47,6 +48,7 @@ export class RoomRepository {
             createdAt: room.createdAt,
             currentIndex: room.currentIndex,
             maxQuestionListLength: room.maxQuestionListLength,
+            questionListId: room.questionListId,
             host: JSON.parse(room.host),
             participants: Object.keys(connectionMap).length,
             maxParticipants: room.maxParticipants,
@@ -67,6 +69,7 @@ export class RoomRepository {
         room.connectionMap = JSON.stringify(dto.connectionMap);
         room.maxParticipants = dto.maxParticipants;
         room.maxQuestionListLength = dto.maxQuestionListLength;
+        room.questionListId = dto.questionListId;
         room.createdAt = Date.now();
         room.host = JSON.stringify(dto.host);
 

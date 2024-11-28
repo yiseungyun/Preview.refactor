@@ -11,6 +11,7 @@ export interface RoomDto {
     participants: number;
     maxParticipants: number;
     maxQuestionListLength: number;
+    questionListId: number;
     createdAt: number;
     connectionMap: Record<string, Connection>;
 }
