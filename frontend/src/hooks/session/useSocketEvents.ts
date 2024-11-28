@@ -123,8 +123,6 @@ export const useSocketEvents = ({
       setRoomMetadata(roomMetadata);
       setIsHost(roomMetadata.host.socketId === socket.id);
 
-      console.log(connectionMap);
-
       Object.entries(connectionMap).forEach(([socketId, userInfo]) => {
         console.log("socketId", socketId, "connection", userInfo);
         createPeerConnection(socketId, userInfo.nickname, stream, true, {
@@ -167,7 +165,6 @@ export const useSocketEvents = ({
       sdp: RTCSessionDescription;
       answerSendID: string;
     }) => {
-      console.log(data);
       const pc = peerConnections.current[data.answerSendID];
       if (!pc) return;
 

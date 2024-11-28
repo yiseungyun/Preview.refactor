@@ -1,4 +1,4 @@
-import { Entity, Field, Schema } from "nestjs-redis-om";
+import { Entity, Field, Schema } from "@moozeh/nestjs-redis-om";
 
 @Schema("socket")
 export class WebsocketEntity extends Entity {

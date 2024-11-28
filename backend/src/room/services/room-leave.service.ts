@@ -33,7 +33,7 @@ export class RoomLeaveService {
 
         await this.roomRepository.setRoom(room);
 
-        if (room.host.socketId === socketId) return this.handleHostChange(socketId, room);
+        if (room.host.socketId === socketId) await this.handleHostChange(socketId, room);
 
         this.socketService.emitToRoom(room.id, EMIT_EVENT.QUIT, { socketId });
     }

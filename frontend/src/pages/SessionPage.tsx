@@ -38,11 +38,13 @@ const SessionPage = () => {
     setSelectedVideoDeviceId,
     joinRoom,
     emitReaction,
+    videoLoading,
+    peerMediaStatus,
   } = useSession(sessionId!);
 
   return (
-    <section className="w-screen h-screen flex flex-col max-w-[1440px]">
-      <div className="w-full flex gap-2 p-1 bg-white">
+    <section className="w-screen h-screen flex flex-col overflow-y-hidden">
+      <div className="w-full flex gap-2 p-1 bg-white shrink-0">
         {/*{!username && (*/}
         <input
           type="text"
@@ -60,22 +62,26 @@ const SessionPage = () => {
         </button>
       </div>
 
-      <div className={"w-screen flex flex-grow"}>
+      <div className={"w-full flex flex-grow"}>
         <div
           className={
-            "camera-area flex flex-col flex-grow justify-between bg-gray-50 border-r border-t items-center"
+            "camera-area flex flex-col h-full flex-grow justify-between bg-gray-50 border-r border-t items-center overflow-hidden"
           }
         >
+          <SessionHeader
+            roomMetadata={roomMetadata}
+            participantsCount={peers.length + 1}
+          />
           <div
             className={
-              "flex flex-col gap-4 justify-between items-center w-full"
+              "w-full flex flex-col gap-4 justify-between items-center flex-grow transition-all py-4"
             }
           >
-            <SessionHeader
-              roomMetadata={roomMetadata}
-              participantsCount={peers.length + 1}
-            />
-            <div className={"speaker max-w-4xl px-6 flex w-full"}>
+            <div
+              className={
+                "speaker  w-full flex gap-4 px-6 h-1/2 justify-center items-center"
+              }
+            >
               <VideoContainer
                 nickname={nickname}
                 isMicOn={isMicOn}
@@ -83,15 +89,28 @@ const SessionPage = () => {
                 isLocal={true}
                 reaction={reaction || ""}
                 stream={stream!}
+                videoLoading={videoLoading}
               />
             </div>
-            <div className={"listeners w-full flex gap-2 px-6"}>
+            <div
+              className={
+                "listeners w-full flex gap-4 px-6 h-1/2 justify-center items-center  "
+              }
+            >
               {peers.map((peer) => (
                 <VideoContainer
                   key={peer.peerId}
                   nickname={peer.peerNickname}
-                  isMicOn={true}
-                  isVideoOn={true}
+                  isMicOn={
+                    peerMediaStatus[peer.peerId]
+                      ? peerMediaStatus[peer.peerId].audio
+                      : true
+                  }
+                  isVideoOn={
+                    peerMediaStatus[peer.peerId]
+                      ? peerMediaStatus[peer.peerId].video
+                      : true
+                  }
                   isLocal={false}
                   reaction={peer.reaction || ""}
                   stream={peer.stream}
@@ -109,6 +128,7 @@ const SessionPage = () => {
             setSelectedAudioDeviceId={setSelectedAudioDeviceId}
             isVideoOn={isVideoOn}
             isMicOn={isMicOn}
+            videoLoading={videoLoading}
           />
         </div>
         <SessionSidebar

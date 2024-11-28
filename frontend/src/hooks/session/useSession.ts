@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import useToast from "@hooks/useToast";
 import useMediaDevices from "@hooks/session/useMediaDevices";
 import usePeerConnection from "@hooks/session/usePeerConnection";
@@ -15,7 +14,6 @@ import useAuth from "@hooks/useAuth";
 
 export const useSession = (sessionId: string) => {
   const { socket } = useSocket();
-  const navigate = useNavigate();
   const toast = useToast();
 
   const {
@@ -24,10 +22,11 @@ export const useSession = (sessionId: string) => {
     peers,
     setPeers,
     peerConnections,
+    dataChannels,
+    peerMediaStatus,
   } = usePeerConnection(socket!);
   const { nickname: username } = useAuth();
   const [nickname, setNickname] = useState<string>("");
-  const [reaction, setReaction] = useState("");
   const [roomMetadata, setRoomMetadata] = useState<RoomMetadata | null>(null);
   const [isHost, setIsHost] = useState<boolean>(false);
 
@@ -44,7 +43,8 @@ export const useSession = (sessionId: string) => {
     setSelectedAudioDeviceId,
     setSelectedVideoDeviceId,
     getMedia,
-  } = useMediaDevices();
+    videoLoading,
+  } = useMediaDevices(dataChannels);
 
   useEffect(() => {
     if (username) {
@@ -61,11 +61,10 @@ export const useSession = (sessionId: string) => {
   usePeerConnectionCleanup(peerConnections);
   useMediaStreamCleanup(stream);
 
-  const { emitReaction, handleReaction } = useReaction(
+  const { reaction, emitReaction, handleReaction } = useReaction(
     socket,
     sessionId,
-    setPeers,
-    setReaction
+    setPeers
   );
 
   useSocketEvents({
@@ -108,8 +107,15 @@ export const useSession = (sessionId: string) => {
       toast.error(
         "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
       );
-      navigate("/sessions");
       return;
+    } else if (mediaStream.getVideoTracks().length === 0) {
+      toast.error(
+        "비디오 장치를 찾을 수 없습니다. 비디오 장치 없이 세션에 참가합니다."
+      );
+    } else if (mediaStream.getAudioTracks().length === 0) {
+      toast.error(
+        "오디오 장치를 찾을 수 없습니다. 오디오 장치 없이 세션에 참가합니다."
+      );
     }
 
     socket.emit(SESSION_EMIT_EVENT.JOIN, { roomId: sessionId, nickname });
@@ -145,5 +151,7 @@ export const useSession = (sessionId: string) => {
     setSelectedVideoDeviceId,
     joinRoom,
     emitReaction,
+    videoLoading,
+    peerMediaStatus,
   };
 };

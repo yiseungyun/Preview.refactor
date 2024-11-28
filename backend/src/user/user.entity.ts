@@ -1,11 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { QuestionList } from "@/question-list/question-list.entity";
+
+export enum LoginType {
+    LOCAL = "local",
+    GITHUB = "github",
+}
 
 @Entity()
 export class User {
+    public static readonly URL_MAX_LEN = 320;
+    public static readonly USERNAME_MAX_LEN = 20;
     private static LOGIN_ID_MAX_LEN = 20;
     private static PASSWORD_HASH_MAX_LEN = 256;
-    private static USERNAME_MAX_LEN = 20;
     private static REFRESH_TOKEN_MAX_LEN = 200;
 
     @PrimaryGeneratedColumn()
@@ -43,4 +49,14 @@ export class User {
         },
     })
     scrappedQuestionLists: QuestionList[];
+
+    @Column({
+        type: "enum",
+        enum: LoginType,
+        default: LoginType.LOCAL,
+    })
+    loginType: LoginType;
+
+    @Column({ length: User.URL_MAX_LEN, nullable: true })
+    avatarUrl: string;
 }
