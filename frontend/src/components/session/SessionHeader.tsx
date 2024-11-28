@@ -11,12 +11,12 @@ const SessionHeader = ({
   roomMetadata,
 }: SessionHeaderProps) => {
   const [uptime, setUptime] = useState<number>(0);
-
+  const SECOND = 1000;
   useEffect(() => {
     if (!roomMetadata?.inProgress) return;
     const interval = setInterval(() => {
       setUptime((prev) => prev + 1);
-    }, 1000);
+    }, SECOND);
 
     return () => {
       clearInterval(interval);
@@ -31,7 +31,6 @@ const SessionHeader = ({
     >
       {roomMetadata?.title ? (
         <>
-          {" "}
           <span className={"bg-green-500 rounded-md px-2 py-0.5 text-white"}>
             {roomMetadata?.category}
           </span>
@@ -48,7 +47,9 @@ const SessionHeader = ({
                 }
               ></span>
               <span>스터디 진행 중</span>
-              <span className={"ml-2 w-16"}>{uptime}초</span>
+              <span className={"ml-2 w-16"}>
+                {Math.floor(uptime / 60)}분 {uptime % 60}초
+              </span>
             </span>
           ) : (
             <span>
