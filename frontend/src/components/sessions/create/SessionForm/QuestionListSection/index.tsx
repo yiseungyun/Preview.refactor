@@ -1,10 +1,12 @@
-import useModalStore from "@/stores/useModalStore";
 import useSessionFormStore from "@/stores/useSessionFormStore";
 import SelectTitle from "@/components/common/SelectTitle";
 import { MdOutlineArrowForwardIos } from "react-icons/md";
 
-const QuestionListSection = () => {
-  const { openModal } = useModalStore();
+interface ListSectionProps {
+  openModal: () => void;
+}
+
+const QuestionListSection = ({ openModal }: ListSectionProps) => {
   const questionTitle = useSessionFormStore((state) => state.questionTitle);
 
   return (
