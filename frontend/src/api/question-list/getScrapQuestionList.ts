@@ -5,8 +5,39 @@ interface QuestionListProps {
   limit: number;
 }
 
+interface Question {
+  id: number;
+  content: string;
+  index: number;
+  questionListId: number;
+}
+
+interface QuestionList {
+  id: number;
+  title: string;
+  contents: Question[];
+  categoryNames: string[];
+  isPublic: boolean;
+  usage: number;
+}
+
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: {
+    questionLists: QuestionList[];
+    meta: {
+      itemsPerPage: number;
+      totalItems: number;
+      currentPage: string;
+      totalPages: number;
+      sortBy: [string[]];
+    };
+  };
+}
+
 const getScrapQuestionList = async ({ page, limit }: QuestionListProps) => {
-  const response = await axios.post("/api/question-list/scrap", {
+  const response = await axios.get<ApiResponse>("/api/question-list/scrap", {
     params: {
       page,
       limit,
@@ -17,7 +48,7 @@ const getScrapQuestionList = async ({ page, limit }: QuestionListProps) => {
     throw new Error(response.data.message);
   }
 
-  return response.data.questionLists;
+  return response.data.data;
 };
 
 export default getScrapQuestionList;

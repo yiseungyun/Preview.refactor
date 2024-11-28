@@ -5,8 +5,39 @@ interface QuestionListProps {
   limit: number;
 }
 
+interface Question {
+  id: number;
+  content: string;
+  index: number;
+  questionListId: number;
+}
+
+interface QuestionList {
+  id: number;
+  title: string;
+  contents: Question[];
+  categoryNames: string[];
+  isPublic: boolean;
+  usage: number;
+}
+
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: {
+    myQuestionLists: QuestionList[];
+    meta: {
+      itemsPerPage: number;
+      totalItems: number;
+      currentPage: string;
+      totalPages: number;
+      sortBy: [string[]];
+    };
+  };
+}
+
 const getMyQuestionList = async ({ page, limit }: QuestionListProps) => {
-  const response = await axios.post("/api/question-list/my", {
+  const response = await axios.get<ApiResponse>("/api/question-list/my", {
     params: {
       page,
       limit,
@@ -17,7 +48,7 @@ const getMyQuestionList = async ({ page, limit }: QuestionListProps) => {
     throw new Error(response.data.message);
   }
 
-  return response.data.myQuestionLists;
+  return response.data.data;
 };
 
 export default getMyQuestionList;

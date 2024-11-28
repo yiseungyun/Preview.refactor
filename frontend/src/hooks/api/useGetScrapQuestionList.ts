@@ -2,12 +2,12 @@ import getScrapQuestionList from "@/api/question-list/getScrapQuestionList";
 import { useQuery } from "@tanstack/react-query";
 
 interface UseGetQuestionListProps {
-  page: number;
+  page?: number;
   limit: number;
 }
 
 export const useGetScrapQuestionList = ({
-  page,
+  page = 1,
   limit,
 }: UseGetQuestionListProps) => {
   const { data, isLoading, error } = useQuery({
@@ -16,7 +16,7 @@ export const useGetScrapQuestionList = ({
   });
 
   return {
-    questions: data,
+    data,
     isLoading,
     error,
   };

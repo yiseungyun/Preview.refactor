@@ -9,7 +9,7 @@ const getQuestionContent = async (questionListId: number) => {
     throw new Error(response.data.message);
   }
 
-  return response.data.questionListContents;
+  return response.data.data.questionListContents;
 };
 
 export default getQuestionContent;

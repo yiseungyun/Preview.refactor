@@ -13,7 +13,10 @@ import {
   mockSocketStore,
   mockToast,
 } from "@hooks/__test__/mocks/useSession.mock";
-import { SESSION_EMIT_EVENT, SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent";
+import {
+  SESSION_EMIT_EVENT,
+  SESSION_LISTEN_EVENT,
+} from "@/constants/WebSocket/SessionEvent";
 import { SIGNAL_LISTEN_EVENT } from "@/constants/WebSocket/SignalingEvent";
 
 const REACTION_DURATION = 3000;
@@ -197,10 +200,13 @@ describe("useSession Hook 테스트", () => {
         result.current.emitReaction("👍");
       });
 
-      expect(mockSocket.emit).toHaveBeenCalledWith(SESSION_EMIT_EVENT.REACTION, {
-        roomId: "test-session",
-        reactionType: "👍",
-      });
+      expect(mockSocket.emit).toHaveBeenCalledWith(
+        SESSION_EMIT_EVENT.REACTION,
+        {
+          roomId: "test-session",
+          reactionType: "👍",
+        }
+      );
 
       act(() => {
         jest.advanceTimersByTime(REACTION_DURATION);
