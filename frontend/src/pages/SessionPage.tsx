@@ -7,7 +7,6 @@ import useSocket from "@hooks/useSocket";
 import SessionHeader from "@components/session/SessionHeader";
 import { useEffect } from "react";
 import useToast from "@hooks/useToast.ts";
-import { STUDY_EMIT_EVENT } from "@/constants/WebSocket/StudyEvent.ts";
 import SidebarContainer from "@components/session/Sidebar/SidebarContainer.tsx";
 
 const SessionPage = () => {
@@ -42,46 +41,10 @@ const SessionPage = () => {
     emitReaction,
     videoLoading,
     peerMediaStatus,
+    requestChangeIndex,
+    startStudySession,
+    stopStudySession,
   } = useSession(sessionId!);
-
-  const requestChangeIndex = (
-    type: "next" | "prev" | "current" | "move",
-    index?: number
-  ) => {
-    if (socket) {
-      if (isHost && roomMetadata) {
-        switch (type) {
-          case "next":
-            socket.emit(STUDY_EMIT_EVENT.NEXT, { roomId: sessionId });
-            break;
-          case "prev":
-            socket.emit(STUDY_EMIT_EVENT.INDEX, {
-              roomId: sessionId,
-              index: roomMetadata.currentIndex - 1,
-            });
-            break;
-          case "current":
-            socket.emit(STUDY_EMIT_EVENT.CURRENT, { roomId: sessionId });
-            break;
-          case "move":
-            socket.emit(STUDY_EMIT_EVENT.INDEX, { roomId: sessionId, index });
-            break;
-        }
-      }
-    }
-  };
-
-  const startStudySession = () => {
-    if (socket) {
-      socket.emit(STUDY_EMIT_EVENT.START, { roomId: sessionId });
-    }
-  };
-
-  const stopStudySession = () => {
-    if (socket) {
-      socket.emit(STUDY_EMIT_EVENT.STOP, { roomId: sessionId });
-    }
-  };
 
   return (
     <section className="w-screen h-screen flex flex-col overflow-y-hidden">
