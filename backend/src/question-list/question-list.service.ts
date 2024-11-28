@@ -260,6 +260,7 @@ export class QuestionListService {
         return await this.getQuestionListContents(questionListId);
     }
 
+    @Transactional()
     async deleteQuestion(deleteQuestionDto: DeleteQuestionDto) {
         const { id, questionListId, userId } = deleteQuestionDto;
 
