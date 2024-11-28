@@ -140,9 +140,7 @@ const SessionSidebar = ({
         <div className={"h-16 items-center flex w-full"}>
           <button
             className={"w-full bg-red-500 text-white rounded-md py-2"}
-            onClick={() => {
-              modal.openModal
-            }}
+            onClick={modal.openModal}
           >
             종료하기
           </button>
