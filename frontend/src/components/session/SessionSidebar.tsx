@@ -1,4 +1,4 @@
-import { FaClipboardList } from "react-icons/fa";
+import { FaClipboardList, FaFolder } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import useModalStore from "../../stores/useModalStore";
 import Modal from "../common/Modal";
@@ -7,6 +7,7 @@ import { Socket } from "socket.io-client";
 import useToast from "../../hooks/useToast";
 import { TbCrown } from "react-icons/tb";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
+import { Question } from "@hooks/type/session";
 
 interface ParticipantsData {
   nickname: string;
@@ -15,7 +16,8 @@ interface ParticipantsData {
 
 interface Props {
   socket: Socket | null;
-  question: string;
+  questionList: Question[];
+  currentIndex: number;
   participants: ParticipantsData[];
   roomId: string | undefined; // TODO: sessionId가 입력되지 않았을 때(undefined) 처리 필요
   isHost: boolean;
@@ -23,7 +25,8 @@ interface Props {
 
 const SessionSidebar = ({
   socket,
-  question,
+  questionList,
+  currentIndex,
   participants,
   roomId,
   isHost,
@@ -94,20 +97,29 @@ const SessionSidebar = ({
       />
       <div className={"flex flex-col gap-4  "}>
         <div className={"flex flex-col gap-2 pt-6"}>
-          <h2 className={"inline-flex gap-1 items-center text-semibold-s"}>
+          <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
             <FaClipboardList />
-            질문
+            현재 질문
           </h2>
-          <p
+          <div
             className={
-              "border border-accent-gray p-2 bg-transparent rounded-xl"
+              "border border-accent-gray p-2 bg-transparent rounded-xl "
             }
           >
-            {question}
-          </p>
+            {currentIndex >= 0 ? (
+              <p>
+                <span className={"text-bold-s"}>
+                  Q{questionList[currentIndex].index}.{" "}
+                </span>
+                {questionList[currentIndex].content}
+              </p>
+            ) : (
+              <p>질문 로딩 중...</p>
+            )}
+          </div>
         </div>
-        <div className={"flex flex-col gap-2"}>
-          <h2 className={"inline-flex gap-1 items-center text-semibold-s"}>
+        <div className={"flex flex-col gap-2 mt-4"}>
+          <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
             <FaUserGroup />
             참가자
           </h2>
@@ -121,6 +133,27 @@ const SessionSidebar = ({
                 </span>
               </li>
             ))}
+          </ul>
+        </div>
+        <div className={"flex flex-col gap-2 mt-4"}>
+          <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
+            <FaFolder />
+            이전 질문
+          </h2>
+          <ul>
+            {currentIndex <= 0 && (
+              <li className={"text-medium-s"}>
+                여기에 이전 질문이 기록됩니다.
+              </li>
+            )}
+            {questionList.map((question, index) => {
+              if (index < currentIndex)
+                return (
+                  <li key={question.id}>
+                    Q{index + 1}. {question.content}
+                  </li>
+                );
+            })}
           </ul>
         </div>
       </div>
