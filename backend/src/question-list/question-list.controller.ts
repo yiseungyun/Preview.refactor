@@ -20,6 +20,7 @@ import { IJwtPayload } from "@/auth/jwt/jwt.model";
 import { MyQuestionListDto } from "./dto/my-question-list.dto";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 import { QuestionDto } from "@/question-list/dto/question.dto";
+import { DeleteQuestionDto } from "@/question-list/dto/delete-question.dto";
 
 @Controller("question-list")
 export class QuestionListController {
@@ -283,7 +284,7 @@ export class QuestionListController {
         @Res() res,
         @JwtPayload() token: IJwtPayload,
         @Body() body: { content: string },
-        @Param() params: { questionListId: number, questionId: number }
+        @Param() params: { questionListId: number; questionId: number }
     ) {
         try {
             const userId = token.userId;
@@ -309,6 +310,42 @@ export class QuestionListController {
             return res.send({
                 success: false,
                 message: "Failed to update question.",
+                error: error.message,
+            });
+        }
+    }
+
+    @Delete("/:questionListId/question/:questionId")
+    @UseGuards(AuthGuard("jwt"))
+    async deleteQuestion(
+        @Res() res,
+        @JwtPayload() token: IJwtPayload,
+        @Param() params: { questionListId: number; questionId: number }
+    ) {
+        try {
+            const userId = token.userId;
+            const { questionListId, questionId } = params;
+            const deleteQuestionDto: DeleteQuestionDto = {
+                id: questionId,
+                questionListId,
+                userId,
+            };
+            const result = await this.questionListService.deleteQuestion(deleteQuestionDto);
+            if (result.affected) {
+                return res.send({
+                    success: true,
+                    message: "Question is deleted successfully.",
+                });
+            } else {
+                return res.send({
+                    success: true,
+                    message: "Failed to delete question.",
+                });
+            }
+        } catch (error) {
+            return res.send({
+                success: false,
+                message: "Failed to delete question.",
                 error: error.message,
             });
         }

@@ -114,6 +114,10 @@ export class QuestionListRepository {
         });
     }
 
+    deleteQuestion(question: Question) {
+        return this.dataSource.getRepository(Question).delete(question);
+    }
+
     scrapQuestionList(questionListId: number, userId: number) {
         return this.dataSource
             .createQueryBuilder()
