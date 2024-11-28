@@ -61,3 +61,8 @@ export interface PeerConnection {
   isHost?: boolean; // 호스트 여부
   reaction?: string;
 }
+
+export interface ProgressResponse {
+  status: "success" | "error";
+  inProgress: boolean;
+}

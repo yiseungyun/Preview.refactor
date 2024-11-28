@@ -8,6 +8,10 @@ import {
 } from "react-icons/bs";
 
 interface Props {
+  requestChangeIndex: (
+    type: "next" | "prev" | "current" | "move",
+    index?: number
+  ) => void;
   handleVideoToggle: () => void;
   handleMicToggle: () => void;
   emitReaction: (reactionType: string) => void;
@@ -18,8 +22,13 @@ interface Props {
   isVideoOn: boolean;
   isMicOn: boolean;
   videoLoading: boolean;
+  isHost: boolean;
+  isInProgress: boolean;
+  startStudySession: () => void;
+  stopStudySession: () => void;
 }
 const SessionToolbar = ({
+  requestChangeIndex,
   handleVideoToggle,
   handleMicToggle,
   emitReaction,
@@ -30,19 +39,17 @@ const SessionToolbar = ({
   isVideoOn,
   isMicOn,
   videoLoading,
+  isHost,
+  isInProgress,
+  startStudySession,
+  stopStudySession,
 }: Props) => {
   return (
     <div
       className={
-        "session-footer h-16 inline-flex w-full justify-between items-center border-t px-6 shrink-0"
+        "session-footer h-16 inline-flex w-full justify-center items-center border-t px-6 shrink-0"
       }
     >
-      <button
-        className={"bg-transparent rounded-full border p-3 text-xl"}
-        aria-label={"이전 질문 버튼"}
-      >
-        <FaAngleLeft />
-      </button>
       <div className={"inline-flex center-buttons gap-2"}>
         <button
           disabled={videoLoading}
@@ -99,12 +106,51 @@ const SessionToolbar = ({
           )}
         </select>
       </div>
-      <button
-        className={"bg-transparent rounded-full border p-3 text-xl"}
-        aria-label={"다음 질문 버튼"}
-      >
-        <FaAngleRight />
-      </button>
+      {isHost && isInProgress ? (
+        <div className={"inline-flex gap-4 items-center mx-8"}>
+          <button
+            className={
+              "bg-transparent rounded-xl border h-10 px-3 py-2 text-medium-xs "
+            }
+            onClick={stopStudySession}
+          >
+            스터디 종료하기
+          </button>
+        </div>
+      ) : (
+        <div className={"inline-flex gap-4 items-center mx-8"}>
+          <button
+            className={
+              "bg-transparent rounded-xl border h-10 px-3 py-2 text-medium-xs "
+            }
+            onClick={startStudySession}
+          >
+            스터디 시작하기
+          </button>
+        </div>
+      )}
+      {isHost && isInProgress && (
+        <div className={"study-toolbar inline-flex gap-4 items-center mx-8"}>
+          <button
+            onClick={() => requestChangeIndex("prev")}
+            className={
+              "inline-flex items-center bg-transparent rounded-xl border h-10 px-3 py-2 text-medium-xs "
+            }
+            aria-label={"이전 질문 버튼"}
+          >
+            <FaAngleLeft /> 이전 질문
+          </button>
+          <button
+            onClick={() => requestChangeIndex("next")}
+            className={
+              "inline-flex items-center bg-transparent rounded-xl border h-10 px-3 py-2 text-medium-xs "
+            }
+            aria-label={"다음 질문 버튼"}
+          >
+            다음 질문 <FaAngleRight />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

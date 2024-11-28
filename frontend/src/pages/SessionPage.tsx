@@ -76,6 +76,12 @@ const SessionPage = () => {
     }
   };
 
+  const stopStudySession = () => {
+    if (socket) {
+      socket.emit(STUDY_EMIT_EVENT.STOP, { roomId: sessionId });
+    }
+  };
+
   return (
     <section className="w-screen h-screen flex flex-col overflow-y-hidden">
       <div className="w-full flex gap-2 p-1 bg-white shrink-0">
@@ -167,6 +173,7 @@ const SessionPage = () => {
             isHost={isHost}
             isInProgress={roomMetadata?.inProgress ?? false}
             startStudySession={startStudySession}
+            stopStudySession={stopStudySession}
           />
         </div>
         <SessionSidebar

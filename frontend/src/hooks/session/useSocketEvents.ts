@@ -14,6 +14,7 @@ import {
   ResponseMasterChanged,
   RoomMetadata,
   PeerConnection,
+  ProgressResponse,
 } from "@hooks/type/session";
 import {
   SIGNAL_EMIT_EVENT,
@@ -216,11 +217,16 @@ export const useSocketEvents = ({
       }
     };
 
-    const handleStartProgress = () => {
-      setRoomMetadata((prev) => ({ ...prev!, inProgress: true }));
-    };
-    const handleStopProgress = () => {
-      setRoomMetadata((prev) => ({ ...prev!, inProgress: false }));
+    const handleProgress = (data: ProgressResponse) => {
+      const { status, inProgress } = data;
+
+      if (status === "success") {
+        setRoomMetadata((prev) => ({ ...prev!, inProgress: inProgress }));
+        if (inProgress) toast.success("방장이 스터디를 시작했습니다.");
+        else toast.error("방장이 스터디를 중지했습니다.");
+      } else {
+        toast.error("세션 진행을 시작하지 못했습니다.");
+      }
     };
 
     socket.on(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
@@ -235,8 +241,8 @@ export const useSocketEvents = ({
     socket.on(STUDY_LISTEN_EVENT.INDEX, handleChangeIndex);
     socket.on(STUDY_LISTEN_EVENT.CURRENT, handleChangeIndex);
     socket.on(STUDY_LISTEN_EVENT.NEXT, handleChangeIndex);
-    socket.on(STUDY_LISTEN_EVENT.START, handleStartProgress);
-    socket.on(STUDY_LISTEN_EVENT.STOP, handleStopProgress);
+    socket.on(STUDY_LISTEN_EVENT.START, handleProgress);
+    socket.on(STUDY_LISTEN_EVENT.STOP, handleProgress);
     socket.on(STUDY_LISTEN_EVENT.PROGRESS, handleRoomProgress);
 
     return () => {
@@ -252,8 +258,8 @@ export const useSocketEvents = ({
       socket.off(STUDY_LISTEN_EVENT.INDEX, handleChangeIndex);
       socket.off(STUDY_LISTEN_EVENT.CURRENT, handleChangeIndex);
       socket.off(STUDY_LISTEN_EVENT.NEXT, handleChangeIndex);
-      socket.off(STUDY_LISTEN_EVENT.START, handleStartProgress);
-      socket.off(STUDY_LISTEN_EVENT.STOP, handleStopProgress);
+      socket.off(STUDY_LISTEN_EVENT.START, handleProgress);
+      socket.off(STUDY_LISTEN_EVENT.STOP, handleProgress);
 
       if (reactionTimeouts.current) {
         Object.values(reactionTimeouts.current).forEach(clearTimeout);
