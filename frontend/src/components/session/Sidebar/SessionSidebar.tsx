@@ -1,10 +1,10 @@
 import { FaClipboardList, FaFolder } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
-import useModalStore from "../../stores/useModalStore";
-import Modal from "../common/Modal";
+import useModalStore from "@stores/useModalStore.ts";
+import Modal from "../../common/Modal";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
-import useToast from "../../hooks/useToast";
+import useToast from "@hooks/useToast.ts";
 import { TbCrown } from "react-icons/tb";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 import { Question } from "@hooks/type/session";

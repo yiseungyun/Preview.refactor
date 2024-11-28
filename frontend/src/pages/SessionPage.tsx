@@ -1,14 +1,14 @@
 import VideoContainer from "@components/session/VideoContainer.tsx";
 import { useParams } from "react-router-dom";
-import SessionSidebar from "@components/session/SessionSidebar.tsx";
-import SessionToolbar from "@components/session/SessionToolbar.tsx";
+import SessionSidebar from "@components/session/Sidebar/SessionSidebar.tsx";
+import SessionToolbar from "@components/session/Toolbar/SessionToolbar.tsx";
 import { useSession } from "@hooks/session/useSession";
 import useSocket from "@hooks/useSocket";
 import SessionHeader from "@components/session/SessionHeader";
 import { useEffect } from "react";
 import useToast from "@hooks/useToast.ts";
 import { STUDY_EMIT_EVENT } from "@/constants/WebSocket/StudyEvent.ts";
-import SidebarContainer from "@components/session/SessionSidebar/SidebarContainer.tsx";
+import SidebarContainer from "@components/session/Sidebar/SidebarContainer.tsx";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
