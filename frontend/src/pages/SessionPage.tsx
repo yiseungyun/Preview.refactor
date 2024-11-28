@@ -8,6 +8,7 @@ import SessionHeader from "@components/session/SessionHeader";
 import { useEffect } from "react";
 import useToast from "@hooks/useToast.ts";
 import { STUDY_EMIT_EVENT } from "@/constants/WebSocket/StudyEvent.ts";
+import SidebarContainer from "@components/session/SessionSidebar/SidebarContainer.tsx";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
@@ -176,14 +177,16 @@ const SessionPage = () => {
             stopStudySession={stopStudySession}
           />
         </div>
-        <SessionSidebar
-          socket={socket}
-          questionList={roomMetadata?.questionListContents ?? []}
-          currentIndex={roomMetadata?.currentIndex ?? -1}
-          participants={participants}
-          roomId={sessionId}
-          isHost={isHost}
-        />
+        <SidebarContainer>
+          <SessionSidebar
+            socket={socket}
+            questionList={roomMetadata?.questionListContents ?? []}
+            currentIndex={roomMetadata?.currentIndex ?? -1}
+            participants={participants}
+            roomId={sessionId}
+            isHost={isHost}
+          />
+        </SidebarContainer>
       </div>
     </section>
   );

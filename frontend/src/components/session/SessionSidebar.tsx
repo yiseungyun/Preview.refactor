@@ -8,7 +8,6 @@ import useToast from "../../hooks/useToast";
 import { TbCrown } from "react-icons/tb";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 import { Question } from "@hooks/type/session";
-import { BsLayoutSidebarReverse } from "react-icons/bs";
 
 interface ParticipantsData {
   nickname: string;
@@ -71,15 +70,10 @@ const SessionSidebar = ({
 
   return (
     <div
-      className={"flex gap-2 items-stretch w-[440px] pr-6 bg-white shrink-0"}
+      className={
+        "flex flex-grow px-4 gap-2 items-stretch w-[440px]  bg-white shrink-0"
+      }
     >
-      <div
-        className={"w-10 h-full flex justify-center items-start py-2 text-xl  "}
-      >
-        <button className={"bg-gray-200 rounded-md p-2"}>
-          <BsLayoutSidebarReverse />
-        </button>
-      </div>
       <div className={"flex flex-col gap-4 flex-grow justify-between "}>
         <div className={"flex flex-col gap-4  "}>
           <div className={"flex flex-col gap-2 pt-6"}>
