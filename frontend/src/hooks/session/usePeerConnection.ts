@@ -14,6 +14,13 @@ const usePeerConnection = (socket: Socket) => {
   const [peers, setPeers] = useState<PeerConnection[]>([]); // 연결 관리
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
 
+  const dataChannels = useRef<{ [peerId: string]: RTCDataChannel }>({});
+  const [peerMediaStatus, setPeerMediaStatus] = useState<{
+    [peerId: string]: {
+      audio: boolean;
+      video: boolean;
+    };
+  }>({});
   // STUN 서버 설정
   const pcConfig = {
     iceServers: [
@@ -69,6 +76,71 @@ const usePeerConnection = (socket: Socket) => {
         }
       };
 
+      const mediaDataChannel = pc.createDataChannel("media-status", {
+        ordered: true,
+      });
+
+      mediaDataChannel.onopen = () => {
+        console.log("Media data channel opened.");
+        dataChannels.current[peerSocketId] = mediaDataChannel;
+      };
+
+      mediaDataChannel.onclose = () => {
+        console.log("Media data channel closed.");
+      };
+
+      // DataChannel 해보자
+      pc.ondatachannel = (event) => {
+        const channel = event.channel;
+        channel.onmessage = (e) => {
+          const data = JSON.parse(e.data);
+          console.log(data);
+          const { type, status } = data;
+          if (type === "audio") {
+            if (status) {
+              console.log("상대방의 오디오가 켜졌습니다.");
+              setPeerMediaStatus((prev) => ({
+                ...prev,
+                [peerSocketId]: {
+                  audio: true,
+                  video: prev[peerSocketId].video ?? true,
+                },
+              }));
+            } else {
+              console.log("상대방의 오디오가 꺼졌습니다.");
+              setPeerMediaStatus((prev) => ({
+                ...prev,
+                [peerSocketId]: {
+                  audio: false,
+                  video: prev[peerSocketId].video ?? true,
+                },
+              }));
+            }
+          } else if (type === "video") {
+            // 상대방의 오디오가 켜졌을 때의 처리
+            if (status) {
+              console.log("상대방의 비디오가 켜졌습니다.");
+              setPeerMediaStatus((prev) => ({
+                ...prev,
+                [peerSocketId]: {
+                  audio: prev[peerSocketId].audio ?? true,
+                  video: true,
+                },
+              }));
+            } else {
+              console.log("상대방의 비디오가 꺼졌습니다.");
+              setPeerMediaStatus((prev) => ({
+                ...prev,
+                [peerSocketId]: {
+                  audio: prev[peerSocketId].audio ?? true,
+                  video: false,
+                },
+              }));
+            }
+          }
+        };
+      };
+
       // 연결 상태 모니터링
       // 새로운 연결/연결 시도/연결 완료/연결 끊김/연결 실패/연결 종료
       pc.onconnectionstatechange = () => {
@@ -105,26 +177,19 @@ const usePeerConnection = (socket: Socket) => {
             },
           ];
         });
+        setPeerMediaStatus((prev) => {
+          return {
+            ...prev,
+            [peerSocketId]: {
+              audio: e.streams[0].getAudioTracks().length > 0,
+              video: e.streams[0].getVideoTracks().length > 0,
+            },
+          };
+        });
       };
 
       // Offer를 생성해야 하는 경우에만 Offer 생성
       // Offer: 초대 - Offer 생성 -> 자신의 설정 저장 -> 상대에게 전송
-      // if (isOffer) {
-      //   pc.createOffer()
-      //     .then((offer) => pc.setLocalDescription(offer))
-      //     .then(() => {
-      //       if (socket && pc.localDescription) {
-      //         socket.emit(SIGNAL_EMIT_EVENT.OFFER, {
-      //           offerReceiveID: peerSocketId,
-      //           sdp: pc.localDescription,
-      //           offerSendID: socket.id,
-      //           offerSendNickname: localUser.nickname,
-      //         });
-      //       }
-      //     })
-      //     .catch((error) => console.error("Error creating offer:", error));
-      // }
-
       if (isOffer) {
         try {
           const offer = await pc.createOffer();
@@ -172,6 +237,8 @@ const usePeerConnection = (socket: Socket) => {
     peerConnections,
     createPeerConnection,
     closePeerConnection,
+    dataChannels,
+    peerMediaStatus,
   };
 };
 
