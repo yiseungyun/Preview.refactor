@@ -25,7 +25,7 @@ const Modal = ({
   leftButton,
   rightButton,
   type,
-  onLeftClick = () => { },
+  onLeftClick = () => {},
   onRightClick,
 }: ModalProps) => {
   const handleButtonClick = (callback: () => void) => () => {

@@ -10,7 +10,11 @@ interface UseModalReturn {
   closeModal: () => void;
 }
 
-const ProfileEditModal = ({ modal: { dialogRef, isOpen, closeModal } }: { modal: UseModalReturn }) => {
+const ProfileEditModal = ({
+  modal: { dialogRef, isOpen, closeModal },
+}: {
+  modal: UseModalReturn;
+}) => {
   const { nickname } = useAuth();
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDialogElement>) => {
@@ -46,7 +50,7 @@ const ProfileEditModal = ({ modal: { dialogRef, isOpen, closeModal } }: { modal:
           <TitleInput
             placeholder="닉네임을 입력해주세요"
             initValue={nickname}
-            onChange={() => { }}
+            onChange={() => {}}
             minLength={2}
           />
         </div>

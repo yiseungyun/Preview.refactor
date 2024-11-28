@@ -10,8 +10,8 @@ import { usePeerConnectionCleanup } from "@hooks/session/usePeerConnectionCleanu
 import { useReaction } from "@hooks/session/useReaction";
 import { useSocketEvents } from "./useSocketEvents";
 import { Socket } from "socket.io-client";
-import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
-import useAuth from "@hooks/useAuth.ts";
+import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
+import useAuth from "@hooks/useAuth";
 
 export const useSession = (sessionId: string) => {
   const { socket } = useSocket();

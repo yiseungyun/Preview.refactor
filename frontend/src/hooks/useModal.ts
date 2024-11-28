@@ -19,13 +19,13 @@ const useModal = (): UseModalReturn => {
       dialog.showModal();
 
       const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
+        if (e.key === "Escape") {
           e.preventDefault();
           setIsOpen(false);
         }
       };
 
-      window.addEventListener('keydown', handleEscape);
+      window.addEventListener("keydown", handleEscape);
     } else {
       dialog.close();
     }
@@ -41,7 +41,7 @@ const useModal = (): UseModalReturn => {
     dialogRef,
     isOpen,
     openModal: () => setIsOpen(true),
-    closeModal: () => setIsOpen(false)
+    closeModal: () => setIsOpen(false),
   };
 };
 

@@ -107,24 +107,6 @@ const usePeerConnection = (socket: Socket) => {
         });
       };
 
-      // Offer를 생성해야 하는 경우에만 Offer 생성
-      // Offer: 초대 - Offer 생성 -> 자신의 설정 저장 -> 상대에게 전송
-      // if (isOffer) {
-      //   pc.createOffer()
-      //     .then((offer) => pc.setLocalDescription(offer))
-      //     .then(() => {
-      //       if (socket && pc.localDescription) {
-      //         socket.emit(SIGNAL_EMIT_EVENT.OFFER, {
-      //           offerReceiveID: peerSocketId,
-      //           sdp: pc.localDescription,
-      //           offerSendID: socket.id,
-      //           offerSendNickname: localUser.nickname,
-      //         });
-      //       }
-      //     })
-      //     .catch((error) => console.error("Error creating offer:", error));
-      // }
-
       if (isOffer) {
         try {
           const offer = await pc.createOffer();
