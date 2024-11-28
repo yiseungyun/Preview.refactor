@@ -5,7 +5,6 @@ import { Question } from "./question.entity";
 import { Category } from "./category.entity";
 import { User } from "@/user/user.entity";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
-import { PaginateQuery } from "nestjs-paginate";
 
 @Injectable()
 export class QuestionListRepository {
@@ -116,6 +115,16 @@ export class QuestionListRepository {
         return this.dataSource.getRepository(Question).findOne({
             where: { id: questionId },
         });
+    }
+
+    getQuestionsAfterIndex(questionListId: number, index: number) {
+        return this.dataSource
+            .getRepository(Question)
+            .createQueryBuilder("question")
+            .where("question.questionListId = :questionListId", { questionListId })
+            .andWhere("question.index > :index", { index })
+            .orderBy("question.index", "ASC")
+            .getMany();
     }
 
     deleteQuestion(question: Question) {

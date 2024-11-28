@@ -8,17 +8,14 @@ import {
     Post,
     Query,
     Req,
-    Res,
     UseGuards,
 } from "@nestjs/common";
 import { QuestionListService } from "./question-list.service";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
-import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
 import { QuestionListContentsDto } from "./dto/question-list-contents.dto";
 import { AuthGuard } from "@nestjs/passport";
 import { JwtPayload } from "@/auth/jwt/jwt.decorator";
 import { IJwtPayload } from "@/auth/jwt/jwt.model";
-import { MyQuestionListDto } from "./dto/my-question-list.dto";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 import { QuestionDto } from "@/question-list/dto/question.dto";
 import { DeleteQuestionDto } from "@/question-list/dto/delete-question.dto";
@@ -29,7 +26,7 @@ export class QuestionListController {
     constructor(private readonly questionListService: QuestionListService) {}
 
     @Get()
-    async getAllQuestionLists(@Query() query: PaginateQuery, @Res() res) {
+    async getAllQuestionLists(@Query() query: PaginateQuery) {
         try {
             const { allQuestionLists, meta } =
                 await this.questionListService.getAllQuestionLists(query);
@@ -55,7 +52,6 @@ export class QuestionListController {
     async createQuestionList(
         @JwtPayload() token: IJwtPayload,
         @Req() req,
-        @Res() res,
         @Body()
         body: {
             title: string;
@@ -99,7 +95,6 @@ export class QuestionListController {
     @Post("category")
     async getAllQuestionListsByCategoryName(
         @Query() query: PaginateQuery,
-        @Res() res,
         @Body()
         body: {
             categoryName: string;
@@ -131,7 +126,6 @@ export class QuestionListController {
 
     @Post("contents")
     async getQuestionListContents(
-        @Res() res,
         @Body()
         body: {
             questionListId: number;
@@ -159,11 +153,7 @@ export class QuestionListController {
 
     @Get("my")
     @UseGuards(AuthGuard("jwt"))
-    async getMyQuestionLists(
-        @Query() query: PaginateQuery,
-        @Res() res,
-        @JwtPayload() token: IJwtPayload
-    ) {
+    async getMyQuestionLists(@Query() query: PaginateQuery, @JwtPayload() token: IJwtPayload) {
         try {
             const userId = token.userId;
             const { myQuestionLists, meta } = await this.questionListService.getMyQuestionLists(
@@ -190,7 +180,6 @@ export class QuestionListController {
     @Patch("/:questionListId")
     @UseGuards(AuthGuard("jwt"))
     async updateQuestionList(
-        @Res() res,
         @JwtPayload() token: IJwtPayload,
         @Param("questionListId") questionListId: number,
         @Body() body: { title?: string; isPublic?: boolean; categoryNames?: string[] }
@@ -227,7 +216,6 @@ export class QuestionListController {
     @Delete("/:questionListId")
     @UseGuards(AuthGuard("jwt"))
     async deleteQuestionList(
-        @Res() res,
         @JwtPayload() token: IJwtPayload,
         @Param("questionListId") questionListId: number
     ) {
@@ -261,7 +249,6 @@ export class QuestionListController {
     @Post("/:questionListId/question")
     @UseGuards(AuthGuard("jwt"))
     async addQuestion(
-        @Res() res,
         @JwtPayload() token: IJwtPayload,
         @Body() body: { content: string },
         @Param("questionListId") questionListId: number
@@ -296,7 +283,6 @@ export class QuestionListController {
     @Patch("/:questionListId/question/:questionId")
     @UseGuards(AuthGuard("jwt"))
     async updateQuestion(
-        @Res() res,
         @JwtPayload() token: IJwtPayload,
         @Body() body: { content: string },
         @Param() params: { questionListId: number; questionId: number }
@@ -333,7 +319,6 @@ export class QuestionListController {
     @Delete("/:questionListId/question/:questionId")
     @UseGuards(AuthGuard("jwt"))
     async deleteQuestion(
-        @Res() res,
         @JwtPayload() token: IJwtPayload,
         @Param() params: { questionListId: number; questionId: number }
     ) {
@@ -370,7 +355,6 @@ export class QuestionListController {
     @UseGuards(AuthGuard("jwt"))
     async getScrappedQuestionLists(
         @Query() query: PaginateQuery,
-        @Res() res,
         @JwtPayload() token: IJwtPayload
     ) {
         try {
@@ -397,7 +381,6 @@ export class QuestionListController {
     @Post("scrap")
     @UseGuards(AuthGuard("jwt"))
     async scrapQuestionList(
-        @Res() res,
         @JwtPayload() token: IJwtPayload,
         @Body() body: { questionListId: number }
     ) {
@@ -428,7 +411,6 @@ export class QuestionListController {
     @Delete("scrap/:questionListId")
     @UseGuards(AuthGuard("jwt"))
     async unscrapQuestionList(
-        @Res() res,
         @JwtPayload() token: IJwtPayload,
         @Param("questionListId") questionListId: number
     ) {

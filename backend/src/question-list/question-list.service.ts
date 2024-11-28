@@ -276,6 +276,18 @@ export class QuestionListService {
                 "You do not have permission to delete the question in this question list."
             );
 
+        const questionIndex = question.index;
+
+        const questionsToUpdate = await this.questionListRepository.getQuestionsAfterIndex(
+            questionListId,
+            questionIndex
+        );
+
+        for (const q of questionsToUpdate) {
+            q.index -= 1;
+            await this.questionListRepository.saveQuestion(q);
+        }
+
         return await this.questionListRepository.deleteQuestion(question);
     }
 
