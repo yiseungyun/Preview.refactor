@@ -9,6 +9,9 @@ export interface RoomMetadata {
   inProgress: boolean;
   host: UserInfo;
   category: string | string[];
+  questionListId: number;
+  questionListContents: Question[];
+  currentIndex: number;
 }
 
 export interface RoomJoinResponse {
@@ -22,6 +25,16 @@ export interface RoomJoinResponse {
   title: string;
   id: string;
   connectionMap: { [socketId: string]: UserInfo };
+  questionListId: number;
+  questionListContents: Question[];
+  currentIndex: number;
+}
+
+export interface Question {
+  id: number;
+  content: string;
+  index: number;
+  questionListId: number;
 }
 
 export interface UserInfo {
