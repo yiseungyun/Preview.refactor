@@ -1,14 +1,21 @@
 import { useMutation } from "@tanstack/react-query";
-import { createQuestionList } from "@/api/questions/createQuestionList";
+import { createQuestionList } from "@/api/question-list/createQuestionList";
 import useToast from "@hooks/useToast.ts";
 import { useNavigate } from "react-router-dom";
+
+interface QuestionListRequest {
+  title: string;
+  contents: string[];
+  categoryNames: string[];
+  isPublic: boolean;
+}
 
 export const useCreateQuestionList = () => {
   const toast = useToast();
   const navigate = useNavigate();
 
   const { mutate: createQuestions } = useMutation({
-    mutationFn: createQuestionList,
+    mutationFn: (data: QuestionListRequest) => createQuestionList(data),
     onSuccess: (response) => {
       const questionListId = response.data.createdQuestionList.id;
       toast.success("질문지 생성에 성공했습니다.");

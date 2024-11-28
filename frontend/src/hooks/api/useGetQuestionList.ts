@@ -1,4 +1,4 @@
-import { getQuestionList } from "@/api/questions/getQuestionList";
+import { getQuestionList } from "@/api/question-list/getQuestionList";
 import { useQuery } from "@tanstack/react-query";
 
 interface UseGetQuestionListProps {

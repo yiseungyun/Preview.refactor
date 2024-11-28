@@ -2,6 +2,8 @@ import { useState } from "react";
 import CategoryTap from "@components/MyPage/CategoryTab";
 import QuestionList from "@components/MyPage/QuestionList";
 import Pagination from "@components/common/Pagination";
+import { useGetMyQuestionList } from "@/hooks/api/useGetMyQuestionList";
+import { useGetScrapQuestionList } from "@/hooks/api/useGetScrapQuestionList";
 
 type TabName = "myList" | "savedList";
 
@@ -13,9 +15,26 @@ const QuestionSection = () => {
     tab === "myList" ? myListPage : savedListPage
   );
 
+  const {
+    data: myData,
+    isLoading: isMyListLoading,
+    error: myListError,
+  } = useGetMyQuestionList({ limit: 8 });
+  const {
+    data: scrapData,
+    isLoading: isScrapListLoading,
+    error: scrapListError,
+  } = useGetScrapQuestionList({ limit: 8 });
+
+  const isLoading = tab === "myList" ? isMyListLoading : isScrapListLoading;
+  const error = tab === "myList" ? myListError : scrapListError;
+
+  if (isLoading) return <div>로딩 중</div>;
+  if (error) return <div>에러 발생</div>;
+
   const totalPages = {
-    myList: 14,
-    savedList: 8,
+    myList: myData?.meta.totalPages || 0,
+    savedList: scrapData?.meta.totalPages || 0,
   };
 
   const getCurrentPageProps = () => ({
@@ -32,7 +51,7 @@ const QuestionSection = () => {
   });
 
   return (
-    <div className="flex flex-col gap-2 mt-2">
+    <div className="flex flex-col w-full gap-2 mt-2">
       <CategoryTap tab={tab} setTab={setTab} />
       <QuestionList tab={tab} page={currentPage} />
       <Pagination {...getCurrentPageProps()} />

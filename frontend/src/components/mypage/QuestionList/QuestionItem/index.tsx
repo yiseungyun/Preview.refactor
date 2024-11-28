@@ -6,6 +6,7 @@ import Category from "./Category";
 import { useDeleteQuesitonList } from "@hooks/api/useDeleteQuestionList";
 import Modal from "@components/common/Modal";
 import useModal from "@/hooks/useModal";
+import { useGetQuestionContent } from "@/hooks/api/useGetQuestionContent";
 
 interface ItemProps {
   questionListId: number;
@@ -19,6 +20,7 @@ const QuestionItem = ({ questionListId, type, page }: ItemProps) => {
   const navigate = useNavigate();
   const modal = useModal();
   const deleteQuestions = useDeleteQuesitonList({ page, limit: ITEM_PER_PAGE });
+  const { data } = useGetQuestionContent(questionListId);
 
   const openDeleteModal = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -38,7 +40,7 @@ const QuestionItem = ({ questionListId, type, page }: ItemProps) => {
         leftButton="취소하기"
         rightButton="삭제하기"
         type="red"
-        onLeftClick={() => {}}
+        onLeftClick={() => { }}
         onRightClick={deleteHandler}
       />
       <div
@@ -50,12 +52,11 @@ const QuestionItem = ({ questionListId, type, page }: ItemProps) => {
         <div className="relative flex flex-col w-full gap-1">
           <div className="relative">
             <div className="flex flex-row gap-1 mb-2">
-              <Category text="네트워크" />
-              <Category text="운영체제" />
+              {data?.categoryNames.map(category => (<Category key={category} text={category} />))}
             </div>
             <div className="px-1">
               <p className="text-gray-black text-semibold-m">
-                프론트엔드프론트엔드프론트엔드프론트엔드
+                {data?.title}
               </p>
               <div className="absolute top-0 right-0 text-gray-400 flex flex-row gap-1">
                 {type === "my" ? (
@@ -77,7 +78,7 @@ const QuestionItem = ({ questionListId, type, page }: ItemProps) => {
                 )}
               </div>
               <span className="text-gray-600 text-medium-m">
-                작성자 눈드뮴눈드뮴눈드뮴눈드뮴눈드뮴눈드뮴눈드
+                작성자 {data?.username}
               </span>
             </div>
           </div>

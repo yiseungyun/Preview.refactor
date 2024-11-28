@@ -16,7 +16,7 @@ const Profile = ({
   modal: UseModalReturn;
 }) => {
   return (
-    <div className="flex flex-row gap-8">
+    <div className="w-full flex flex-row gap-8">
       <ProfileIcon />
       <div className="flex flex-col my-2">
         <div className="flex flex-row mb-2 items-center gap-2">

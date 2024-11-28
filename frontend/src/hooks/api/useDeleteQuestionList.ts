@@ -1,6 +1,6 @@
 import useToast from "../useToast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteQuestionList } from "@/api/questions/deleteQuestionList";
+import { deleteQuestionList } from "@/api/question-list/deleteQuestionList";
 
 interface UseDeleteQuestionList {
   page: Number;
@@ -18,7 +18,10 @@ export const useDeleteQuesitonList = ({
     mutationFn: deleteQuestionList,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["questions", page, limit],
+        queryKey: ["myQuestions", page, limit],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["scrapQuestions", page, limit],
       });
     },
     onError: () => {
