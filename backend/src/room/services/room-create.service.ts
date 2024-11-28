@@ -36,6 +36,8 @@ export class RoomCreateService {
             participants: 0,
             questionListContents,
             createdAt: currentTime,
+            maxQuestionListLength: questionListContents.length,
+            currentIndex: 0,
             host: {
                 socketId: dto.socketId,
                 nickname,
