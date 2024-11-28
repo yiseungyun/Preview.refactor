@@ -8,6 +8,7 @@ import useToast from "../../hooks/useToast";
 import { TbCrown } from "react-icons/tb";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 import { Question } from "@hooks/type/session";
+import { BsLayoutSidebarReverse } from "react-icons/bs";
 
 interface ParticipantsData {
   nickname: string;
@@ -70,10 +71,90 @@ const SessionSidebar = ({
 
   return (
     <div
-      className={
-        "flex flex-col justify-between w-[440px] px-6 bg-white shrink-0"
-      }
+      className={"flex gap-2 items-stretch w-[440px] pr-6 bg-white shrink-0"}
     >
+      <div
+        className={"w-10 h-full flex justify-center items-start py-2 text-xl  "}
+      >
+        <button className={"bg-gray-200 rounded-md p-2"}>
+          <BsLayoutSidebarReverse />
+        </button>
+      </div>
+      <div className={"flex flex-col gap-4 flex-grow justify-between "}>
+        <div className={"flex flex-col gap-4  "}>
+          <div className={"flex flex-col gap-2 pt-6"}>
+            <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
+              <FaClipboardList />
+              현재 질문
+            </h2>
+            <div
+              className={
+                "border border-accent-gray p-2 bg-transparent rounded-xl "
+              }
+            >
+              {currentIndex >= 0 ? (
+                <p>
+                  <span className={"text-bold-s"}>
+                    Q{questionList[currentIndex].index}.{" "}
+                  </span>
+                  {questionList[currentIndex].content}
+                </p>
+              ) : (
+                <p>질문 로딩 중...</p>
+              )}
+            </div>
+          </div>
+          <div className={"flex flex-col gap-2 mt-4"}>
+            <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
+              <FaUserGroup />
+              참가자
+            </h2>
+            <ul>
+              {participants.map((participant, index) => (
+                <li key={index} className={"flex items-center gap-2"}>
+                  <span className={"w-4 h-4 bg-point-2 rounded-full"} />
+                  <span>{participant.nickname}</span>
+                  <span className={"text-yellow-400"}>
+                    {participant.isHost && <TbCrown />}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className={"flex flex-col gap-2 mt-4"}>
+            <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
+              <FaFolder />
+              이전 질문
+            </h2>
+            <ul>
+              {currentIndex <= 0 && (
+                <li className={"text-medium-s"}>
+                  여기에 이전 질문이 기록됩니다.
+                </li>
+              )}
+              {questionList.map((question, index) => {
+                if (index < currentIndex)
+                  return (
+                    <li key={question.id}>
+                      Q{index + 1}. {question.content}
+                    </li>
+                  );
+              })}
+            </ul>
+          </div>
+        </div>
+        <div className={"h-16 items-center flex w-full"}>
+          <button
+            className={"w-full bg-red-500 text-white rounded-md py-2"}
+            onClick={() => {
+              openModal();
+            }}
+          >
+            종료하기
+          </button>
+        </div>
+      </div>
+
       <Modal
         title={isHost ? HostModalData.title : ParticipantModalData.title}
         subtitle={
@@ -95,78 +176,6 @@ const SessionSidebar = ({
             : ParticipantModalData.onRightClick
         }
       />
-      <div className={"flex flex-col gap-4  "}>
-        <div className={"flex flex-col gap-2 pt-6"}>
-          <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
-            <FaClipboardList />
-            현재 질문
-          </h2>
-          <div
-            className={
-              "border border-accent-gray p-2 bg-transparent rounded-xl "
-            }
-          >
-            {currentIndex >= 0 ? (
-              <p>
-                <span className={"text-bold-s"}>
-                  Q{questionList[currentIndex].index}.{" "}
-                </span>
-                {questionList[currentIndex].content}
-              </p>
-            ) : (
-              <p>질문 로딩 중...</p>
-            )}
-          </div>
-        </div>
-        <div className={"flex flex-col gap-2 mt-4"}>
-          <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
-            <FaUserGroup />
-            참가자
-          </h2>
-          <ul>
-            {participants.map((participant, index) => (
-              <li key={index} className={"flex items-center gap-2"}>
-                <span className={"w-4 h-4 bg-point-2 rounded-full"} />
-                <span>{participant.nickname}</span>
-                <span className={"text-yellow-400"}>
-                  {participant.isHost && <TbCrown />}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className={"flex flex-col gap-2 mt-4"}>
-          <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
-            <FaFolder />
-            이전 질문
-          </h2>
-          <ul>
-            {currentIndex <= 0 && (
-              <li className={"text-medium-s"}>
-                여기에 이전 질문이 기록됩니다.
-              </li>
-            )}
-            {questionList.map((question, index) => {
-              if (index < currentIndex)
-                return (
-                  <li key={question.id}>
-                    Q{index + 1}. {question.content}
-                  </li>
-                );
-            })}
-          </ul>
-        </div>
-      </div>
-      <div className={"h-16 items-center flex w-full"}>
-        <button
-          className={"w-full bg-red-500 text-white rounded-md py-2"}
-          onClick={() => {
-            openModal();
-          }}
-        >
-          종료하기
-        </button>
-      </div>
     </div>
   );
 };
