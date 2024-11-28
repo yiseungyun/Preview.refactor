@@ -1,6 +1,6 @@
 import TitleInput from "@components/common/TitleInput";
 import { IoMdClose } from "react-icons/io";
-import ButtonSection from "@components/MyPage/ButtonSection";
+import ButtonSection from "@components/mypage/ButtonSection";
 import useAuth from "@hooks/useAuth";
 
 interface UseModalReturn {

@@ -1,5 +1,5 @@
 import { MdEdit } from "react-icons/md";
-import ProfileIcon from "@components/MyPage/ProfileIcon";
+import ProfileIcon from "@components/mypage/ProfileIcon";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
