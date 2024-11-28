@@ -23,7 +23,7 @@ const QuestionItem = ({ questionListId, type, page }: ItemProps) => {
   const openDeleteModal = (e: React.MouseEvent) => {
     e.stopPropagation();
     modal.openModal();
-  }
+  };
 
   const deleteHandler = () => {
     deleteQuestions(questionListId);
@@ -38,7 +38,7 @@ const QuestionItem = ({ questionListId, type, page }: ItemProps) => {
         leftButton="취소하기"
         rightButton="삭제하기"
         type="red"
-        onLeftClick={() => { }}
+        onLeftClick={() => {}}
         onRightClick={deleteHandler}
       />
       <div

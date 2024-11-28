@@ -18,8 +18,8 @@ import {
 import {
   SIGNAL_EMIT_EVENT,
   SIGNAL_LISTEN_EVENT,
-} from "@/constants/WebSocket/SignalingEvent.ts";
-import { SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
+} from "@/constants/WebSocket/SignalingEvent";
+import { SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent";
 
 interface UseSocketEventsProps {
   socket: Socket | null;

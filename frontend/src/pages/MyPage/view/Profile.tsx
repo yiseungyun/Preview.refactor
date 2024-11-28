@@ -10,12 +10,11 @@ interface UseModalReturn {
 
 const Profile = ({
   nickname,
-  modal
+  modal,
 }: {
-  nickname: string
-  modal: UseModalReturn
+  nickname: string;
+  modal: UseModalReturn;
 }) => {
-
   return (
     <div className="flex flex-row gap-8">
       <ProfileIcon />
