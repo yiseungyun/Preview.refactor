@@ -4,7 +4,7 @@ import { QuestionList } from "./question-list.entity";
 import { Question } from "./question.entity";
 import { Category } from "./category.entity";
 import { User } from "@/user/user.entity";
-import { PaginateQuery } from "nestjs-paginate";
+import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 
 @Injectable()
 export class QuestionListRepository {
@@ -97,6 +97,38 @@ export class QuestionListRepository {
                 questionListId,
             })
             .getCount();
+    }
+
+    updateQuestionList(updateQuestionListDto: UpdateQuestionListDto) {
+        return this.dataSource.getRepository(QuestionList).save(updateQuestionListDto);
+    }
+
+    deleteQuestionList(questionListId: number) {
+        return this.dataSource.getRepository(QuestionList).delete(questionListId);
+    }
+
+    saveQuestion(question: Question) {
+        return this.dataSource.getRepository(Question).save(question);
+    }
+
+    getQuestionById(questionId: number) {
+        return this.dataSource.getRepository(Question).findOne({
+            where: { id: questionId },
+        });
+    }
+
+    getQuestionsAfterIndex(questionListId: number, index: number) {
+        return this.dataSource
+            .getRepository(Question)
+            .createQueryBuilder("question")
+            .where("question.questionListId = :questionListId", { questionListId })
+            .andWhere("question.index > :index", { index })
+            .orderBy("question.index", "ASC")
+            .getMany();
+    }
+
+    deleteQuestion(question: Question) {
+        return this.dataSource.getRepository(Question).delete(question);
     }
 
     scrapQuestionList(questionListId: number, userId: number) {

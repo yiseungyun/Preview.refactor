@@ -53,6 +53,8 @@ export class QuestionList {
     })
     categories: Category[];
 
-    @ManyToMany(() => User, (user) => user.scrappedQuestionLists)
+    @ManyToMany(() => User, (user) => user.scrappedQuestionLists, {
+        onDelete: "CASCADE",
+    })
     scrappedByUsers: User[];
 }
