@@ -20,6 +20,7 @@ import {
   SIGNAL_LISTEN_EVENT,
 } from "@/constants/WebSocket/SignalingEvent.ts";
 import { SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
+import { STUDY_LISTEN_EVENT } from "@/constants/WebSocket/StudyEvent.ts";
 
 interface UseSocketEventsProps {
   socket: Socket | null;
@@ -106,6 +107,9 @@ export const useSocketEvents = ({
         status,
         title,
         connectionMap,
+        questionListId,
+        questionListContents,
+        currentIndex,
       } = data;
 
       const roomMetadata = {
@@ -118,6 +122,9 @@ export const useSocketEvents = ({
         maxParticipants,
         createdAt,
         inProgress,
+        questionListId,
+        questionListContents,
+        currentIndex,
       };
 
       setRoomMetadata(roomMetadata);
@@ -197,6 +204,25 @@ export const useSocketEvents = ({
       navigate("/sessions");
     };
 
+    const handleRoomProgress = () => {
+      toast.error("해당 세션은 현재 진행 중입니다.");
+      navigate("/sessions");
+    };
+
+    const handleChangeIndex = (data: { currentIndex: number }) => {
+      const { currentIndex } = data;
+      if (currentIndex >= 0) {
+        setRoomMetadata((prev) => ({ ...prev!, currentIndex }));
+      }
+    };
+
+    const handleStartProgress = () => {
+      setRoomMetadata((prev) => ({ ...prev!, inProgress: true }));
+    };
+    const handleStopProgress = () => {
+      setRoomMetadata((prev) => ({ ...prev!, inProgress: false }));
+    };
+
     socket.on(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
     socket.on(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
     socket.on(SIGNAL_LISTEN_EVENT.CANDIDATE, handleGetCandidate);
@@ -206,6 +232,12 @@ export const useSocketEvents = ({
     socket.on(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
     socket.on(SESSION_LISTEN_EVENT.REACTION, handleReaction);
     socket.on(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
+    socket.on(STUDY_LISTEN_EVENT.INDEX, handleChangeIndex);
+    socket.on(STUDY_LISTEN_EVENT.CURRENT, handleChangeIndex);
+    socket.on(STUDY_LISTEN_EVENT.NEXT, handleChangeIndex);
+    socket.on(STUDY_LISTEN_EVENT.START, handleStartProgress);
+    socket.on(STUDY_LISTEN_EVENT.STOP, handleStopProgress);
+    socket.on(STUDY_LISTEN_EVENT.PROGRESS, handleRoomProgress);
 
     return () => {
       socket.off(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
@@ -217,6 +249,11 @@ export const useSocketEvents = ({
       socket.off(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
       socket.off(SESSION_LISTEN_EVENT.REACTION, handleReaction);
       socket.off(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
+      socket.off(STUDY_LISTEN_EVENT.INDEX, handleChangeIndex);
+      socket.off(STUDY_LISTEN_EVENT.CURRENT, handleChangeIndex);
+      socket.off(STUDY_LISTEN_EVENT.NEXT, handleChangeIndex);
+      socket.off(STUDY_LISTEN_EVENT.START, handleStartProgress);
+      socket.off(STUDY_LISTEN_EVENT.STOP, handleStopProgress);
 
       if (reactionTimeouts.current) {
         Object.values(reactionTimeouts.current).forEach(clearTimeout);
