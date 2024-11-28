@@ -26,6 +26,8 @@ export class RoomJoinService {
 
         if (!room) throw new Error("RoomEntity Not found");
 
+        if (room.inProgress) return socket.emit(EMIT_EVENT.IN_PROGRESS, {});
+
         if (this.isFullRoom(room)) return socket.emit(EMIT_EVENT.FULL, {});
 
         socket.join(roomId);

@@ -16,6 +16,7 @@ export const EMIT_EVENT = {
     QUIT: "server:room__quit",
     FULL: "server:room__full",
     JOIN: "server:room__join",
+    IN_PROGRESS: "server:room__progress",
     FINISH: "server:room__finish",
     CHANGE_HOST: "server:room__change_host",
     REACTION: "server:room__reaction",
