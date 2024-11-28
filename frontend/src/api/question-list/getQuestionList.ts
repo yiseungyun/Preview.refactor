@@ -12,5 +12,6 @@ export const getQuestionList = async ({ page, limit }: QuestionListProps) => {
       limit,
     },
   });
-  return response.data;
+
+  return response.data.allQuestionLists;
 };
