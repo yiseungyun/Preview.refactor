@@ -35,7 +35,6 @@ const useAuth = () => {
     }
   }, [isLoggedIn, nickname]);
 
-
   const logIn = () => {
     login();
   };

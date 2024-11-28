@@ -1,4 +1,4 @@
-import fetchQuestion from "@/api/questions/getQuestion.ts";
+import getQuestionContent from "@/api/questions/getQuestionContent";
 import { useQuery } from "@tanstack/react-query";
 
 interface QuestionContent {
@@ -17,9 +17,9 @@ interface ApiResponse {
   username: string;
 }
 
-export const useGetQuestion = (questionListId: string) => {
+export const useGetQuestionContent = (questionListId: string) => {
   return useQuery<ApiResponse>({
     queryKey: ["questions", questionListId],
-    queryFn: () => fetchQuestion(Number(questionListId)),
+    queryFn: () => getQuestionContent(Number(questionListId)),
   });
 };

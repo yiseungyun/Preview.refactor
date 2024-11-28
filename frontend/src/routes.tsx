@@ -8,7 +8,7 @@ import ErrorPage from "@/pages/ErrorPage.tsx";
 import LoginPage from "@/pages/Login/LoginPage.tsx";
 import QuestionListPage from "@/pages/QuestionListPage.tsx";
 import AuthCallbackPage from "@/pages/Login/AuthCallbackPage.tsx";
-import MyPage from "@/pages/MyPage.tsx";
+import MyPage from "@/pages/MyPage/index.tsx";
 
 export const routes = [
   {
