@@ -1,6 +1,5 @@
 import { FaClipboardList, FaFolder } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
-import useModalStore from "@stores/useModalStore.ts";
 import Modal from "../../common/Modal";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
@@ -8,6 +7,7 @@ import useToast from "@hooks/useToast.ts";
 import { TbCrown } from "react-icons/tb";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 import { Question } from "@hooks/type/session";
+import useModal from "@/hooks/useModal";
 
 interface ParticipantsData {
   nickname: string;
@@ -31,9 +31,9 @@ const SessionSidebar = ({
   roomId,
   isHost,
 }: Props) => {
-  const { openModal } = useModalStore();
   const navigate = useNavigate();
   const toast = useToast();
+  const modal = useModal();
 
   const existHandler = () => {
     socket?.emit(SESSION_EMIT_EVENT.LEAVE, { roomId });
@@ -64,7 +64,7 @@ const SessionSidebar = ({
     leftButton: "취소하기",
     rightButton: "종료하기",
     type: "red",
-    onLeftClick: () => {},
+    onLeftClick: () => { },
     onRightClick: existHandler,
   };
 
@@ -141,7 +141,7 @@ const SessionSidebar = ({
           <button
             className={"w-full bg-red-500 text-white rounded-md py-2"}
             onClick={() => {
-              openModal();
+              modal.openModal
             }}
           >
             종료하기
@@ -150,6 +150,7 @@ const SessionSidebar = ({
       </div>
 
       <Modal
+        modal={modal}
         title={isHost ? HostModalData.title : ParticipantModalData.title}
         subtitle={
           isHost ? HostModalData.subtitle : ParticipantModalData.subtitle
