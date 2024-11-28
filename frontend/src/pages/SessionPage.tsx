@@ -138,6 +138,8 @@ const SessionPage = () => {
             isInProgress={roomMetadata?.inProgress ?? false}
             startStudySession={startStudySession}
             stopStudySession={stopStudySession}
+            currentIndex={roomMetadata?.currentIndex ?? -1}
+            maxQuestionLength={roomMetadata?.questionListContents.length ?? 0}
           />
         </div>
         <SidebarContainer>

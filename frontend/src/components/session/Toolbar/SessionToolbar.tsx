@@ -20,6 +20,8 @@ interface Props {
   isInProgress: boolean;
   startStudySession: () => void;
   stopStudySession: () => void;
+  currentIndex: number;
+  maxQuestionLength: number;
 }
 const SessionToolbar = ({
   requestChangeIndex,
@@ -37,6 +39,8 @@ const SessionToolbar = ({
   isInProgress,
   startStudySession,
   stopStudySession,
+  currentIndex,
+  maxQuestionLength,
 }: Props) => {
   return (
     <div
@@ -62,6 +66,8 @@ const SessionToolbar = ({
         stopStudySession={stopStudySession}
         startStudySession={startStudySession}
         requestChangeIndex={requestChangeIndex}
+        maxQuestionLength={maxQuestionLength}
+        currentIndex={currentIndex}
       />
     </div>
   );
