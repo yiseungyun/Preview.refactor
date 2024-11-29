@@ -2,13 +2,11 @@ import Sidebar from "@components/common/Sidebar.tsx";
 import SearchBar from "@components/common/SearchBar.tsx";
 import QuestionsPreviewCard from "@components/questions/QuestionsPreviewCard.tsx";
 import Select from "@components/common/Select.tsx";
-import useToast from "@hooks/useToast.ts";
 import { useEffect, useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import useAuth from "@hooks/useAuth.ts";
 import CreateButton from "@components/common/CreateButton.tsx";
 import { options } from "@/constants/CategoryData.ts";
 
@@ -22,13 +20,9 @@ interface QuestionList {
 }
 
 const QuestionList = () => {
-  const toast = useToast();
-  // 더미 데이터
   const [questionList, setQuestionList] = useState<QuestionList[]>([]);
   const [questionLoading, setQuestionLoading] = useState(true);
   const navigate = useNavigate();
-
-  const { isLoggedIn } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<string>("전체");
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -67,14 +61,6 @@ const QuestionList = () => {
     navigate(`/questions/${id}`);
   };
 
-  const handleNavigateCreate = () => {
-    if (isLoggedIn) {
-      navigate("/questions/create");
-    } else {
-      toast.error("로그인이 필요한 기능입니다.");
-    }
-  };
-
   return (
     <section className="flex w-screen min-h-screen">
       <Sidebar />
@@ -91,7 +77,7 @@ const QuestionList = () => {
               options={options}
             />
             <CreateButton
-              onClick={handleNavigateCreate}
+              path={"/questions/create"}
               text={"새로운 질문지"}
               icon={IoMdAdd}
             />

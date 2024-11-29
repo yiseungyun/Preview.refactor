@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 import SearchBar from "@components/common/SearchBar.tsx";
 import Select from "@components/common/Select.tsx";
@@ -12,7 +11,6 @@ import SidebarPageLayout from "@components/layout/SidebarPageLayout.tsx";
 import Divider from "@components/common/Divider.tsx";
 
 const SessionListPage = () => {
-  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>("전체");
 
   console.log(selectedCategory);
@@ -37,7 +35,7 @@ const SessionListPage = () => {
               options={options}
             />
             <CreateButton
-              onClick={() => navigate("/sessions/create")}
+              path={"/sessions/create"}
               text={"새로운 세션"}
               icon={IoMdAdd}
             />
