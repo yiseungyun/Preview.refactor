@@ -54,11 +54,10 @@ const SessionListPage = () => {
           listLoading={listLoading}
           sessionList={inProgressList}
         />
-        {error && (
-          <ErrorBlock
-            message={"서버에서 세션 목록을 불러오는데 실패했습니다!"}
-          />
-        )}
+        <ErrorBlock
+          error={error}
+          message={"서버에서 세션 목록을 불러오는데 실패했습니다!"}
+        />
       </div>
     </SidebarPageLayout>
   );
