@@ -2,6 +2,7 @@ import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import SessionCard from "@components/sessions/SessionCard.tsx";
 import useToast from "@hooks/useToast.ts";
 import type { Session } from "@/pages/SessionListPage/types/session";
+import NotFound from "@components/common/Animate/NotFound.tsx";
 
 interface SessionListProps {
   listTitle: string;
@@ -43,7 +44,12 @@ const SessionList = ({
       {listLoading && <LoadingIndicator loadingState={listLoading} />}
       <ul className={"grid grid-cols-1 xl:grid-cols-2 gap-4"}>
         {!listLoading && sessionList.length <= 0 ? (
-          <li key={-1}>아직 아무도 세션을 열지 않았어요..!</li>
+          <li key={-1} className={"flex justify-start"}>
+            <NotFound
+              message={"새로운 스터디 세션을 만들어 면접 준비를 시작해보세요!"}
+              className={""}
+            />
+          </li>
         ) : (
           renderSessionList()
         )}
