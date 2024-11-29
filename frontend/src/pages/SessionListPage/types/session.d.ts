@@ -1,5 +1,5 @@
 export interface Session {
-  id: number;
+  id: string;
   title: string;
   category?: string;
   inProgress: boolean;
