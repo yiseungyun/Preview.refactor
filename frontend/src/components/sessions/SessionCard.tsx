@@ -26,7 +26,7 @@ const SessionCard = ({
 }: Props) => {
   return (
     <li
-      className={`relative flex rounded-custom-l border-l-[1.625rem] ${inProgress ? "border-l-point-2" : "border-l-green-200"} bg-gray-white shadow-8 overflow-hidden py-3 max-w-[47.5rem] h-[8.75rem]`}
+      className={`relative flex rounded-custom-l border-l-[1.625rem] ${inProgress ? "border-l-point-2" : "border-l-green-200"} bg-gray-white shadow-8 overflow-hidden py-3 max-w-[47.5rem] h-[8.75rem] transition-all hover:shadow-lg`}
     >
       <div className={"flex-grow px-[0.75rem] flex flex-col items-start"}>
         <span
@@ -36,11 +36,11 @@ const SessionCard = ({
         >
           {category}
         </span>
-        <Link onClick={onEnter} to={`/session/${id}`}>
+        <Link className={""} onClick={onEnter} to={`/session/${id}`}>
           <h3 className={"text-semibold-m mt-[0.5rem]"}>{title}</h3>
         </Link>
         <p className={"text-medium-r text-gray-400"}>
-          질문지인데 누르면 질문 리스트를 볼 수 있음 {questionListId}
+          함께 면접 스터디에 참여해보세요! {questionListId}
         </p>
         <div
           className={
