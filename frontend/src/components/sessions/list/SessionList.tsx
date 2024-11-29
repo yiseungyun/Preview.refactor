@@ -44,10 +44,14 @@ const SessionList = ({
       {listLoading && <LoadingIndicator loadingState={listLoading} />}
       <ul className={"grid grid-cols-1 xl:grid-cols-2 gap-4"}>
         {!listLoading && sessionList.length <= 0 ? (
-          <li key={-1} className={"flex justify-start"}>
+          <li key={-1} className={"flex justify-start items-center"}>
             <NotFound
               message={"새로운 스터디 세션을 만들어 면접 준비를 시작해보세요!"}
               className={""}
+              redirect={{
+                path: "/sessions/create",
+                buttonText: "새로운 세션 생성하러 가기 ",
+              }}
             />
           </li>
         ) : (
