@@ -1,7 +1,9 @@
 import { FaUserGroup } from "react-icons/fa6";
 import { IoArrowForwardSharp } from "react-icons/io5";
+import { Link } from "react-router-dom";
 interface Props {
   category?: string;
+  id: string;
   title: string;
   host: string;
   inProgress: boolean;
@@ -12,7 +14,8 @@ interface Props {
 }
 
 const SessionCard = ({
-  category = "None",
+  category = "기타",
+  id,
   title,
   host,
   participant,
@@ -33,7 +36,9 @@ const SessionCard = ({
         >
           {category}
         </span>
-        <h3 className={"text-semibold-m mt-[0.5rem]"}>{title}</h3>
+        <Link onClick={onEnter} to={`/session/${id}`}>
+          <h3 className={"text-semibold-m mt-[0.5rem]"}>{title}</h3>
+        </Link>
         <p className={"text-medium-r text-gray-400"}>
           질문지인데 누르면 질문 리스트를 볼 수 있음 {questionListId}
         </p>
@@ -51,15 +56,17 @@ const SessionCard = ({
             </span>
           </div>
           {!inProgress && (
-            <button
-              className={
-                "text-semibold-r text-green-500 inline-flex items-center gap-[0.5rem] hover:gap-[0.375rem] transition-all"
-              }
-              onClick={onEnter}
-            >
-              <span>참여하기</span>{" "}
-              <IoArrowForwardSharp className="w-[1.25rem] h-[1.25rem] text-green-500" />
-            </button>
+            <Link to={`/session/${id}`}>
+              <button
+                className={
+                  "text-semibold-r text-green-500 inline-flex items-center gap-[0.5rem] hover:gap-[0.375rem] transition-all"
+                }
+                onClick={onEnter}
+              >
+                <span>참여하기</span>{" "}
+                <IoArrowForwardSharp className="w-[1.25rem] h-[1.25rem] text-green-500" />
+              </button>
+            </Link>
           )}
         </div>
       </div>
