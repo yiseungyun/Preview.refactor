@@ -10,6 +10,7 @@ interface Props {
   participant: number;
   maxParticipant: number;
   questionListId: number;
+  questionListTitle?: string;
   onEnter: () => void;
 }
 
@@ -22,6 +23,7 @@ const SessionCard = ({
   maxParticipant,
   inProgress,
   questionListId,
+  questionListTitle,
   onEnter,
 }: Props) => {
   return (
@@ -40,7 +42,7 @@ const SessionCard = ({
           <h3 className={"text-semibold-m mt-[0.5rem]"}>{title}</h3>
         </Link>
         <p className={"text-medium-r text-gray-400"}>
-          함께 면접 스터디에 참여해보세요! {questionListId}
+          {questionListTitle} 함께 면접 스터디에 참여해보세요! {questionListId}
         </p>
         <div
           className={
