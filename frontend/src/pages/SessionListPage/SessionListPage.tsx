@@ -9,6 +9,7 @@ import { options } from "@/constants/CategoryData.ts";
 import { useGetSessionList } from "@/pages/SessionListPage/api/useGetSessionList.ts";
 import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
 import SidebarPageLayout from "@components/layout/SidebarPageLayout.tsx";
+import Divider from "@components/common/Divider.tsx";
 
 const SessionListPage = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const SessionListPage = () => {
     <SidebarPageLayout>
       <div className={"flex flex-col gap-8 max-w-7xl w-full px-12 pt-20"}>
         <div>
-          <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
+          <h1 className={"text-bold-l mb-6"}>면접 스터디 세션 목록</h1>
           <div className={"h-11 flex gap-2 w-full"}>
             <SearchBar text="세션을 검색하세요" />
             <Select
@@ -47,6 +48,7 @@ const SessionListPage = () => {
           listLoading={listLoading}
           sessionList={sessionList}
         />
+        <Divider isText={false} />
         <SessionList
           listTitle={"진행 중인 세션 목록"}
           listLoading={listLoading}
