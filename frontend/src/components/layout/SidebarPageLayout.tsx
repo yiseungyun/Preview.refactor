@@ -13,7 +13,7 @@ const SidebarPageLayout = ({
   return (
     <section className={sectionWithSidebar}>
       <Sidebar />
-      <div className={childrenClassName}>{children}</div>
+      <div className={childrenClassName + " overflow-y-scroll"}>{children}</div>
     </section>
   );
 };

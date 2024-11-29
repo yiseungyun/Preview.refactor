@@ -2,7 +2,7 @@ import App from "./App.tsx";
 import CreateQuestionPage from "./pages/CreateQuestionPage.tsx";
 import CreateSessionPage from "./pages/CreateSessionPage.tsx";
 import QuestionDetailPage from "./pages/QuestionDetailPage.tsx";
-import SessionListPage from "./pages/SessionListPage.tsx";
+import SessionListPage from "./pages/SessionListPage/SessionListPage.tsx";
 import SessionPage from "./pages/SessionPage";
 import ErrorPage from "@/pages/ErrorPage.tsx";
 import LoginPage from "@/pages/Login/LoginPage.tsx";
