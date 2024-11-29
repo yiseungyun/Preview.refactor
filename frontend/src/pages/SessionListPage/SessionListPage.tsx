@@ -25,7 +25,7 @@ const SessionListPage = () => {
 
   return (
     <SidebarPageLayout>
-      <div className={"flex flex-col gap-8 max-w-5xl w-full px-12 pt-20"}>
+      <div className={"flex flex-col gap-8 max-w-7xl w-full px-12 pt-20"}>
         <div>
           <h1 className={"text-bold-l mb-6"}>스터디 세션 목록</h1>
           <div className={"h-11 flex gap-2 w-full"}>
