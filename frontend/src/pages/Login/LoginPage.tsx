@@ -6,6 +6,7 @@ import Divider from "@components/common/Divider.tsx";
 import OAuthContainer from "@/pages/Login/view/OAuthContainer.tsx";
 import DefaultAuthFormContainer from "@/pages/Login/view/DefaultAuthFormContainer.tsx";
 import { useEffect, useState } from "react";
+import LoginTitle from "@/pages/Login/view/LoginTitle.tsx";
 
 const LoginPage = () => {
   const { isLoggedIn, guestLogIn } = useAuth();
@@ -41,12 +42,8 @@ const LoginPage = () => {
             <div className="hidden lg:flex flex-grow flex-col justify-center col-span-7 p-16 bg-gradient-to-br from-emerald-600 to-emerald-700">
               <DrawingSnowman />
             </div>
-            <div className="col-span-5 p-16 bg-gray-white w-full lg:w-5/12">
-              {!isSignUp && (
-                <h1 className="text-6xl font-raleway font-bold black mb-11 tracking-tight text-center">
-                  Preview
-                </h1>
-              )}
+            <div className="relative col-span-5 p-16 bg-gray-white w-full lg:w-5/12">
+              <LoginTitle isSignUp={isSignUp} />
               <div className="w-full max-w-md mx-auto">
                 <form className="space-y-4">
                   <DefaultAuthFormContainer

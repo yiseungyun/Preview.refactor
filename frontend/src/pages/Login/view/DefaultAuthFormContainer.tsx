@@ -225,6 +225,7 @@ const DefaultAuthFormContainer = ({
           )}
         </button>
         <button
+          onClick={() => toast.error("비밀번호 찾기는 아직 지원하지 않습니다.")}
           type="button"
           className="hover:text-green-300 transition-colors"
         >
