@@ -15,7 +15,23 @@ interface VideoContainerProps {
   reaction: string;
   stream: MediaStream;
   videoLoading?: boolean;
+  videoCount: number;
 }
+
+const getVideoLayoutClass = (count: number) => {
+  switch (count) {
+    case 1:
+      return "w-full";
+    case 2:
+      return "w-full sm:w-1/2";
+    case 3:
+      return "w-full sm:w-1/2 2xl:w-1/3";
+    case 4:
+      return "w-full sm:w-1/2";
+    case 5:
+      return "w-full sm:w-1/2 md:w-1/3";
+  }
+};
 
 const VideoContainer = ({
   nickname,
@@ -25,6 +41,7 @@ const VideoContainer = ({
   reaction,
   stream,
   videoLoading,
+  videoCount,
 }: VideoContainerProps) => {
   const renderReaction = (reactionType: string) => {
     switch (reactionType) {
@@ -40,7 +57,7 @@ const VideoContainer = ({
     return isMicOn ? (
       <BsMic className="text-white" />
     ) : (
-      <BsMicMute className="text-red-500" />
+      <BsMicMute className="text-point-1" />
     );
   };
 
@@ -48,17 +65,17 @@ const VideoContainer = ({
     return isVideoOn ? (
       <BsCameraVideo className="text-white" />
     ) : (
-      <BsCameraVideoOff className="text-red-500" />
+      <BsCameraVideoOff className="text-point-1" />
     );
   };
 
   return (
-    <div className="relative max-w-6xl aspect-4-3">
-      <div className="bg-black rounded-2xl overflow-hidden  h-full">
+    <div className={`relative aspect-[4/3] ${getVideoLayoutClass(videoCount)}`}>
+      <div className="absolute inset-0 bg-black rounded-custom-l overflow-hidden">
         <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
           <p className="bg-grayscale-500 bg-opacity-50 text-white px-2 py-0.5 rounded">
-            {isLocal && "Me"} {nickname}
+            {nickname}
           </p>
           <div className={"inline-flex gap-4 px-2 items-center"}>
             {renderMicIcon()}

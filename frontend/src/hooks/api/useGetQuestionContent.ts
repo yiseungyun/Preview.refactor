@@ -27,5 +27,5 @@ export const useGetQuestionContent = (questionListId: number) => {
     data,
     isLoading,
     error,
-  }
+  };
 };

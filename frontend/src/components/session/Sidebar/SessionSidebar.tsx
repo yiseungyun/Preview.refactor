@@ -7,7 +7,7 @@ import useToast from "@hooks/useToast.ts";
 import { TbCrown } from "react-icons/tb";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 import { Question } from "@hooks/type/session";
-import useModal from "@/hooks/useModal";
+import useModal from "@hooks/useModal";
 
 interface ParticipantsData {
   nickname: string;
@@ -64,14 +64,14 @@ const SessionSidebar = ({
     leftButton: "취소하기",
     rightButton: "종료하기",
     type: "red",
-    onLeftClick: () => { },
+    onLeftClick: () => {},
     onRightClick: existHandler,
   };
 
   return (
     <div
       className={
-        "flex flex-grow px-4 gap-2 items-stretch w-[440px]  bg-white shrink-0"
+        "flex flex-grow px-4 gap-2 items-stretch w-[25rem] bg-white shrink-0"
       }
     >
       <div className={"flex flex-col gap-4 flex-grow justify-between "}>

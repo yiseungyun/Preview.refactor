@@ -1,13 +1,13 @@
-import VideoContainer from "@components/session/VideoContainer.tsx";
 import { useParams } from "react-router-dom";
-import SessionSidebar from "@components/session/Sidebar/SessionSidebar.tsx";
-import SessionToolbar from "@components/session/Toolbar/SessionToolbar.tsx";
+import SessionSidebar from "@components/session/Sidebar/SessionSidebar";
+import SessionToolbar from "@components/session/Toolbar/SessionToolbar";
 import { useSession } from "@hooks/session/useSession";
 import useSocket from "@hooks/useSocket";
 import SessionHeader from "@components/session/SessionHeader";
 import { useEffect } from "react";
-import useToast from "@hooks/useToast.ts";
-import SidebarContainer from "@components/session/Sidebar/SidebarContainer.tsx";
+import useToast from "@hooks/useToast";
+import SidebarContainer from "@components/session/Sidebar/SidebarContainer";
+import VideoLayout from "./VideoLayout";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
@@ -47,9 +47,8 @@ const SessionPage = () => {
   } = useSession(sessionId!);
 
   return (
-    <section className="w-screen h-screen flex flex-col overflow-y-hidden">
-      <div className="w-full flex gap-2 p-1 bg-white shrink-0">
-        {/*{!username && (*/}
+    <section className="w-screen h-screen flex flex-col">
+      <div className="w-full h-10 flex gap-2 bg-white shrink-0">
         <input
           type="text"
           placeholder="Nickname"
@@ -57,7 +56,6 @@ const SessionPage = () => {
           onChange={(e) => setNickname(e.target.value)}
           className="border p-2 mr-2"
         />
-        {/*)}*/}
         <button
           onClick={joinRoom}
           className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -66,62 +64,26 @@ const SessionPage = () => {
         </button>
       </div>
 
-      <div className={"w-full flex flex-grow"}>
+      <div className={"w-full flex flex-1 px-2"}>
         <div
           className={
-            "camera-area flex flex-col h-full flex-grow justify-between bg-gray-50 border-r border-t items-center overflow-hidden"
+            "camera-area flex flex-col w-full flex-grow bg-gray-50 items-center"
           }
         >
           <SessionHeader
             roomMetadata={roomMetadata}
             participantsCount={peers.length + 1}
           />
-          <div
-            className={
-              "w-full flex flex-col gap-4 justify-between items-center flex-grow transition-all py-4"
-            }
-          >
-            <div
-              className={
-                "speaker  w-full flex gap-4 px-6 h-1/2 justify-center items-center"
-              }
-            >
-              <VideoContainer
-                nickname={nickname}
-                isMicOn={isMicOn}
-                isVideoOn={isVideoOn}
-                isLocal={true}
-                reaction={reaction || ""}
-                stream={stream!}
-                videoLoading={videoLoading}
-              />
-            </div>
-            <div
-              className={
-                "listeners w-full flex gap-4 px-6 h-1/2 justify-center items-center  "
-              }
-            >
-              {peers.map((peer) => (
-                <VideoContainer
-                  key={peer.peerId}
-                  nickname={peer.peerNickname}
-                  isMicOn={
-                    peerMediaStatus[peer.peerId]
-                      ? peerMediaStatus[peer.peerId].audio
-                      : true
-                  }
-                  isVideoOn={
-                    peerMediaStatus[peer.peerId]
-                      ? peerMediaStatus[peer.peerId].video
-                      : true
-                  }
-                  isLocal={false}
-                  reaction={peer.reaction || ""}
-                  stream={peer.stream}
-                />
-              ))}
-            </div>
-          </div>
+          <VideoLayout
+            peers={peers}
+            nickname={nickname}
+            isMicOn={isMicOn}
+            isVideoOn={isVideoOn}
+            stream={stream}
+            reaction={reaction}
+            videoLoading={videoLoading}
+            peerMediaStatus={peerMediaStatus}
+          />
           <SessionToolbar
             requestChangeIndex={requestChangeIndex}
             handleVideoToggle={handleVideoToggle}

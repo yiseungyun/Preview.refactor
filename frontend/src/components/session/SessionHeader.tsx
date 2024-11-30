@@ -26,12 +26,12 @@ const SessionHeader = ({
   return (
     <div
       className={
-        "inline-flex justify-center items-center gap-2 text-center text-medium-xl font-bold w-full pt-4 pb-2"
+        "inline-flex justify-center items-center gap-2 text-center text-medium-xl font-bold w-full"
       }
     >
       {roomMetadata?.title ? (
         <>
-          <span className={"bg-green-500 rounded-md px-2 py-0.5 text-white"}>
+          <span className={"bg-green-500 rounded-md px-2 text-white"}>
             {roomMetadata?.category}
           </span>
           <h1>{roomMetadata?.title}</h1>

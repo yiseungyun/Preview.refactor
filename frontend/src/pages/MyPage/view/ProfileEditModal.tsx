@@ -50,7 +50,7 @@ const ProfileEditModal = ({
           <TitleInput
             placeholder="닉네임을 입력해주세요"
             initValue={nickname}
-            onChange={() => { }}
+            onChange={() => {}}
             minLength={2}
           />
         </div>
