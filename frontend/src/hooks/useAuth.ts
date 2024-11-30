@@ -49,8 +49,48 @@ const useAuth = () => {
   };
 
   const guestLogIn = () => {
-    setNickname("게스트 사용자");
+    const randomNickname = createGuestRandomNickname();
+    setNickname(randomNickname);
     guestLogin();
+    return randomNickname;
+  };
+
+  const firstNames = [
+    "신나는",
+    "즐거운",
+    "행복한",
+    "멋있는",
+    "귀여운",
+    "활기찬",
+    "열정적인",
+    "용감한",
+    "영리한",
+    "현명한",
+    "따뜻한",
+    "차가운",
+  ];
+
+  const secondNames = [
+    "판다",
+    "고양이",
+    "강아지",
+    "토끼",
+    "사자",
+    "기린",
+    "코끼리",
+    "하마",
+    "펭귄",
+    "여우",
+    "눈사람",
+  ];
+
+  const createGuestRandomNickname = () => {
+    // 각 배열에서 랜덤한 인덱스 선택
+    const randomFirstIndex = Math.floor(Math.random() * firstNames.length);
+    const randomSecondIndex = Math.floor(Math.random() * secondNames.length);
+
+    // 선택된 단어들을 조합
+    return `${firstNames[randomFirstIndex]} ${secondNames[randomSecondIndex]}${Math.floor(Math.random() * 1000)}`;
   };
 
   return {

@@ -16,8 +16,10 @@ const OAuthContainer = () => {
       );
     } else if (provider === "guest") {
       // 게스트 로그인
-      guestLogIn();
-      toast.success("게스트로 로그인되었습니다.");
+      const nickname = guestLogIn();
+      toast.success(
+        "게스트로 로그인되었습니다. 환영합니다. " + nickname + "님!"
+      );
       navigate("/");
     }
   };
