@@ -1,34 +1,27 @@
 import { FaUserGroup } from "react-icons/fa6";
 import { IoArrowForwardSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
-interface Props {
-  category?: string;
-  id: string;
-  title: string;
-  host: string;
-  inProgress: boolean;
-  participant: number;
-  maxParticipant: number;
-  questionListId: number;
-  questionListTitle?: string;
+import type { Session } from "@/pages/SessionListPage/types/session";
+
+interface SessionCardProps extends Omit<Session, "host" | "createdAt"> {
   onEnter: () => void;
+  host: string;
 }
 
 const SessionCard = ({
-  category = "기타",
+  category = ["기타"],
   id,
   title,
   host,
-  participant,
-  maxParticipant,
+  participants,
+  maxParticipants,
   inProgress,
-  questionListId,
   questionListTitle,
   onEnter,
-}: Props) => {
+}: SessionCardProps) => {
   return (
     <li
-      className={`relative flex rounded-custom-l border-l-[1.625rem] ${inProgress ? "border-l-point-2" : "border-l-green-200"} bg-gray-white shadow-8 overflow-hidden py-3 max-w-[47.5rem] h-[8.75rem] transition-all hover:shadow-lg`}
+      className={`relative flex rounded-custom-l border-l-[1.625rem] ${inProgress ? "border-l-point-2" : "border-l-green-200"} bg-gray-white shadow-8 overflow-hidden py-3 min-w-96 max-w-[47.5rem] h-[8.75rem] transition-all hover:shadow-lg`}
     >
       <div className={"flex-grow px-[0.75rem] flex flex-col items-start"}>
         <span
@@ -36,13 +29,13 @@ const SessionCard = ({
             "text-medium-xs border-[0.0875rem] border-green-600 rounded-2xl py-px px-2"
           }
         >
-          {category}
+          {category[0]}
         </span>
         <Link className={""} onClick={onEnter} to={`/session/${id}`}>
           <h3 className={"text-semibold-m mt-[0.5rem]"}>{title}</h3>
         </Link>
         <p className={"text-medium-r text-gray-400"}>
-          {questionListTitle} 함께 면접 스터디에 참여해보세요! {questionListId}
+          {questionListTitle ?? "함께 면접 스터디에 참여해보세요!"}
         </p>
         <div
           className={
@@ -54,7 +47,7 @@ const SessionCard = ({
             <span className={"inline-flex items-center gap-1"}>
               <FaUserGroup className="text-green-400" />{" "}
               <span className={"inline-flex items-center"}>참여자</span>
-              {participant}/{maxParticipant}명
+              {participants}/{maxParticipants}명
             </span>
           </div>
           {!inProgress && (

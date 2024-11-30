@@ -16,7 +16,7 @@ const SessionList = ({
   sessionList,
 }: SessionListProps) => {
   const toast = useToast();
-
+  console.log(sessionList);
   const renderSessionList = () => {
     return sessionList.map((session) => {
       return (
@@ -27,9 +27,10 @@ const SessionList = ({
           category={session.category}
           title={session.title}
           host={session.host.nickname ?? "익명"}
-          questionListId={1}
-          participant={session.participants}
-          maxParticipant={session.maxParticipants}
+          questionListId={session.questionListId}
+          questionListTitle={session.questionListTitle}
+          participants={session.participants}
+          maxParticipants={session.maxParticipants}
           onEnter={() => {
             toast.success("세션에 참가했습니다.");
           }}
@@ -44,7 +45,7 @@ const SessionList = ({
       {listLoading && <LoadingIndicator loadingState={listLoading} />}
       <ul className={"grid grid-cols-1 xl:grid-cols-2 gap-4"}>
         {!listLoading && sessionList.length <= 0 ? (
-          <li key={-1} className={"flex justify-start items-center"}>
+          <li key={-1} className={"flex justify-center items-center"}>
             <NotFound
               message={"새로운 스터디 세션을 만들어 면접 준비를 시작해보세요!"}
               className={""}
