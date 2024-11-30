@@ -5,7 +5,10 @@ import { useGetQuestionContent } from "@hooks/api/useGetQuestionContent.ts";
 import ButtonSection from "@components/questions/detail/ButtonSection.tsx";
 import { useEffect, useState } from "react";
 import SidebarPageLayout from "@components/layout/SidebarPageLayout.tsx";
-import { api } from "@/api/config/axios.ts";
+import {
+  deleteScrapQuestionList,
+  postScrapQuestionList,
+} from "@/pages/QuestionDetailPage/api/scrapAPI.ts";
 
 const QuestionDetailPage = () => {
   const navigate = useNavigate();
@@ -29,26 +32,6 @@ const QuestionDetailPage = () => {
   if (error) return <div>에러가 발생</div>;
   if (!question) return null;
 
-  const postScrapQuestionList = async (id: string) => {
-    const response = await api.post("/api/question-list/scrap", {
-      questionListId: id,
-    });
-    if (response.data.success) {
-      setIsScrapped(true);
-    }
-  };
-
-  const deleteScrapQuestionList = async (id: string) => {
-    const response = await api.delete("/api/question-list/scrap", {
-      data: {
-        questionListId: id,
-      },
-    });
-    if (response.data.success) {
-      setIsScrapped(false);
-    }
-  };
-
   return (
     <SidebarPageLayout>
       <div className={"flex h-fit gap-8 max-w-7xl px-12 pt-20"}>
@@ -61,8 +44,16 @@ const QuestionDetailPage = () => {
           <QuestionList questionId={questionId!} />
           <ButtonSection
             isScrapped={isScrapped}
-            scrapQuestionList={() => postScrapQuestionList(questionId!)}
-            unScrapQuestionList={() => deleteScrapQuestionList(questionId!)}
+            scrapQuestionList={async () => {
+              if (await postScrapQuestionList(questionId!)) {
+                setIsScrapped(true);
+              }
+            }}
+            unScrapQuestionList={async () => {
+              if (await deleteScrapQuestionList(questionId!)) {
+                setIsScrapped(false);
+              }
+            }}
           />
         </div>
       </div>
