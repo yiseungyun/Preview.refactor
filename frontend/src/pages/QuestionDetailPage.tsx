@@ -1,11 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Sidebar from "@/components/common/Sidebar";
-import { sectionWithSidebar } from "@/constants/LayoutConstant.ts";
 import QuestionTitle from "@/components/questions/detail/QuestionTitle.tsx";
 import QuestionList from "@/components/questions/detail/QuestionList.tsx";
 import { useGetQuestionContent } from "@/hooks/api/useGetQuestionContent";
 import ButtonSection from "@/components/questions/detail/ButtonSection.tsx";
 import { useEffect } from "react";
+import SidebarPageLayout from "@components/layout/SidebarPageLayout.tsx";
 
 const QuestionDetailPage = () => {
   const navigate = useNavigate();
@@ -28,8 +27,7 @@ const QuestionDetailPage = () => {
   if (!question) return null;
 
   return (
-    <section className={`${sectionWithSidebar}`}>
-      <Sidebar />
+    <SidebarPageLayout>
       <div className={"flex h-fit gap-8 max-w-7xl px-12 pt-20"}>
         <div
           className={
@@ -41,7 +39,7 @@ const QuestionDetailPage = () => {
           <ButtonSection />
         </div>
       </div>
-    </section>
+    </SidebarPageLayout>
   );
 };
 
