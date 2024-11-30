@@ -36,10 +36,10 @@ const DefaultAuthFormContainer = ({
     <>
       <div>
         <input
-          type="email"
-          id="email"
+          type="id"
+          id="id"
           className="w-full px-4 py-3 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-          placeholder="이메일을 입력하세요"
+          placeholder="아이디를 입력하세요"
           onChange={(e) => setUsername(e.target.value)}
         />
       </div>
