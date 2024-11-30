@@ -21,7 +21,7 @@ const SessionCard = ({
 }: SessionCardProps) => {
   return (
     <li
-      className={`relative flex rounded-custom-l border-l-[1.625rem] ${inProgress ? "border-l-point-2" : "border-l-green-200"} bg-gray-white shadow-8 overflow-hidden py-3 min-w-96 max-w-[47.5rem] h-[8.75rem] transition-all hover:shadow-lg`}
+      className={`relative flex rounded-custom-l border-l-[1.625rem] ${inProgress ? "border-l-point-2" : "border-l-green-200"} bg-gray-white shadow-8 overflow-hidden py-3 min-w-96 max-w-[47.5rem] h-[8.75rem] transition-all hover:shadow-lg group`}
     >
       <div className={"flex-grow px-[0.75rem] flex flex-col items-start"}>
         <span
@@ -54,7 +54,7 @@ const SessionCard = ({
             <Link to={`/session/${id}`}>
               <button
                 className={
-                  "text-semibold-r text-green-500 inline-flex items-center gap-[0.5rem] hover:gap-[0.375rem] transition-all"
+                  "text-semibold-r text-green-500 inline-flex items-center gap-[0.5rem] group-hover:gap-[0.375rem] transition-all"
                 }
                 onClick={onEnter}
               >

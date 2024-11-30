@@ -18,6 +18,7 @@ const NotFound = ({ message, className, redirect }: NotFoundProps) => {
         autoplay={true}
         loop={true}
         style={{ width: 200 }}
+        className={"dark:invert"}
       />
       <p className={"text-medium-m font-light"}>{message}</p>
       {redirect && (
