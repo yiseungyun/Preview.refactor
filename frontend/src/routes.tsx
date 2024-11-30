@@ -6,7 +6,7 @@ import SessionListPage from "./pages/SessionListPage/SessionListPage.tsx";
 import SessionPage from "./pages/SessionPage";
 import ErrorPage from "@/pages/ErrorPage.tsx";
 import LoginPage from "@/pages/Login/LoginPage.tsx";
-import QuestionListPage from "@/pages/QuestionListPage.tsx";
+import QuestionListPage from "@/pages/QuestionListPage/QuestionListPage.tsx";
 import AuthCallbackPage from "@/pages/Login/AuthCallbackPage.tsx";
 import MyPage from "@/pages/MyPage/index.tsx";
 import ProtectedRouteLayout from "@components/layout/ProtectedRouteLayout.tsx";

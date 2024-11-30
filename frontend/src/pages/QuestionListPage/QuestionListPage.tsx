@@ -6,28 +6,25 @@ import { useEffect, useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
 import CreateButton from "@components/common/CreateButton.tsx";
 import { options } from "@/constants/CategoryData.ts";
-
-interface QuestionList {
-  id: number;
-  title: string;
-  usage: number;
-  isStarred?: boolean;
-  questionCount: number;
-  categoryNames: string[];
-}
+import { useQuestionList } from "@hooks/api/useGetQuestionList.ts";
+import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
 
 const QuestionList = () => {
-  const [questionList, setQuestionList] = useState<QuestionList[]>([]);
-  const [questionLoading, setQuestionLoading] = useState(true);
+  // const [questionList, setQuestionList] = useState<QuestionList[]>([]);
+  // const [questionLoading, setQuestionLoading] = useState(true);
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>("전체");
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const {
+    data: questionList,
+    error,
+    isLoading: questionLoading,
+  } = useQuestionList({ category: selectedCategory });
+
   useEffect(() => {
-    getQuestionList(selectedCategory);
     if (selectedCategory !== "전체") {
       console.log("selectedCategory", selectedCategory);
       setSearchParams({ category: selectedCategory });
@@ -39,23 +36,6 @@ const QuestionList = () => {
       setSelectedCategory(searchParams.get("category") ?? "전체");
     }
   }, [searchParams]);
-
-  const getQuestionList = async (category?: string) => {
-    try {
-      const response =
-        category !== "전체"
-          ? await axios.post(`/api/question-list/category`, {
-              categoryName: category,
-            })
-          : await axios.get("/api/question-list");
-      const data = response.data.data.allQuestionLists ?? [];
-      setQuestionList(data);
-      setQuestionLoading(false);
-    } catch (error) {
-      console.error("질문지 리스트 불러오기 실패", error);
-      setQuestionList([]);
-    }
-  };
 
   const handleNavigateDetail = (id: number) => {
     navigate(`/questions/${id}`);
@@ -85,25 +65,30 @@ const QuestionList = () => {
         </div>
         <LoadingIndicator loadingState={questionLoading} />
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {questionList.map((list) => (
-            <QuestionsPreviewCard
-              key={list.id}
-              id={list.id}
-              questionCount={list.questionCount ?? 0}
-              category={list.categoryNames[0]}
-              title={list.title}
-              isStarred={list.isStarred}
-              usage={list.usage}
-              onClick={() => handleNavigateDetail(list.id)}
-            />
-          ))}
+          {questionList &&
+            questionList.map((list) => (
+              <QuestionsPreviewCard
+                key={list.id}
+                id={list.id}
+                questionCount={list.questionCount ?? 0}
+                category={list.categoryNames[0]}
+                title={list.title}
+                isStarred={list.isStarred}
+                usage={list.usage}
+                onClick={() => handleNavigateDetail(list.id)}
+              />
+            ))}
         </div>
-        {!questionLoading && questionList.length === 0 && (
+        {!questionLoading && questionList?.length === 0 && (
           <div className={"p-2 text-xl text-gray-500"}>
             이런! 아직 질문지가 없습니다! 처음으로 생성해보시는 것은 어떤가요?
             ☃️
           </div>
         )}
+        <ErrorBlock
+          error={error}
+          message={"질문지 목록을 불러오는데 실패했습니다!"}
+        />
       </div>
     </section>
   );
