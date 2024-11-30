@@ -1,38 +1,22 @@
 import Sidebar from "@components/common/Sidebar.tsx";
 import SearchBar from "@components/common/SearchBar.tsx";
 import Select from "@components/common/Select.tsx";
-import { useEffect, useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { IoMdAdd } from "react-icons/io";
-import { useSearchParams } from "react-router-dom";
 import CreateButton from "@components/common/CreateButton.tsx";
 import { options } from "@/constants/CategoryData.ts";
 import { useQuestionList } from "@hooks/api/useGetQuestionList.ts";
 import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
-import QuestionList from "@/pages/QuestionListPage/view/QuestionList.tsx";
+import QuestionsPreviewList from "@/pages/QuestionListPage/view/QuestionsPreviewList.tsx";
+import useCategory from "@/pages/QuestionListPage/hooks/useCategory.ts";
 
 const QuestionListPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("전체");
-  const [searchParams, setSearchParams] = useSearchParams();
-
+  const { selectedCategory, setSelectedCategory } = useCategory();
   const {
     data: questionList,
     error,
     isLoading: questionLoading,
   } = useQuestionList({ category: selectedCategory });
-
-  useEffect(() => {
-    if (selectedCategory !== "전체") {
-      console.log("selectedCategory", selectedCategory);
-      setSearchParams({ category: selectedCategory });
-    }
-  }, [selectedCategory]);
-
-  useEffect(() => {
-    if (searchParams.get("category")) {
-      setSelectedCategory(searchParams.get("category") ?? "전체");
-    }
-  }, [searchParams]);
 
   return (
     <section className="flex w-screen min-h-screen">
@@ -57,7 +41,7 @@ const QuestionListPage = () => {
           </div>
         </div>
         <LoadingIndicator loadingState={questionLoading} />
-        <QuestionList
+        <QuestionsPreviewList
           questionList={questionList}
           questionLoading={questionLoading}
         />
