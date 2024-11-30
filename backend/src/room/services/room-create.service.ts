@@ -4,7 +4,6 @@ import { EMIT_EVENT } from "@/room/room.events";
 import { WebsocketService } from "@/websocket/websocket.service";
 import { RoomRepository } from "@/room/room.repository";
 import { QuestionListRepository } from "@/question-list/question-list.repository";
-import { RoomJoinService } from "@/room/services/room-join.service";
 import { createHash } from "node:crypto";
 import "dotenv/config";
 
@@ -15,8 +14,7 @@ export class RoomCreateService {
     public constructor(
         private readonly roomRepository: RoomRepository,
         private readonly socketService: WebsocketService,
-        private readonly questionListRepository: QuestionListRepository,
-        private readonly roomJoinService: RoomJoinService
+        private readonly questionListRepository: QuestionListRepository
     ) {}
 
     public async createRoom(dto: CreateRoomInternalDto) {
@@ -24,7 +22,10 @@ export class RoomCreateService {
         const id = await this.generateRoomId();
         const socket = this.socketService.getSocket(socketId);
         const currentTime = Date.now();
-        const questionListContents = await this.questionListRepository.getContentsByQuestionListId(
+        const questionList = await this.questionListRepository.getQuestionListById(
+            dto.questionListId
+        );
+        const questionListContent = await this.questionListRepository.getContentsByQuestionListId(
             dto.questionListId
         );
 
@@ -34,9 +35,10 @@ export class RoomCreateService {
             inProgress: false,
             connectionMap: {},
             participants: 0,
-            questionListContents,
+            questionListContents: questionListContent,
             createdAt: currentTime,
-            maxQuestionListLength: questionListContents.length,
+            maxQuestionListLength: questionListContent.length,
+            questionListTitle: questionList.title,
             currentIndex: 0,
             host: {
                 socketId: dto.socketId,

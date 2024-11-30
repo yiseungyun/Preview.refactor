@@ -1,16 +1,29 @@
 import { Injectable } from "@nestjs/common";
 import { RoomStatus } from "@/room/room.entity";
 import { RoomRepository } from "@/room/room.repository";
+import { RoomListResponseDto } from "@/room/dto/room-list.dto";
 
 @Injectable()
 export class RoomService {
     public constructor(private readonly roomRepository: RoomRepository) {}
 
-    public async getPublicRoom() {
+    public async getPublicRoom(): Promise<RoomListResponseDto> {
         const rooms = await this.roomRepository.getAllRoom();
         return rooms
             .filter((room) => room.status === RoomStatus.PUBLIC)
-            .sort((a, b) => b.createdAt - a.createdAt);
+            .sort((a, b) => b.createdAt - a.createdAt)
+            .map((room) => ({
+                createdAt: room.createdAt,
+                host: room.host,
+                maxParticipants: room.maxParticipants,
+                status: room.status,
+                title: room.title,
+                id: room.id,
+                category: room.category,
+                inProgress: room.inProgress,
+                questionListTitle: room.questionListTitle,
+                participants: room.participants,
+            }));
     }
 
     public async setProgress(roomId: string, socketId: string, status: boolean) {
