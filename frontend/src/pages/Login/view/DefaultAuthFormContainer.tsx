@@ -84,7 +84,7 @@ const DefaultAuthFormContainer = ({
         <LoadingIndicator
           loadingState={loading}
           type={"spinner"}
-          style={{ width: 20, height: 20 }}
+          style={{ width: 28, height: 28 }}
         />
         {!loading && (!isSignUp ? "로그인" : "회원가입")}
       </button>
