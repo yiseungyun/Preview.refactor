@@ -7,8 +7,9 @@ const useCategory = () => {
 
   useEffect(() => {
     if (selectedCategory !== "전체") {
-      console.log("selectedCategory", selectedCategory);
       setSearchParams({ category: selectedCategory });
+    } else {
+      setSearchParams({});
     }
   }, [selectedCategory]);
 
