@@ -47,24 +47,26 @@ const SessionPage = () => {
   } = useSession(sessionId!);
 
   return (
-    <section className="w-screen h-screen flex flex-col">
-      <div className="w-full h-10 flex gap-2 bg-white shrink-0">
-        <input
-          type="text"
-          placeholder="Nickname"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          className="border p-2 mr-2"
-        />
-        <button
-          onClick={joinRoom}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Join Room
-        </button>
-      </div>
+    <section className="w-screen min-h-[500px] h-screen flex flex-col">
+      {roomMetadata ? null : (
+        <div className="w-full h-10 flex gap-2 bg-white shrink-0">
+          <input
+            type="text"
+            placeholder="Nickname"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            className="border p-2 mr-2"
+          />
+          <button
+            onClick={joinRoom}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Join Room
+          </button>
+        </div>
+      )}
 
-      <div className={"w-full flex flex-1 px-2"}>
+      <div className={"w-full flex flex-1 min-h-0"}>
         <div
           className={
             "camera-area flex flex-col w-full flex-grow bg-gray-50 items-center"

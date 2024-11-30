@@ -18,21 +18,6 @@ interface VideoContainerProps {
   videoCount: number;
 }
 
-const getVideoLayoutClass = (count: number) => {
-  switch (count) {
-    case 1:
-      return "w-full";
-    case 2:
-      return "w-full sm:w-1/2";
-    case 3:
-      return "w-full sm:w-1/2 2xl:w-1/3";
-    case 4:
-      return "w-full sm:w-1/2";
-    case 5:
-      return "w-full sm:w-1/2 md:w-1/3";
-  }
-};
-
 const VideoContainer = ({
   nickname,
   isMicOn,
@@ -69,8 +54,34 @@ const VideoContainer = ({
     );
   };
 
+  const getVideoLayoutClass = (count: number) => {
+    switch (count) {
+      case 1:
+        return "w-[calc(min(100%,((100vh-140px)*(4/3))))]";
+      case 2:
+        return `w-[calc(min(100%,((100vh-140px)*(2/3))))]
+                sm:w-[calc(min(50%,((100vh-140px)*(4/3))))]
+               `;
+      case 3:
+        return `w-[calc(min(100%,((100vh-140px)*(4/9))))]
+                md:w-[calc(min(50%,((100vh-140px)*(2/3))))]
+                2xl:w-[calc(min(33.3%,((100vh-140px)*(4/3))))] 
+               `;
+      case 4:
+        return `w-[calc(min(100%,((100vh-140px)*(1/3))))]
+                sm:w-[calc(min(100%,((100vh-140px)*(1/3))))]
+                md:w-[calc(min(50%,((100vh-140px)*(2/3))))]
+               `;
+      case 5:
+        return `w-[calc(min(100%,((100vh-140px)*(4/15))))]
+                xs:w-[calc(min(50%,((100vh-140px)*(4/9))))]
+                2xl:w-[calc(min(33.3%,((100vh-140px)*(2/3))))]
+               `;
+    }
+  };
+
   return (
-    <div className={`relative aspect-[4/3] ${getVideoLayoutClass(videoCount)}`}>
+    <div className={`relative ${getVideoLayoutClass(videoCount)} aspect-[4/3]`}>
       <div className="absolute inset-0 bg-black rounded-custom-l overflow-hidden">
         <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">

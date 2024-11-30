@@ -3,7 +3,7 @@ import CreateQuestionPage from "./pages/CreateQuestionPage.tsx";
 import CreateSessionPage from "./pages/CreateSessionPage.tsx";
 import QuestionDetailPage from "./pages/QuestionDetailPage.tsx";
 import SessionListPage from "./pages/SessionListPage/SessionListPage.tsx";
-import SessionPage from "./pages/SessionPage";
+import SessionPage from "./pages/SessionPage/index.tsx";
 import ErrorPage from "@/pages/ErrorPage.tsx";
 import LoginPage from "@/pages/Login/LoginPage.tsx";
 import QuestionListPage from "@/pages/QuestionListPage.tsx";
