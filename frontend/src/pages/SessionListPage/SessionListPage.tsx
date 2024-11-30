@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import SearchBar from "@components/common/SearchBar.tsx";
 import Select from "@components/common/Select.tsx";
-import SessionList from "@components/sessions/list/SessionList.tsx";
+import SessionList from "@/pages/SessionListPage/view/list/SessionList.tsx";
 import CreateButton from "@components/common/CreateButton.tsx";
 import { options } from "@/constants/CategoryData.ts";
 import { useGetSessionList } from "@/pages/SessionListPage/api/useGetSessionList.ts";
