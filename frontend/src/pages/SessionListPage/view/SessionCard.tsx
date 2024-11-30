@@ -34,7 +34,7 @@ const SessionCard = ({
         <Link className={""} onClick={onEnter} to={`/session/${id}`}>
           <h3 className={"text-semibold-m mt-[0.5rem]"}>{title}</h3>
         </Link>
-        <p className={"text-medium-r text-gray-400"}>
+        <p className={"text-medium-r text-gray-400 dark:text-gray-300"}>
           {questionListTitle ?? "함께 면접 스터디에 참여해보세요!"}
         </p>
         <div

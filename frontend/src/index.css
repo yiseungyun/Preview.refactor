@@ -21,6 +21,8 @@
   }
 }
 
+
+
 :root {
   --bg-color-default: #fafafa;
   --text-default: #101010;
@@ -73,6 +75,20 @@
   --color-green-400: #3AF2A4;
   --color-green-500: #3AF2A4;
 }
+
+input {
+  background-color: white;
+}
+
+.dark input {
+  color: white;
+  background-color: #3E3E3E;
+}
+
+.dark input::placeholder {
+  color: #B0B0B0;
+}
+
 
 .aspect-4-3 {
   aspect-ratio: 4 / 3;
