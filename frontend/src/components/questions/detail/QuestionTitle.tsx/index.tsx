@@ -11,7 +11,7 @@ const QuestionTitle = ({ questionId }: { questionId: string }) => {
     error,
   } = useGetQuestionContent(Number(questionId));
 
-  if (isLoading) return <div>로딩 중</div>;
+  if (isLoading) return <div></div>;
   if (error)
     return (
       <ErrorBlock
