@@ -2,6 +2,7 @@ import { useGetQuestionContent } from "@/hooks/api/useGetQuestionContent";
 import { MdEdit } from "react-icons/md";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { FaRegBookmark, FaRegUser } from "react-icons/fa";
+import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
 
 const QuestionTitle = ({ questionId }: { questionId: string }) => {
   const {
@@ -11,7 +12,13 @@ const QuestionTitle = ({ questionId }: { questionId: string }) => {
   } = useGetQuestionContent(Number(questionId));
 
   if (isLoading) return <div>로딩 중</div>;
-  if (error) return <div>에러 발생</div>;
+  if (error)
+    return (
+      <ErrorBlock
+        error={error}
+        message={"질문지 제목을 불러오는데 실패했습니다."}
+      />
+    );
   if (!question) return null;
 
   return (

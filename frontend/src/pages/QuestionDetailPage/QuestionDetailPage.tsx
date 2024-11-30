@@ -10,6 +10,8 @@ import {
   postScrapQuestionList,
 } from "@/pages/QuestionDetailPage/api/scrapAPI.ts";
 import useToast from "@hooks/useToast.ts";
+import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
+import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 
 const QuestionDetailPage = () => {
   const navigate = useNavigate();
@@ -30,13 +32,11 @@ const QuestionDetailPage = () => {
     }
   }, [questionId, navigate]);
 
-  if (isLoading) return <div>로딩 중</div>;
-  if (error) return <div>에러가 발생</div>;
-  if (!question) return null;
-
   const shareQuestionList = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast.success(`${question.title} 질문지가 클립보드에 복사되었습니다.`);
+    if (question) {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success(`${question.title} 질문지가 클립보드에 복사되었습니다.`);
+    }
   };
 
   return (
@@ -47,22 +47,29 @@ const QuestionDetailPage = () => {
             "flex flex-col gap-4 w-47.5 p-8 bg-gray-white rounded-custom-l shadow-16"
           }
         >
+          <LoadingIndicator loadingState={isLoading} />
+          <ErrorBlock
+            error={error}
+            message={"질문지를 불러오는데 실패했습니다."}
+          />
           <QuestionTitle questionId={questionId!} />
           <QuestionList questionId={questionId!} />
-          <ButtonSection
-            isScrapped={isScrapped}
-            scrapQuestionList={async () => {
-              if (await postScrapQuestionList(questionId!)) {
-                setIsScrapped(true);
-              }
-            }}
-            unScrapQuestionList={async () => {
-              if (await deleteScrapQuestionList(questionId!)) {
-                setIsScrapped(false);
-              }
-            }}
-            shareQuestionList={shareQuestionList}
-          />
+          {question && (
+            <ButtonSection
+              isScrapped={isScrapped}
+              scrapQuestionList={async () => {
+                if (await postScrapQuestionList(questionId!)) {
+                  setIsScrapped(true);
+                }
+              }}
+              unScrapQuestionList={async () => {
+                if (await deleteScrapQuestionList(questionId!)) {
+                  setIsScrapped(false);
+                }
+              }}
+              shareQuestionList={shareQuestionList}
+            />
+          )}
         </div>
       </div>
     </SidebarPageLayout>
