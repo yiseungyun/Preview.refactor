@@ -9,12 +9,14 @@ import {
   deleteScrapQuestionList,
   postScrapQuestionList,
 } from "@/pages/QuestionDetailPage/api/scrapAPI.ts";
+import useToast from "@hooks/useToast.ts";
 
 const QuestionDetailPage = () => {
   const navigate = useNavigate();
   const { questionId } = useParams();
   const [isScrapped, setIsScrapped] = useState(false);
   // TODO: isScrapped 상태를 서버에서 가져오는 로직이 추가되면 해당 로직을 추가
+  const toast = useToast();
 
   const {
     data: question,
@@ -31,6 +33,11 @@ const QuestionDetailPage = () => {
   if (isLoading) return <div>로딩 중</div>;
   if (error) return <div>에러가 발생</div>;
   if (!question) return null;
+
+  const shareQuestionList = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success(`${question.title} 질문지가 클립보드에 복사되었습니다.`);
+  };
 
   return (
     <SidebarPageLayout>
@@ -54,6 +61,7 @@ const QuestionDetailPage = () => {
                 setIsScrapped(false);
               }
             }}
+            shareQuestionList={shareQuestionList}
           />
         </div>
       </div>

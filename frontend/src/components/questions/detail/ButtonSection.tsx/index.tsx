@@ -6,16 +6,23 @@ interface ButtonSectionProps {
   scrapQuestionList: () => void;
   unScrapQuestionList: () => void;
   isScrapped: boolean;
+  shareQuestionList: () => void;
 }
 
 const ButtonSection = ({
   scrapQuestionList,
   unScrapQuestionList,
   isScrapped,
+  shareQuestionList,
 }: ButtonSectionProps) => {
   return (
     <div className="flex w-full gap-4 mt-4">
-      <Button text="공유하기" type="gray" icon={IoMdShare} onClick={() => {}} />
+      <Button
+        text="공유하기"
+        type="gray"
+        icon={IoMdShare}
+        onClick={shareQuestionList}
+      />
       <Button
         text={isScrapped ? "스크랩 취소" : "스크랩하기"}
         type={isScrapped ? "gray" : "green"}
