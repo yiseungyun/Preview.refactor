@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import useToast from "@hooks/useToast";
-import useMediaDevices from "@hooks/session/useMediaDevices";
-import usePeerConnection from "@hooks/session/usePeerConnection";
+import useMediaDevices from "./useMediaDevices";
+import usePeerConnection from "./usePeerConnection";
 import useSocket from "@hooks/useSocket";
 import { Participant, RoomMetadata } from "@hooks/type/session";
-import { useMediaStreamCleanup } from "@hooks/session/useMediaStreamCleanup";
-import { usePeerConnectionCleanup } from "@hooks/session/usePeerConnectionCleanup";
-import { useReaction } from "@hooks/session/useReaction";
+import { useMediaStreamCleanup } from "./useMediaStreamCleanup";
+import { usePeerConnectionCleanup } from "./usePeerConnectionCleanup";
+import { useReaction } from "./useReaction";
 import { useSocketEvents } from "./useSocketEvents";
 import { Socket } from "socket.io-client";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 import useAuth from "@hooks/useAuth";
-import useStudy from "@hooks/session/useStudy";
+import useStudy from "./useStudy";
 
 export const useSession = (sessionId: string) => {
   const { socket } = useSocket();

@@ -1,6 +1,6 @@
 import { FaClipboardList, FaFolder } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
-import Modal from "../../common/Modal";
+import Modal from "../../../components/common/Modal";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import useToast from "@hooks/useToast.ts";
@@ -64,7 +64,7 @@ const SessionSidebar = ({
     leftButton: "취소하기",
     rightButton: "종료하기",
     type: "red",
-    onLeftClick: () => {},
+    onLeftClick: () => { },
     onRightClick: existHandler,
   };
 

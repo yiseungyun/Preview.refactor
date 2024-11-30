@@ -1,5 +1,5 @@
-import HostOnlyTools from "@components/session/Toolbar/HostOnlyTools.tsx";
-import CommonTools from "@components/session/Toolbar/CommonTools.tsx";
+import HostOnlyTools from "@/components/session/HostOnlyTools";
+import CommonTools from "@/components/session/CommonTools";
 
 interface Props {
   requestChangeIndex: (

@@ -1,13 +1,13 @@
 import { useParams } from "react-router-dom";
-import SessionSidebar from "@components/session/Sidebar/SessionSidebar";
-import SessionToolbar from "@components/session/Toolbar/SessionToolbar";
-import { useSession } from "@hooks/session/useSession";
+import SessionSidebar from "@/pages/SessionPage/view/SessionSidebar";
+import SessionToolbar from "@/pages/SessionPage/view/SessionToolbar";
 import useSocket from "@hooks/useSocket";
-import SessionHeader from "@components/session/SessionHeader";
+import SessionHeader from "@/pages/SessionPage/view/SessionHeader";
 import { useEffect } from "react";
 import useToast from "@hooks/useToast";
-import SidebarContainer from "@components/session/Sidebar/SidebarContainer";
-import VideoLayout from "./VideoLayout";
+import SidebarContainer from "@/pages/SessionPage/view/SidebarContainer";
+import VideoLayout from "./view/VideoLayout";
+import { useSession } from "./hooks/useSession";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
@@ -52,7 +52,7 @@ const SessionPage = () => {
         <div className="w-full h-10 flex gap-2 bg-white shrink-0">
           <input
             type="text"
-            placeholder="Nickname"
+            placeholder="닉네임"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             className="border p-2 mr-2"
