@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import useToast from "@hooks/useToast.ts";
 import DrawingSnowman from "@components/common/Animate/DrawingSnowman.tsx";
 import Divider from "@components/common/Divider.tsx";
-import OAuthContainer from "@components/login/OAuthContainer.tsx";
-import DefaultAuthFormContainer from "@components/login/DefaultAuthFormContainer.tsx";
+import OAuthContainer from "@/pages/Login/view/OAuthContainer.tsx";
+import DefaultAuthFormContainer from "@/pages/Login/view/DefaultAuthFormContainer.tsx";
 import { useEffect } from "react";
 
 const LoginPage = () => {
