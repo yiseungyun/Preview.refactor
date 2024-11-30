@@ -47,19 +47,19 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
   const validate = () => {
     const errors: string[] = [];
 
-    // 사용자 이름 검증
+    // 아이디 검증
     if (!username) {
-      errors.push("사용자 이름은 필수입니다.");
+      errors.push("아이디는 필수입니다.");
     } else {
       if (username.length < 4) {
-        errors.push("사용자 이름은 최소 4글자 이상이어야 합니다.");
+        errors.push("아이디는 최소 4글자 이상이어야 합니다.");
       }
       if (username.length > 20) {
-        errors.push("사용자 이름은 20글자 이하여야 합니다.");
+        errors.push("아이디는 20글자 이하여야 합니다.");
       }
       if (!/^[a-zA-Z0-9_]+$/.test(username)) {
         errors.push(
-          "사용자 이름은 영문자, 숫자, 언더스코어(_)만 사용할 수 있습니다."
+          "아이디는 영문자, 숫자, 언더스코어(_)만 사용할 수 있습니다."
         );
       }
     }
@@ -81,7 +81,7 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
         errors.push("비밀번호는 최소 1개의 숫자를 포함해야 합니다.");
       }
       if (password.includes(username)) {
-        errors.push("비밀번호에 사용자 이름을 포함할 수 없습니다.");
+        errors.push("비밀번호에 아이디을 포함할 수 없습니다.");
       }
     }
 
@@ -131,7 +131,7 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
           nickname: nickname,
         });
 
-        if (response.data.success) {
+        if (response.data.status) {
           toast.success("회원가입에 성공했습니다. 로그인해주세요.");
           setIsSignUp(false);
         } else {
