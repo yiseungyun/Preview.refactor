@@ -4,7 +4,7 @@ import Select from "@components/common/Select.tsx";
 import { useEffect, useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { IoMdAdd } from "react-icons/io";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import CreateButton from "@components/common/CreateButton.tsx";
 import { options } from "@/constants/CategoryData.ts";
 import { useQuestionList } from "@hooks/api/useGetQuestionList.ts";
@@ -12,9 +12,6 @@ import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
 import QuestionList from "@/pages/QuestionListPage/view/QuestionList.tsx";
 
 const QuestionListPage = () => {
-  // const [questionList, setQuestionList] = useState<QuestionList[]>([]);
-  // const [questionLoading, setQuestionLoading] = useState(true);
-  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>("전체");
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -36,10 +33,6 @@ const QuestionListPage = () => {
       setSelectedCategory(searchParams.get("category") ?? "전체");
     }
   }, [searchParams]);
-
-  const handleNavigateDetail = (id: number) => {
-    navigate(`/questions/${id}`);
-  };
 
   return (
     <section className="flex w-screen min-h-screen">
