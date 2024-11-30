@@ -71,7 +71,7 @@ const SessionSidebar = ({
   return (
     <div
       className={
-        "flex flex-grow px-4 gap-2 items-stretch w-[25rem] bg-white shrink-0"
+        "flex flex-grow px-4 gap-2 items-stretch w-[22rem] bg-white shrink-0"
       }
     >
       <div className={"flex flex-col gap-4 flex-grow justify-between "}>
