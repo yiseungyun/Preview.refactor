@@ -37,6 +37,9 @@ export class RoomEntity extends Entity {
     @Field({ type: "number" })
     questionListId: number;
 
+    @Field({ type: "string" })
+    questionListTitle: string;
+
     @Field({ type: "number" })
     maxQuestionListLength: number;
 
