@@ -1,6 +1,5 @@
 import Sidebar from "@components/common/Sidebar.tsx";
 import SearchBar from "@components/common/SearchBar.tsx";
-import QuestionsPreviewCard from "@components/questions/QuestionsPreviewCard.tsx";
 import Select from "@components/common/Select.tsx";
 import { useEffect, useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
@@ -10,8 +9,9 @@ import CreateButton from "@components/common/CreateButton.tsx";
 import { options } from "@/constants/CategoryData.ts";
 import { useQuestionList } from "@hooks/api/useGetQuestionList.ts";
 import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
+import QuestionList from "@/pages/QuestionListPage/view/QuestionList.tsx";
 
-const QuestionList = () => {
+const QuestionListPage = () => {
   // const [questionList, setQuestionList] = useState<QuestionList[]>([]);
   // const [questionLoading, setQuestionLoading] = useState(true);
   const navigate = useNavigate();
@@ -64,21 +64,8 @@ const QuestionList = () => {
           </div>
         </div>
         <LoadingIndicator loadingState={questionLoading} />
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {questionList &&
-            questionList.map((list) => (
-              <QuestionsPreviewCard
-                key={list.id}
-                id={list.id}
-                questionCount={list.questionCount ?? 0}
-                category={list.categoryNames[0]}
-                title={list.title}
-                isStarred={list.isStarred}
-                usage={list.usage}
-                onClick={() => handleNavigateDetail(list.id)}
-              />
-            ))}
-        </div>
+
+        <QuestionList questionList={questionList} />
         {!questionLoading && questionList?.length === 0 && (
           <div className={"p-2 text-xl text-gray-500"}>
             이런! 아직 질문지가 없습니다! 처음으로 생성해보시는 것은 어떤가요?
@@ -94,4 +81,4 @@ const QuestionList = () => {
   );
 };
 
-export default QuestionList;
+export default QuestionListPage;
