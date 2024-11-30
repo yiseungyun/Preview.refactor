@@ -81,22 +81,21 @@ const DefaultAuthFormContainer = ({
         onClick={(e) => handleDefaultLogin(e)}
         className="w-full bg-green-200 dark:bg-emerald-600 text-white py-3 rounded-md hover:bg-green-100 transition-colors font-medium text-lg shadow-16"
       >
-        {!isSignUp ? "로그인" : "회원가입"}
+        <LoadingIndicator
+          loadingState={loading}
+          type={"spinner"}
+          style={{ width: 20, height: 20 }}
+        />
+        {!loading && (!isSignUp ? "로그인" : "회원가입")}
       </button>
 
       <div className="flex items-center justify-between text-base">
         <button
           onClick={() => setIsSignUp(!isSignUp)}
           type="button"
-          className="hover:text-green-300 transition-colors"
+          className="inline-flex items-center justify-center hover:text-green-300 transition-colors"
         >
-          {loading ? (
-            <LoadingIndicator loadingState={loading} type={"spinner"} />
-          ) : isSignUp ? (
-            "로그인"
-          ) : (
-            "회원가입"
-          )}
+          {isSignUp ? "로그인" : "회원가입"}
         </button>
         <button
           onClick={() => toast.error("비밀번호 찾기는 아직 지원하지 않습니다.")}

@@ -21,6 +21,7 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
 
   const handleLogin = async () => {
     try {
+      setLoading(true);
       const response = await api.post("/api/auth/login", {
         userId: username,
         password: password,
@@ -31,11 +32,15 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
         auth.logIn();
         auth.setNickname(nickname);
         navigate("/");
+        setLoading(false);
       } else {
         toast.error("로그인에 실패했습니다. 다시 시도해주세요");
+        setLoading(false);
       }
     } catch (err) {
       console.error("로그인 도중 에러", err);
+    } finally {
+      setLoading(false);
     }
   };
 
