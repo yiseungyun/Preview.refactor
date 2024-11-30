@@ -5,12 +5,13 @@ import DrawingSnowman from "@components/common/Animate/DrawingSnowman.tsx";
 import Divider from "@components/common/Divider.tsx";
 import OAuthContainer from "@/pages/Login/view/OAuthContainer.tsx";
 import DefaultAuthFormContainer from "@/pages/Login/view/DefaultAuthFormContainer.tsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const LoginPage = () => {
   const { isLoggedIn, guestLogIn } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
+  const [isSignUp, setIsSignUp] = useState(false);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -32,17 +33,6 @@ const LoginPage = () => {
     }
   };
 
-  const handleDefaultLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
-    try {
-      e.preventDefault();
-      toast.error(
-        "일반 로그인은 현재 지원되지 않습니다. Github나 게스트 로그인을 이용해주세요."
-      );
-    } catch (err) {
-      console.error("로그인 도중 에러", err);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-8">
       <div className="w-full max-w-7xl mx-auto px-8">
@@ -52,13 +42,16 @@ const LoginPage = () => {
               <DrawingSnowman />
             </div>
             <div className="col-span-5 p-16 bg-gray-white w-full lg:w-5/12">
-              <h1 className="text-6xl font-raleway font-bold black mb-11 tracking-tight text-center">
-                Preview
-              </h1>
+              {!isSignUp && (
+                <h1 className="text-6xl font-raleway font-bold black mb-11 tracking-tight text-center">
+                  Preview
+                </h1>
+              )}
               <div className="w-full max-w-md mx-auto">
                 <form className="space-y-4">
                   <DefaultAuthFormContainer
-                    handleDefaultLogin={handleDefaultLogin}
+                    isSignUp={isSignUp}
+                    setIsSignUp={setIsSignUp}
                   />
                   <Divider />
                   <OAuthContainer handleOAuthLogin={handleOAuthLogin} />
