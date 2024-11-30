@@ -1,7 +1,7 @@
 import { useGetQuestionContent } from "@/hooks/api/useGetQuestionContent";
 import { MdEdit } from "react-icons/md";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import { FaRegBookmark } from "react-icons/fa";
+import { FaRegBookmark, FaRegUser } from "react-icons/fa";
 
 const QuestionTitle = ({ questionId }: { questionId: string }) => {
   const {
@@ -28,9 +28,10 @@ const QuestionTitle = ({ questionId }: { questionId: string }) => {
         </div>
       </div>
       <div className="flex gap-3">
-        <span className="text-medium-m text-gray-400">
+        <div className="inline-flex items-center gap-1 text-medium-m text-gray-400">
+          <FaRegUser />
           작성자 {question.username} • {question.contents.length}개의 질문
-        </span>
+        </div>
         <div className="flex gap-1 items-center">
           <FaRegBookmark />
           <span>{question.usage}</span>
