@@ -57,14 +57,10 @@ const QuestionListPage = () => {
           </div>
         </div>
         <LoadingIndicator loadingState={questionLoading} />
-
-        <QuestionList questionList={questionList} />
-        {!questionLoading && questionList?.length === 0 && (
-          <div className={"p-2 text-xl text-gray-500"}>
-            이런! 아직 질문지가 없습니다! 처음으로 생성해보시는 것은 어떤가요?
-            ☃️
-          </div>
-        )}
+        <QuestionList
+          questionList={questionList}
+          questionLoading={questionLoading}
+        />
         <ErrorBlock
           error={error}
           message={"질문지 목록을 불러오는데 실패했습니다!"}

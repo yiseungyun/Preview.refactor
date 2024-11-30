@@ -3,9 +3,10 @@ import type { QuestionList } from "@/pages/QuestionListPage/types/QuestionList.t
 
 interface QuestionListProps {
   questionList?: QuestionList[];
+  questionLoading?: boolean;
 }
 
-const QuestionList = ({ questionList }: QuestionListProps) => {
+const QuestionList = ({ questionList, questionLoading }: QuestionListProps) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
       {questionList &&
@@ -20,6 +21,12 @@ const QuestionList = ({ questionList }: QuestionListProps) => {
             usage={list.usage}
           />
         ))}
+
+      {!questionLoading && questionList?.length === 0 && (
+        <div className={"p-2 text-xl text-gray-500"}>
+          이런! 아직 질문지가 없습니다! 처음으로 생성해보시는 것은 어떤가요? ☃️
+        </div>
+      )}
     </div>
   );
 };
