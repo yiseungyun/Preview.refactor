@@ -1,5 +1,5 @@
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
-import SessionCard from "@components/sessions/SessionCard.tsx";
+import SessionCard from "@/pages/SessionListPage/view/SessionCard.tsx";
 import useToast from "@hooks/useToast.ts";
 import type { Session } from "@/pages/SessionListPage/types/session";
 import NotFound from "@components/common/Animate/NotFound.tsx";
