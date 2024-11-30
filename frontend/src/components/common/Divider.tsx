@@ -11,7 +11,9 @@ const Divider = ({ message = "또는", isText = true }: DividerProps) => {
       </div>
       {isText && (
         <div className="relative flex justify-center tsnowmanext-sm">
-          <span className="px-2 bg-white text-gray-500">{message}</span>
+          <span className="px-2 bg-gray-white dark:text-gray-300 text-gray-500">
+            {message}
+          </span>
         </div>
       )}
     </div>
