@@ -1,4 +1,4 @@
-import { STUDY_EMIT_EVENT } from "@/constants/WebSocket/StudyEvent.ts";
+import { STUDY_EMIT_EVENT } from "@/constants/WebSocket/StudyEvent";
 import { Socket } from "socket.io-client";
 import { RoomMetadata } from "@hooks/type/session";
 
