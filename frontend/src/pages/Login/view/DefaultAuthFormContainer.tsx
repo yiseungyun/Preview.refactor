@@ -79,12 +79,12 @@ const DefaultAuthFormContainer = ({
 
       <button
         onClick={(e) => handleDefaultLogin(e)}
-        className="w-full bg-green-200 text-white py-3 rounded-md hover:bg-green-100 transition-colors font-medium text-lg shadow-16"
+        className="w-full bg-green-200 dark:bg-emerald-600 text-white py-3 rounded-md hover:bg-green-100 transition-colors font-medium text-lg shadow-16"
       >
         {!isSignUp ? "로그인" : "회원가입"}
       </button>
 
-      <div className="flex items-center justify-between text-base text-gray-600">
+      <div className="flex items-center justify-between text-base">
         <button
           onClick={() => setIsSignUp(!isSignUp)}
           type="button"
