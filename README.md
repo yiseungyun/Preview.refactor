@@ -46,10 +46,14 @@
 - 면접 질문지 공유로 다양한 질문에 대비
 - 사용량에 따른 인기 질문지 제공
 
+![questionList](https://github.com/user-attachments/assets/10f4650c-4a82-4a05-a661-7e59b157a54c)
+
+
 ### 면접 스터디 기능 
 - 실제 면접처럼 질문을 하나씩 받고 서로 대답해보는 스터디 기능
 - 면접 질문에 대한 피드백을 주고 받을 수 있음
 - 면접 스터디 결과를 기록하고 공유할 수 있음
+
 
 ## 🧩 설계
 <img width="1064" alt="architecture" src="https://github.com/user-attachments/assets/67ebaee3-9fe1-4743-ac5e-30b25d609a44">
@@ -72,7 +76,7 @@
 
 ## 👋 팀원 소개
 
-|김찬우|서정우|송수민|이승윤|
+|[김찬우](https://github.com/blu3piece)|[서정우](https://github.com/ShipFriend0516)|[송수민](https://github.com/twalla26)|[이승윤](https://github.com/yiseungyun)|
 |:---:|:---:|:---:|:---:|
 |<img style="width: 400px" src="https://avatars.githubusercontent.com/u/65532873?v=4"/>|<img style="width: 400px" src="https://avatars.githubusercontent.com/u/98446924?v=4"/>|<img style="width: 400px" src="https://github.com/user-attachments/assets/71176cea-caf4-4b00-816f-ba83ec9bf45d"/>|<img style="width: 400px" src="https://github.com/user-attachments/assets/85d13af3-91b4-4225-bc2f-3f83e9883a02"/>|
 |WEB BE|WEB FE|WEB BE|WEB FE|
