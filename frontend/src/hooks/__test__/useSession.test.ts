@@ -1,8 +1,5 @@
 import { renderHook } from "@testing-library/react";
-import { useSession } from "@hooks/session/useSession";
 import useSocketStore from "@stores/useSocketStore";
-import useMediaDevices from "@hooks/session/useMediaDevices";
-import usePeerConnection from "@hooks/session/usePeerConnection";
 import { useNavigate } from "react-router-dom";
 import { act } from "react";
 import {
@@ -18,6 +15,9 @@ import {
   SESSION_LISTEN_EVENT,
 } from "@/constants/WebSocket/SessionEvent";
 import { SIGNAL_LISTEN_EVENT } from "@/constants/WebSocket/SignalingEvent";
+import useMediaDevices from "@/pages/SessionPage/hooks/useMediaDevices";
+import usePeerConnection from "@/pages/SessionPage/hooks/usePeerConnection";
+import { useSession } from "@/pages/SessionPage/hooks/useSession";
 
 const REACTION_DURATION = 3000;
 
