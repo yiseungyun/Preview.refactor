@@ -44,7 +44,10 @@ const IntroPage = () => {
                 면접관이 자주 묻는 핵심 질문들을 모아 나만의 리스트를
                 만들어보세요.
               </p>
-              <button className="flex items-center text-green-100 hover:text-green-200 transition-colors">
+              <button
+                onClick={() => navigate("/questions/create")}
+                className="flex items-center text-green-100 hover:text-green-200 transition-colors"
+              >
                 <span className="mr-2">질문 리스트 만들기</span>
                 <FaArrowRight className="w-4 h-4" />
               </button>
@@ -80,7 +83,10 @@ const IntroPage = () => {
                 찾아보세요. 공개 스터디로 다양한 인사이트를 얻거나, 비공개
                 스터디로 친구들과 함께 연습할 수 있습니다.
               </p>
-              <button className="flex items-center text-green-100 hover:text-green-200 transition-colors">
+              <button
+                onClick={() => navigate("/sessions/create")}
+                className="flex items-center text-green-100 hover:text-green-200 transition-colors"
+              >
                 <span className="mr-2">스터디룸 만들기</span>
                 <FaArrowRight className="w-4 h-4" />
               </button>
@@ -102,7 +108,10 @@ const IntroPage = () => {
                 지원자 역할을 번갈아가며 연습하고, 서로의 피드백으로 더 나은
                 답변을 준비할 수 있습니다.
               </p>
-              <button className="flex items-center text-green-100 hover:text-green-200 transition-colors">
+              <button
+                onClick={() => navigate("/sessions")}
+                className="flex items-center text-green-100 hover:text-green-200 transition-colors"
+              >
                 <span className="mr-2">면접 연습 시작하기</span>
                 <FaArrowRight className="w-4 h-4" />
               </button>
