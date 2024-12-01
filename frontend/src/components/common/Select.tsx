@@ -16,14 +16,14 @@ const Select = <T,>({
   value,
   setValue,
   options,
-  backgroundColor = "bg-green-200",
+  backgroundColor = "bg-white",
 }: SelectProps<T>) => {
   return (
-    <div className="relative inline-flex gap-2 items-center">
+    <div className="relative inline-flex gap-2 items-center border-custom-s rounded-custom-m border-gray-200">
       <select
         defaultValue={value as string}
         onChange={(e) => setValue(e.target.value as T)}
-        className={`rounded-custom-m ${backgroundColor} text-semibold-r text-gray-white appearance-none pl-4 pr-8 h-full`}
+        className={`rounded-custom-m ${backgroundColor} text-semibold-r text-gray-600 appearance-none pl-4 pr-8 h-full`}
       >
         {options.map((option) => (
           <option key={option.value as string} value={option.value as string}>
@@ -32,7 +32,7 @@ const Select = <T,>({
         ))}
       </select>
       <span className="absolute top-1/2 -translate-y-1/2 right-3 pointer-events-none">
-        <IoChevronDownSharp className="w-5 h-5 text-gray-white" />
+        <IoChevronDownSharp className="w-4 h-4 text-gray-600" />
       </span>
     </div>
   );
