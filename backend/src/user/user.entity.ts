@@ -1,5 +1,5 @@
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { QuestionList } from "@/question-list/question-list.entity";
+import { QuestionList } from "@/question-list/entity/question-list.entity";
 
 export enum LoginType {
     LOCAL = "local",
