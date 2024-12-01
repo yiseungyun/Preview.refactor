@@ -16,7 +16,6 @@ const SessionList = ({
   sessionList,
 }: SessionListProps) => {
   const toast = useToast();
-  console.log(sessionList);
   const renderSessionList = () => {
     return sessionList.map((session) => {
       return (

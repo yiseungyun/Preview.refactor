@@ -6,6 +6,7 @@ import { RoomRepository } from "@/room/room.repository";
 import { QuestionListRepository } from "@/question-list/question-list.repository";
 import { createHash } from "node:crypto";
 import "dotenv/config";
+import { Transactional } from "typeorm-transactional";
 
 @Injectable()
 export class RoomCreateService {
@@ -17,6 +18,7 @@ export class RoomCreateService {
         private readonly questionListRepository: QuestionListRepository
     ) {}
 
+    @Transactional()
     public async createRoom(dto: CreateRoomInternalDto) {
         const { socketId, nickname } = dto;
         const id = await this.generateRoomId();
@@ -28,6 +30,8 @@ export class RoomCreateService {
         const questionListContent = await this.questionListRepository.getContentsByQuestionListId(
             dto.questionListId
         );
+        questionList.usage += 1;
+        await this.questionListRepository.updateQuestionList(questionList);
 
         const roomDto = {
             ...dto,
