@@ -4,7 +4,7 @@ import ButtonSection from "@components/mypage/ButtonSection";
 import { useEffect, useState } from "react";
 import useToast from "@/hooks/useToast";
 import { useUserStore } from "@/stores/useUserStore";
-import PasswordInput from "./PasswordInput";
+import PasswordInput from "../../../components/mypage/PasswordInput";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
@@ -32,6 +32,7 @@ const ProfileEditModal = ({
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [originalPassword, setOriginalPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [nickname, setNickname] = useState("");
   const user = useUserStore((state) => state.user);
   const { editMyInfo } = useUserStore();
 
@@ -45,28 +46,27 @@ const ProfileEditModal = ({
   });
 
   useEffect(() => {
-    if (user) {
-      setFormData((prev) => ({
-        ...prev,
-        nickname: user.nickname || "",
-        avatarUrl: user.avatarUrl || "",
-      }));
-    }
-  }, [user]);
+    const handleDialogClose = () => {
+      setShowOriginalPassword(false);
+      setShowNewPassword(false);
+      setOriginalPassword("");
+      setNewPassword("");
+      setNickname(user ? user.nickname : "");
+    };
+
+    const dialogElement = dialogRef.current;
+    dialogElement?.addEventListener("close", handleDialogClose);
+    setNickname(user ? user.nickname : "");
+
+    return () => {
+      dialogElement?.removeEventListener("close", handleDialogClose);
+    };
+  }, [dialogRef, user]);
 
   const resetModal = () => {
-    setShowOriginalPassword(false);
-    setShowNewPassword(false);
-    setOriginalPassword("");
-    setNewPassword("");
-    setFormData({
-      avatarUrl: user?.avatarUrl || "",
-      nickname: user?.nickname || "",
-      password: {
-        original: "",
-        newPassword: "",
-      },
-    });
+    if (dialogRef.current) {
+      dialogRef.current.close();
+    }
     closeModal();
   };
 
@@ -85,6 +85,8 @@ const ProfileEditModal = ({
       ...prev,
       nickname: e.target.value,
     }));
+
+    setNickname(e.target.value);
   };
 
   const handlePasswordChange = (
@@ -166,7 +168,7 @@ const ProfileEditModal = ({
           <p className="text-semibold-l text-gray-black">닉네임</p>
           <TitleInput
             placeholder="닉네임을 입력해주세요"
-            initValue={formData.nickname}
+            initValue={nickname}
             onChange={handleChangeNickname}
             minLength={2}
           />

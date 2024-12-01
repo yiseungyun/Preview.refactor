@@ -11,7 +11,8 @@ interface UseModalReturn {
 }
 
 const Profile = ({ modal }: { modal: UseModalReturn }) => {
-  const { user, getMyInfo } = useUserStore();
+  const user = useUserStore((state) => state.user);
+  const { getMyInfo } = useUserStore();
 
   useEffect(() => {
     getMyInfo();
