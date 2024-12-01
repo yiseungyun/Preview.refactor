@@ -1,4 +1,4 @@
-import { Question } from "../question.entity";
+import { Question } from "../entity/question.entity";
 
 export interface QuestionListContentsDto {
     id: number;

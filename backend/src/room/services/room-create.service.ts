@@ -3,9 +3,10 @@ import { CreateRoomInternalDto } from "@/room/dto/create-room.dto";
 import { EMIT_EVENT } from "@/room/room.events";
 import { WebsocketService } from "@/websocket/websocket.service";
 import { RoomRepository } from "@/room/room.repository";
-import { QuestionListRepository } from "@/question-list/question-list.repository";
+import { QuestionListRepository } from "@/question-list/repository/question-list.repository";
 import { createHash } from "node:crypto";
 import "dotenv/config";
+import { QuestionRepository } from "@/question-list/repository/question.respository";
 
 @Injectable()
 export class RoomCreateService {
@@ -14,7 +15,8 @@ export class RoomCreateService {
     public constructor(
         private readonly roomRepository: RoomRepository,
         private readonly socketService: WebsocketService,
-        private readonly questionListRepository: QuestionListRepository
+        private readonly questionListRepository: QuestionListRepository,
+        private readonly questionRepository: QuestionRepository,
     ) {}
 
     public async createRoom(dto: CreateRoomInternalDto) {
@@ -25,7 +27,7 @@ export class RoomCreateService {
         const questionList = await this.questionListRepository.getQuestionListById(
             dto.questionListId
         );
-        const questionListContent = await this.questionListRepository.getContentsByQuestionListId(
+        const questionListContent = await this.questionRepository.getContentsByQuestionListId(
             dto.questionListId
         );
 

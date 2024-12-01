@@ -5,7 +5,8 @@ import { RoomRepository } from "@/room/room.repository";
 import { RoomDto } from "@/room/dto/room.dto";
 import { JoinRoomInternalDto } from "@/room/dto/join-room.dto";
 import { WebsocketRepository } from "@/websocket/websocket.repository";
-import { QuestionListRepository } from "@/question-list/question-list.repository";
+import { QuestionListRepository } from "@/question-list/repository/question-list.repository";
+import { QuestionRepository } from "@/question-list/repository/question.respository";
 
 @Injectable()
 export class RoomJoinService {
@@ -13,7 +14,8 @@ export class RoomJoinService {
         private readonly roomRepository: RoomRepository,
         private readonly socketService: WebsocketService,
         private readonly socketRepository: WebsocketRepository,
-        private readonly questionListRepository: QuestionListRepository
+        private readonly questionListRepository: QuestionListRepository,
+        private readonly questionRepository: QuestionRepository
     ) {}
 
     public async joinRoom(dto: JoinRoomInternalDto) {
@@ -44,7 +46,7 @@ export class RoomJoinService {
 
         room.connectionMap[socketId] = undefined;
 
-        const questionListContents = await this.questionListRepository.getContentsByQuestionListId(
+        const questionListContents = await this.questionRepository.getContentsByQuestionListId(
             room.questionListId
         );
 
