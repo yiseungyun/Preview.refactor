@@ -6,6 +6,8 @@ import {
 } from "react-icons/bs";
 import DisplayMediaStream from "./DisplayMediaStream.tsx";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
+import VideoProfileOverlay from "@components/session/VideoProfileOverlay.tsx";
+import VideoReactionBox from "@components/session/VideoReactionBox.tsx";
 
 interface VideoContainerProps {
   nickname: string;
@@ -89,7 +91,7 @@ const VideoContainer = ({
           <p
             className={`bg-grayscale-500 ${localNickName} bg-opacity-70 text-white px-2 py-0.5 rounded`}
           >
-            {nickname}
+            {isVideoOn && nickname}
           </p>
           <div className={"inline-flex gap-4 px-2 items-center"}>
             {renderMicIcon()}
@@ -106,22 +108,13 @@ const VideoContainer = ({
           </div>
         )}
       </div>
-      {
-        <div
-          className={`
-              pointer-events-none
-              absolute w-12 h-12 text-xl 
-              flex items-center justify-center 
-              top-2 right-2 text-white p-2 rounded-xl 
-              bg-accent-gray bg-opacity-50
-              transition-all duration-300
-              animate-fade-in-out
-              ${reaction ? "opacity-100" : "opacity-0"}
-            `}
-        >
-          <span className="animate-bounce">{renderReaction(reaction)}</span>
-        </div>
-      }
+      <VideoProfileOverlay
+        isVideoOn={isVideoOn}
+        videoLoading={videoLoading || false}
+        nickname={nickname}
+        // profileImage={"/snowman-thumbnail.jpg"}
+      />
+      <VideoReactionBox reaction={reaction} renderReaction={renderReaction} />
     </div>
   );
 };
