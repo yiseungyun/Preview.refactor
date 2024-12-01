@@ -24,7 +24,7 @@ const DisplayMediaStream = ({
       autoPlay
       playsInline
       muted={isLocal}
-      className="h-full aspect-4-3"
+      className="w-full aspect-[4/3]"
     />
   );
 };

@@ -1,13 +1,8 @@
 import { FaClipboardList, FaFolder } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
-import Modal from "../../common/Modal";
-import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
-import useToast from "@hooks/useToast.ts";
 import { TbCrown } from "react-icons/tb";
-import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 import { Question } from "@hooks/type/session";
-import useModal from "@/hooks/useModal";
 
 interface ParticipantsData {
   nickname: string;
@@ -19,64 +14,24 @@ interface Props {
   questionList: Question[];
   currentIndex: number;
   participants: ParticipantsData[];
-  roomId: string | undefined; // TODO: sessionId가 입력되지 않았을 때(undefined) 처리 필요
+  roomId: string;
   isHost: boolean;
 }
 
 const SessionSidebar = ({
-  socket,
   questionList,
   currentIndex,
   participants,
-  roomId,
-  isHost,
 }: Props) => {
-  const navigate = useNavigate();
-  const toast = useToast();
-  const modal = useModal();
-
-  const existHandler = () => {
-    socket?.emit(SESSION_EMIT_EVENT.LEAVE, { roomId });
-    toast.success("메인 화면으로 이동합니다.");
-    navigate("/sessions");
-  };
-
-  const destroyAndExitHandler = () => {
-    socket?.off(SESSION_EMIT_EVENT.FINISH);
-    socket?.emit(SESSION_EMIT_EVENT.FINISH, { roomId });
-    toast.success("메인 화면으로 이동합니다.");
-    navigate("/sessions");
-  };
-
-  const HostModalData = {
-    title: "세션을 종료할까요?",
-    subtitle: "세션을 종료하면 참가자들이 모두 나가게 됩니다.",
-    leftButton: "방장 양도 후 종료",
-    rightButton: "세션 종료",
-    type: "red",
-    onLeftClick: existHandler,
-    onRightClick: destroyAndExitHandler,
-  };
-
-  const ParticipantModalData = {
-    title: "지금 나가면 다시 들어올 수 없어요!",
-    subtitle: "정말 종료하시겠어요?",
-    leftButton: "취소하기",
-    rightButton: "종료하기",
-    type: "red",
-    onLeftClick: () => { },
-    onRightClick: existHandler,
-  };
-
   return (
     <div
       className={
-        "flex flex-grow px-4 gap-2 items-stretch w-[440px]  bg-white shrink-0"
+        "flex flex-grow px-4 gap-2 items-stretch w-[22rem] bg-white shrink-0"
       }
     >
       <div className={"flex flex-col gap-4 flex-grow justify-between "}>
-        <div className={"flex flex-col gap-4  "}>
-          <div className={"flex flex-col gap-2 pt-6"}>
+        <div className={"flex flex-col gap-4"}>
+          <div className={"flex flex-col gap-3 pt-6"}>
             <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
               <FaClipboardList />
               현재 질문
@@ -98,7 +53,7 @@ const SessionSidebar = ({
               )}
             </div>
           </div>
-          <div className={"flex flex-col gap-2 mt-4"}>
+          <div className={"flex flex-col gap-3 mt-4"}>
             <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
               <FaUserGroup />
               참가자
@@ -115,7 +70,7 @@ const SessionSidebar = ({
               ))}
             </ul>
           </div>
-          <div className={"flex flex-col gap-2 mt-4"}>
+          <div className={"flex flex-col gap-3 mt-4"}>
             <h2 className={"inline-flex gap-1 items-center text-semibold-m"}>
               <FaFolder />
               이전 질문
@@ -137,38 +92,7 @@ const SessionSidebar = ({
             </ul>
           </div>
         </div>
-        <div className={"h-16 items-center flex w-full"}>
-          <button
-            className={"w-full bg-red-500 text-white rounded-md py-2"}
-            onClick={modal.openModal}
-          >
-            종료하기
-          </button>
-        </div>
       </div>
-
-      <Modal
-        modal={modal}
-        title={isHost ? HostModalData.title : ParticipantModalData.title}
-        subtitle={
-          isHost ? HostModalData.subtitle : ParticipantModalData.subtitle
-        }
-        leftButton={
-          isHost ? HostModalData.leftButton : ParticipantModalData.leftButton
-        }
-        rightButton={
-          isHost ? HostModalData.rightButton : ParticipantModalData.rightButton
-        }
-        type={"red"}
-        onLeftClick={
-          isHost ? HostModalData.onLeftClick : ParticipantModalData.onLeftClick
-        }
-        onRightClick={
-          isHost
-            ? HostModalData.onRightClick
-            : ParticipantModalData.onRightClick
-        }
-      />
     </div>
   );
 };

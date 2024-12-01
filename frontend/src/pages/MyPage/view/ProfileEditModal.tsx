@@ -66,7 +66,7 @@ const ProfileEditModal = ({
           />
         </div>
       </div>
-      <ButtonSection />
+      <ButtonSection closeModal={closeModal} />
     </dialog>
   );
 };

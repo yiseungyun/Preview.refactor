@@ -1,3 +1,4 @@
+import { IoMdClose } from "react-icons/io";
 import ModalTitle from "./Title";
 
 interface UseModalReturn {
@@ -44,9 +45,12 @@ const Modal = ({
   return (
     <dialog
       ref={dialogRef}
-      className="flex flex-col w-27.5 rounded-custom-l shadow-8 p-8 gap-4"
+      className="relative flex flex-col w-27.5 rounded-custom-l shadow-8 px-8 pb-7 pt-8 gap-3.5"
       onMouseDown={handleMouseDown}
     >
+      <button onClick={closeModal}>
+        <IoMdClose className="text-gray-600 w-6 h-6 absolute right-8 top-6" />
+      </button>
       <ModalTitle title={title} subtitle={subtitle} />
       <div className="flex w-full gap-2">
         <button

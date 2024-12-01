@@ -40,7 +40,7 @@ const QuestionItem = ({ questionListId, type, page }: ItemProps) => {
         leftButton="취소하기"
         rightButton="삭제하기"
         type="red"
-        onLeftClick={() => { }}
+        onLeftClick={() => {}}
         onRightClick={deleteHandler}
       />
       <div
@@ -52,12 +52,12 @@ const QuestionItem = ({ questionListId, type, page }: ItemProps) => {
         <div className="relative flex flex-col w-full gap-1">
           <div className="relative">
             <div className="flex flex-row gap-1 mb-2">
-              {data?.categoryNames.map(category => (<Category key={category} text={category} />))}
+              {data?.categoryNames.map((category) => (
+                <Category key={category} text={category} />
+              ))}
             </div>
             <div className="px-1">
-              <p className="text-gray-black text-semibold-m">
-                {data?.title}
-              </p>
+              <p className="text-gray-black text-semibold-m">{data?.title}</p>
               <div className="absolute top-0 right-0 text-gray-400 flex flex-row gap-1">
                 {type === "my" ? (
                   <>
