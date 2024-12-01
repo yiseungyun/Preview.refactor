@@ -6,6 +6,7 @@ import { AuthService } from "@/auth/auth.service";
 import { Transactional } from "typeorm-transactional";
 import { LoginType, User } from "@/user/user.entity";
 import { CreateUserDto, CreateUserInternalDto } from "@/user/dto/create-user.dto";
+import { QueryFailedError } from "typeorm";
 
 @Injectable()
 export class UserService {
@@ -48,18 +49,24 @@ export class UserService {
 
     @Transactional()
     public async createUserByLocal(dto: CreateUserDto) {
-        const userDto: CreateUserInternalDto = {
-            loginId: dto.id,
-            loginType: LoginType.LOCAL,
-            username: dto.nickname,
-            passwordHash: this.authService.generatePasswordHash(dto.password),
-        };
+        try {
+            const userDto: CreateUserInternalDto = {
+                loginId: dto.id,
+                loginType: LoginType.LOCAL,
+                username: dto.nickname,
+                passwordHash: this.authService.generatePasswordHash(dto.password),
+            };
 
-        await this.userRepository.createUser(userDto);
+            await this.userRepository.createUser(userDto);
 
-        return {
-            status: "success",
-        };
+            return {
+                status: "success",
+            };
+        } catch (e) {
+            if (!(e instanceof QueryFailedError) || !e.driverError.code) throw e;
+            if (e.driverError.code === "ER_DUP_ENTRY")
+                throw new BadRequestException("중복된 닉네임입니다.");
+        }
     }
 
     @Transactional()
