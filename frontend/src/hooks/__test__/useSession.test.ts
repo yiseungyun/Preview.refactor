@@ -1,8 +1,8 @@
 import { renderHook } from "@testing-library/react";
-import { useSession } from "@hooks/session/useSession";
+import { useSession } from "@/pages/SessionPage/hooks/useSession";
 import useSocketStore from "@stores/useSocketStore";
-import useMediaDevices from "@hooks/session/useMediaDevices";
-import usePeerConnection from "@hooks/session/usePeerConnection";
+import useMediaDevices from "@/pages/SessionPage/hooks/useMediaDevices";
+import usePeerConnection from "@/pages/SessionPage/hooks/usePeerConnection";
 import { useNavigate } from "react-router-dom";
 import { act } from "react";
 import {

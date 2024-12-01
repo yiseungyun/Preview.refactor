@@ -3,7 +3,6 @@ import { FaArrowRight } from "react-icons/fa6";
 import questionList from "/introduce/questionList.png";
 import createSession from "/introduce/createSession.png";
 import inSession from "/introduce/inSession.png";
-import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const IntroPage = () => {
