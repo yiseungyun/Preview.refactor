@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+    BadRequestException,
+    ConflictException,
+    Injectable,
+    NotFoundException,
+} from "@nestjs/common";
 import { UserRepository } from "@/user/user.repository";
 import "dotenv/config";
 import { ChangePassword, UpdateUserDto } from "@/user/dto/update-user.dto";
@@ -65,7 +70,7 @@ export class UserService {
         } catch (e) {
             if (!(e instanceof QueryFailedError) || !e.driverError.code) throw e;
             if (e.driverError.code === "ER_DUP_ENTRY")
-                throw new BadRequestException("중복된 닉네임입니다.");
+                throw new ConflictException("중복된 닉네임입니다.");
         }
     }
 
