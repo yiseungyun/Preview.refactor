@@ -9,7 +9,7 @@ interface UseValidateProps {
 }
 
 const useValidate = ({ setIsSignUp }: UseValidateProps) => {
-  const { logIn, setNickname: setUserNickname } = useAuth();
+  const auth = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -31,8 +31,8 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
 
       if (success) {
         toast.success("로그인에 성공했습니다.");
-        logIn();
-        setUserNickname(nickname);
+        auth.logIn();
+        auth.setNickname(nickname);
         navigate("/");
       }
     } catch (err) {
