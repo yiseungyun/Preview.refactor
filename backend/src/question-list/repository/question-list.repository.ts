@@ -1,8 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { QuestionList } from "../entity/question-list.entity";
-import { Question } from "../entity/question.entity";
-import { Category } from "../entity/category.entity";
 import { User } from "@/user/user.entity";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 
@@ -14,20 +12,19 @@ export class QuestionListRepository {
         return this.dataSource.getRepository(QuestionList).save(questionList);
     }
 
-    findPublicQuestionLists() {
-        return this.dataSource
+    findPublicQuestionLists(categoryId?: number) {
+        const query = this.dataSource
             .getRepository(QuestionList)
             .createQueryBuilder("question_list")
             .where("question_list.is_public = :isPublic", { isPublic: true });
-    }
 
-    findPublicQuestionListsByCategoryId(categoryId: number) {
-        return this.dataSource
-            .getRepository(QuestionList)
-            .createQueryBuilder("question_list")
-            .innerJoin("question_list.categories", "category")
-            .where("question_list.is_public = :isPublic", { isPublic: true })
-            .andWhere("category.id = :categoryId", { categoryId });
+        if (categoryId !== null) {
+            query
+                .innerJoin("question_list.categories", "category")
+                .andWhere("category.id = :categoryId", { categoryId });
+        }
+
+        return query;
     }
 
     getQuestionListById(questionListId: number) {

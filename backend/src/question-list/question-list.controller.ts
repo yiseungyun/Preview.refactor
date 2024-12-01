@@ -47,6 +47,37 @@ export class QuestionListController {
         }
     }
 
+    @Post("category")
+    async getAllQuestionListsByCategoryName(
+        @Query() query: PaginateQuery,
+        @Body()
+        body: {
+            categoryName: string;
+        }
+    ) {
+        try {
+            const { categoryName } = body;
+            const { allQuestionLists, meta } = await this.questionListService.getAllQuestionLists(
+                query,
+                categoryName
+            );
+            return {
+                success: true,
+                message: "All question lists received successfully.",
+                data: {
+                    allQuestionLists,
+                    meta,
+                },
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: "Failed to get all question lists.",
+                error: error.message,
+            };
+        }
+    }
+
     @Post()
     @UseGuards(AuthGuard("jwt"))
     async createQuestionList(
@@ -87,38 +118,6 @@ export class QuestionListController {
             return {
                 success: false,
                 message: "Failed to create question list.",
-                error: error.message,
-            };
-        }
-    }
-
-    @Post("category")
-    async getAllQuestionListsByCategoryName(
-        @Query() query: PaginateQuery,
-        @Body()
-        body: {
-            categoryName: string;
-        }
-    ) {
-        try {
-            const { categoryName } = body;
-            const { allQuestionLists, meta } =
-                await this.questionListService.getAllQuestionListsByCategoryName(
-                    categoryName,
-                    query
-                );
-            return {
-                success: true,
-                message: "All question lists received successfully.",
-                data: {
-                    allQuestionLists,
-                    meta,
-                },
-            };
-        } catch (error) {
-            return {
-                success: false,
-                message: "Failed to get all question lists.",
                 error: error.message,
             };
         }

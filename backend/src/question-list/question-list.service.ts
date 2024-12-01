@@ -24,46 +24,17 @@ export class QuestionListService {
         private readonly categoryRepository: CategoryRepository
     ) {}
 
-    async getAllQuestionLists(query: PaginateQuery) {
+    async getAllQuestionLists(query: PaginateQuery, categoryName?: string) {
         const allQuestionLists: GetAllQuestionListDto[] = [];
 
-        const publicQuestionLists = await this.questionListRepository.findPublicQuestionLists();
-        const result = await paginate(query, publicQuestionLists, {
-            sortableColumns: ["usage"],
-            defaultSortBy: [["usage", "DESC"]],
-        });
-
-        for (const publicQuestionList of result.data) {
-            const { id, title, usage } = publicQuestionList;
-            const categoryNames: string[] =
-                await this.categoryRepository.findCategoryNamesByQuestionListId(id);
-
-            const questionCount =
-                await this.questionRepository.getQuestionCountByQuestionListId(id);
-
-            const questionList: GetAllQuestionListDto = {
-                id,
-                title,
-                categoryNames,
-                usage,
-                questionCount,
-            };
-            allQuestionLists.push(questionList);
-        }
-        return { allQuestionLists, meta: result.meta };
-    }
-
-    async getAllQuestionListsByCategoryName(categoryName: string, query: PaginateQuery) {
-        const allQuestionLists: GetAllQuestionListDto[] = [];
-
-        const categoryId = await this.categoryRepository.getCategoryIdByName(categoryName);
-
-        if (!categoryId) {
-            return {};
+        let categoryId = null;
+        if (categoryName) {
+            categoryId = await this.categoryRepository.getCategoryIdByName(categoryName);
+            if (!categoryId) return {};
         }
 
         const publicQuestionLists =
-            await this.questionListRepository.findPublicQuestionListsByCategoryId(categoryId);
+            await this.questionListRepository.findPublicQuestionLists(categoryId);
         const result = await paginate(query, publicQuestionLists, {
             sortableColumns: ["usage"],
             defaultSortBy: [["usage", "DESC"]],
