@@ -21,7 +21,7 @@ export class UserService {
             userId: user.id,
             nickname: user.username,
             avatarUrl: user.avatarUrl,
-            loginType: user.loginType,
+            loginType: user.loginType === "local" ? "native" : user.loginType,
         };
     }
 
