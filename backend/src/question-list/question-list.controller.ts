@@ -9,6 +9,8 @@ import {
     Query,
     Req,
     UseGuards,
+    UsePipes,
+    ValidationPipe,
 } from "@nestjs/common";
 import { QuestionListService } from "./question-list.service";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
@@ -19,14 +21,15 @@ import { IJwtPayload } from "@/auth/jwt/jwt.model";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 import { QuestionDto } from "@/question-list/dto/question.dto";
 import { DeleteQuestionDto } from "@/question-list/dto/delete-question.dto";
-import { PaginateQuery } from "nestjs-paginate";
+import { PaginateQueryDto } from "@/question-list/dto/paginate-query.dto";
 
 @Controller("question-list")
 export class QuestionListController {
     constructor(private readonly questionListService: QuestionListService) {}
 
     @Get()
-    async getAllQuestionLists(@Query() query: PaginateQuery) {
+    @UsePipes(new ValidationPipe({ transform: true }))
+    async getAllQuestionLists(@Query() query: PaginateQueryDto) {
         try {
             const { allQuestionLists, meta } =
                 await this.questionListService.getAllQuestionLists(query);
@@ -48,8 +51,9 @@ export class QuestionListController {
     }
 
     @Post("category")
+    @UsePipes(new ValidationPipe({ transform: true }))
     async getAllQuestionListsByCategoryName(
-        @Query() query: PaginateQuery,
+        @Query() query: PaginateQueryDto,
         @Body()
         body: {
             categoryName: string;
@@ -57,10 +61,9 @@ export class QuestionListController {
     ) {
         try {
             const { categoryName } = body;
-            const { allQuestionLists, meta } = await this.questionListService.getAllQuestionLists(
-                query,
-                categoryName
-            );
+            query.category = categoryName;
+            const { allQuestionLists, meta } =
+                await this.questionListService.getAllQuestionLists(query);
             return {
                 success: true,
                 message: "All question lists received successfully.",
@@ -155,7 +158,8 @@ export class QuestionListController {
 
     @Get("my")
     @UseGuards(AuthGuard("jwt"))
-    async getMyQuestionLists(@Query() query: PaginateQuery, @JwtPayload() token: IJwtPayload) {
+    @UsePipes(new ValidationPipe({ transform: true }))
+    async getMyQuestionLists(@Query() query: PaginateQueryDto, @JwtPayload() token: IJwtPayload) {
         try {
             const userId = token.userId;
             const { myQuestionLists, meta } = await this.questionListService.getMyQuestionLists(
@@ -355,8 +359,9 @@ export class QuestionListController {
 
     @Get("scrap")
     @UseGuards(AuthGuard("jwt"))
+    @UsePipes(new ValidationPipe({ transform: true }))
     async getScrappedQuestionLists(
-        @Query() query: PaginateQuery,
+        @Query() query: PaginateQueryDto,
         @JwtPayload() token: IJwtPayload
     ) {
         try {

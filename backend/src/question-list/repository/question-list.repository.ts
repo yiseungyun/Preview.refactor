@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { DataSource } from "typeorm";
+import { DataSource, SelectQueryBuilder } from "typeorm";
 import { QuestionList } from "../entity/question-list.entity";
 import { User } from "@/user/user.entity";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
+import { PaginateDto } from "@/question-list/dto/paginate.dto";
 
 @Injectable()
 export class QuestionListRepository {
@@ -76,5 +77,14 @@ export class QuestionListRepository {
             .where("user_id = :userId", { userId })
             .andWhere("question_list_id = :questionListId", { questionListId })
             .execute();
+    }
+
+    async paginate(paginateDto: PaginateDto) {
+        const { queryBuilder, skip, take, field, direction } = paginateDto;
+        return await queryBuilder
+            .addOrderBy(`question_list.${field}`, direction)
+            .skip(skip)
+            .take(take)
+            .getManyAndCount();
     }
 }

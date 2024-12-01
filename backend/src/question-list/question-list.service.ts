@@ -11,9 +11,12 @@ import { QuestionList } from "@/question-list/entity/question-list.entity";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 import { QuestionDto } from "@/question-list/dto/question.dto";
 import { DeleteQuestionDto } from "@/question-list/dto/delete-question.dto";
-import { paginate, PaginateQuery } from "nestjs-paginate";
 import { QuestionRepository } from "@/question-list/repository/question.respository";
 import { CategoryRepository } from "@/question-list/repository/category.repository";
+import { PaginateQueryDto } from "@/question-list/dto/paginate-query.dto";
+import { SelectQueryBuilder } from "typeorm";
+import { PaginateMetaDto } from "@/question-list/dto/paginate-meta.dto";
+import { PaginateDto } from "@/question-list/dto/paginate.dto";
 
 @Injectable()
 export class QuestionListService {
@@ -24,21 +27,18 @@ export class QuestionListService {
         private readonly categoryRepository: CategoryRepository
     ) {}
 
-    async getAllQuestionLists(query: PaginateQuery, categoryName?: string) {
+    async getAllQuestionLists(query: PaginateQueryDto) {
         const allQuestionLists: GetAllQuestionListDto[] = [];
 
         let categoryId = null;
-        if (categoryName) {
-            categoryId = await this.categoryRepository.getCategoryIdByName(categoryName);
+        if (query.category) {
+            categoryId = await this.categoryRepository.getCategoryIdByName(query.category);
             if (!categoryId) return {};
         }
 
         const publicQuestionLists =
             await this.questionListRepository.findPublicQuestionLists(categoryId);
-        const result = await paginate(query, publicQuestionLists, {
-            sortableColumns: ["usage"],
-            defaultSortBy: [["usage", "DESC"]],
-        });
+        const result = await this.paginate(query, publicQuestionLists);
 
         for (const publicQuestionList of result.data) {
             const { id, title, usage } = publicQuestionList;
@@ -118,12 +118,9 @@ export class QuestionListService {
         return questionListContents;
     }
 
-    async getMyQuestionLists(userId: number, query: PaginateQuery) {
+    async getMyQuestionLists(userId: number, query: PaginateQueryDto) {
         const questionLists = await this.questionListRepository.getQuestionListsByUserId(userId);
-        const result = await paginate(query, questionLists, {
-            sortableColumns: ["usage"],
-            defaultSortBy: [["usage", "DESC"]],
-        });
+        const result = await this.paginate(query, questionLists);
 
         const myQuestionLists: MyQuestionListDto[] = [];
         for (const myQuestionList of result.data) {
@@ -267,14 +264,11 @@ export class QuestionListService {
         return await this.questionRepository.deleteQuestion(question);
     }
 
-    async getScrappedQuestionLists(userId: number, query: PaginateQuery) {
+    async getScrappedQuestionLists(userId: number, query: PaginateQueryDto) {
         const user = await this.userRepository.getUserByUserId(userId);
         const scrappedQuestionLists =
             await this.questionListRepository.getScrappedQuestionListsByUser(user);
-        const result = await paginate(query, scrappedQuestionLists, {
-            sortableColumns: ["usage"],
-            defaultSortBy: [["usage", "DESC"]],
-        });
+        const result = await this.paginate(query, scrappedQuestionLists);
         return { scrappedQuestionLists: result.data, meta: result.meta };
     }
 
@@ -309,5 +303,41 @@ export class QuestionListService {
 
     async unscrapQuestionList(questionListId: number, userId: number) {
         return await this.questionListRepository.unscrapQuestionList(questionListId, userId);
+    }
+
+    async paginate(query: PaginateQueryDto, queryBuilder: SelectQueryBuilder<any>) {
+        const { page, limit, sortBy } = query;
+
+        const skip = (page - 1) * limit;
+        const take = limit;
+        const [field, direction] = sortBy.split(":");
+        const safeDirection: "ASC" | "DESC" =
+            direction.toUpperCase() === "ASC" || direction.toUpperCase() === "DESC"
+                ? (direction.toUpperCase() as "ASC" | "DESC")
+                : "DESC";
+
+        const paginateDto: PaginateDto = {
+            queryBuilder,
+            skip,
+            take,
+            field,
+            direction: safeDirection,
+        };
+
+        const [result, totalItems] = await this.questionListRepository.paginate(paginateDto);
+        const totalPages = Math.ceil(totalItems / limit);
+
+        const meta: PaginateMetaDto = {
+            itemsPerPage: limit,
+            totalItems,
+            currentPage: String(page),
+            totalPages,
+            sortBy: sortBy,
+        };
+
+        return {
+            data: result,
+            meta: meta,
+        };
     }
 }
