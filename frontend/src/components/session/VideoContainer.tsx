@@ -7,6 +7,7 @@ import {
 import DisplayMediaStream from "./DisplayMediaStream.tsx";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import VideoProfileOverlay from "@components/session/VideoProfileOverlay.tsx";
+import VideoReactionBox from "@components/session/VideoReactionBox.tsx";
 
 interface VideoContainerProps {
   nickname: string;
@@ -113,22 +114,7 @@ const VideoContainer = ({
         nickname={nickname}
         // profileImage={"/snowman-thumbnail.jpg"}
       />
-      {
-        <div
-          className={`
-              pointer-events-none
-              absolute w-12 h-12 text-xl 
-              flex items-center justify-center 
-              top-2 right-2 text-white p-2 rounded-xl 
-              bg-accent-gray bg-opacity-50
-              transition-all duration-300
-              animate-fade-in-out
-              ${reaction ? "opacity-100" : "opacity-0"}
-            `}
-        >
-          <span className="animate-bounce">{renderReaction(reaction)}</span>
-        </div>
-      }
+      <VideoReactionBox reaction={reaction} renderReaction={renderReaction} />
     </div>
   );
 };
