@@ -3,7 +3,7 @@ import { useState } from "react";
 interface TitleProps {
   placeholder: string;
   initValue?: string;
-  onChange: (title: string) => void;
+  onChange?: (e: React.ChangeEvent<any>) => void;
   minLength?: number;
   maxLength?: number;
 }
@@ -25,7 +25,9 @@ const TitleInput = ({
     if (newValue.length <= maxLength) {
       setValue(newValue);
       setCharCount(newValue.length);
-      onChange(newValue);
+    }
+    if (onChange) {
+      onChange(event);
     }
   };
 

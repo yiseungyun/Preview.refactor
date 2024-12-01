@@ -5,11 +5,7 @@ import Profile from "@/pages/MyPage/view/Profile";
 import QuestionSection from "@/pages/MyPage/view/QuestionSection";
 import useModal from "@/hooks/useModal";
 
-interface MyPageViewProps {
-  nickname: string;
-}
-
-const MyPageView = ({ nickname }: MyPageViewProps) => {
+const MyPageView = () => {
   const modal = useModal();
 
   return (
@@ -17,7 +13,7 @@ const MyPageView = ({ nickname }: MyPageViewProps) => {
       <PageTitle title="마이페이지" />
       <div className="flex flex-col gap-8 min-w-5xl w-5xl flex-shrink-0 px-8 pt-8 pb-6 bg-white shadow-8 rounded-custom-l">
         <ProfileEditModal modal={modal} />
-        <Profile nickname={nickname} modal={modal} />
+        <Profile modal={modal} />
         <QuestionSection />
       </div>
     </SidebarPageLayout>
