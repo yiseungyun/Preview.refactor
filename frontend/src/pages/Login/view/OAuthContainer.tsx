@@ -1,10 +1,29 @@
 import { FaGithub, FaRegUserCircle } from "react-icons/fa";
+import useToast from "@hooks/useToast.ts";
+import { useNavigate } from "react-router-dom";
+import useAuth from "@hooks/useAuth.ts";
 
-interface OAuthContainerProps {
-  handleOAuthLogin: (provider: "github" | "guest") => void;
-}
+const OAuthContainer = () => {
+  const toast = useToast();
+  const navigate = useNavigate();
+  const { guestLogIn } = useAuth();
 
-const OAuthContainer = ({ handleOAuthLogin }: OAuthContainerProps) => {
+  const handleOAuthLogin = (provider: "github" | "guest") => {
+    if (provider === "github") {
+      // 깃허브 로그인
+      window.location.assign(
+        `https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_OAUTH_GITHUB_ID}&redirect_uri=${import.meta.env.VITE_OAUTH_GITHUB_CALLBACK}`
+      );
+    } else if (provider === "guest") {
+      // 게스트 로그인
+      const nickname = guestLogIn();
+      toast.success(
+        "게스트로 로그인되었습니다. 환영합니다. " + nickname + "님!"
+      );
+      navigate("/");
+    }
+  };
+
   return (
     <>
       <button
