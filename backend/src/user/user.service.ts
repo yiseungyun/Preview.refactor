@@ -1,9 +1,4 @@
-import {
-    BadRequestException,
-    ConflictException,
-    Injectable,
-    NotFoundException,
-} from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { UserRepository } from "@/user/user.repository";
 import "dotenv/config";
 import { ChangePassword, UpdateUserDto } from "@/user/dto/update-user.dto";
@@ -11,7 +6,6 @@ import { AuthService } from "@/auth/auth.service";
 import { Transactional } from "typeorm-transactional";
 import { LoginType, User } from "@/user/user.entity";
 import { CreateUserDto, CreateUserInternalDto } from "@/user/dto/create-user.dto";
-import { QueryFailedError } from "typeorm";
 
 @Injectable()
 export class UserService {
@@ -54,24 +48,38 @@ export class UserService {
 
     @Transactional()
     public async createUserByLocal(dto: CreateUserDto) {
-        try {
-            const userDto: CreateUserInternalDto = {
-                loginId: dto.id,
-                loginType: LoginType.LOCAL,
-                username: dto.nickname,
-                passwordHash: this.authService.generatePasswordHash(dto.password),
-            };
+        const userDto: CreateUserInternalDto = {
+            loginId: dto.id,
+            loginType: LoginType.LOCAL,
+            username: dto.nickname,
+            passwordHash: this.authService.generatePasswordHash(dto.password),
+        };
 
-            await this.userRepository.createUser(userDto);
+        const idExists = await this.userRepository.exists({
+            where: { loginId: dto.id },
+        });
 
+        if (idExists)
             return {
-                status: "success",
+                code: `DUPLICATE_ID`,
+                message: `아이디가 중복되었습니다.`,
+                field: "id",
             };
-        } catch (e) {
-            if (!(e instanceof QueryFailedError) || !e.driverError.code) throw e;
-            if (e.driverError.code === "ER_DUP_ENTRY")
-                throw new ConflictException("중복된 닉네임입니다.");
-        }
+
+        const nameExists = await this.userRepository.exists({
+            where: { username: dto.nickname },
+        });
+
+        if (nameExists)
+            return {
+                code: `DUPLICATE_NICKNAME`,
+                message: `닉네임이 중복되었습니다.`,
+                field: "nickname",
+            };
+
+        await this.userRepository.createUser(userDto);
+
+        return { status: "success" };
     }
 
     @Transactional()
