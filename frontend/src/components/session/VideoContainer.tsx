@@ -6,6 +6,7 @@ import {
 } from "react-icons/bs";
 import DisplayMediaStream from "./DisplayMediaStream.tsx";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
+import VideoProfileOverlay from "@components/session/VideoProfileOverlay.tsx";
 
 interface VideoContainerProps {
   nickname: string;
@@ -89,7 +90,7 @@ const VideoContainer = ({
           <p
             className={`bg-grayscale-500 ${localNickName} bg-opacity-70 text-white px-2 py-0.5 rounded`}
           >
-            {nickname}
+            {isVideoOn && nickname}
           </p>
           <div className={"inline-flex gap-4 px-2 items-center"}>
             {renderMicIcon()}
@@ -106,6 +107,12 @@ const VideoContainer = ({
           </div>
         )}
       </div>
+      <VideoProfileOverlay
+        isVideoOn={isVideoOn}
+        videoLoading={videoLoading || false}
+        nickname={nickname}
+        // profileImage={"/snowman-thumbnail.jpg"}
+      />
       {
         <div
           className={`
