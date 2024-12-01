@@ -1,4 +1,5 @@
 import { FaStar, FaUsers } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 interface QuestionCardProps {
   id: number;
@@ -7,21 +8,20 @@ interface QuestionCardProps {
   usage: number;
   isStarred?: boolean;
   category: string;
-  onClick: () => void;
 }
 
 const QuestionCard = ({
+  id,
   title,
   questionCount,
   usage,
   isStarred = false,
   category,
-  onClick,
 }: QuestionCardProps) => {
   return (
-    <div
-      className="bg-white backdrop-blur-sm border border-gray-200 rounded-xl p-4 hover:bg-gray-200/70 transition-all cursor-pointer group dark:bg-gray-900/80 dark:border-gray-700 dark:hover:bg-gray-600/70"
-      onClick={onClick}
+    <Link
+      to={`/questions/${id}`}
+      className="bg-white backdrop-blur-sm border border-gray-200 rounded-xl p-4 hover:bg-gray-200/70 transition-all cursor-pointer group dark:bg-gray-900/80 dark:border-gray-700 dark:hover:bg-gray-600/70 hover:shadow-lg"
     >
       <div className="flex justify-between items-start mb-3 pt-1">
         <span className="px-3 py-0.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-600/20 dark:text-emerald-400 text-sm rounded-full">
@@ -35,11 +35,9 @@ const QuestionCard = ({
           }`}
         />
       </div>
-
       <h3 className="text-lg font-semibold text-black dark:text-white pl-1 mb-4 line-clamp-2">
         {title}
       </h3>
-
       <div className="flex items-center justify-between text-sm text-gray-400 dark:text-gray-100">
         <div className="flex items-center gap-1 pl-1">
           <span>{questionCount}</span>
@@ -50,7 +48,7 @@ const QuestionCard = ({
           <span>{usage}</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
