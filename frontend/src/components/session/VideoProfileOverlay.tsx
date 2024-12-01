@@ -26,7 +26,7 @@ const VideoProfileOverlay = ({
             }
           >
             <img
-              className={"object-center w-full h-full opacity-100"}
+              className={"object-cover h-full opacity-100"}
               src={profileImage}
               alt={nickname + "프로필 이미지"}
             />
