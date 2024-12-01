@@ -6,9 +6,10 @@ import QuestionInputSection from "./QuestionInputSection";
 import { useCreateQuestionList } from "@/hooks/api/useCreateQuestionList";
 
 const QuestionForm = () => {
-  const isValid = useQuestionFormStore((state) => state.isFormValid());
-  const { category, questionTitle, access, questionList } =
+  const isFormValid = useQuestionFormStore((state) => state.isFormValid);
+  const { category, questionTitle, access, questionList, resetForm } =
     useQuestionFormStore();
+  const isValid = isFormValid();
 
   const createQuestions = useCreateQuestionList();
 
@@ -19,8 +20,8 @@ const QuestionForm = () => {
       categoryNames: [category], // TODO: 현재 카테고리 하나만 선택 가능 - UI 변경 후 3개까지 받도록 수정
       isPublic: access === "PUBLIC",
     };
-
     createQuestions(requestData);
+    resetForm();
   };
 
   return (
