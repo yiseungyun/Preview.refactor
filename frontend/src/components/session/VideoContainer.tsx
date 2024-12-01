@@ -79,12 +79,16 @@ const VideoContainer = ({
     );
   };
 
+  const localNickName = isLocal ? "text-semibold-r" : "text-medium-m";
+
   return (
     <div className={`relative ${getVideoLayoutClass(videoCount)} aspect-[4/3]`}>
       <div className="absolute inset-0 bg-black rounded-custom-l overflow-hidden">
         <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
-          <p className="bg-grayscale-500 bg-opacity-50 text-white px-2 py-0.5 rounded">
+          <p
+            className={`bg-grayscale-500 ${localNickName} bg-opacity-70 text-white px-2 py-0.5 rounded`}
+          >
             {nickname}
           </p>
           <div className={"inline-flex gap-4 px-2 items-center"}>

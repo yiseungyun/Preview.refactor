@@ -17,12 +17,14 @@ interface Props {
   isMicOn: boolean;
   videoLoading: boolean;
   isHost: boolean;
+  roomId: string;
   isInProgress: boolean;
   startStudySession: () => void;
   stopStudySession: () => void;
   currentIndex: number;
   maxQuestionLength: number;
 }
+
 const SessionToolbar = ({
   requestChangeIndex,
   handleVideoToggle,
@@ -36,6 +38,7 @@ const SessionToolbar = ({
   isMicOn,
   videoLoading,
   isHost,
+  roomId,
   isInProgress,
   startStudySession,
   stopStudySession,
@@ -59,6 +62,8 @@ const SessionToolbar = ({
         isVideoOn={isVideoOn}
         isMicOn={isMicOn}
         videoLoading={videoLoading}
+        isHost={isHost}
+        roomId={roomId}
       />
       <HostOnlyTools
         isHost={isHost}

@@ -1,5 +1,6 @@
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+import { MdArrowForwardIos, MdArrowBackIosNew } from "react-icons/md";
 import { useEffect, useState } from "react";
+import ToolTip from "../common/ToolTip";
 
 // 툴바에서 호스트만 사용가능 도구들 분리
 interface HostOnlyToolsProps {
@@ -66,49 +67,53 @@ const HostOnlyTools = ({
           </div>
         )}
         {isInProgress && (
-          <div className={"study-toolbar inline-flex gap-4 items-center mx-8"}>
-            <button
-              onClick={() => {
-                requestChangeIndex("prev");
-                setChangeCooldown(true);
-              }}
-              className={
-                "relative inline-flex items-center bg-transparent rounded-xl border h-10 px-3 py-2 text-medium-xs disabled:opacity-50 overflow-hidden"
-              }
-              aria-label={"이전 질문 버튼"}
-              disabled={changeCooldown || currentIndex === 0}
-            >
-              <FaAngleLeft /> 이전 질문
-              {changeCooldown && (
-                <div
-                  className={
-                    "origin-left absolute w-full h-full bg-gray-400/50 top-0 left-0 animate-progress"
-                  }
-                ></div>
-              )}
-            </button>
-            <button
-              onClick={() => {
-                requestChangeIndex("next");
-                setChangeCooldown(true);
-              }}
-              className={
-                "relative inline-flex items-center bg-transparent rounded-xl border h-10 px-3 py-2 text-medium-xs disabled:opacity-50 overflow-hidden"
-              }
-              aria-label={"다음 질문 버튼"}
-              disabled={
-                changeCooldown || currentIndex === maxQuestionLength - 1
-              }
-            >
-              다음 질문 <FaAngleRight />
-              {changeCooldown && (
-                <div
-                  className={
-                    "origin-left absolute w-full h-full bg-gray-400/50 top-0 left-0 animate-progress"
-                  }
-                ></div>
-              )}
-            </button>
+          <div className={"study-toolbar"}>
+            <ToolTip text="이전 질문">
+              <button
+                onClick={() => {
+                  requestChangeIndex("prev");
+                  setChangeCooldown(true);
+                }}
+                className={
+                  "relative inline-flex items-center bg-transparent rounded-full border-custom-s h-10 px-3 py-2 disabled:opacity-50 overflow-hidden"
+                }
+                aria-label={"이전 질문 버튼"}
+                disabled={changeCooldown || currentIndex === 0}
+              >
+                <MdArrowBackIosNew />
+                {changeCooldown && (
+                  <div
+                    className={
+                      "origin-left absolute w-full h-full bg-gray-400/50 top-0 left-0 animate-progress"
+                    }
+                  ></div>
+                )}
+              </button>
+            </ToolTip>
+            <ToolTip text="다음 질문">
+              <button
+                onClick={() => {
+                  requestChangeIndex("next");
+                  setChangeCooldown(true);
+                }}
+                className={
+                  "relative inline-flex items-center bg-transparent rounded-full border-custom-s h-10 px-3 py-2 disabled:opacity-50 overflow-hidden"
+                }
+                aria-label={"다음 질문 버튼"}
+                disabled={
+                  changeCooldown || currentIndex === maxQuestionLength - 1
+                }
+              >
+                <MdArrowForwardIos />
+                {changeCooldown && (
+                  <div
+                    className={
+                      "origin-left absolute w-full h-full bg-gray-400/50 top-0 left-0 animate-progress"
+                    }
+                  ></div>
+                )}
+              </button>
+            </ToolTip>
           </div>
         )}
       </>

@@ -3,7 +3,6 @@ import SessionSidebar from "@/pages/SessionPage/view/SessionSidebar";
 import SessionToolbar from "@/pages/SessionPage/view/SessionToolbar";
 import useSocket from "@hooks/useSocket";
 import SessionHeader from "@/pages/SessionPage/view/SessionHeader";
-import { useEffect } from "react";
 import useToast from "@hooks/useToast";
 import SidebarContainer from "@/pages/SessionPage/view/SidebarContainer";
 import VideoLayout from "./view/VideoLayout";
@@ -13,11 +12,10 @@ const SessionPage = () => {
   const { sessionId } = useParams();
   const toast = useToast();
 
-  useEffect(() => {
-    if (!sessionId) {
-      toast.error("유효하지 않은 세션 아이디입니다.");
-    }
-  }, [sessionId, toast]);
+  if (!sessionId) {
+    toast.error("유효하지 않은 세션 아이디입니다.");
+    return null;
+  }
 
   const { socket } = useSocket();
   const {
@@ -99,6 +97,7 @@ const SessionPage = () => {
             isMicOn={isMicOn}
             videoLoading={videoLoading}
             isHost={isHost}
+            roomId={sessionId}
             isInProgress={roomMetadata?.inProgress ?? false}
             startStudySession={startStudySession}
             stopStudySession={stopStudySession}
