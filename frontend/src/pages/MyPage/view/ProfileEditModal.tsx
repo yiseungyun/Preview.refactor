@@ -1,7 +1,6 @@
 import TitleInput from "@components/common/TitleInput";
 import { IoMdClose } from "react-icons/io";
 import ButtonSection from "@components/mypage/ButtonSection";
-import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import useToast from "@/hooks/useToast";
 import { useUserStore } from "@/stores/useUserStore";
@@ -60,6 +59,14 @@ const ProfileEditModal = ({
     setShowNewPassword(false);
     setOriginalPassword("");
     setNewPassword("");
+    setFormData({
+      avatarUrl: user?.avatarUrl || "",
+      nickname: user?.nickname || "",
+      password: {
+        original: "",
+        newPassword: "",
+      },
+    });
     closeModal();
   };
 
@@ -159,7 +166,7 @@ const ProfileEditModal = ({
           <p className="text-semibold-l text-gray-black">닉네임</p>
           <TitleInput
             placeholder="닉네임을 입력해주세요"
-            initValue={user?.nickname}
+            initValue={formData.nickname}
             onChange={handleChangeNickname}
             minLength={2}
           />
