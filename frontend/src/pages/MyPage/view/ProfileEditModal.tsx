@@ -2,9 +2,10 @@ import TitleInput from "@components/common/TitleInput";
 import { IoMdClose } from "react-icons/io";
 import ButtonSection from "@components/mypage/ButtonSection";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useToast from "@/hooks/useToast";
 import { useUserStore } from "@/stores/useUserStore";
+import PasswordInput from "./PasswordInput";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
@@ -30,7 +31,10 @@ const ProfileEditModal = ({
   const toast = useToast();
   const [showOriginalPassword, setShowOriginalPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
-  const { user, editMyInfo } = useUserStore();
+  const [originalPassword, setOriginalPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const user = useUserStore((state) => state.user);
+  const { editMyInfo } = useUserStore();
 
   const [formData, setFormData] = useState<EditForm>({
     avatarUrl: user?.avatarUrl || "",
@@ -41,14 +45,32 @@ const ProfileEditModal = ({
     },
   });
 
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        nickname: user.nickname || "",
+        avatarUrl: user.avatarUrl || "",
+      }));
+    }
+  }, [user]);
+
+  const resetModal = () => {
+    setShowOriginalPassword(false);
+    setShowNewPassword(false);
+    setOriginalPassword("");
+    setNewPassword("");
+    closeModal();
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLDialogElement>) => {
     if (e.target === dialogRef.current) {
-      closeModal();
+      resetModal();
     }
   };
 
   const handleClose = () => {
-    closeModal();
+    resetModal();
   };
 
   const handleChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,9 +94,6 @@ const ProfileEditModal = ({
   };
 
   const handleSubmit = async () => {
-    // TODO: 추후 분리 필요
-
-    // 비밀번호 변경하는 경우
     if (
       user?.loginType === "native" &&
       formData.password.newPassword &&
@@ -114,7 +133,7 @@ const ProfileEditModal = ({
     try {
       await editMyInfo(formData);
       toast.success("회원 정보가 변경되었습니다.");
-      closeModal();
+      resetModal();
     } catch (error) {
       toast.error("회원 정보 변경에 실패하였습니다.");
     }
@@ -149,50 +168,26 @@ const ProfileEditModal = ({
           <p className="text-semibold-l text-gray-black">비밀번호 변경</p>
           {user?.loginType === "native" ? (
             <>
-              <div className="relative w-full">
-                <input
-                  className={
-                    "text-medium-m w-full h-11 p-4 pr-20 border-custom-s rounded-custom-m"
-                  }
-                  type={showOriginalPassword ? "text" : "password"}
-                  placeholder={"기존 비밀번호를 입력하세요"}
-                  onChange={(e) =>
-                    handlePasswordChange("original", e.target.value)
-                  }
-                  minLength={7}
-                  maxLength={20}
-                />
-                <button
-                  className="text-gray-500 absolute right-4 top-1/2 transform -translate-y-1/2"
-                  onClick={() => setShowOriginalPassword(!showOriginalPassword)}
-                >
-                  {showOriginalPassword ? (
-                    <IoEyeOutline />
-                  ) : (
-                    <IoEyeOffOutline />
-                  )}
-                </button>
-              </div>
-              <div className="relative w-full">
-                <input
-                  className={
-                    "text-medium-m w-full h-11 p-4 pr-20 border-custom-s rounded-custom-m"
-                  }
-                  type={showNewPassword ? "text" : "password"}
-                  placeholder={"변경할 비밀번호를 입력하세요"}
-                  onChange={(e) =>
-                    handlePasswordChange("newPassword", e.target.value)
-                  }
-                  minLength={7}
-                  maxLength={20}
-                />
-                <button
-                  className="text-gray-500 absolute right-4 top-1/2 transform -translate-y-1/2"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
-                >
-                  {showNewPassword ? <IoEyeOutline /> : <IoEyeOffOutline />}
-                </button>
-              </div>
+              <PasswordInput
+                placeholder="기존 비밀번호를 입력하세요"
+                password={originalPassword}
+                showPassword={showOriginalPassword}
+                setShowPassword={setShowOriginalPassword}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  handlePasswordChange("original", e.target.value);
+                  setOriginalPassword(e.target.value);
+                }}
+              />
+              <PasswordInput
+                placeholder="변경할 비밀번호를 입력하세요"
+                password={newPassword}
+                showPassword={showNewPassword}
+                setShowPassword={setShowNewPassword}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  handlePasswordChange("newPassword", e.target.value);
+                  setNewPassword(e.target.value);
+                }}
+              />
             </>
           ) : (
             <p className="text-medium-l text-gray-600">
@@ -201,7 +196,7 @@ const ProfileEditModal = ({
           )}
         </div>
       </div>
-      <ButtonSection closeModal={closeModal} onSubmit={handleSubmit} />
+      <ButtonSection closeModal={resetModal} onSubmit={handleSubmit} />
     </dialog>
   );
 };

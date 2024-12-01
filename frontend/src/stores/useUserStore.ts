@@ -23,14 +23,19 @@ interface UserState {
   isLoading: boolean;
   error: Error | null;
 
+  initStore: () => Promise<void>;
   getMyInfo: () => Promise<void>;
   editMyInfo: (userData: Partial<EditData>) => Promise<void>;
 }
 
-export const useUserStore = create<UserState>((set) => ({
+export const useUserStore = create<UserState>((set, get) => ({
   user: null,
   isLoading: false,
   error: null,
+
+  initStore: async () => {
+    await get().getMyInfo();
+  },
 
   getMyInfo: async () => {
     set({ isLoading: true });
@@ -48,7 +53,18 @@ export const useUserStore = create<UserState>((set) => ({
     set({ isLoading: true });
     try {
       const updatedUser = await editMyInfo(userData);
-      set({ user: updatedUser, error: null });
+      const currentUser = get().user;
+
+      set({
+        user: currentUser
+          ? {
+              ...currentUser,
+              nickname: updatedUser.nickname,
+              avatarUrl: updatedUser.avartarUrl,
+            }
+          : null,
+        error: null,
+      });
     } catch (err) {
       set({ error: err as Error });
       throw err;

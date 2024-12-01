@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface TitleProps {
   placeholder: string;
@@ -19,6 +19,11 @@ const TitleInput = ({
     initValue ? initValue.length : 0
   );
   const [value, setValue] = useState<string>(initValue ?? "");
+
+  useEffect(() => {
+    setValue(initValue ?? "");
+    setCharCount(initValue ? initValue.length : 0);
+  }, [initValue]);
 
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
