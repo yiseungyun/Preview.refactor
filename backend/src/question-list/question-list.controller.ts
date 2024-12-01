@@ -124,16 +124,19 @@ export class QuestionListController {
     }
 
     @Post("contents")
+    @UseGuards(AuthGuard("jwt"))
     async getQuestionListContents(
+        @JwtPayload() token: IJwtPayload,
         @Body()
         body: {
             questionListId: number;
         }
     ) {
         try {
+            const userId = token.userId;
             const { questionListId } = body;
             const questionListContents: QuestionListContentsDto =
-                await this.questionListService.getQuestionListContents(questionListId);
+                await this.questionListService.getQuestionListContents(questionListId, userId);
             return {
                 success: true,
                 message: "Question list contents received successfully.",

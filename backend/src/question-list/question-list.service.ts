@@ -92,10 +92,10 @@ export class QuestionListService {
         return { createdQuestionList, createdQuestions };
     }
 
-    async getQuestionListContents(questionListId: number) {
+    async getQuestionListContents(questionListId: number, userId: number) {
         const questionList = await this.questionListRepository.getQuestionListById(questionListId);
-        const { id, title, usage, isPublic, userId } = questionList;
-        if (!isPublic) {
+        const { id, title, usage, isPublic } = questionList;
+        if (!isPublic && questionList.userId !== userId) {
             throw new Error("This is private question list.");
         }
 
@@ -209,7 +209,7 @@ export class QuestionListService {
         question.questionListId = questionListId;
 
         await this.questionRepository.saveQuestion(question);
-        return await this.getQuestionListContents(questionListId);
+        return await this.getQuestionListContents(questionListId, userId);
     }
 
     async updateQuestion(questionDto: QuestionDto) {
@@ -232,7 +232,7 @@ export class QuestionListService {
         existingQuestion.content = content;
 
         await this.questionRepository.saveQuestion(existingQuestion);
-        return await this.getQuestionListContents(questionListId);
+        return await this.getQuestionListContents(questionListId, userId);
     }
 
     @Transactional()
