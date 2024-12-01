@@ -76,7 +76,7 @@ const ProfileEditModal = ({
 
     // 비밀번호 변경하는 경우
     if (
-      user?.loginType !== "github" &&
+      user?.loginType === "native" &&
       formData.password.newPassword &&
       formData.password.original
     ) {
@@ -98,7 +98,7 @@ const ProfileEditModal = ({
         return;
       }
     } else if (
-      user?.loginType !== "github" &&
+      user?.loginType === "native" &&
       ((formData.password.newPassword && !formData.password.original) ||
         (!formData.password.newPassword && formData.password.original))
     ) {
@@ -147,7 +147,7 @@ const ProfileEditModal = ({
         </div>
         <div className="w-full flex flex-col gap-2">
           <p className="text-semibold-l text-gray-black">비밀번호 변경</p>
-          {user?.loginType !== "github" ? ( // TODO: native인 경우 바꿀 수 있게 해야함 -> 서버가 local로 반환해서 임시로 github 로그인 사용자만 비번 변경 막음
+          {user?.loginType === "native" ? (
             <>
               <div className="relative w-full">
                 <input
