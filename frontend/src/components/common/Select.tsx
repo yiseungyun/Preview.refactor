@@ -10,6 +10,7 @@ interface SelectProps<T> {
   setValue: (value: T) => void;
   options: Option<T>[];
   backgroundColor?: string;
+  defaultText?: string;
 }
 
 const Select = <T,>({
@@ -17,6 +18,7 @@ const Select = <T,>({
   setValue,
   options,
   backgroundColor = "bg-white",
+  defaultText,
 }: SelectProps<T>) => {
   return (
     <div className="relative inline-flex gap-2 items-center border-custom-s rounded-custom-m border-gray-200">
@@ -25,6 +27,11 @@ const Select = <T,>({
         onChange={(e) => setValue(e.target.value as T)}
         className={`rounded-custom-m ${backgroundColor} text-semibold-r text-gray-600 appearance-none pl-4 pr-8 h-full`}
       >
+        {defaultText && (
+          <option value="" disabled>
+            {defaultText}
+          </option>
+        )}
         {options.map((option) => (
           <option key={option.value as string} value={option.value as string}>
             {option.label}

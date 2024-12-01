@@ -71,28 +71,53 @@ const ProfileEditModal = ({
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // TODO: 추후 분리 필요
+
+    // 비밀번호 변경하는 경우
     if (
-      formData.nickname.trim().length < 2 ||
-      (user?.loginType === "native" &&
-        (formData.password.newPassword.trim().length < 8 ||
-          formData.password.original.trim().length < 8))
+      user?.loginType !== "github" &&
+      formData.password.newPassword &&
+      formData.password.original
     ) {
-      toast.error("올바른 값을 입력해주세요.");
+      if (
+        formData.nickname.trim().length < 2 ||
+        formData.password.newPassword.trim().length < 7 ||
+        formData.password.original.trim().length < 7
+      ) {
+        toast.error("올바른 값을 입력해주세요.");
+        return;
+      } else if (formData.password.newPassword === formData.password.original) {
+        toast.error("기존 비밀번호와 같은 값을 입력했습니다.");
+        return;
+      } else if (
+        !/[a-z]/.test(formData.password.newPassword) ||
+        !/[0-9]/.test(formData.password.newPassword)
+      ) {
+        toast.error("비밀번호에 최소 하나의 숫자와 소문자를 넣어야합니다.");
+        return;
+      }
+    } else if (
+      user?.loginType !== "github" &&
+      ((formData.password.newPassword && !formData.password.original) ||
+        (!formData.password.newPassword && formData.password.original))
+    ) {
+      toast.error("비밀번호 변경을 위해 둘 다 입력해주세요.");
       return;
+    } else {
+      if (formData.nickname === user?.nickname) {
+        toast.error("변경사항이 없습니다.");
+        return;
+      }
     }
 
-    if (
-      formData.nickname === user?.nickname ||
-      (user?.loginType === "native" &&
-        formData.password.newPassword === formData.password.original)
-    ) {
-      toast.error("변경사항이 없습니다.");
+    try {
+      await editMyInfo(formData);
+      toast.success("회원 정보가 변경되었습니다.");
+      closeModal();
+    } catch (error) {
+      toast.error("회원 정보 변경에 실패하였습니다.");
     }
-
-    editMyInfo(formData);
-    toast.success("회원 정보가 변경되었습니다.");
-    closeModal();
   };
 
   return (
@@ -122,7 +147,7 @@ const ProfileEditModal = ({
         </div>
         <div className="w-full flex flex-col gap-2">
           <p className="text-semibold-l text-gray-black">비밀번호 변경</p>
-          {user?.loginType === "native" ? (
+          {user?.loginType !== "github" ? ( // TODO: native인 경우 바꿀 수 있게 해야함 -> 서버가 local로 반환해서 임시로 github 로그인 사용자만 비번 변경 막음
             <>
               <div className="relative w-full">
                 <input
@@ -134,7 +159,7 @@ const ProfileEditModal = ({
                   onChange={(e) =>
                     handlePasswordChange("original", e.target.value)
                   }
-                  minLength={8}
+                  minLength={7}
                   maxLength={20}
                 />
                 <button
@@ -158,7 +183,7 @@ const ProfileEditModal = ({
                   onChange={(e) =>
                     handlePasswordChange("newPassword", e.target.value)
                   }
-                  minLength={8}
+                  minLength={7}
                   maxLength={20}
                 />
                 <button

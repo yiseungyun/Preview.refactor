@@ -1,7 +1,7 @@
 import SelectTitle from "@/components/common/SelectTitle";
-import CategorySelector from "@/components/common/CategorySelector";
 import { options } from "./data";
 import useQuestionFormStore from "@/stores/useQuestionFormStore";
+import Select from "@/components/common/Select";
 
 const CategorySection = () => {
   const { category, setCategory } = useQuestionFormStore();
@@ -9,11 +9,11 @@ const CategorySection = () => {
   return (
     <div>
       <SelectTitle title="카테고리" />
-      <CategorySelector
-        title="카테고리를 선택해주세요"
+      <Select
+        defaultText="카테고리를 선택해주세요"
         options={options}
         value={category}
-        onChange={setCategory}
+        setValue={setCategory}
       />
     </div>
   );

@@ -51,6 +51,7 @@ export const useUserStore = create<UserState>((set) => ({
       set({ user: updatedUser, error: null });
     } catch (err) {
       set({ error: err as Error });
+      throw err;
     } finally {
       set({ isLoading: false });
     }

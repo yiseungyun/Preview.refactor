@@ -44,7 +44,7 @@ const QuestionDetailPage = () => {
       <div className={"flex h-fit gap-8 max-w-7xl px-12 pt-20"}>
         <div
           className={
-            "flex flex-col gap-4 w-47.5 p-8 bg-gray-white rounded-custom-l shadow-16"
+            "flex flex-col gap-4 w-47.5 p-8 bg-gray-white rounded-custom-l shadow-16 mb-8"
           }
         >
           <LoadingIndicator loadingState={isLoading} />
