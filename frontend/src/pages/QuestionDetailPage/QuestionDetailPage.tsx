@@ -35,7 +35,7 @@ const QuestionDetailPage = () => {
   const shareQuestionList = () => {
     if (question) {
       navigator.clipboard.writeText(window.location.href);
-      toast.success(`${question.title} 질문지가 클립보드에 복사되었습니다.`);
+      toast.success(`${question.title} 링크가 복사되었습니다.`);
     }
   };
 
