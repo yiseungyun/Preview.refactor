@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import useQuestionFormStore from "@/stores/useQuestionFormStore";
+import useQuestionFormStore from "@/pages/CreateQuestionPage/stores/useQuestionFormStore";
 import useToast from "@/hooks/useToast";
-import { adjustHeight } from "../utils/textarea";
+import { adjustHeight } from "../utils/textareaHeight";
 
 const QuestionInput = () => {
   const toast = useToast();

@@ -1,5 +1,5 @@
 import VideoContainer from "@/components/session/VideoContainer";
-import { PeerConnection } from "@/pages/SessionPage/type/session";
+import { PeerConnection } from "@/pages/SessionPage/types/session";
 import { useAudioDetector } from "../hooks/useAudioDetector";
 
 interface VideoLayoutProps {

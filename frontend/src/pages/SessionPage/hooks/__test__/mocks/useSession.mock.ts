@@ -1,7 +1,7 @@
 import {
   MockPeerConnections,
   MockSocket,
-} from "@/pages/SessionPage/type/session.test";
+} from "@/pages/SessionPage/types/session.test";
 
 export const mockSocket: MockSocket = {
   emit: jest.fn(),

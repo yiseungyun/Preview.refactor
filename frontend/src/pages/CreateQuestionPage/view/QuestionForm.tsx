@@ -1,9 +1,9 @@
-import useQuestionFormStore from "@/stores/useQuestionFormStore";
-import AccessSection from "./AccessSection";
-import CategorySection from "./CategorySection";
-import TitleSection from "./TitleSection";
-import QuestionInputSection from "./QuestionInputSection";
-import { useCreateQuestionList } from "@/hooks/api/useCreateQuestionList";
+import useQuestionFormStore from "@/pages/CreateQuestionPage/stores/useQuestionFormStore";
+import AccessSection from "@/components/questions/create/AccessSection";
+import CategorySection from "@/components/questions/create/CategorySection";
+import TitleSection from "@/components/questions/create/TitleSection";
+import QuestionInputSection from "@components/questions/create/QuestionInputSection";
+import { useCreateQuestionList } from "@hooks/api/useCreateQuestionList";
 
 const QuestionForm = () => {
   const isFormValid = useQuestionFormStore((state) => state.isFormValid);

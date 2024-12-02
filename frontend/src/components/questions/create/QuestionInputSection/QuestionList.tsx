@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useQuestionFormStore from "@/stores/useQuestionFormStore";
+import useQuestionFormStore from "@/pages/CreateQuestionPage/stores/useQuestionFormStore";
 import QuestionItem from "./QustionItem";
 import EditInput from "./EditInput";
 

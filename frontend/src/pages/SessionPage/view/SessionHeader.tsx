@@ -1,4 +1,4 @@
-import { RoomMetadata } from "@/pages/SessionPage/type/session";
+import { RoomMetadata } from "@/pages/SessionPage/types/session";
 import { useEffect, useState } from "react";
 
 interface SessionHeaderProps {

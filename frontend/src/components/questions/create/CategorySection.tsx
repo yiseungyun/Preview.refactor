@@ -1,6 +1,6 @@
 import SelectTitle from "@/components/common/Text/SelectTitle";
-import { options } from "./data";
-import useQuestionFormStore from "@/stores/useQuestionFormStore";
+import { options } from "./utils/categoryData";
+import useQuestionFormStore from "@/pages/CreateQuestionPage/stores/useQuestionFormStore";
 import CategorySelect from "@/components/common/Select/CategorySelect";
 
 const CategorySection = () => {
