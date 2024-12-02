@@ -28,7 +28,7 @@ const useObserver = (option?: {
           }
         });
       },
-      option ?? { threshold: 0.3 }
+      option ?? { threshold: 0.5 }
     );
   }, []);
 
