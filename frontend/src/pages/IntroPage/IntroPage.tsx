@@ -11,10 +11,11 @@ import useObserver from "@/pages/IntroPage/hooks/useObserver.ts";
 const IntroPage = () => {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
-  const card1 = useRef<HTMLDivElement>(null);
-  const card2 = useRef<HTMLDivElement>(null);
-  const card3 = useRef<HTMLDivElement>(null);
-  const cards = [card1, card2, card3];
+  const cards = [
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+  ];
 
   const { observer } = useObserver();
   const contentRef = useRef<HTMLDivElement>(null);
@@ -67,7 +68,7 @@ const IntroPage = () => {
           )}
         </div>
 
-        <div className="py-32 px-8 opacity-0" ref={card1}>
+        <div className="py-32 px-8 opacity-0" ref={cards[0]}>
           <IntroCard
             index={"01"}
             title={
@@ -91,7 +92,7 @@ const IntroPage = () => {
           />
         </div>
 
-        <div className="py-32 px-8 bg-gray-900/50 opacity-0" ref={card2}>
+        <div className="py-32 px-8 bg-gray-900/50 opacity-0" ref={cards[1]}>
           <IntroCard
             index={"02"}
             title={
@@ -115,7 +116,7 @@ const IntroPage = () => {
           />
         </div>
 
-        <div className="py-32 px-8 opacity-0" ref={card3}>
+        <div className="py-32 px-8 opacity-0" ref={cards[2]}>
           <IntroCard
             index={"03"}
             title={
