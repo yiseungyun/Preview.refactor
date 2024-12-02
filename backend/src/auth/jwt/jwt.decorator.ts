@@ -1,9 +1,4 @@
-import {
-    createParamDecorator,
-    ExecutionContext,
-    InternalServerErrorException,
-    UnauthorizedException,
-} from "@nestjs/common";
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 import {
     IJwtPayload as IJwtPayload,
     IJwtToken as IJwtToken,
@@ -15,7 +10,7 @@ export const JwtPayload = createParamDecorator((data: unknown, ctx: ExecutionCon
     const payload = request.user.jwtToken;
 
     if (!isJwtTokenPayload(payload)) {
-        throw new UnauthorizedException("Invalid jwt token payload");
+        return null;
     }
 
     return payload;
@@ -26,7 +21,7 @@ export const JwtTokenPair = createParamDecorator((data: unknown, ctx: ExecutionC
     const payload = request.user.jwtToken;
 
     if (!isJwtTokenPair(payload)) {
-        throw new InternalServerErrorException("Invalid jwt token");
+        return null;
     }
 
     return payload;

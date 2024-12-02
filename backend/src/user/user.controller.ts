@@ -5,6 +5,7 @@ import {
     Param,
     Patch,
     Post,
+    UnauthorizedException,
     UseGuards,
     UsePipes,
     ValidationPipe,
@@ -33,6 +34,7 @@ export class UserController {
     @Get("my")
     @UseGuards(AuthGuard("jwt"))
     async getMyInfo(@JwtPayload() payload: IJwtPayload) {
+        if (!payload) throw new UnauthorizedException();
         return this.userService.getChangeableUserInfo(payload.userId);
     }
 
@@ -45,6 +47,7 @@ export class UserController {
     @Patch("my")
     @UseGuards(AuthGuard("jwt"))
     async changeMyInfo(@JwtPayload() payload: IJwtPayload, @Body() dto: UpdateUserDto) {
+        if (!payload) throw new UnauthorizedException();
         return this.userService.updateUserInfo(payload.userId, dto);
     }
 }

@@ -1,17 +1,21 @@
-import { Controller, Get, Post, Res, UseGuards } from "@nestjs/common";
+import {
+    Controller,
+    Get,
+    InternalServerErrorException,
+    Post,
+    Res,
+    UnauthorizedException,
+    UseGuards,
+} from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Response } from "express";
-import { AuthService } from "./auth.service";
 import { setCookieConfig } from "@/config/cookie.config";
 import { JwtPayload, JwtTokenPair } from "./jwt/jwt.decorator";
 import { IJwtPayload, IJwtToken, IJwtTokenPair } from "./jwt/jwt.model";
 
 @Controller("auth")
 export class AuthController {
-    private static ACCESS_TOKEN = "accessToken";
-    private static REFRESH_TOKEN = "refreshToken";
-
-    constructor(private readonly authService: AuthService) {}
+    constructor() {}
 
     @Post("github")
     @UseGuards(AuthGuard("github"))
@@ -19,12 +23,14 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response,
         @JwtTokenPair() pair: IJwtTokenPair
     ) {
+        if (!pair) throw new InternalServerErrorException();
         return this.setCookie(res, pair.accessToken, pair.refreshToken);
     }
 
     @Get("whoami")
     @UseGuards(AuthGuard("jwt"))
     async handleWhoami(@JwtPayload() payload: IJwtPayload) {
+        if (!payload) throw new UnauthorizedException();
         return payload;
     }
 
@@ -34,12 +40,14 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response,
         @JwtTokenPair() pair: IJwtTokenPair
     ) {
+        if (!pair) throw new UnauthorizedException();
         return this.setCookie(res, pair.accessToken);
     }
 
     @Post("login")
     @UseGuards(AuthGuard("local"))
     async login(@Res({ passthrough: true }) res: Response, @JwtTokenPair() pair: IJwtTokenPair) {
+        if (!pair) throw new UnauthorizedException();
         return this.setCookie(res, pair.accessToken, pair.refreshToken);
     }
 
