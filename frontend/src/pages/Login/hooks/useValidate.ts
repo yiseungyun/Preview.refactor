@@ -1,8 +1,8 @@
 import useAuth from "@hooks/useAuth.ts";
 import { useState } from "react";
-import { api } from "@/api/config/axios.ts";
 import { useNavigate } from "react-router-dom";
 import useToast from "@hooks/useToast.ts";
+import axios, { isAxiosError } from "axios";
 
 interface UseValidateProps {
   setIsSignUp: (isSignUp: boolean) => void;
@@ -22,23 +22,28 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
   const handleLogin = async () => {
     try {
       setLoading(true);
-      const response = await api.post("/api/auth/login", {
+      const response = await axios.post("/api/auth/login", {
         userId: username,
         password: password,
       });
 
-      if (response.data.success) {
+      const { success = false } = response.data;
+
+      if (success) {
         toast.success("로그인에 성공했습니다.");
         auth.logIn();
         auth.setNickname(nickname);
         navigate("/");
-        setLoading(false);
-      } else {
-        toast.error("로그인에 실패했습니다. 다시 시도해주세요");
-        setLoading(false);
       }
     } catch (err) {
-      console.error("로그인 도중 에러", err);
+      if (isAxiosError(err)) {
+        const { response } = err;
+        if (response?.status === 401) {
+          toast.error("아이디 또는 비밀번호가 일치하지 않습니다.");
+        } else {
+          toast.error("로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
+        }
+      } else console.error("로그인 도중 에러", err);
     } finally {
       setLoading(false);
     }
@@ -125,7 +130,7 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
       }
 
       if (isValid) {
-        const response = await api.post("/api/user/signup", {
+        const response = await axios.post("/api/user/signup", {
           id: username,
           password: password,
           nickname: nickname,
@@ -135,7 +140,20 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
           toast.success("회원가입에 성공했습니다. 로그인해주세요.");
           setIsSignUp(false);
         } else {
-          toast.error("회원가입에 실패했습니다. 잠시 후 다시 시도해주세요.");
+          const { code } = response.data;
+          switch (code) {
+            case "DUPLICATE_NICKNAME":
+              toast.error("이미 존재하는 닉네임입니다.");
+              break;
+            case "DUPLICATE_ID":
+              toast.error("이미 존재하는 아이디입니다.");
+              break;
+            default:
+              toast.error(
+                "회원가입에 실패했습니다. 잠시 후 다시 시도해주세요."
+              );
+              break;
+          }
         }
       }
     } catch (err) {

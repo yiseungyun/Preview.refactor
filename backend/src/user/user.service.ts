@@ -21,7 +21,7 @@ export class UserService {
             userId: user.id,
             nickname: user.username,
             avatarUrl: user.avatarUrl,
-            loginType: user.loginType,
+            loginType: user.loginType === "local" ? "native" : user.loginType,
         };
     }
 
@@ -55,11 +55,31 @@ export class UserService {
             passwordHash: this.authService.generatePasswordHash(dto.password),
         };
 
+        const idExists = await this.userRepository.exists({
+            where: { loginId: dto.id },
+        });
+
+        if (idExists)
+            return {
+                code: `DUPLICATE_ID`,
+                message: `아이디가 중복되었습니다.`,
+                field: "id",
+            };
+
+        const nameExists = await this.userRepository.exists({
+            where: { username: dto.nickname },
+        });
+
+        if (nameExists)
+            return {
+                code: `DUPLICATE_NICKNAME`,
+                message: `닉네임이 중복되었습니다.`,
+                field: "nickname",
+            };
+
         await this.userRepository.createUser(userDto);
 
-        return {
-            status: "success",
-        };
+        return { status: "success" };
     }
 
     @Transactional()
