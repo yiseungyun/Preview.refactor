@@ -1,6 +1,6 @@
 import App from "./App.tsx";
 import CreateQuestionPage from "./pages/CreateQuestionPage/CreateQuestionPage.tsx";
-import CreateSessionPage from "./pages/CreateSessionPage.tsx";
+import CreateSessionPage from "./pages/CreateSessionPage/CreateSessionPage.tsx";
 import QuestionDetailPage from "./pages/QuestionDetailPage/QuestionDetailPage.tsx";
 import SessionListPage from "./pages/SessionListPage/SessionListPage.tsx";
 import SessionPage from "./pages/SessionPage/index.tsx";

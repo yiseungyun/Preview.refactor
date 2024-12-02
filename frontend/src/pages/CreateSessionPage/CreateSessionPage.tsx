@@ -1,8 +1,8 @@
 import { IoArrowBackSharp } from "react-icons/io5";
-import SessionForm from "@/components/sessions/create/SessionForm";
+import SessionForm from "@/pages/CreateSessionPage/view/SessionForm";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import useSessionFormStore from "@/stores/useSessionFormStore";
+import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
 import SidebarPageLayout from "@components/layout/SidebarPageLayout.tsx";
 
 const CreateSessionPage = () => {
