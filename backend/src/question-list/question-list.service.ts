@@ -88,7 +88,7 @@ export class QuestionListService {
             return question;
         });
 
-        const createdQuestions = await this.questionRepository.createQuestions(questions);
+        const createdQuestions = await this.questionRepository.save(questions);
         return { createdQuestionList, createdQuestions };
     }
 
@@ -213,14 +213,16 @@ export class QuestionListService {
         question.index = existingQuestionsCount;
         question.questionListId = questionListId;
 
-        await this.questionRepository.saveQuestion(question);
+        await this.questionRepository.save(question);
         return await this.getQuestionListContents(questionListId, userId);
     }
 
     async updateQuestion(questionDto: QuestionDto) {
         const { id, content, questionListId, userId } = questionDto;
 
-        const question = await this.questionRepository.getQuestionById(id);
+        const question = await this.questionRepository.findOne({
+            where: { id },
+        });
         if (!question) throw new Error("Question not found.");
 
         const user = await this.userRepository.getUserByUserId(userId);
@@ -235,10 +237,9 @@ export class QuestionListService {
                 "You do not have permission to update the question in this question list."
             );
 
-        const existingQuestion = await this.questionRepository.getQuestionById(id);
-        existingQuestion.content = content;
+        question.content = content;
+        await this.questionRepository.save(question);
 
-        await this.questionRepository.saveQuestion(existingQuestion);
         return await this.getQuestionListContents(questionListId, userId);
     }
 
@@ -246,7 +247,9 @@ export class QuestionListService {
     async deleteQuestion(deleteQuestionDto: DeleteQuestionDto) {
         const { id, questionListId, userId } = deleteQuestionDto;
 
-        const question = await this.questionRepository.getQuestionById(id);
+        const question = await this.questionRepository.findOne({
+            where: { id },
+        });
         if (!question) throw new Error("Question not found.");
 
         const user = await this.userRepository.getUserByUserId(userId);
@@ -270,10 +273,10 @@ export class QuestionListService {
 
         for (const q of questionsToUpdate) {
             q.index -= 1;
-            await this.questionRepository.saveQuestion(q);
+            await this.questionRepository.save(q);
         }
 
-        return await this.questionRepository.deleteQuestion(question);
+        return await this.questionRepository.delete(question);
     }
 
     async getScrappedQuestionLists(userId: number, query: PaginateQueryDto) {
