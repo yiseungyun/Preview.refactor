@@ -1,5 +1,5 @@
 import SidebarPageLayout from "@components/layout/SidebarPageLayout";
-import PageTitle from "@components/common/PageTitle";
+import PageTitle from "@/components/common/Text/PageTitle";
 import ProfileEditModal from "@/pages/MyPage/view/ProfileEditModal";
 import Profile from "@/pages/MyPage/view/Profile";
 import QuestionSection from "@/pages/MyPage/view/QuestionSection";

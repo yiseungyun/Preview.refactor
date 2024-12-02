@@ -7,7 +7,7 @@ interface ButtonProps {
   onClick: () => void;
 }
 
-const Button = ({ text, type, icon: Icon, onClick }: ButtonProps) => {
+const DefaultButton = ({ text, type, icon: Icon, onClick }: ButtonProps) => {
   const buttonColor =
     type === "gray"
       ? "bg-gray-200 text-gray-black"
@@ -24,4 +24,4 @@ const Button = ({ text, type, icon: Icon, onClick }: ButtonProps) => {
   );
 };
 
-export default Button;
+export default DefaultButton;

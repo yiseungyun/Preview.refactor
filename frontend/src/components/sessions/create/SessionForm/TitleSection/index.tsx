@@ -1,6 +1,6 @@
 import useSessionFormStore from "@/stores/useSessionFormStore";
-import SelectTitle from "@/components/common/SelectTitle";
-import TitleInput from "@/components/common/TitleInput";
+import SelectTitle from "@/components/common/Text/SelectTitle";
+import TitleInput from "@/components/common/Input/TitleInput";
 
 const TitleSection = () => {
   const { setSessionName } = useSessionFormStore();

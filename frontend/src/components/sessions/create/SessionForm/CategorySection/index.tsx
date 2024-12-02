@@ -1,6 +1,6 @@
-import SelectTitle from "@/components/common/SelectTitle";
+import SelectTitle from "@/components/common/Text/SelectTitle";
 import useSessionFormStore from "@/stores/useSessionFormStore";
-import Select from "@/components/common/Select";
+import CategorySelect from "@/components/common/Select/CategorySelect";
 
 const options = [
   {
@@ -20,7 +20,7 @@ const CategorySection = () => {
     <div>
       <SelectTitle title="카테고리" />
       <div className="h-11">
-        <Select
+        <CategorySelect
           defaultText="카테고리를 선택해주세요"
           options={options}
           value={category}

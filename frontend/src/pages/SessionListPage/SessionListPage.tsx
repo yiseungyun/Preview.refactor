@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
-import SearchBar from "@components/common/SearchBar.tsx";
-import Select from "@components/common/Select.tsx";
+import SearchBar from "@/components/common/Input/SearchBar";
+import CategorySelect from "@/components/common/Select/CategorySelect";
 import SessionList from "@/pages/SessionListPage/view/list/SessionList.tsx";
-import CreateButton from "@components/common/CreateButton.tsx";
+import CreateButton from "@/components/common/Button/CreateButton";
 import { options } from "@/constants/CategoryData.ts";
 import { useGetSessionList } from "@/pages/SessionListPage/api/useGetSessionList.ts";
 import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
@@ -29,7 +29,7 @@ const SessionListPage = () => {
           <h1 className={"text-bold-l mb-6"}>면접 스터디 세션 목록</h1>
           <div className={"h-11 flex gap-2 w-full"}>
             <SearchBar text="세션을 검색하세요" />
-            <Select
+            <CategorySelect
               value={"FE"}
               setValue={setSelectedCategory}
               options={options}

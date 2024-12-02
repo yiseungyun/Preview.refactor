@@ -1,9 +1,9 @@
-import Sidebar from "@components/common/Sidebar.tsx";
-import SearchBar from "@components/common/SearchBar.tsx";
-import Select from "@components/common/Select.tsx";
+import Sidebar from "@/components/common/Sidebar/Sidebar";
+import SearchBar from "@/components/common/Input/SearchBar";
+import CategorySelect from "@/components/common/Select/CategorySelect";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { IoMdAdd } from "react-icons/io";
-import CreateButton from "@components/common/CreateButton.tsx";
+import CreateButton from "@/components/common/Button/CreateButton";
 import { options } from "@/constants/CategoryData.ts";
 import { useQuestionList } from "@hooks/api/useGetQuestionList.ts";
 import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
@@ -28,7 +28,7 @@ const QuestionListPage = () => {
           </h1>
           <div className="h-11 flex gap-2 items-stretch justify-between">
             <SearchBar text={"질문지 검색하기"} />
-            <Select
+            <CategorySelect
               value={selectedCategory}
               setValue={setSelectedCategory}
               options={options}

@@ -8,7 +8,7 @@ import {
   authenticatedRoutes,
   Route,
   unauthenticatedRoutes,
-} from "./routesData";
+} from "./routesConfig";
 import SidebarMenu from "./SidebarMenu";
 
 const Sidebar = () => {

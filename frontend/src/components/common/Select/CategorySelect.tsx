@@ -13,7 +13,7 @@ interface SelectProps<T> {
   defaultText?: string;
 }
 
-const Select = <T,>({
+const CategorySelect = <T,>({
   value,
   setValue,
   options,
@@ -21,7 +21,9 @@ const Select = <T,>({
   defaultText,
 }: SelectProps<T>) => {
   return (
-    <div className={`relative h-full border-custom-s rounded-custom-m border-gray-200 ${backgroundColor}`}>
+    <div
+      className={`relative h-full border-custom-s rounded-custom-m border-gray-200 ${backgroundColor}`}
+    >
       <select
         defaultValue={value as string}
         onChange={(e) => setValue(e.target.value as T)}
@@ -45,4 +47,4 @@ const Select = <T,>({
   );
 };
 
-export default Select;
+export default CategorySelect;
