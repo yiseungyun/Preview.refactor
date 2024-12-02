@@ -4,30 +4,52 @@ import questionList from "/introduce/questionList.png";
 import createSession from "/introduce/createSession.png";
 import inSession from "/introduce/inSession.png";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { throttle } from "lodash";
 
 const IntroPage = () => {
   const navigate = useNavigate();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = throttle(() => {
+    const scrollTop = (contentRef.current!.parentNode as HTMLDivElement)
+      .scrollTop;
+    if (scrollTop && scrollTop > 10) {
+      setIsScrolled(true);
+      console.log(1);
+    } else {
+      setIsScrolled(false);
+    }
+  }, 16);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.parentNode?.addEventListener("scroll", handleScroll);
+    }
+  }, []);
 
   return (
     <SidebarPageLayout>
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+      <div
+        ref={contentRef}
+        className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 scroll-smooth"
+      >
         <div className="relative h-screen flex items-center">
-          <img
-            src="/"
-            alt="면접 준비"
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
-          />
           <div className="relative z-10 max-w-6xl mx-auto px-8">
             <p className="text-green-100 mb-4">면접 스터디 가이드</p>
-            <h1 className="font-raleway text-7xl font-bold text-white mb-6 tracking-tight">
+            <h1 className="font-raleway text-6xl xl:text-7xl font-bold text-white mb-6 tracking-tight">
               더 나은 면접을 위한 준비가
               <br />
               지금 시작됩니다
             </h1>
           </div>
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-12 mt-8 px-6 py-3 text-white  duration-1000 animate-pulse ease-in-out rounded-custom-m hover:bg-green-200 transition-colors">
-            스크롤로 자세히 보기
-          </div>
+          {!isScrolled && (
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-12 mt-8 px-6 py-3 text-white  duration-1000 animate-pulse ease-in-out rounded-custom-m transition-colors ">
+              스크롤로 자세히 보기
+            </div>
+          )}
         </div>
 
         <div className="py-32 px-8">
@@ -131,7 +153,7 @@ const IntroPage = () => {
             지금 바로 시작하세요
           </h2>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/sessions")}
             className="px-8 py-4 bg-green-100 text-white rounded-custom-m hover:bg-green-200 transition-colors font-medium text-lg"
           >
             스터디 시작하기
