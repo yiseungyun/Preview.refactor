@@ -6,11 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { throttle } from "lodash";
 import IntroCard from "@/pages/IntroPage/view/IntroCard.tsx";
+import useObserver from "@/pages/IntroPage/hooks/useObserver.ts";
 
 const IntroPage = () => {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
+  const card1 = useRef<HTMLDivElement>(null);
+  const card2 = useRef<HTMLDivElement>(null);
+  const card3 = useRef<HTMLDivElement>(null);
+  const cards = [card1, card2, card3];
 
+  const { observer } = useObserver();
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = throttle(() => {
@@ -26,6 +32,16 @@ const IntroPage = () => {
   useEffect(() => {
     if (contentRef.current) {
       contentRef.current.parentNode?.addEventListener("scroll", handleScroll);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (observer.current) {
+      cards.forEach((card) => {
+        if (card.current) {
+          observer.current!.observe(card.current);
+        }
+      });
     }
   }, []);
 
@@ -51,7 +67,7 @@ const IntroPage = () => {
           )}
         </div>
 
-        <div className="py-32 px-8">
+        <div className="py-32 px-8 opacity-0" ref={card1}>
           <IntroCard
             index={"01"}
             title={
@@ -75,7 +91,7 @@ const IntroPage = () => {
           />
         </div>
 
-        <div className="py-32 px-8 bg-gray-900/50">
+        <div className="py-32 px-8 bg-gray-900/50 opacity-0" ref={card2}>
           <IntroCard
             index={"02"}
             title={
@@ -99,7 +115,7 @@ const IntroPage = () => {
           />
         </div>
 
-        <div className="py-32 px-8">
+        <div className="py-32 px-8 opacity-0" ref={card3}>
           <IntroCard
             index={"03"}
             title={
