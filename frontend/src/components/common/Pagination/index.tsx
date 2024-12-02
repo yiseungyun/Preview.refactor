@@ -45,7 +45,7 @@ const Pagination = ({
           onClick={() => onPageChange(number)}
           className={`w-9 h-9 rounded-custom-s ${
             currentPage === number
-              ? "bg-green-200 text-white text-semibold-m"
+              ? "bg-gray-500 text-white text-semibold-m"
               : "text-gray-black text-medium-l"
           }`}
         >

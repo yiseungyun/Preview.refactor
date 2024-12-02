@@ -19,12 +19,12 @@ const QuestionSection = () => {
     data: myData,
     isLoading: isMyListLoading,
     error: myListError,
-  } = useGetMyQuestionList({ limit: 8 });
+  } = useGetMyQuestionList({ page: myListPage, limit: 8 });
   const {
     data: scrapData,
     isLoading: isScrapListLoading,
     error: scrapListError,
-  } = useGetScrapQuestionList({ limit: 8 });
+  } = useGetScrapQuestionList({ page: savedListPage, limit: 8 });
 
   const isLoading = tab === "myList" ? isMyListLoading : isScrapListLoading;
   const error = tab === "myList" ? myListError : scrapListError;

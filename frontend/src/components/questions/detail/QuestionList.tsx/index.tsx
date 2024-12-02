@@ -1,5 +1,7 @@
 import { useGetQuestionContent } from "@/hooks/api/useGetQuestionContent";
 import QuestionItem from "./QuestionItem";
+import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
+import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 
 const QuestionList = ({ questionId }: { questionId: string }) => {
   const {
@@ -8,8 +10,14 @@ const QuestionList = ({ questionId }: { questionId: string }) => {
     error,
   } = useGetQuestionContent(Number(questionId));
 
-  if (isLoading) return <div>로딩 중</div>;
-  if (error) return <div>에러가 발생</div>;
+  if (isLoading) return <LoadingIndicator loadingState={isLoading} />;
+  if (error)
+    return (
+      <ErrorBlock
+        error={error}
+        message={"질문지 내용을 불러오는데 실패했습니다."}
+      />
+    );
   if (!question) return null;
 
   return (

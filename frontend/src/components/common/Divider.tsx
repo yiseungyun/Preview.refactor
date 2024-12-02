@@ -1,12 +1,21 @@
-const Divider = () => {
+interface DividerProps {
+  message?: string;
+  isText?: boolean;
+}
+
+const Divider = ({ message = "또는", isText = true }: DividerProps) => {
   return (
     <div className="relative">
       <div className="absolute inset-0 flex items-center">
         <div className="w-full border-t border-gray-300"></div>
       </div>
-      <div className="relative flex justify-center tsnowmanext-sm">
-        <span className="px-2 bg-white text-gray-500">또는</span>
-      </div>
+      {isText && (
+        <div className="relative flex justify-center tsnowmanext-sm">
+          <span className="px-2 bg-gray-white dark:text-gray-300 text-gray-500">
+            {message}
+          </span>
+        </div>
+      )}
     </div>
   );
 };

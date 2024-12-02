@@ -3,10 +3,11 @@ import { CreateRoomInternalDto } from "@/room/dto/create-room.dto";
 import { EMIT_EVENT } from "@/room/room.events";
 import { WebsocketService } from "@/websocket/websocket.service";
 import { RoomRepository } from "@/room/room.repository";
-import { QuestionListRepository } from "@/question-list/question-list.repository";
-import { RoomJoinService } from "@/room/services/room-join.service";
+import { QuestionListRepository } from "@/question-list/repository/question-list.repository";
 import { createHash } from "node:crypto";
 import "dotenv/config";
+import { Transactional } from "typeorm-transactional";
+import { QuestionRepository } from "@/question-list/repository/question.respository";
 
 @Injectable()
 export class RoomCreateService {
@@ -16,17 +17,23 @@ export class RoomCreateService {
         private readonly roomRepository: RoomRepository,
         private readonly socketService: WebsocketService,
         private readonly questionListRepository: QuestionListRepository,
-        private readonly roomJoinService: RoomJoinService
+        private readonly questionRepository: QuestionRepository
     ) {}
 
+    @Transactional()
     public async createRoom(dto: CreateRoomInternalDto) {
         const { socketId, nickname } = dto;
         const id = await this.generateRoomId();
         const socket = this.socketService.getSocket(socketId);
         const currentTime = Date.now();
-        const questionListContents = await this.questionListRepository.getContentsByQuestionListId(
+        const questionList = await this.questionListRepository.getQuestionListById(
             dto.questionListId
         );
+        const questionListContent = await this.questionRepository.getContentsByQuestionListId(
+            dto.questionListId
+        );
+        questionList.usage += 1;
+        await this.questionListRepository.updateQuestionList(questionList);
 
         const roomDto = {
             ...dto,
@@ -34,9 +41,10 @@ export class RoomCreateService {
             inProgress: false,
             connectionMap: {},
             participants: 0,
-            questionListContents,
+            questionListContents: questionListContent,
             createdAt: currentTime,
-            maxQuestionListLength: questionListContents.length,
+            maxQuestionListLength: questionListContent.length,
+            questionListTitle: questionList.title,
             currentIndex: 0,
             host: {
                 socketId: dto.socketId,

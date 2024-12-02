@@ -15,7 +15,7 @@ const Button = ({ text, type, icon: Icon, onClick }: ButtonProps) => {
 
   return (
     <button
-      className={`w-full h-12 flex flex-row items-center justify-center gap-2 rounded-custom-m text-semibold-m ${buttonColor}`}
+      className={`w-full h-12 flex flex-row items-center justify-center gap-2 rounded-custom-m text-semibold-r ${buttonColor} hover:opacity-80`}
       onClick={onClick}
     >
       {Icon ? <Icon /> : null}
