@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 interface UseAudioDetectorProps {
+  localStream: MediaStream | null;
   peerConnections: React.MutableRefObject<{ [key: string]: RTCPeerConnection }>;
   audioThreshold?: number;
 }
@@ -13,19 +14,17 @@ const CHECK_PEERCONNECTION = 1000;
 const TIMER_INTERVAL = 100;
 
 export const useAudioDetector = ({
+  localStream,
   peerConnections,
-  audioThreshold = -30,
+  audioThreshold = -35,
 }: UseAudioDetectorProps) => {
-  const [speakingStates, setSpeakingStates] = useState<AudioLevels>(() => {
-    return Object.keys(peerConnections.current).reduce(
-      (acc, peerId) => ({
-        ...acc,
-        [peerId]: false,
-      }),
-      {}
-    );
-  });
+  const [speakingStates, setSpeakingStates] = useState<AudioLevels>({});
   const intervalRefs = useRef<{ [key: string]: NodeJS.Timeout }>({});
+
+  const audioContextRef = useRef<AudioContext | null>();
+  const analyserRef = useRef<AnalyserNode | null>();
+  const dataArrayRef = useRef<Uint8Array | null>();
+
   const [connectionCount, setConnectionCount] = useState(0);
 
   useEffect(() => {
@@ -40,6 +39,38 @@ export const useAudioDetector = ({
   }, [peerConnections, connectionCount]);
 
   useEffect(() => {
+    if (!localStream) return;
+
+    audioContextRef.current = new AudioContext();
+    analyserRef.current = audioContextRef.current.createAnalyser();
+
+    analyserRef.current.fftSize = 2048;
+    analyserRef.current.smoothingTimeConstant = 0.8;
+
+    dataArrayRef.current = new Uint8Array(
+      analyserRef.current.frequencyBinCount
+    );
+
+    const source = audioContextRef.current.createMediaStreamSource(localStream);
+    source.connect(analyserRef.current);
+
+    const checkLocalAudio = () => {
+      if (!analyserRef.current || !dataArrayRef.current) return;
+
+      analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+      const average =
+        dataArrayRef.current.reduce((a, b) => a + b) /
+        dataArrayRef.current.length;
+      const db = 20 * Math.log10(average / 255);
+
+      setSpeakingStates((prev) => ({
+        ...prev,
+        local: db > audioThreshold,
+      }));
+    };
+
+    intervalRefs.current.local = setInterval(checkLocalAudio, TIMER_INTERVAL);
+
     if (connectionCount === 0) return;
 
     // 각 피어에 대해 오디오 레벨 모니터링
@@ -78,8 +109,12 @@ export const useAudioDetector = ({
         clearInterval(interval);
       });
       intervalRefs.current = {};
+
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
     };
-  }, [connectionCount]);
+  }, [connectionCount, localStream, audioThreshold]);
 
   return { speakingStates };
 };

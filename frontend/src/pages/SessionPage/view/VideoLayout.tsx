@@ -26,7 +26,10 @@ const VideoLayout = ({
   peerConnections,
 }: VideoLayoutProps) => {
   const videoCount = 1 + peers.length;
-  const { speakingStates } = useAudioDetector({ peerConnections });
+  const { speakingStates } = useAudioDetector({
+    localStream: stream,
+    peerConnections,
+  });
 
   return (
     <div className="relative w-full flex-1 min-h-0 overflow-hidden">
@@ -36,7 +39,7 @@ const VideoLayout = ({
           isMicOn={isMicOn}
           isVideoOn={isVideoOn}
           isLocal={true}
-          isSpeaking={false}
+          isSpeaking={speakingStates["local"]}
           reaction={reaction || ""}
           stream={stream!}
           videoLoading={videoLoading}
