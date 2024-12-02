@@ -7,10 +7,11 @@ import { RedisOmModule } from "@moozeh/nestjs-redis-om";
 import { RoomEntity } from "./room.entity";
 import { RoomLeaveService } from "@/room/services/room-leave.service";
 import { RoomHostService } from "@/room/services/room-host.service";
-import { QuestionListRepository } from "@/question-list/question-list.repository";
+import { QuestionListRepository } from "@/question-list/repository/question-list.repository";
 import { WebsocketModule } from "@/websocket/websocket.module";
 import { RoomCreateService } from "@/room/services/room-create.service";
 import { RoomJoinService } from "@/room/services/room-join.service";
+import { QuestionRepository } from "@/question-list/repository/question.respository";
 
 @Module({
     imports: [RedisOmModule.forFeature([RoomEntity]), WebsocketModule],
@@ -23,6 +24,7 @@ import { RoomJoinService } from "@/room/services/room-join.service";
         RoomLeaveService,
         RoomHostService,
         QuestionListRepository,
+        QuestionRepository,
     ],
     controllers: [RoomController],
 })

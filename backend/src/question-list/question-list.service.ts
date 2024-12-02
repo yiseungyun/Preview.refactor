@@ -1,77 +1,52 @@
 import { Injectable } from "@nestjs/common";
-import { QuestionListRepository } from "./question-list.repository";
+import { QuestionListRepository } from "./repository/question-list.repository";
 import { UserRepository } from "@/user/user.repository";
 import { CreateQuestionListDto } from "./dto/create-question-list.dto";
 import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
 import { QuestionListContentsDto } from "./dto/question-list-contents.dto";
 import { MyQuestionListDto } from "./dto/my-question-list.dto";
-import { Question } from "./question.entity";
+import { Question } from "./entity/question.entity";
 import { Transactional } from "typeorm-transactional";
-import { QuestionList } from "@/question-list/question-list.entity";
+import { QuestionList } from "@/question-list/entity/question-list.entity";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 import { QuestionDto } from "@/question-list/dto/question.dto";
 import { DeleteQuestionDto } from "@/question-list/dto/delete-question.dto";
-import { paginate, PaginateQuery } from "nestjs-paginate";
+import { QuestionRepository } from "@/question-list/repository/question.respository";
+import { CategoryRepository } from "@/question-list/repository/category.repository";
+import { PaginateQueryDto } from "@/question-list/dto/paginate-query.dto";
+import { SelectQueryBuilder } from "typeorm";
+import { PaginateMetaDto } from "@/question-list/dto/paginate-meta.dto";
+import { PaginateDto } from "@/question-list/dto/paginate.dto";
 
 @Injectable()
 export class QuestionListService {
     constructor(
         private readonly questionListRepository: QuestionListRepository,
-        private readonly userRepository: UserRepository
+        private readonly questionRepository: QuestionRepository,
+        private readonly userRepository: UserRepository,
+        private readonly categoryRepository: CategoryRepository
     ) {}
 
-    async getAllQuestionLists(query: PaginateQuery) {
+    async getAllQuestionLists(query: PaginateQueryDto) {
         const allQuestionLists: GetAllQuestionListDto[] = [];
 
-        const publicQuestionLists = await this.questionListRepository.findPublicQuestionLists();
-        const result = await paginate(query, publicQuestionLists, {
-            sortableColumns: ["usage"],
-            defaultSortBy: [["usage", "DESC"]],
-        });
-
-        for (const publicQuestionList of result.data) {
-            const { id, title, usage } = publicQuestionList;
-            const categoryNames: string[] =
-                await this.questionListRepository.findCategoryNamesByQuestionListId(id);
-
-            const questionCount =
-                await this.questionListRepository.getQuestionCountByQuestionListId(id);
-
-            const questionList: GetAllQuestionListDto = {
-                id,
-                title,
-                categoryNames,
-                usage,
-                questionCount,
-            };
-            allQuestionLists.push(questionList);
-        }
-        return { allQuestionLists, meta: result.meta };
-    }
-
-    async getAllQuestionListsByCategoryName(categoryName: string, query: PaginateQuery) {
-        const allQuestionLists: GetAllQuestionListDto[] = [];
-
-        const categoryId = await this.questionListRepository.getCategoryIdByName(categoryName);
-
-        if (!categoryId) {
-            return {};
+        let categoryId = null;
+        if (query.category) {
+            categoryId = await this.categoryRepository.getCategoryIdByName(query.category);
+            if (!categoryId) return {};
         }
 
         const publicQuestionLists =
-            await this.questionListRepository.findPublicQuestionListsByCategoryId(categoryId);
-        const result = await paginate(query, publicQuestionLists, {
-            sortableColumns: ["usage"],
-            defaultSortBy: [["usage", "DESC"]],
-        });
+            await this.questionListRepository.findPublicQuestionLists(categoryId);
+        const result = await this.paginate(query, publicQuestionLists);
 
         for (const publicQuestionList of result.data) {
             const { id, title, usage } = publicQuestionList;
             const categoryNames: string[] =
-                await this.questionListRepository.findCategoryNamesByQuestionListId(id);
+                await this.categoryRepository.findCategoryNamesByQuestionListId(id);
 
             const questionCount =
-                await this.questionListRepository.getQuestionCountByQuestionListId(id);
+                await this.questionRepository.getQuestionCountByQuestionListId(id);
 
             const questionList: GetAllQuestionListDto = {
                 id,
@@ -90,7 +65,7 @@ export class QuestionListService {
     async createQuestionList(createQuestionListDto: CreateQuestionListDto) {
         const { title, contents, categoryNames, isPublic, userId } = createQuestionListDto;
 
-        const categories = await this.questionListRepository.findCategoriesByNames(categoryNames);
+        const categories = await this.categoryRepository.findCategoriesByNames(categoryNames);
         if (categories.length !== categoryNames.length) {
             throw new Error("Some category names were not found.");
         }
@@ -113,24 +88,24 @@ export class QuestionListService {
             return question;
         });
 
-        const createdQuestions = await this.questionListRepository.createQuestions(questions);
+        const createdQuestions = await this.questionRepository.createQuestions(questions);
         return { createdQuestionList, createdQuestions };
     }
 
-    async getQuestionListContents(questionListId: number) {
+    async getQuestionListContents(questionListId: number, userId: number) {
         const questionList = await this.questionListRepository.getQuestionListById(questionListId);
-        const { id, title, usage, isPublic, userId } = questionList;
-        if (!isPublic) {
+        const { id, title, usage, isPublic } = questionList;
+        if (!isPublic && questionList.userId !== userId) {
             throw new Error("This is private question list.");
         }
 
-        const contents =
-            await this.questionListRepository.getContentsByQuestionListId(questionListId);
+        const contents = await this.questionRepository.getContentsByQuestionListId(questionListId);
 
         const categoryNames =
-            await this.questionListRepository.findCategoryNamesByQuestionListId(questionListId);
+            await this.categoryRepository.findCategoryNamesByQuestionListId(questionListId);
 
-        const username = await this.questionListRepository.getUsernameById(userId);
+        const user = await this.userRepository.getUserByUserId(userId);
+        const username = user.username;
         const questionListContents: QuestionListContentsDto = {
             id,
             title,
@@ -143,18 +118,15 @@ export class QuestionListService {
         return questionListContents;
     }
 
-    async getMyQuestionLists(userId: number, query: PaginateQuery) {
+    async getMyQuestionLists(userId: number, query: PaginateQueryDto) {
         const questionLists = await this.questionListRepository.getQuestionListsByUserId(userId);
-        const result = await paginate(query, questionLists, {
-            sortableColumns: ["usage"],
-            defaultSortBy: [["usage", "DESC"]],
-        });
+        const result = await this.paginate(query, questionLists);
 
         const myQuestionLists: MyQuestionListDto[] = [];
         for (const myQuestionList of result.data) {
             const { id, title, isPublic, usage } = myQuestionList;
             const categoryNames: string[] =
-                await this.questionListRepository.findCategoryNamesByQuestionListId(id);
+                await this.categoryRepository.findCategoryNamesByQuestionListId(id);
 
             const questionList: MyQuestionListDto = {
                 id,
@@ -169,7 +141,7 @@ export class QuestionListService {
     }
 
     async findCategoriesByNames(categoryNames: string[]) {
-        const categories = await this.questionListRepository.findCategoriesByNames(categoryNames);
+        const categories = await this.categoryRepository.findCategoriesByNames(categoryNames);
 
         if (categories.length !== categoryNames.length) {
             throw new Error("Some category names were not found.");
@@ -191,14 +163,14 @@ export class QuestionListService {
         if (title) questionList.title = title;
         if (categoryNames) {
             questionList.categories =
-                await this.questionListRepository.findCategoriesByNames(categoryNames);
+                await this.categoryRepository.findCategoriesByNames(categoryNames);
         }
         if (isPublic !== undefined) questionList.isPublic = isPublic;
 
         const updatedQuestionList =
             await this.questionListRepository.updateQuestionList(questionList);
         updatedQuestionList.categoryNames =
-            await this.questionListRepository.findCategoryNamesByQuestionListId(id);
+            await this.categoryRepository.findCategoryNamesByQuestionListId(id);
         updatedQuestionList.categories = undefined;
 
         return updatedQuestionList;
@@ -227,20 +199,20 @@ export class QuestionListService {
             throw new Error("You do not have permission to add a question to this question list.");
 
         const existingQuestionsCount =
-            await this.questionListRepository.getQuestionCountByQuestionListId(questionListId);
+            await this.questionRepository.getQuestionCountByQuestionListId(questionListId);
         const question = new Question();
         question.content = content;
         question.index = existingQuestionsCount;
         question.questionListId = questionListId;
 
-        await this.questionListRepository.saveQuestion(question);
-        return await this.getQuestionListContents(questionListId);
+        await this.questionRepository.saveQuestion(question);
+        return await this.getQuestionListContents(questionListId, userId);
     }
 
     async updateQuestion(questionDto: QuestionDto) {
         const { id, content, questionListId, userId } = questionDto;
 
-        const question = await this.questionListRepository.getQuestionById(id);
+        const question = await this.questionRepository.getQuestionById(id);
         if (!question) throw new Error("Question not found.");
 
         const user = await this.userRepository.getUserByUserId(userId);
@@ -253,18 +225,18 @@ export class QuestionListService {
                 "You do not have permission to update the question in this question list."
             );
 
-        const existingQuestion = await this.questionListRepository.getQuestionById(id);
+        const existingQuestion = await this.questionRepository.getQuestionById(id);
         existingQuestion.content = content;
 
-        await this.questionListRepository.saveQuestion(existingQuestion);
-        return await this.getQuestionListContents(questionListId);
+        await this.questionRepository.saveQuestion(existingQuestion);
+        return await this.getQuestionListContents(questionListId, userId);
     }
 
     @Transactional()
     async deleteQuestion(deleteQuestionDto: DeleteQuestionDto) {
         const { id, questionListId, userId } = deleteQuestionDto;
 
-        const question = await this.questionListRepository.getQuestionById(id);
+        const question = await this.questionRepository.getQuestionById(id);
         if (!question) throw new Error("Question not found.");
 
         const user = await this.userRepository.getUserByUserId(userId);
@@ -279,27 +251,24 @@ export class QuestionListService {
 
         const questionIndex = question.index;
 
-        const questionsToUpdate = await this.questionListRepository.getQuestionsAfterIndex(
+        const questionsToUpdate = await this.questionRepository.getQuestionsAfterIndex(
             questionListId,
             questionIndex
         );
 
         for (const q of questionsToUpdate) {
             q.index -= 1;
-            await this.questionListRepository.saveQuestion(q);
+            await this.questionRepository.saveQuestion(q);
         }
 
-        return await this.questionListRepository.deleteQuestion(question);
+        return await this.questionRepository.deleteQuestion(question);
     }
 
-    async getScrappedQuestionLists(userId: number, query: PaginateQuery) {
+    async getScrappedQuestionLists(userId: number, query: PaginateQueryDto) {
         const user = await this.userRepository.getUserByUserId(userId);
         const scrappedQuestionLists =
             await this.questionListRepository.getScrappedQuestionListsByUser(user);
-        const result = await paginate(query, scrappedQuestionLists, {
-            sortableColumns: ["usage"],
-            defaultSortBy: [["usage", "DESC"]],
-        });
+        const result = await this.paginate(query, scrappedQuestionLists);
         return { scrappedQuestionLists: result.data, meta: result.meta };
     }
 
@@ -334,5 +303,41 @@ export class QuestionListService {
 
     async unscrapQuestionList(questionListId: number, userId: number) {
         return await this.questionListRepository.unscrapQuestionList(questionListId, userId);
+    }
+
+    async paginate(query: PaginateQueryDto, queryBuilder: SelectQueryBuilder<any>) {
+        const { page, limit, sortBy } = query;
+
+        const skip = (page - 1) * limit;
+        const take = limit;
+        const [field, direction] = sortBy.split(":");
+        const safeDirection: "ASC" | "DESC" =
+            direction.toUpperCase() === "ASC" || direction.toUpperCase() === "DESC"
+                ? (direction.toUpperCase() as "ASC" | "DESC")
+                : "DESC";
+
+        const paginateDto: PaginateDto = {
+            queryBuilder,
+            skip,
+            take,
+            field,
+            direction: safeDirection,
+        };
+
+        const [result, totalItems] = await this.questionListRepository.paginate(paginateDto);
+        const totalPages = Math.ceil(totalItems / limit);
+
+        const meta: PaginateMetaDto = {
+            itemsPerPage: limit,
+            totalItems,
+            currentPage: String(page),
+            totalPages,
+            sortBy: sortBy,
+        };
+
+        return {
+            data: result,
+            meta: meta,
+        };
     }
 }
