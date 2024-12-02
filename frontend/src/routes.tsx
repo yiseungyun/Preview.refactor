@@ -10,16 +10,11 @@ import QuestionListPage from "@/pages/QuestionListPage/QuestionListPage.tsx";
 import AuthCallbackPage from "@/pages/Login/AuthCallbackPage.tsx";
 import MyPage from "@/pages/MyPage/index.tsx";
 import ProtectedRouteLayout from "@components/layout/ProtectedRouteLayout.tsx";
-import IntroPage from "@/pages/IntroPage/IntroPage.tsx";
 
 export const routes = [
   {
     element: <App />,
     path: "/",
-  },
-  {
-    element: <IntroPage />,
-    path: "/introduce",
   },
   {
     element: <SessionPage />,

@@ -12,7 +12,7 @@ export interface Route {
 
 const commonRoutes = [
   {
-    path: "/introduce",
+    path: "/",
     label: "서비스 소개",
     icon: <IoHomeSharp />,
   },
