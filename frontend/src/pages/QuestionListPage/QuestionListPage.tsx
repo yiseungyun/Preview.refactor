@@ -21,7 +21,7 @@ const QuestionListPage = () => {
   return (
     <section className="flex w-screen min-h-screen">
       <Sidebar />
-      <div className="max-w-7xl w-full px-12 pt-20">
+      <div className="max-w-6xl w-full px-12 pt-20">
         <div className="mb-12">
           <h1 className="text-bold-l text-gray-black dark:text-white mb-6">
             질문지 목록

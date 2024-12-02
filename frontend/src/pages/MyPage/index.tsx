@@ -5,7 +5,7 @@ import useToast from "@hooks/useToast";
 import MyPageView from "./view";
 
 const MyPage = () => {
-  const { isLoggedIn, nickname } = useAuth();
+  const { isLoggedIn } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -16,7 +16,7 @@ const MyPage = () => {
     }
   }, [isLoggedIn, navigate, toast]);
 
-  return <MyPageView nickname={nickname} />;
+  return <MyPageView />;
 };
 
 export default MyPage;
