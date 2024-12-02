@@ -21,7 +21,7 @@ const QuestionCard = ({
   return (
     <Link
       to={`/questions/${id}`}
-      className="bg-white backdrop-blur-sm border border-gray-200 rounded-xl p-4 hover:bg-gray-200/70 transition-all cursor-pointer group dark:bg-gray-900/80 dark:border-gray-700 dark:hover:bg-gray-600/70 hover:shadow-lg"
+      className="bg-white backdrop-blur-sm border border-gray-200 rounded-xl p-4 hover:bg-gray-200/70 transition-all cursor-pointer group hover:border-green-200 dark:bg-gray-900/80 dark:border-gray-700 dark:hover:bg-gray-600/70 hover:shadow-lg"
     >
       <div className="flex justify-between items-start mb-3 pt-1">
         <span className="px-3 py-0.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-600/20 dark:text-emerald-400 text-sm rounded-full">

@@ -1,4 +1,5 @@
 # ✨ Preview
+
 <img width="100%" src="https://github.com/user-attachments/assets/4894268d-c31d-44d6-9e6c-9c37b86a4a99" />
 
 <br/>
@@ -8,15 +9,76 @@
 
 <h3 align="center">✨ Preview에서 면접 연습 시작하자! ✨</h3>
 
-### 배포
-[**Preview 바로가기**](https://boostcamp-preview.kro.kr)
+<br/>
+
+<div align="center">
+
+[노션 홈](https://alpine-tiglon-9f0.notion.site/PREVIEW-HOME-12d696f85d1f805b9787e26374b3d209?pvs=4) | [프로젝트](https://github.com/orgs/boostcampwm-2024/projects/51) | [피그마](https://www.figma.com/file/YunC4M9LWDRROD2pyXL8jE/boostcamp-booskit)
+
+[위키](https://github.com/boostcampwm-2024/web27-Preview/wiki) | [배포 링크](https://boostcamp-preview.kro.kr)
+
+![Hits](https://hits.sh/github.com/boostcampwm-2024/web27-Preview.svg?style=flat-square)
+
+</div>
+
+## ☃️ 프로젝트 소개
+
+> "오프라인으로 모이기 쉽지 않은 면접 스터디!"
+
+> "실제 소통이 아쉬운 AI 면접 서비스!"
+
+나의 성공적인 면접 스터디, **PREVIEW**로 시작해보세요!
+
+**실시간 화상 스터디**로 장소에 구애받지 않고 **면접 연습**을 시작할 수 있습니다.
+
+## 📣 핵심 기능
+
+### WebRTC 기반 실시간 화상 면접
+
+- 실제 면접과 비슷한 화상 환경에서 연습
+- 다자간 화상 연결로 실제 면접 분위기 조성
+- 즉각적인 피드백 교환 가능
+
+### 스터디 채널
+
+- 함께 면접을 연습하고 싶은 동료들과 스터디 채널 개설
+- 공개/비공개 채널 지원
+
+### 맞춤형 질문지 생성 및 공유
+
+- 면접 질문지 생성 및 공유
+- 면접 질문지 공유로 다양한 질문에 대비
+- 사용량에 따른 인기 질문지 제공
+
+### 면접 스터디 기능
+
+- 실제 면접처럼 질문을 하나씩 받고 서로 대답해보는 스터디 기능
+- 면접 질문에 대한 피드백을 주고 받을 수 있음
+- 면접 스터디 결과를 기록하고 공유할 수 있음
+
+## 🧩 설계
+
+<img width="1064" alt="architecture" src="https://github.com/user-attachments/assets/67ebaee3-9fe1-4743-ac5e-30b25d609a44">
+
+## 🛠 기술 스택
+
+| Category | Stack                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Frontend | ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black) ![React Query](https://img.shields.io/badge/React_Query-FF4154?style=for-the-badge&logo=react-query&logoColor=white) ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white) ![Zustand](https://img.shields.io/badge/Zustand-000000?style=for-the-badge)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Backend  | ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white) ![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white) ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white) ![TypeORM](https://img.shields.io/badge/TypeORM-E83524?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDI1NiAyNTYiPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0yNDEuMzUyIDI1LjcyN2wtNTQuOTQtMTkuMjhBMjcuNTE3IDI3LjUxNyAwIDAgMCAxNjcuMjE1IDRIMTA3LjE4YTI3LjQ4NCAyNy40ODQgMCAwIDAtMTkuMTk3IDIuNDQ3TDMzLjAzOCAyNS43MjdDMTguNDc3IDMyLjQxMyAxMCA0Ny40NTEgMTAgNjMuOTc3djkzLjU1NmMwIDIzLjcxIDEzLjA3IDQ1LjUyNiAzNC4wMjMgNTYuNTU3bDYzLjE5NyAzMy4xOTVjMTEuOTUgNi4yNzcgMjYuMDM3IDcuOTc0IDM5LjE1OCA0Ljc4NGw3Ni4wMTEtMTguNTRDMjQxLjg2NSAyMjYuOTc4IDI1NSAyMDguOTg4IDI1NSAxODguNDcyVjYzLjk3N2MwLTE2LjUyNi04LjQ3OC0zMS41NjQtMjMuMDM4LTM4LjI1Wm0tMjkuMDYgNjkuNzk2YTguMDY3IDguMDY3IDAgMCAxLTguNDc3IDEzLjY2OGwtOC40NzctNS4yNjJ2NjIuNTgzYTguMDY0IDguMDY0IDAgMCAxLTQuMDkyIDcuMDA4bC00OS45NjcgMjkuODk4Yy0yLjUwMyAxLjQ5Ny01LjU4NSAxLjUzMS04LjEyMS4wODlMODQuMTkgMTc0LjA1OGE4LjA2NSA4LjA2NSAwIDAgMS00LjA5NC03LjAwOFY5OC43MDhhOC4wNjQgOC4wNjQgMCAwIDEgMy45NDktNi45MjlsNDAuMzU1LTI1LjE1N2E4LjA2NCA4LjA2NCAwIDAgMSA4LjQzMS0uMDM0bDQwLjA5NSAyNC40ODRhOC4wNjQgOC4wNjQgMCAwIDEgNC4wOTMgNi45OTd2OS40NzJsOC40NzctNS4wOGE4LjA2NCA4LjA2NCAwIDAgMSA4LjQ3Ny0uMTI3bDE4LjMxNSAxMS4xODlaIi8+PC9zdmc+&logoColor=white) |
+| Common   | ![WebRTC](https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=webrtc&logoColor=white) ![pnpm](https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white) ![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white) ![Husky](https://img.shields.io/badge/Husky-000000?style=for-the-badge&logo=husky&logoColor=white) ![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=black)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| DevOps   | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![NCP](https://img.shields.io/badge/Naver_Cloud-03C75A?style=for-the-badge&logo=naver&logoColor=white)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| CI/CD    | ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Etc      | ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+
+<br>   
 
 ## 👋 팀원 소개
 
-|김찬우|서정우|송수민|이승윤|
-|:---:|:---:|:---:|:---:|
-|<img style="width: 400px" src="https://avatars.githubusercontent.com/u/65532873?v=4"/>|<img style="width: 400px" src="https://avatars.githubusercontent.com/u/98446924?v=4"/>|<img style="width: 400px" src="https://github.com/user-attachments/assets/71176cea-caf4-4b00-816f-ba83ec9bf45d"/>|<img style="width: 400px" src="https://github.com/user-attachments/assets/85d13af3-91b4-4225-bc2f-3f83e9883a02"/>|
-|WEB BE|WEB FE|WEB BE|WEB FE|
+|                          [김찬우](https://github.com/blu3piece)                           |                        [서정우](https://github.com/ShipFriend0516)                        |                                        [송수민](https://github.com/twalla26)                                         |                                       [이승윤](https://github.com/yiseungyun)                                        |
+|:--------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|
+| <img style="width: 400px" src="https://avatars.githubusercontent.com/u/65532873?v=4"/> | <img style="width: 400px" src="https://avatars.githubusercontent.com/u/98446924?v=4"/> | <img style="width: 400px" src="https://github.com/user-attachments/assets/71176cea-caf4-4b00-816f-ba83ec9bf45d"/> | <img style="width: 400px" src="https://github.com/user-attachments/assets/85d13af3-91b4-4225-bc2f-3f83e9883a02"/> |
+|                                         WEB BE                                         |                                         WEB FE                                         |                                                      WEB BE                                                       |                                                      WEB FE                                                       |
 
 <br/>
 
@@ -37,88 +99,3 @@
 > 안녕하십니까마귀. 저는 즐겁게 개발하는 걸 좋아합니다! 🎉
 
 <br>   
-
-## 👥 협업
-### 브랜치 구조
-- git flow
-### 커밋 규칙
-**Udacity 스타일 가이드**
-
-| 타입 | 상황 |
-| --- | --- |
-| feat | 새로운 기능을 추가하였을 때 |
-| fix | 버그를 수정하였을 때 |
-| docs | README 등 문서 내용을 변경하였을 때 |
-| style | 들여쓰기, 세미콜론 등을 변경하였을 때 |
-| refactor | 코드 리팩토링을 했을 때 (기능 변경 X) |
-| test | test코드의 작성 및 수정이 이루어졌을 때 |
-| chore | 외부 라이브러리 임포트 등의 작업을 완료했을 때 |
-
-<br/>
-
-```
-타입: 작업한 내용 제목
-
-- (선택) 작업한 내용에 대한 설명
-```
-
-<br>   
-
-## 📝 그라운드 룰
-### 1️⃣ 기록 먼저하기
-- 각자가 찾은 내용이나 문제 해결 과정 등 대부분을 기록하기
-- 개발 시 개발 일지를 작성해서, 개발 중 문제를 찾고 상대방이 리뷰하기 쉽도록하기
-
-### 2️⃣ PR과 리뷰
-- PR의 merge는 모두가 approve해야 merge 되도록 하기
-- 모든 사람의 PR에 리뷰나 코멘트를 남기고 확인했음을 표시하기 (특별한 코멘트가 없다면 이모지라도 남기기)
-- 프론트엔드/백엔드를 나누지 않고 모든 개발 상황에 대해 이해할 수 있게 노력하기
-
-### 3️⃣ 데일리 스크럼
-- 매일 매일 TMI를 공유하기
-- 자신이 한 일과 계획 그리고 생겼던 문제 등에 대해 공유하기
-
-### 4️⃣ 의견 충돌 조율
-- 의견 충돌이 발생하면 각자 자신의 의견에 대해 충분히 말해보기
-- 다수결로 정해보기
-- 다수결로 정해지지 않는다면, 슈퍼패스를 한 번씩 써볼 수 있게 하기
-
-### 5️⃣ 매주 회고하기
-- KPT 방식으로 매주 부족했던 것과 좋았던 점을 회고하며, 다음 주에 더 나은 방식으로 나아갈 수 있게 노력하기
-
-### 6️⃣ 허들로 소통하기
-- 함께 개발하거나 학습할 일이 있을 때 허들에서 함께하기
-
-<br>   
-
-## 🧩 설계
-### 기획
-
-### 디자인
-
-### 시스템 구조
-
-<br>   
-
-## 📁 문서
-
-### 팀 노션 워크스페이스
-- [노션 링크](https://alpine-tiglon-9f0.notion.site/PREVIEW-HOME-12d696f85d1f805b9787e26374b3d209?pvs=4)
-
-### 회의록
-- [1주차 회의록](https://github.com/boostcampwm-2024/web27-boostproject/wiki/1%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EC%9D%98%EB%A1%9D)
-- [2주차 회의록](https://github.com/boostcampwm-2024/web27-boostproject/wiki/2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EC%9D%98%EB%A1%9D)
-
-
-### 회고
-- [팀회고](https://alpine-tiglon-9f0.notion.site/13a138b3a6894de39933e51b28807050?pvs=4)
-
-### 데일리 노트
-- [김찬우](https://alpine-tiglon-9f0.notion.site/a508fc384103499e93e24d08853823fc?v=df366c8d70f7482bad03a674a45c7606&pvs=74)
-- [송수민](https://alpine-tiglon-9f0.notion.site/887afedf1a5b4e93861b97c15ed38611?v=5012a5fb547344e79b460503fd146ad3&pvs=4)
-- [서정우](https://alpine-tiglon-9f0.notion.site/4b8e2b6b9a554c13a2cbb69671d7bd29?v=78b3d26348cf40bcb1c09e0d05836dae&pvs=4)
-- [이승윤](https://alpine-tiglon-9f0.notion.site/31e9cfd20c2f4e50a64abde07444b23d?v=cfc1e71581ce469b814c5b34e1803cff&pvs=4)
-
-### 개발 일지
-- [공통 개발 일지](https://alpine-tiglon-9f0.notion.site/12d696f85d1f80c89569dcfe55b62b44?v=12f696f85d1f802db6af000cf32dfa28&pvs=4)
-- [문제 해결 일지](https://alpine-tiglon-9f0.notion.site/87b7f1ce19564eda8127eca29d567d0f?v=f2df7d634605464d876ccf43c9197db4&pvs=4)
