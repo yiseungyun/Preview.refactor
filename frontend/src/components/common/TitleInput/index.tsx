@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 interface TitleProps {
   placeholder: string;
   initValue?: string;
-  onChange?: (e: React.ChangeEvent<any>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   minLength?: number;
   maxLength?: number;
 }
