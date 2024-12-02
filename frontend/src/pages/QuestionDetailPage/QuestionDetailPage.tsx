@@ -35,7 +35,7 @@ const QuestionDetailPage = () => {
   const shareQuestionList = () => {
     if (question) {
       navigator.clipboard.writeText(window.location.href);
-      toast.success(`${question.title} 질문지가 클립보드에 복사되었습니다.`);
+      toast.success(`${question.title} 링크가 복사되었습니다.`);
     }
   };
 
@@ -44,7 +44,7 @@ const QuestionDetailPage = () => {
       <div className={"flex h-fit gap-8 max-w-7xl px-12 pt-20"}>
         <div
           className={
-            "flex flex-col gap-4 w-47.5 p-8 bg-gray-white rounded-custom-l shadow-16"
+            "flex flex-col gap-4 w-47.5 p-8 bg-gray-white rounded-custom-l shadow-16 mb-8"
           }
         >
           <LoadingIndicator loadingState={isLoading} />

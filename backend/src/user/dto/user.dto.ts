@@ -1,4 +1,4 @@
-import { QuestionList } from "@/question-list/question-list.entity";
+import { QuestionList } from "@/question-list/entity/question-list.entity";
 import { LoginType } from "@/user/user.entity";
 
 export interface UserDto {
