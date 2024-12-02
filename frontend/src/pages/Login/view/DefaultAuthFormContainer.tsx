@@ -1,6 +1,8 @@
 import useToast from "@hooks/useToast.ts";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import useValidate from "@/pages/Login/hooks/useValidate.ts";
+import { throttle } from "lodash";
+import { useCallback, useEffect } from "react";
 
 interface DefaultAuthFormContainerProps {
   isSignUp: boolean;
@@ -20,17 +22,28 @@ const DefaultAuthFormContainer = ({
     setUsername,
     setPassword,
     setPasswordCheck,
+    errors,
   } = useValidate({ setIsSignUp });
 
-  const handleDefaultLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    try {
-      e.preventDefault();
-      if (isSignUp) await handleSignUp();
-      else await handleLogin();
-    } catch (err) {
-      console.error("로그인 도중 에러", err);
-    }
-  };
+  const handleDefaultLogin = useCallback(
+    throttle((e: React.MouseEvent<HTMLButtonElement>) => {
+      try {
+        e.preventDefault();
+
+        if (isSignUp) handleSignUp();
+        else handleLogin();
+      } catch (err) {
+        console.error("로그인 도중 에러", err);
+      }
+    }, 1000),
+    []
+  );
+
+  useEffect(() => {
+    return () => {
+      handleDefaultLogin.cancel();
+    };
+  }, [handleDefaultLogin]);
 
   return (
     <>
@@ -77,8 +90,15 @@ const DefaultAuthFormContainer = ({
         </>
       )}
 
+      {errors && errors.length > 0 && (
+        <span className={"text-red-500 text-medium-xs"}>{errors.at(0)}</span>
+      )}
+
       <button
-        onClick={(e) => handleDefaultLogin(e)}
+        onClick={(e) => {
+          e.preventDefault();
+          handleDefaultLogin(e);
+        }}
         className="w-full bg-green-200 dark:bg-emerald-600 text-white py-3 rounded-md hover:bg-green-100 transition-colors font-medium text-lg shadow-16"
       >
         <LoadingIndicator
