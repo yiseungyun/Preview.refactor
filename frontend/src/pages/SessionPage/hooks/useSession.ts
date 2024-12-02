@@ -3,7 +3,7 @@ import useToast from "@hooks/useToast";
 import useMediaDevices from "./useMediaDevices";
 import usePeerConnection from "./usePeerConnection";
 import useSocket from "@hooks/useSocket";
-import { Participant, RoomMetadata } from "@hooks/type/session";
+import { Participant, RoomMetadata } from "@/pages/SessionPage/type/session";
 import { useMediaStreamCleanup } from "./useMediaStreamCleanup";
 import { usePeerConnectionCleanup } from "./usePeerConnectionCleanup";
 import { useReaction } from "./useReaction";

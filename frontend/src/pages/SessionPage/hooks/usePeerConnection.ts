@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Socket } from "socket.io-client";
-import { PeerConnection } from "@hooks/type/session";
+import { PeerConnection } from "@/pages/SessionPage/type/session";
 import { SIGNAL_EMIT_EVENT } from "@/constants/WebSocket/SignalingEvent.ts";
 
 interface User {

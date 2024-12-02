@@ -3,14 +3,6 @@ import useSocketStore from "@stores/useSocketStore";
 import { useNavigate } from "react-router-dom";
 import { act } from "react";
 import {
-  mockMediaStream,
-  mockNavigate,
-  mockPeerConnections,
-  mockSocket,
-  mockSocketStore,
-  mockToast,
-} from "@hooks/__test__/mocks/useSession.mock";
-import {
   SESSION_EMIT_EVENT,
   SESSION_LISTEN_EVENT,
 } from "@/constants/WebSocket/SessionEvent";
@@ -18,13 +10,21 @@ import { SIGNAL_LISTEN_EVENT } from "@/constants/WebSocket/SignalingEvent";
 import useMediaDevices from "@/pages/SessionPage/hooks/useMediaDevices";
 import usePeerConnection from "@/pages/SessionPage/hooks/usePeerConnection";
 import { useSession } from "@/pages/SessionPage/hooks/useSession";
+import {
+  mockMediaStream,
+  mockNavigate,
+  mockPeerConnections,
+  mockSocket,
+  mockSocketStore,
+  mockToast,
+} from "./mocks/useSession.mock";
 
 const REACTION_DURATION = 3000;
 
 // jest.mock: 실제 모듈대신 mock 모듈을 사용하도록 설정
-jest.mock("@hooks/session/useMediaDevices");
+jest.mock("@/pages/SessionPage/hooks/useMediaDevices");
 
-jest.mock("@hooks/session/usePeerConnection", () => ({
+jest.mock("@/pages/SessionPage/hooks/usePeerConnection", () => ({
   __esModule: true,
   default: jest.fn().mockReturnValue({
     createPeerConnection: jest.fn(),
@@ -161,7 +161,9 @@ describe("useSession Hook 테스트", () => {
       expect(mockSocket.emit).not.toHaveBeenCalled();
     });
 
-    /*it("미디어 스트림 획득 실패 시 에러 처리", async () => {
+    /*
+    * MEMO: 기존에 미디어 스트림 없으면 에러 처리 진행했으나, 없어도 입장 가능하게 변경되어 테스트 주석 처리
+    it("미디어 스트림 획득 실패 시 에러 처리", async () => {
       (useMediaDevices as jest.Mock).mockReturnValue({
         ...useMediaDevices(),
         getMedia: jest.fn().mockResolvedValue(null),
