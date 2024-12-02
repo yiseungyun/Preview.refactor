@@ -14,7 +14,7 @@ import { DeleteQuestionDto } from "@/question-list/dto/delete-question.dto";
 import { QuestionRepository } from "@/question-list/repository/question.respository";
 import { CategoryRepository } from "@/question-list/repository/category.repository";
 import { PaginateQueryDto } from "@/question-list/dto/paginate-query.dto";
-import { SelectQueryBuilder } from "typeorm";
+import { In, SelectQueryBuilder } from "typeorm";
 import { PaginateMetaDto } from "@/question-list/dto/paginate-meta.dto";
 import { PaginateDto } from "@/question-list/dto/paginate.dto";
 import { QuestionListDto } from "@/question-list/dto/question-list.dto";
@@ -33,7 +33,10 @@ export class QuestionListService {
 
         let categoryId = null;
         if (query.category) {
-            categoryId = await this.categoryRepository.getCategoryIdByName(query.category);
+            const category = await this.categoryRepository.findOne({
+                where: { name: query.category },
+            });
+            categoryId = category.id;
             if (!categoryId) return {};
         }
 
@@ -46,8 +49,9 @@ export class QuestionListService {
             const categoryNames: string[] =
                 await this.categoryRepository.findCategoryNamesByQuestionListId(id);
 
-            const questionCount =
-                await this.questionRepository.getQuestionCountByQuestionListId(id);
+            const questionCount = await this.questionRepository.count({
+                where: { questionListId: id },
+            });
 
             const questionList: GetAllQuestionListDto = {
                 id,
@@ -66,7 +70,9 @@ export class QuestionListService {
     async createQuestionList(createQuestionListDto: CreateQuestionListDto) {
         const { title, contents, categoryNames, isPublic, userId } = createQuestionListDto;
 
-        const categories = await this.categoryRepository.findCategoriesByNames(categoryNames);
+        const categories = await this.categoryRepository.find({
+            where: { name: In(categoryNames) },
+        });
         if (categories.length !== categoryNames.length) {
             throw new Error("Some category names were not found.");
         }
@@ -142,16 +148,6 @@ export class QuestionListService {
         return { myQuestionLists, meta: result.meta };
     }
 
-    async findCategoriesByNames(categoryNames: string[]) {
-        const categories = await this.categoryRepository.findCategoriesByNames(categoryNames);
-
-        if (categories.length !== categoryNames.length) {
-            throw new Error("Some category names were not found.");
-        }
-
-        return categories;
-    }
-
     async updateQuestionList(updateQuestionListDto: UpdateQuestionListDto) {
         const { id, title, categoryNames, isPublic, userId } = updateQuestionListDto;
         const user = await this.userRepository.getUserByUserId(userId);
@@ -166,8 +162,9 @@ export class QuestionListService {
 
         if (title) questionList.title = title;
         if (categoryNames) {
-            questionList.categories =
-                await this.categoryRepository.findCategoriesByNames(categoryNames);
+            questionList.categories = await this.categoryRepository.find({
+                where: { name: In(categoryNames) },
+            });
         }
         if (isPublic !== undefined) questionList.isPublic = isPublic;
 
@@ -206,11 +203,12 @@ export class QuestionListService {
         if (questionList.userId !== userId)
             throw new Error("You do not have permission to add a question to this question list.");
 
-        const existingQuestionsCount =
-            await this.questionRepository.getQuestionCountByQuestionListId(questionListId);
+        const existingQuestionCount = await this.questionRepository.count({
+            where: { questionListId },
+        });
         const question = new Question();
         question.content = content;
-        question.index = existingQuestionsCount;
+        question.index = existingQuestionCount;
         question.questionListId = questionListId;
 
         await this.questionRepository.save(question);

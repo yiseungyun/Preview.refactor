@@ -14,12 +14,6 @@ export class QuestionRepository extends Repository<Question> {
             .getMany();
     }
 
-    getQuestionCountByQuestionListId(questionListId: number) {
-        return this.createQueryBuilder("question")
-            .where("question.questionListId = :questionListId", { questionListId })
-            .getCount();
-    }
-
     getQuestionsAfterIndex(questionListId: number, index: number) {
         return this.createQueryBuilder("question")
             .where("question.questionListId = :questionListId", { questionListId })
