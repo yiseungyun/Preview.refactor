@@ -1,8 +1,6 @@
 import useToast from "@hooks/useToast.ts";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import useValidate from "@/pages/Login/hooks/useValidate.ts";
-import { throttle } from "lodash";
-import { useCallback, useEffect } from "react";
 
 interface DefaultAuthFormContainerProps {
   isSignUp: boolean;
@@ -23,27 +21,19 @@ const DefaultAuthFormContainer = ({
     setPassword,
     setPasswordCheck,
     errors,
+    emptyErrors,
   } = useValidate({ setIsSignUp });
 
-  const handleDefaultLogin = useCallback(
-    throttle((e: React.MouseEvent<HTMLButtonElement>) => {
-      try {
-        e.preventDefault();
+  const handleDefaultLogin = (e: React.MouseEvent) => {
+    try {
+      e.preventDefault();
 
-        if (isSignUp) handleSignUp();
-        else handleLogin();
-      } catch (err) {
-        console.error("로그인 도중 에러", err);
-      }
-    }, 1000),
-    []
-  );
-
-  useEffect(() => {
-    return () => {
-      handleDefaultLogin.cancel();
-    };
-  }, [handleDefaultLogin]);
+      if (isSignUp) handleSignUp();
+      else handleLogin();
+    } catch (err) {
+      console.error("로그인 도중 에러", err);
+    }
+  };
 
   return (
     <>
@@ -111,7 +101,10 @@ const DefaultAuthFormContainer = ({
 
       <div className="flex items-center justify-between text-base">
         <button
-          onClick={() => setIsSignUp(!isSignUp)}
+          onClick={() => {
+            setIsSignUp(!isSignUp);
+            emptyErrors();
+          }}
           type="button"
           className="inline-flex items-center justify-center hover:text-green-300 transition-colors"
         >

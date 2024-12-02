@@ -1,8 +1,9 @@
 import useAuth from "@hooks/useAuth.ts";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useToast from "@hooks/useToast.ts";
 import axios, { isAxiosError } from "axios";
+import { throttle } from "lodash";
 
 interface UseValidateProps {
   setIsSignUp: (isSignUp: boolean) => void;
@@ -20,7 +21,11 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
   const [nickname, setNickname] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const emptyErrors = () => {
+    setErrors([]);
+  };
+
+  const handleLogin = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.post("/api/auth/login", {
@@ -48,7 +53,7 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [username, password]);
 
   const validate = () => {
     const errorArray: string[] = [];
@@ -118,7 +123,7 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
     };
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = useCallback(async () => {
     try {
       setLoading(true);
       const { isValid, errorArray } = validate();
@@ -156,7 +161,19 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [username, password, passwordCheck, nickname]);
+
+  const throttledSignUp = useCallback(throttle(handleSignUp, 1000), [
+    username,
+    password,
+    passwordCheck,
+    nickname,
+  ]);
+
+  const throttledLogin = useCallback(throttle(handleLogin, 1000), [
+    username,
+    password,
+  ]);
 
   return {
     setUsername,
@@ -164,9 +181,10 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
     setPasswordCheck,
     setNickname,
     loading,
-    handleLogin,
-    handleSignUp,
+    handleLogin: throttledLogin,
+    handleSignUp: throttledSignUp,
     errors,
+    emptyErrors,
   };
 };
 
