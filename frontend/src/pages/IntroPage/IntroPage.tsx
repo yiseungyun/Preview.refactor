@@ -55,7 +55,9 @@ const IntroPage = () => {
         <div className="py-32 px-8">
           <div className="max-w-6xl mx-auto grid grid-cols-2 gap-16 items-center">
             <div>
-              <div className="text-[200px] font-bold text-gray-800">01</div>
+              <div className="select-none text-[200px] font-bold text-gray-800">
+                01
+              </div>
               <h2 className="text-4xl font-bold text-white mb-6">
                 나만의 맞춤형
                 <br />
@@ -94,7 +96,9 @@ const IntroPage = () => {
               />
             </div>
             <div>
-              <div className="text-[200px] font-bold text-gray-800">02</div>
+              <div className="select-none text-[200px] font-bold text-gray-800">
+                02
+              </div>
               <h2 className="text-4xl font-bold text-white mb-6">
                 함께할 스터디원과
                 <br />
@@ -119,7 +123,9 @@ const IntroPage = () => {
         <div className="py-32 px-8">
           <div className="max-w-6xl mx-auto grid grid-cols-2 gap-16 items-center">
             <div>
-              <div className="text-[200px] font-bold text-gray-800">03</div>
+              <div className="select-none text-[200px] font-bold text-gray-800">
+                03
+              </div>
               <h2 className="text-4xl font-bold text-white mb-6">
                 실전 같은 환경에서
                 <br />
