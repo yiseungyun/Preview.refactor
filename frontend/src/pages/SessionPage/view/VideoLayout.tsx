@@ -33,7 +33,7 @@ const VideoLayout = ({
 
   return (
     <div className="relative w-full flex-1 min-h-0 overflow-hidden">
-      <div className="gap-1.5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-wrap w-full justify-center">
+      <div className="px-3.5 gap-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-wrap w-full justify-center">
         <VideoContainer
           nickname={nickname}
           isMicOn={isMicOn}

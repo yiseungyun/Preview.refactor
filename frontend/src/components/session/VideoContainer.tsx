@@ -24,22 +24,22 @@ const getVideoLayoutClass = (count: number) => {
     case 1:
       return "w-[calc(min(100%,((100vh-140px)*(4/3))))]";
     case 2:
-      return `w-[calc(min(100%,((100vh-146px)*(2/3))))]
-              sm:w-[calc(min(calc(50%-0.375rem),((100vh-140px)*(4/3))))]
+      return `w-[calc(min(100%,((100vh-148px)*(2/3))))]
+              sm:w-[calc(min(calc(50%-0.5rem),((100vh-140px)*(4/3))))]
              `;
     case 3:
-      return `w-[calc(min(100%,((100vh-152px)*(4/9))))]
-              md:w-[calc(min(calc(50%-0.75rem),((100vh-146px)*(2/3))))]
-              2xl:w-[calc(min(calc(33.3%-0.75rem),((100vh-140px)*(4/3))))] 
+      return `w-[calc(min(100%,((100vh-156px)*(4/9))))]
+              md:w-[calc(min(calc(50%-1rem),((100vh-146px)*(2/3))))]
+              2xl:w-[calc(min(calc(33.3%-1rem),((100vh-140px)*(4/3))))] 
              `;
     case 4:
-      return `w-[calc(min(100%,((100vh-158px)*(1/3))))]
-              md:w-[calc(min(calc(50%-0.375rem),((100vh-146px)*(2/3))))]
+      return `w-[calc(min(100%,((100vh-164px)*(1/3))))]
+              md:w-[calc(min(calc(50%-0.5rem),((100vh-148px)*(2/3))))]
              `;
     case 5:
-      return `w-[calc(min(100%,((100vh-164px)*(4/15))))]
-              xs:w-[calc(min(calc(50%-0.375rem),((100vh-152px)*(4/9))))]
-              2xl:w-[calc(min(calc(33.3%-0.75rem),((100vh-146px)*(2/3))))]
+      return `w-[calc(min(100%,((100vh-172px)*(4/15))))]
+              xs:w-[calc(min(calc(50%-0.5rem),((100vh-156px)*(4/9))))]
+              2xl:w-[calc(min(calc(33.3%-1rem),((100vh-148px)*(2/3))))]
              `;
   }
 };
