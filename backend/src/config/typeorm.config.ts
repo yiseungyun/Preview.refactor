@@ -3,9 +3,9 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { User } from "@/user/user.entity";
 import "dotenv/config";
 import { addTransactionalDataSource } from "typeorm-transactional";
-import { QuestionList } from "@/question-list/question-list.entity";
-import { Question } from "@/question-list/question.entity";
-import { Category } from "@/question-list/category.entity";
+import { QuestionList } from "@/question-list/entity/question-list.entity";
+import { Question } from "@/question-list/entity/question.entity";
+import { Category } from "@/question-list/entity/category.entity";
 
 export const typeOrmConfig: DataSourceOptions = {
     type: "mysql",
