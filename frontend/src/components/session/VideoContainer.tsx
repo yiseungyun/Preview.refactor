@@ -6,7 +6,6 @@ import {
 } from "react-icons/bs";
 import DisplayMediaStream from "./DisplayMediaStream.tsx";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
-import { useEffect } from "react";
 
 interface VideoContainerProps {
   nickname: string;
@@ -56,10 +55,6 @@ const VideoContainer = ({
   videoLoading,
   videoCount,
 }: VideoContainerProps) => {
-  useEffect(() => {
-    console.log(`${nickname}의 speaking 상태:`, isSpeaking);
-  }, [nickname, isSpeaking]);
-
   const renderReaction = (reactionType: string) => {
     switch (reactionType) {
       case "thumbs_up":
@@ -86,17 +81,17 @@ const VideoContainer = ({
     );
   };
 
-  const speakingShadow = isSpeaking
-    ? "outline outline-2 transition-all duration-300"
-    : "transition-all duration-300";
+  const speakingEffect = isSpeaking
+    ? "ring-2 ring-green-100 transition-all duration-200"
+    : "transition-all duration-200";
 
   const localNickName = isLocal ? "text-semibold-r" : "text-medium-m";
 
   return (
     <div
-      className={`relative ${getVideoLayoutClass(videoCount)} ${speakingShadow} rounded-custom-l aspect-[4/3]`}
+      className={`relative ${getVideoLayoutClass(videoCount)} ${speakingEffect} rounded-custom-l aspect-[4/3]`}
     >
-      <div className="absolute inset-0 bg-black rounded-custom-l overflow-hidden z-10">
+      <div className="absolute inset-0 bg-gray-black rounded-custom-l overflow-hidden z-10">
         <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
           <p
