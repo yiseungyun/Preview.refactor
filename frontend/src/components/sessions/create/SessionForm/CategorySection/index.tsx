@@ -19,12 +19,14 @@ const CategorySection = () => {
   return (
     <div>
       <SelectTitle title="카테고리" />
-      <Select
-        defaultText="카테고리를 선택해주세요"
-        options={options}
-        value={category}
-        setValue={setCategory}
-      />
+      <div className="h-11">
+        <Select
+          defaultText="카테고리를 선택해주세요"
+          options={options}
+          value={category}
+          setValue={setCategory}
+        />
+      </div>
     </div>
   );
 };

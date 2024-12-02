@@ -21,11 +21,11 @@ const Select = <T,>({
   defaultText,
 }: SelectProps<T>) => {
   return (
-    <div className="relative inline-flex gap-2 items-center border-custom-s rounded-custom-m border-gray-200">
+    <div className={`relative h-full border-custom-s rounded-custom-m border-gray-200 ${backgroundColor}`}>
       <select
         defaultValue={value as string}
         onChange={(e) => setValue(e.target.value as T)}
-        className={`rounded-custom-m ${backgroundColor} text-semibold-r text-gray-600 appearance-none pl-4 pr-8 h-full`}
+        className="text-medium-m rounded-custom-m text-gray-600 appearance-none pl-4 pr-8 h-full"
       >
         {defaultText && (
           <option value="" disabled>
@@ -39,7 +39,7 @@ const Select = <T,>({
         ))}
       </select>
       <span className="absolute top-1/2 -translate-y-1/2 right-3 pointer-events-none">
-        <IoChevronDownSharp className="w-4 h-4 text-gray-600" />
+        <IoChevronDownSharp className="w-4 h-4 text-gray-500" />
       </span>
     </div>
   );

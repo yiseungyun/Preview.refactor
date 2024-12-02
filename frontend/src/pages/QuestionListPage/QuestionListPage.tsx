@@ -26,7 +26,7 @@ const QuestionListPage = () => {
           <h1 className="text-bold-l text-gray-black dark:text-white mb-6">
             질문지 목록
           </h1>
-          <div className="flex gap-2 items-stretch justify-between">
+          <div className="h-11 flex gap-2 items-stretch justify-between">
             <SearchBar text={"질문지 검색하기"} />
             <Select
               value={selectedCategory}
