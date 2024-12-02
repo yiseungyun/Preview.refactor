@@ -17,6 +17,7 @@ import { PaginateQueryDto } from "@/question-list/dto/paginate-query.dto";
 import { SelectQueryBuilder } from "typeorm";
 import { PaginateMetaDto } from "@/question-list/dto/paginate-meta.dto";
 import { PaginateDto } from "@/question-list/dto/paginate.dto";
+import { QuestionListDto } from "@/question-list/dto/question-list.dto";
 
 @Injectable()
 export class QuestionListService {
@@ -76,8 +77,7 @@ export class QuestionListService {
         questionList.isPublic = isPublic;
         questionList.userId = userId;
 
-        const createdQuestionList =
-            await this.questionListRepository.createQuestionList(questionList);
+        const createdQuestionList = await this.questionListRepository.save(questionList);
 
         const questions = contents.map((content, index) => {
             const question = new Question();
@@ -93,7 +93,9 @@ export class QuestionListService {
     }
 
     async getQuestionListContents(questionListId: number, userId: number) {
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         const { id, title, usage, isPublic } = questionList;
         if (!isPublic && questionList.userId !== userId) {
             throw new Error("This is private question list.");
@@ -155,7 +157,9 @@ export class QuestionListService {
         const user = await this.userRepository.getUserByUserId(userId);
         if (!user) throw new Error("User not found.");
 
-        const questionList = await this.questionListRepository.getQuestionListById(id);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id },
+        });
         if (!questionList) throw new Error("Question list not found.");
         if (questionList.userId !== userId)
             throw new Error("You do not have permission to edit this question list.");
@@ -167,8 +171,8 @@ export class QuestionListService {
         }
         if (isPublic !== undefined) questionList.isPublic = isPublic;
 
-        const updatedQuestionList =
-            await this.questionListRepository.updateQuestionList(questionList);
+        const updatedQuestionList: QuestionListDto =
+            await this.questionListRepository.save(questionList);
         updatedQuestionList.categoryNames =
             await this.categoryRepository.findCategoryNamesByQuestionListId(id);
         updatedQuestionList.categories = undefined;
@@ -180,12 +184,14 @@ export class QuestionListService {
         const user = await this.userRepository.getUserByUserId(userId);
         if (!user) throw new Error("User not found.");
 
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         if (!questionList) throw new Error("Question list not found.");
         if (questionList.userId !== userId)
             throw new Error("You do not have permission to delete this question list.");
 
-        return await this.questionListRepository.deleteQuestionList(questionListId);
+        return await this.questionListRepository.delete(questionListId);
     }
 
     async addQuestion(questionDto: QuestionDto) {
@@ -193,7 +199,9 @@ export class QuestionListService {
         const user = await this.userRepository.getUserByUserId(userId);
         if (!user) throw new Error("User not found.");
 
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         if (!questionList) throw new Error("Question list not found.");
         if (questionList.userId !== userId)
             throw new Error("You do not have permission to add a question to this question list.");
@@ -218,7 +226,9 @@ export class QuestionListService {
         const user = await this.userRepository.getUserByUserId(userId);
         if (!user) throw new Error("User not found.");
 
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         if (!questionList) throw new Error("Question list not found.");
         if (questionList.userId !== userId)
             throw new Error(
@@ -242,7 +252,9 @@ export class QuestionListService {
         const user = await this.userRepository.getUserByUserId(userId);
         if (!user) throw new Error("User not found.");
 
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         if (!questionList) throw new Error("Question list not found.");
         if (questionList.userId !== userId)
             throw new Error(
@@ -276,7 +288,9 @@ export class QuestionListService {
         const user = await this.userRepository.getUserByUserId(userId);
 
         // 유효한 question list id 인지 확인
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         if (!questionList) throw new Error("Question list not found.");
 
         // 스크랩하려는 질문지가 내가 만든 질문지인지 확인
