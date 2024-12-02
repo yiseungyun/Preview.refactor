@@ -23,6 +23,7 @@ const SessionPage = () => {
     setNickname,
     reaction,
     peers,
+    peerConnections,
     userVideoDevices,
     userAudioDevices,
     isVideoOn,
@@ -83,6 +84,7 @@ const SessionPage = () => {
             reaction={reaction}
             videoLoading={videoLoading}
             peerMediaStatus={peerMediaStatus}
+            peerConnections={peerConnections}
           />
           <SessionToolbar
             requestChangeIndex={requestChangeIndex}

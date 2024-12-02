@@ -14,6 +14,7 @@ interface VideoContainerProps {
   isMicOn: boolean;
   isVideoOn: boolean;
   isLocal: boolean;
+  isSpeaking: boolean;
   reaction: string;
   stream: MediaStream;
   videoLoading?: boolean;
@@ -25,22 +26,22 @@ const getVideoLayoutClass = (count: number) => {
     case 1:
       return "w-[calc(min(100%,((100vh-140px)*(4/3))))]";
     case 2:
-      return `w-[calc(min(100%,((100vh-146px)*(2/3))))]
-              sm:w-[calc(min(calc(50%-0.375rem),((100vh-140px)*(4/3))))]
+      return `w-[calc(min(100%,((100vh-148px)*(2/3))))]
+              sm:w-[calc(min(calc(50%-0.5rem),((100vh-140px)*(4/3))))]
              `;
     case 3:
-      return `w-[calc(min(100%,((100vh-152px)*(4/9))))]
-              md:w-[calc(min(calc(50%-0.75rem),((100vh-146px)*(2/3))))]
-              2xl:w-[calc(min(calc(33.3%-0.75rem),((100vh-140px)*(4/3))))] 
+      return `w-[calc(min(100%,((100vh-156px)*(4/9))))]
+              md:w-[calc(min(calc(50%-1rem),((100vh-146px)*(2/3))))]
+              2xl:w-[calc(min(calc(33.3%-1rem),((100vh-140px)*(4/3))))] 
              `;
     case 4:
-      return `w-[calc(min(100%,((100vh-158px)*(1/3))))]
-              md:w-[calc(min(calc(50%-0.375rem),((100vh-146px)*(2/3))))]
+      return `w-[calc(min(100%,((100vh-164px)*(1/3))))]
+              md:w-[calc(min(calc(50%-0.5rem),((100vh-148px)*(2/3))))]
              `;
     case 5:
-      return `w-[calc(min(100%,((100vh-164px)*(4/15))))]
-              xs:w-[calc(min(calc(50%-0.375rem),((100vh-152px)*(4/9))))]
-              2xl:w-[calc(min(calc(33.3%-0.75rem),((100vh-146px)*(2/3))))]
+      return `w-[calc(min(100%,((100vh-172px)*(4/15))))]
+              xs:w-[calc(min(calc(50%-0.5rem),((100vh-156px)*(4/9))))]
+              2xl:w-[calc(min(calc(33.3%-1rem),((100vh-148px)*(2/3))))]
              `;
   }
 };
@@ -50,6 +51,7 @@ const VideoContainer = ({
   isMicOn,
   isVideoOn,
   isLocal,
+  isSpeaking,
   reaction,
   stream,
   videoLoading,
@@ -81,11 +83,17 @@ const VideoContainer = ({
     );
   };
 
+  const speakingEffect = isSpeaking
+    ? "ring-2 ring-green-100 transition-all duration-200"
+    : "transition-all duration-200";
+
   const localNickName = isLocal ? "text-semibold-r" : "text-medium-m";
 
   return (
-    <div className={`relative ${getVideoLayoutClass(videoCount)} aspect-[4/3]`}>
-      <div className="absolute inset-0 bg-black rounded-custom-l overflow-hidden">
+    <div
+      className={`relative ${getVideoLayoutClass(videoCount)} ${speakingEffect} rounded-custom-l aspect-[4/3]`}
+    >
+      <div className="absolute inset-0 bg-gray-black rounded-custom-l overflow-hidden z-10">
         <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
           <p

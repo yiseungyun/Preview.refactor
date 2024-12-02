@@ -1,7 +1,9 @@
 import VideoContainer from "@/components/session/VideoContainer";
+import { PeerConnection } from "@/hooks/type/session";
+import { useAudioDetector } from "../hooks/useAudioDetector";
 
 interface VideoLayoutProps {
-  peers: any[];
+  peers: PeerConnection[];
   nickname: string;
   isMicOn: boolean;
   isVideoOn: boolean;
@@ -9,6 +11,7 @@ interface VideoLayoutProps {
   reaction: string;
   videoLoading: boolean;
   peerMediaStatus: Record<string, { audio: boolean; video: boolean }>;
+  peerConnections: React.MutableRefObject<{ [key: string]: RTCPeerConnection }>;
 }
 
 const VideoLayout = ({
@@ -20,17 +23,23 @@ const VideoLayout = ({
   reaction,
   videoLoading,
   peerMediaStatus,
+  peerConnections,
 }: VideoLayoutProps) => {
   const videoCount = 1 + peers.length;
+  const { speakingStates } = useAudioDetector({
+    localStream: stream,
+    peerConnections,
+  });
 
   return (
     <div className="relative w-full flex-1 min-h-0 overflow-hidden">
-      <div className="gap-1.5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-wrap w-full justify-center">
+      <div className="px-3.5 gap-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-wrap w-full justify-center">
         <VideoContainer
           nickname={nickname}
           isMicOn={isMicOn}
           isVideoOn={isVideoOn}
           isLocal={true}
+          isSpeaking={speakingStates["local"]}
           reaction={reaction || ""}
           stream={stream!}
           videoLoading={videoLoading}
@@ -51,6 +60,7 @@ const VideoLayout = ({
                 : true
             }
             isLocal={false}
+            isSpeaking={speakingStates[peer.peerId]}
             reaction={peer.reaction || ""}
             stream={peer.stream}
             videoCount={videoCount}
