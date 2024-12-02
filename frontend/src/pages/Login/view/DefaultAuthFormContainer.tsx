@@ -22,11 +22,11 @@ const DefaultAuthFormContainer = ({
     setPasswordCheck,
   } = useValidate({ setIsSignUp });
 
-  const handleDefaultLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDefaultLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     try {
       e.preventDefault();
-      if (isSignUp) handleSignUp();
-      else handleLogin();
+      if (isSignUp) await handleSignUp();
+      else await handleLogin();
     } catch (err) {
       console.error("로그인 도중 에러", err);
     }
