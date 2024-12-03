@@ -93,10 +93,6 @@ const usePeerConnection = (socket: Socket) => {
       pc.ondatachannel = (event) => {
         const channel = event.channel;
 
-        channel.onopen = () => {
-          dataChannels.current[peerSocketId] = channel;
-        };
-
         channel.onmessage = (e) => {
           const data = JSON.parse(e.data);
           console.log(data);
