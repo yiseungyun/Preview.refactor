@@ -19,12 +19,13 @@ const QuestionListHeader = ({
         질문지 리스트
       </h1>
       <div className="h-11 flex gap-2 items-stretch justify-between">
-        <SearchBar text={"질문지 검색하기"} />
         <CategorySelect
           value={selectedCategory}
           setValue={setSelectedCategory}
           options={options}
         />
+        <SearchBar text={"질문지 검색하기"} />
+
         <CreateButton
           path={"/questions/create"}
           text={"새로운 질문지"}
