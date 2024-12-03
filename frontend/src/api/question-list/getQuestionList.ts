@@ -4,11 +4,12 @@ import type { QuestionList } from "@/pages/QuestionListPage/types/QuestionList";
 interface QuestionListProps {
   page?: number;
   limit?: number;
-  categoryName?: string;
+  category?: string;
 }
 
 interface QuestionListResponse {
-  allQuestionLists: QuestionList[];
+  allQuestionLists?: QuestionList[];
+  questionList?: QuestionList[];
   meta: {
     itemsPerPage: number;
     totalItems: number;
@@ -19,6 +20,7 @@ interface QuestionListResponse {
 }
 
 export const getQuestionList = async ({
+  category,
   page,
   limit,
 }: QuestionListProps): Promise<QuestionListResponse> => {
@@ -26,28 +28,25 @@ export const getQuestionList = async ({
     params: {
       page,
       limit,
+      category: category === "전체" ? "" : category,
     },
   });
+
+  console.log(response);
 
   return response.data.data;
 };
 
-export const getQuestionListWithCategory = async ({
-  categoryName,
+export const getQuestionListWithScrap = async ({
   page,
   limit,
 }: QuestionListProps): Promise<QuestionListResponse> => {
-  const response = await api.post(
-    `/api/question-list/category`,
-    {
-      categoryName,
+  const response = await api.get("/api/question-list/scrap", {
+    params: {
+      page,
+      limit,
     },
-    {
-      params: {
-        page,
-        limit,
-      },
-    }
-  );
+  });
+
   return response.data.data;
 };

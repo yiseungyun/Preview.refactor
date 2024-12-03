@@ -8,14 +8,24 @@ import { useState } from "react";
 import SidebarPageLayout from "@components/layout/SidebarPageLayout.tsx";
 import QuestionListHeader from "@/pages/QuestionListPage/view/QuestionListHeader.tsx";
 
+type Tab = "ALL" | "SCRAP";
+
 const QuestionListPage = () => {
   const { selectedCategory, setSelectedCategory } = useCategory();
   const [page, setPage] = useState(1);
+  const [tab, setTab] = useState<Tab>("ALL");
   const {
     data,
     error,
     isLoading: questionLoading,
-  } = useQuestionList({ category: selectedCategory, page: page, limit: 12 });
+  } = useQuestionList({
+    category: selectedCategory,
+    page: page,
+    limit: 12,
+    tab,
+  });
+
+  console.log(data);
 
   return (
     <SidebarPageLayout>
@@ -23,12 +33,15 @@ const QuestionListPage = () => {
         <QuestionListHeader
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
+          tab={tab}
+          setTab={setTab}
         />
         <div className={"flex flex-col justify-between flex-grow"}>
           <LoadingIndicator loadingState={questionLoading} />
           <QuestionsPreviewList
-            questionList={data?.allQuestionLists}
+            questionList={data?.allQuestionLists ?? data?.questionList}
             questionLoading={questionLoading}
+            tab={tab}
           />
           <div className={"mb-20 mt-10"}>
             <Pagination
