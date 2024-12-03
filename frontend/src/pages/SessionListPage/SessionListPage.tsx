@@ -11,7 +11,7 @@ import SessionList from "./view/SessionList";
 import ErrorBlock from "@components/common/Error/ErrorBlock";
 
 const SessionListPage = () => {
-  const [currentTab, setCurrentTab] = useState<0 | 1>(0);
+  const [currentTab, setCurrentTab] = useState(false);
   const [_, setSelectedCategory] = useState<string>("전체");
   const {
     data: sessionList,

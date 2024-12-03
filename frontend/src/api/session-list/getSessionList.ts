@@ -2,11 +2,11 @@ import { api } from "@/api/config/axios.ts";
 import { Session } from "@/pages/SessionListPage/types/session";
 
 interface GetSessionListRequest {
-  inProgress: 0 | 1;
+  inProgress: boolean;
 }
 
 export const getSessionList = async ({
-  inProgress = 0,
+  inProgress = false,
 }: GetSessionListRequest): Promise<Session[]> => {
   const response = await api.get("api/rooms", {
     params: {
