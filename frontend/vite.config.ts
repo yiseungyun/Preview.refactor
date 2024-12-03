@@ -17,6 +17,10 @@ export default defineConfig({
       "@stores": resolve(__dirname, "src/stores"),
     },
   },
+  optimizeDeps: {
+    include: ["lodash"],
+    // force: true,
+  },
   server: {
     proxy: {
       "/api": {

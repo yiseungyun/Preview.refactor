@@ -19,20 +19,17 @@ const IntroPage = () => {
 
   const { observer } = useObserver();
   const contentRef = useRef<HTMLDivElement>(null);
-
-  const throttledHandleScroll = useCallback(
-    throttle(() => {
-      if (!contentRef.current) return;
-      const scrollTop = (contentRef.current.parentNode as HTMLDivElement)
-        .scrollTop;
-      if (scrollTop && scrollTop > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    }, 16),
-    []
-  );
+  const handleScroll = () => {
+    if (!contentRef.current) return;
+    const scrollTop = (contentRef.current.parentNode as HTMLDivElement)
+      .scrollTop;
+    if (scrollTop && scrollTop > 10) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+  };
+  const throttledHandleScroll = useCallback(throttle(handleScroll, 16), []);
 
   useEffect(() => {
     if (contentRef.current) {
