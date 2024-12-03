@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import CategoryTap from "@components/sessions/create/SessionForm/ListSelectModal/CategoryTab";
-import SearchBar from "@components/common/SearchBar";
+import SearchBar from "@/components/common/Input/SearchBar";
 import QuestionList from "./QuestionList";
 import useSessionFormStore from "@stores/useSessionFormStore";
 import Pagination from "@components/common/Pagination";

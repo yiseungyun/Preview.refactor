@@ -1,4 +1,4 @@
-import TitleInput from "@components/common/TitleInput";
+import TitleInput from "@/components/common/Input/TitleInput";
 import { IoMdClose } from "react-icons/io";
 import ButtonSection from "@components/mypage/ButtonSection";
 import { useEffect, useState } from "react";

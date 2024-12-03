@@ -1,5 +1,5 @@
 import { sectionWithSidebar } from "@/constants/LayoutConstant.ts";
-import Sidebar from "@components/common/Sidebar.tsx";
+import Sidebar from "@/components/common/Sidebar/Sidebar";
 
 interface SidebarPageLayoutProps {
   children: React.ReactNode;

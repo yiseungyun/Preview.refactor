@@ -1,5 +1,5 @@
-import SelectTitle from "@/components/common/SelectTitle";
-import AccessButton from "@/components/common/AccessButton";
+import SelectTitle from "@/components/common/Text/SelectTitle";
+import AccessButton from "@/components/common/Button/AccessButton";
 import useQuestionFormStore from "@/stores/useQuestionFormStore";
 
 const AccessSection = () => {
