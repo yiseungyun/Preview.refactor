@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { RoomEntity } from "@/room/room.entity";
 import { RoomRepository } from "@/room/room.repository";
-import { RoomListResponseDto } from "@/room/dto/room-list.dto";
+import { RoomListResponseDto } from "@/room/dto/all-room.dto";
 import { Socket } from "socket.io";
 import { CreateRoomDto, CreateRoomResponseDto } from "@/room/dto/create-room.dto";
 import { JoinRoomDto, JoinRoomResponseDto } from "@/room/dto/join-room.dto";
@@ -109,7 +109,7 @@ export class RoomService {
 
         const filterFunction = (room: RoomEntity) =>
             room.status === RoomStatus.PUBLIC &&
-            (inProgress == undefined || room.inProgress === inProgress);
+            (inProgress === undefined || room.inProgress === inProgress);
 
         return rooms
             .filter(filterFunction)
