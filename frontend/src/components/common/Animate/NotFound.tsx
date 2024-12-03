@@ -20,7 +20,9 @@ const NotFound = ({ message, className, redirect }: NotFoundProps) => {
         style={{ width: 200 }}
         className={"dark:invert"}
       />
-      <p className={"text-medium-m font-light"}>{message}</p>
+      <p className={"text-medium-m text-gray-500 text-center flex flex-col gap-0.5"}>
+        {message?.split("\n").map(text => (<p>{text}</p>))}
+      </p>
       {redirect && (
         <Link
           className={

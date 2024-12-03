@@ -11,7 +11,7 @@ import SessionList from "./view/SessionList";
 import ErrorBlock from "@components/common/Error/ErrorBlock";
 
 const SessionListPage = () => {
-  const [currentTab, setCurrentTab] = useState<0 | 1>(0);
+  const [currentTab, setCurrentTab] = useState(false);
   const [_, setSelectedCategory] = useState<string>("전체");
   const {
     data: sessionList,
@@ -44,10 +44,10 @@ const SessionListPage = () => {
           </Link>
           <div className="absolute bottom-0 -z-10 w-full h-0.1 bg-gray-100" />
         </div>
-        <SessionList sessionList={sessionList || []} listLoading={isLoading} />
+        <SessionList inProgress={currentTab} sessionList={sessionList || []} listLoading={isLoading} />
         <ErrorBlock
           error={error}
-          message={"서버에서 세션 목록을 불러오는데 실패했습니다!"}
+          message={"서버에서 세션 목록을 불러오는데 실패했습니다"}
         />
       </div>
     </SidebarPageLayout>

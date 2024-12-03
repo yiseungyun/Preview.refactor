@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getSessionList } from "@/api/session-list/getSessionList.ts";
 
 interface SessionListRequest {
-  inProgress: 0 | 1;
+  inProgress: boolean;
 }
 
 export const useGetSessionList = ({ inProgress }: SessionListRequest) => {

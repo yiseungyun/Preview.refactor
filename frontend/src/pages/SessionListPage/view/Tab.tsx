@@ -1,13 +1,8 @@
 interface TabProps {
-  currentTab: 0 | 1;
-  tabStatus: 0 | 1;
-  setCurrentTab: React.Dispatch<React.SetStateAction<0 | 1>>;
+  currentTab: boolean;
+  tabStatus: boolean;
+  setCurrentTab: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-const tabName = {
-  0: "공개된 세션",
-  1: "진행 중인 세션",
-};
 
 const Tab = ({ currentTab, tabStatus, setCurrentTab }: TabProps) => {
   return (
@@ -23,7 +18,7 @@ const Tab = ({ currentTab, tabStatus, setCurrentTab }: TabProps) => {
         className={`px-1 pb-1.5 border-b-2
         ${currentTab === tabStatus ? "border-green-400" : "border-transparent"}`}
       >
-        {tabName[tabStatus]}
+        {tabStatus ? "진행 중인 세션" : "공개된 세션"}
       </span>
       <div
         className={`border-b-2 ${currentTab === tabStatus ? "border-green-400" : "border-transparent"} transition-all duration-200`}
