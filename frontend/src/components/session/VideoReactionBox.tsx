@@ -9,7 +9,7 @@ const VideoReactionBox = ({
 }: VideoReactionBoxProps) => {
   return (
     <div
-      className={`
+      className={`z-20
               pointer-events-none
               absolute w-12 h-12 text-xl 
               flex items-center justify-center 
