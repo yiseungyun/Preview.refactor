@@ -16,7 +16,7 @@ const QuestionListPage = () => {
     data: questionList,
     error,
     isLoading: questionLoading,
-  } = useQuestionList({ category: selectedCategory });
+  } = useQuestionList({ category: selectedCategory, limit: 10 });
 
   return (
     <section className="flex w-screen min-h-screen">
