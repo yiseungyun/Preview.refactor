@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import CategoryTap from "@components/sessions/create/SessionForm/ListSelectModal/CategoryTab";
+import CategoryTab from "@components/sessions/create/SessionForm/ListSelectModal/CategoryTab";
 import SearchBar from "@/components/common/Input/SearchBar";
 import QuestionList from "./QuestionList";
 import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
@@ -59,7 +59,7 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
     >
       <div className="flex p-8">
         <h3 className="text-bold-m text-gray-black mr-6">질문 리스트</h3>
-        <CategoryTap />
+        <CategoryTab />
         <button className="ml-auto" onClick={closeHandler}>
           <IoMdClose className="text-gray-black w-7 h-7" />
         </button>

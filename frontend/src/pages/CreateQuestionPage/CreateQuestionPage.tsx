@@ -1,7 +1,7 @@
-import QuestionForm from "@/components/questions/create/CategorySection";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import SidebarPageLayout from "@components/layout/SidebarPageLayout.tsx";
+import QuestionForm from "./view/QuestionForm";
 
 const CreateQuestionPage = () => {
   return (

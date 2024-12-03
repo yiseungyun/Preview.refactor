@@ -5,16 +5,11 @@ import type { Session } from "@/pages/SessionListPage/types/session";
 import NotFound from "@components/common/Animate/NotFound.tsx";
 
 interface SessionListProps {
-  listTitle: string;
   listLoading: boolean;
   sessionList: Session[];
 }
 
-const SessionList = ({
-  listTitle,
-  listLoading,
-  sessionList,
-}: SessionListProps) => {
+const SessionList = ({ listLoading, sessionList }: SessionListProps) => {
   const toast = useToast();
   const renderSessionList = () => {
     return sessionList.map((session) => {
@@ -40,9 +35,8 @@ const SessionList = ({
 
   return (
     <div>
-      <h2 className={"text-semibold-l mb-4"}>{listTitle}</h2>
       {listLoading && <LoadingIndicator loadingState={listLoading} />}
-      <ul className={"grid grid-cols-1 xl:grid-cols-2 gap-4"}>
+      <ul className={"grid grid-cols-2 lg:grid-cols-3 gap-4"}>
         {!listLoading && sessionList.length <= 0 ? (
           <li key={-1} className={"flex justify-center items-center"}>
             <NotFound
