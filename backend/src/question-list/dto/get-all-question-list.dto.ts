@@ -4,4 +4,5 @@ export interface GetAllQuestionListDto {
     categoryNames: string[];
     usage: number;
     questionCount: number;
+    isScrap: boolean;
 }

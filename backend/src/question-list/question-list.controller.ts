@@ -38,12 +38,11 @@ export class QuestionListController {
         @JwtPayload() token: IJwtPayload
     ) {
         try {
-            if (!token) {
-                // 로그인 안함
-                // isScrap: false
-            }
-            const { allQuestionLists, meta } =
-                await this.questionListService.getAllQuestionLists(query);
+            const userId = token ? token.userId : null;
+            const { allQuestionLists, meta } = await this.questionListService.getAllQuestionLists(
+                query,
+                userId
+            );
             return res.status(HttpStatus.OK).json({
                 success: true,
                 message: "All question lists received successfully.",
@@ -74,14 +73,15 @@ export class QuestionListController {
         }
     ) {
         try {
-            if (!token) {
-                // 로그인 안함
-                // isScrap: false
-            }
+            const userId = token ? token.userId : null;
+
             const { categoryName } = body;
             query.category = categoryName;
-            const { allQuestionLists, meta } =
-                await this.questionListService.getAllQuestionLists(query);
+
+            const { allQuestionLists, meta } = await this.questionListService.getAllQuestionLists(
+                query,
+                userId
+            );
             return res.status(HttpStatus.OK).json({
                 success: true,
                 message: "All question lists received successfully.",

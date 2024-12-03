@@ -58,6 +58,16 @@ export class QuestionListRepository extends Repository<QuestionList> {
             .execute();
     }
 
+    isQuestionListScrapped(questionListId: number, userId: number) {
+        return this.createQueryBuilder("question_list")
+            .innerJoin("question_list.scrappedByUsers", "user")
+            .where("question_list.id = :questionListId", { questionListId })
+            .andWhere("user.id = :userId", { userId })
+            .select("1")
+            .getRawOne()
+            .then((result) => !!result);
+    }
+
     async paginate(paginateDto: PaginateDto) {
         const { queryBuilder, skip, take, field, direction } = paginateDto;
         return await queryBuilder

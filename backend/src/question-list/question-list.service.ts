@@ -28,7 +28,7 @@ export class QuestionListService {
         private readonly categoryRepository: CategoryRepository
     ) {}
 
-    async getAllQuestionLists(query: PaginateQueryDto) {
+    async getAllQuestionLists(query: PaginateQueryDto, userId: number) {
         const allQuestionLists: GetAllQuestionListDto[] = [];
 
         let categoryId = null;
@@ -53,12 +53,15 @@ export class QuestionListService {
                 where: { questionListId: id },
             });
 
+            const isScrap = await this.questionListRepository.isQuestionListScrapped(id, userId);
+
             const questionList: GetAllQuestionListDto = {
                 id,
                 title,
                 categoryNames,
                 usage,
                 questionCount,
+                isScrap,
             };
             allQuestionLists.push(questionList);
         }
