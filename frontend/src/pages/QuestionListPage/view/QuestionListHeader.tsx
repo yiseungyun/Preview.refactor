@@ -30,7 +30,6 @@ const QuestionListHeader = ({
           options={options}
         />
         <SearchBar text={"질문지 검색하기"} />
-
         <CreateButton
           path={"/questions/create"}
           text={"새로운 질문지"}
