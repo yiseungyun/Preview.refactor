@@ -118,9 +118,14 @@ export class QuestionListService {
         const questionList = await this.questionListRepository.findOne({
             where: { id: questionListId },
         });
+
         const { id, title, usage, isPublic } = questionList;
-        if (!isPublic && questionList.userId !== userId) {
-            throw new Error("This is private question list.");
+        const authorId = questionList.userId;
+
+        if (!isPublic) {
+            if (!userId || questionList.userId !== userId) {
+                throw new Error("This is a private question list.");
+            }
         }
 
         const contents = await this.questionRepository.getContentsByQuestionListId(questionListId);
@@ -128,8 +133,12 @@ export class QuestionListService {
         const categoryNames =
             await this.categoryRepository.findCategoryNamesByQuestionListId(questionListId);
 
-        const user = await this.userRepository.getUserByUserId(userId);
-        const username = user.username;
+        const author = await this.userRepository.getUserByUserId(authorId);
+        const username = author.username;
+
+        const isScrap = userId
+            ? await this.questionListRepository.isQuestionListScrapped(id, userId)
+            : false;
 
         const questionListContents: QuestionListContentsDto = {
             id,
@@ -138,6 +147,7 @@ export class QuestionListService {
             categoryNames,
             usage,
             username,
+            isScrap,
         };
 
         return questionListContents;
