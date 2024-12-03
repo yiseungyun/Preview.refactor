@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UsePipes, ValidationPipe } from "@nestjs/common";
-import { RoomService } from "./services/room.service";
-import { AllRoomQueryParamDto } from "@/room/dto/all-room.dto";
+import { RoomService } from "./room.service";
+import { AllRoomQueryParamDto } from "@/room/dto";
 
 @Controller("rooms")
 export class RoomController {

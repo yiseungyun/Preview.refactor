@@ -1,15 +1,5 @@
 import { Entity, Field, Schema } from "@moozeh/nestjs-redis-om";
-
-export interface Connection {
-    socketId: string;
-    nickname: string;
-    createAt: number;
-}
-
-export enum RoomStatus {
-    PUBLIC = "PUBLIC",
-    PRIVATE = "PRIVATE",
-}
+import { RoomStatus } from "@/room/domain/room";
 
 @Schema("room", {})
 export class RoomEntity extends Entity {

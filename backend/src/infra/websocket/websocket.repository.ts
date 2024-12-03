@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { InjectRepository } from "@moozeh/nestjs-redis-om";
 import { Repository } from "redis-om";
-import { WebsocketEntity } from "@/websocket/websocket.entity";
+import { WebsocketEntity } from "@/infra/websocket/websocket.entity";
 
 @Injectable()
 export class WebsocketRepository {
@@ -11,19 +11,18 @@ export class WebsocketRepository {
         private readonly socketRepository: Repository<WebsocketEntity>
     ) {}
 
-    public async register(socket: Socket) {
+    public async createWebsocketMetadata(socket: Socket) {
         const entity = new WebsocketEntity();
         entity.id = socket.id;
         entity.joinedRooms = [];
-        await this.socketRepository.remove(entity.id);
-        await this.socketRepository.save(entity.id, entity);
+        return this.socketRepository.save(entity.id, entity);
     }
 
-    public async getRoomOfSocket(id: string) {
+    public async getWebsocketMetadataById(id: string) {
         return this.socketRepository.search().where("id").eq(id).return.first();
     }
 
-    public async clean(socket: Socket) {
+    public async removeWebsocketMetadata(socket: Socket) {
         const entities = await this.socketRepository
             .search()
             .where("id")
@@ -35,9 +34,7 @@ export class WebsocketRepository {
         }
     }
 
-    public async joinRoom(socketId: string, roomId: string) {
-        const entity = await this.socketRepository.search().where("id").eq(socketId).return.first();
-        entity.joinedRooms.push(roomId);
-        await this.socketRepository.save(entity.id, entity);
+    public async updateWebsocketMetadata(socketId: string, entity: WebsocketEntity) {
+        return this.socketRepository.save(entity.id, entity);
     }
 }
