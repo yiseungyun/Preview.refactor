@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { Socket } from "socket.io-client";
-import { PeerConnection } from "@/pages/SessionPage/types/session";
+import { PeerConnection } from "../types/session";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 
 const REACTION_DURATION = 3000;

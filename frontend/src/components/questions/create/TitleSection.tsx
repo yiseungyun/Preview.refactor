@@ -1,6 +1,6 @@
 import SelectTitle from "@/components/common/Text/SelectTitle";
 import TitleInput from "@/components/common/Input/TitleInput";
-import useQuestionFormStore from "@/stores/useQuestionFormStore";
+import useQuestionFormStore from "@/pages/CreateQuestionPage/stores/useQuestionFormStore";
 
 const TitleSection = () => {
   const { setQuestionTitle } = useQuestionFormStore();

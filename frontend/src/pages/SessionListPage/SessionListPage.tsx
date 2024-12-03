@@ -26,7 +26,7 @@ const SessionListPage = () => {
     <SidebarPageLayout>
       <div className={"flex flex-col gap-8 max-w-6xl w-full px-12 pt-20 pb-4"}>
         <div>
-          <h1 className={"text-bold-l mb-6"}>면접 스터디 세션 목록</h1>
+          <h1 className={"text-bold-l mb-6"}>스터디 채널</h1>
           <div className={"h-11 flex gap-2 w-full"}>
             <SearchBar text="세션을 검색하세요" />
             <CategorySelect

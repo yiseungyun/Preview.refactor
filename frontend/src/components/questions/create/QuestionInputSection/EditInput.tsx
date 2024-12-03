@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { adjustHeight } from "../utils/textarea";
+import { adjustHeight } from "../utils/textareaHeight";
 
 interface EditInputProps {
   value: string;

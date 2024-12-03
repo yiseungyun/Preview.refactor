@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Socket } from "socket.io-client";
-import { PeerConnection } from "@/pages/SessionPage/types/session";
+import { PeerConnection } from "../types/session";
 import { SIGNAL_EMIT_EVENT } from "@/constants/WebSocket/SignalingEvent.ts";
 
 interface User {
@@ -87,16 +87,11 @@ const usePeerConnection = (socket: Socket) => {
 
       mediaDataChannel.onclose = () => {
         console.log("Media data channel closed.");
-        delete dataChannels.current[peerSocketId];
       };
 
+      // DataChannel 해보자
       pc.ondatachannel = (event) => {
         const channel = event.channel;
-
-        channel.onopen = () => {
-          dataChannels.current[peerSocketId] = channel;
-        };
-
         channel.onmessage = (e) => {
           const data = JSON.parse(e.data);
           console.log(data);

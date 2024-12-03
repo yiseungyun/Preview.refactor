@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@hooks/useAuth";
 import useToast from "@hooks/useToast";
-import MyPageView from "./view";
+import MyPageView from "./view/MyPageView";
 
 const MyPage = () => {
   const { isLoggedIn } = useAuth();

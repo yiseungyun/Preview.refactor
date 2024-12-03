@@ -15,7 +15,7 @@ import {
   RoomMetadata,
   PeerConnection,
   ProgressResponse,
-} from "@hooks/type/session";
+} from "@/pages/SessionPage/types/session";
 import {
   SIGNAL_EMIT_EVENT,
   SIGNAL_LISTEN_EVENT,

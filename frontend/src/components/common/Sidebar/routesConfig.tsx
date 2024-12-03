@@ -23,7 +23,7 @@ const commonRoutes = [
   },
   {
     path: "/sessions",
-    label: "스터디 세션 목록",
+    label: "스터디 채널",
     icon: <FaLayerGroup />,
   },
 ];

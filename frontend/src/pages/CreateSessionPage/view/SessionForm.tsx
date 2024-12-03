@@ -1,20 +1,20 @@
-import AccessSection from "./AccessSection";
-import CategorySection from "./CategorySection";
-import ParticipantSection from "./ParticipantSection";
-import TitleSection from "./TitleSection";
-import QuestionListSection from "./QuestionListSection";
-import ListSelectModal from "./ListSelectModal";
-import useSessionFormStore from "@/stores/useSessionFormStore";
+import AccessSection from "@components/sessions/create/SessionForm/AccessSection";
+import CategorySection from "@components/sessions/create/SessionForm/CategorySection";
+import ParticipantSection from "@components/sessions/create/SessionForm/ParticipantSection";
+import TitleSection from "@components/sessions/create/SessionForm/TitleSection";
+import QuestionListSection from "@components/sessions/create/SessionForm/QuestionListSection";
+import ListSelectModal from "@components/sessions/create/SessionForm/ListSelectModal";
+import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import useToast from "@/hooks/useToast";
-import useSocket from "@/hooks/useSocket";
+import useToast from "@hooks/useToast";
+import useSocket from "@hooks/useSocket";
 import {
   SESSION_EMIT_EVENT,
   SESSION_LISTEN_EVENT,
 } from "@/constants/WebSocket/SessionEvent.ts";
 import useAuth from "@hooks/useAuth.ts";
-import useModal from "@/hooks/useModal";
+import useModal from "@hooks/useModal";
 
 interface RoomCreatedResponse {
   id?: string;

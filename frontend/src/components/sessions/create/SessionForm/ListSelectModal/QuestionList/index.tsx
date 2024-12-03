@@ -32,7 +32,6 @@ const QuestionList = ({ page }: { page: number }) => {
       setQuestionList([]);
     }
   };
-  //const { tab } = useSessionFormStore();
 
   const startIndex = (page - 1) * QUESTION_PER_PAGE;
   const endIndex = startIndex + QUESTION_PER_PAGE;
@@ -40,13 +39,6 @@ const QuestionList = ({ page }: { page: number }) => {
   return (
     <div className="mb-4 h-80 overflow-y-auto">
       <LoadingIndicator loadingState={questionLoading} />
-      {/*data[tab].map((item, id) => {
-          return (
-            <div key={id}>
-              <QuestionItem item={item} />
-            </div>
-          );
-        })*/}
       {questionList.slice(startIndex, endIndex).map((item, id) => {
         return (
           <div key={id}>

@@ -1,4 +1,7 @@
-import { MockPeerConnections, MockSocket } from "../../type/session.test";
+import {
+  MockPeerConnections,
+  MockSocket,
+} from "@/pages/SessionPage/types/session.test";
 
 export const mockSocket: MockSocket = {
   emit: jest.fn(),

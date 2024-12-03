@@ -3,7 +3,7 @@ import { IoMdClose } from "react-icons/io";
 import CategoryTap from "@components/sessions/create/SessionForm/ListSelectModal/CategoryTab";
 import SearchBar from "@/components/common/Input/SearchBar";
 import QuestionList from "./QuestionList";
-import useSessionFormStore from "@stores/useSessionFormStore";
+import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
 import Pagination from "@components/common/Pagination";
 
 interface UseModalReturn {

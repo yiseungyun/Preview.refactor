@@ -24,7 +24,7 @@ const QuestionListPage = () => {
       <div className="max-w-6xl w-full px-12 pt-20">
         <div className="mb-12">
           <h1 className="text-bold-l text-gray-black dark:text-white mb-6">
-            질문지 목록
+            질문지 리스트
           </h1>
           <div className="h-11 flex gap-2 items-stretch justify-between">
             <SearchBar text={"질문지 검색하기"} />

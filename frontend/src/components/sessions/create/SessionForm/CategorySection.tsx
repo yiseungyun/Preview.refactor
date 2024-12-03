@@ -1,5 +1,5 @@
 import SelectTitle from "@/components/common/Text/SelectTitle";
-import useSessionFormStore from "@/stores/useSessionFormStore";
+import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
 import CategorySelect from "@/components/common/Select/CategorySelect";
 
 const options = [

@@ -1,4 +1,4 @@
-import useSessionFormStore from "@/stores/useSessionFormStore";
+import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
 import SelectTitle from "@/components/common/Text/SelectTitle";
 import TitleInput from "@/components/common/Input/TitleInput";
 
