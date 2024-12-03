@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "@/api/config/axios.ts";
 
 interface QuestionListProps {
   page: number;
@@ -37,7 +37,7 @@ interface ApiResponse {
 }
 
 const getScrapQuestionList = async ({ page, limit }: QuestionListProps) => {
-  const response = await axios.get<ApiResponse>("/api/question-list/scrap", {
+  const response = await api.get<ApiResponse>("/api/question-list/scrap", {
     params: {
       page,
       limit,

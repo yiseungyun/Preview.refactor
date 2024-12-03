@@ -30,7 +30,7 @@ const QuestionDetailPage = () => {
     if (!questionId) {
       navigate("/questions");
     }
-  }, [questionId, navigate]);
+  }, [questionId]);
 
   const shareQuestionList = () => {
     if (question) {

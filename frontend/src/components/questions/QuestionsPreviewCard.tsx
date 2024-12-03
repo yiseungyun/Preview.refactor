@@ -40,9 +40,12 @@ const QuestionCard = ({
       </h3>
       <div className="flex items-center justify-between text-sm text-gray-400 dark:text-gray-100">
         <div className="flex items-center gap-1 pl-1">
-          <span>{questionCount}</span>
-          <span>문항</span>
+          <>
+            <span>{questionCount}</span>
+            <span>문항</span>
+          </>
         </div>
+
         <div className="flex items-center gap-2">
           <FaUsers className="w-4 h-4" />
           <span>{usage}</span>

@@ -22,12 +22,12 @@ const CategorySelect = <T,>({
 }: SelectProps<T>) => {
   return (
     <div
-      className={`relative h-full border-custom-s rounded-custom-m border-gray-200 ${backgroundColor}`}
+      className={`relative   h-full border-custom-s rounded-custom-m border-gray-200 ${backgroundColor}`}
     >
       <select
         defaultValue={value as string}
         onChange={(e) => setValue(e.target.value as T)}
-        className="text-medium-m rounded-custom-m text-gray-600 appearance-none pl-4 pr-8 h-full"
+        className="w-full text-medium-m rounded-custom-m text-gray-600 appearance-none pl-4 pr-8 h-full"
       >
         {defaultText && (
           <option value="" disabled>
