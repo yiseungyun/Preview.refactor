@@ -3,7 +3,7 @@ import questionList from "/introduce/questionList.png";
 import createSession from "/introduce/createSession.png";
 import inSession from "/introduce/inSession.png";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { throttle } from "lodash";
 import IntroCard from "@/pages/IntroPage/view/IntroCard.tsx";
 import useObserver from "@/pages/IntroPage/hooks/useObserver.ts";
@@ -20,19 +20,26 @@ const IntroPage = () => {
   const { observer } = useObserver();
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const handleScroll = throttle(() => {
-    const scrollTop = (contentRef.current!.parentNode as HTMLDivElement)
-      .scrollTop;
-    if (scrollTop && scrollTop > 10) {
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
-  }, 16);
+  const throttledHandleScroll = useCallback(
+    throttle(() => {
+      if (!contentRef.current) return;
+      const scrollTop = (contentRef.current.parentNode as HTMLDivElement)
+        .scrollTop;
+      if (scrollTop && scrollTop > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    }, 16),
+    []
+  );
 
   useEffect(() => {
     if (contentRef.current) {
-      contentRef.current.parentNode?.addEventListener("scroll", handleScroll);
+      contentRef.current.parentNode?.addEventListener(
+        "scroll",
+        throttledHandleScroll
+      );
     }
   }, []);
 
