@@ -4,11 +4,13 @@ import type { QuestionList } from "@/pages/QuestionListPage/types/QuestionList.t
 interface QuestionListProps {
   questionList?: QuestionList[];
   questionLoading?: boolean;
+  tab: "ALL" | "SCRAP";
 }
 
 const QuestionsPreviewList = ({
   questionList,
   questionLoading,
+  tab,
 }: QuestionListProps) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -18,9 +20,9 @@ const QuestionsPreviewList = ({
             key={list.id}
             id={list.id}
             questionCount={list.questionCount ?? 0}
-            category={list.categoryNames[0]}
+            category={list.categoryNames ? list.categoryNames[0] : "미분류"}
             title={list.title}
-            isStarred={list.isStarred}
+            isStarred={tab === "SCRAP" ? true : list.isStarred}
             usage={list.usage}
           />
         ))}

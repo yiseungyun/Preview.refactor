@@ -41,7 +41,11 @@ export const routes = [
     path: "/login/callback",
   },
   {
-    element: <MyPage />,
+    element: (
+      <ProtectedRouteLayout>
+        <MyPage />
+      </ProtectedRouteLayout>
+    ),
     path: "/mypage",
   },
   {
