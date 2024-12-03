@@ -1,10 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { getSessionList } from "@/api/session-list/getSessionList.ts";
 
-export const useGetSessionList = () => {
+interface SessionListRequest {
+  inProgress: 0 | 1;
+}
+
+export const useGetSessionList = ({ inProgress }: SessionListRequest) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["sessionList"],
-    queryFn: () => getSessionList(),
+    queryKey: ["sessionList", inProgress],
+    queryFn: () => getSessionList({ inProgress }),
     staleTime: 60 * 1000,
     refetchInterval: 60 * 1000,
     refetchOnMount: true,

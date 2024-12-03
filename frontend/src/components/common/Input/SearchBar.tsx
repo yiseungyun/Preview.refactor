@@ -5,7 +5,9 @@ interface Props {
 
 const SearchBar = ({ text }: Props) => {
   return (
-    <div className="relative w-full h-11 flex items-center text-gray-400 dark:text-white fill-current">
+    <div
+      className={`relative w-full h-11 flex items-center text-gray-400 dark:text-white fill-current`}
+    >
       <IoIosSearch className=" absolute left-4 w-5 h-5" />
       <input
         className={

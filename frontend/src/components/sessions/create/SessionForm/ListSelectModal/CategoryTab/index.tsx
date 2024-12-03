@@ -1,6 +1,6 @@
 import Category from "./Category";
 
-const CategoryTap = () => {
+const CategoryTab = () => {
   return (
     <section className="flex items-center gap-2">
       <Category tabName="myList" tabText="나의 질문지" />
@@ -9,4 +9,4 @@ const CategoryTap = () => {
   );
 };
 
-export default CategoryTap;
+export default CategoryTab;
