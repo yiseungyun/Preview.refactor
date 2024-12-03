@@ -1,14 +1,14 @@
 import {
+    MessageBody,
+    SubscribeMessage,
     WebSocketGateway,
     WebSocketServer,
-    SubscribeMessage,
-    MessageBody,
 } from "@nestjs/websockets";
 import { Server } from "socket.io";
 import { EMIT_EVENT, LISTEN_EVENT } from "@/signaling-server/sig-server.event";
-import { websocketConfig } from "@/websocket/websocket.config";
+import { gatewayConfig } from "@/infra/infra.config";
 
-@WebSocketGateway(websocketConfig)
+@WebSocketGateway(gatewayConfig)
 export class SigServerGateway {
     @WebSocketServer()
     private server: Server;
