@@ -7,10 +7,14 @@ import { RoomListResponseDto } from "@/room/dto/room-list.dto";
 export class RoomService {
     public constructor(private readonly roomRepository: RoomRepository) {}
 
-    public async getPublicRoom(): Promise<RoomListResponseDto> {
+    public async getPublicRoom(inProgress?: boolean): Promise<RoomListResponseDto> {
         const rooms = await this.roomRepository.getAllRoom();
         return rooms
-            .filter((room) => room.status === RoomStatus.PUBLIC)
+            .filter(
+                (room) =>
+                    room.status === RoomStatus.PUBLIC &&
+                    (inProgress === undefined || room.inProgress === inProgress)
+            )
             .sort((a, b) => b.createdAt - a.createdAt)
             .map((room) => ({
                 createdAt: room.createdAt,
