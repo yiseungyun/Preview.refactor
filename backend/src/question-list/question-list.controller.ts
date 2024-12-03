@@ -165,12 +165,6 @@ export class QuestionListController {
         try {
             const userId = token ? token.userId : null;
 
-            if (!userId) {
-                // 로그인 안함
-                // isScrap: false
-                // 비공개 질문 접근 불가 처리
-            }
-
             const { questionListId } = body;
             const questionListContents: QuestionListContentsDto =
                 await this.questionListService.getQuestionListContents(questionListId, userId);

@@ -140,6 +140,8 @@ export class QuestionListService {
             ? await this.questionListRepository.isQuestionListScrapped(id, userId)
             : false;
 
+        const scrapCount = await this.questionListRepository.getScrapCount(id);
+
         const questionListContents: QuestionListContentsDto = {
             id,
             title,
@@ -148,6 +150,7 @@ export class QuestionListService {
             usage,
             username,
             isScrap,
+            scrapCount: parseInt(scrapCount.count),
         };
 
         return questionListContents;

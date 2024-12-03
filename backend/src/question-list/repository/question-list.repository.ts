@@ -68,6 +68,14 @@ export class QuestionListRepository extends Repository<QuestionList> {
             .then((result) => !!result);
     }
 
+    getScrapCount(questionListId: number) {
+        return this.createQueryBuilder("question_list")
+            .innerJoin("question_list.scrappedByUsers", "user")
+            .where("question_list.id = :questionListId", { questionListId })
+            .select("COUNT(user.id)", "count")
+            .getRawOne();
+    }
+
     async paginate(paginateDto: PaginateDto) {
         const { queryBuilder, skip, take, field, direction } = paginateDto;
         return await queryBuilder

@@ -8,4 +8,5 @@ export interface QuestionListContentsDto {
     usage: number;
     username: string;
     isScrap: boolean;
+    scrapCount: number;
 }
