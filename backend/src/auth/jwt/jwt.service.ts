@@ -60,7 +60,9 @@ export class JwtService {
 
     private async createRefreshToken(id: number): Promise<IJwtToken> {
         const refreshToken = this.parent.sign(
-            {},
+            {
+                exp: Date.now() + JwtService.REFRESH_TOKEN_TIME,
+            },
             {
                 secret: process.env.JWT_REFRESH_TOKEN_SECRET_KEY,
                 audience: String(id),
