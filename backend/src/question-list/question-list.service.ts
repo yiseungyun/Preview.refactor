@@ -6,7 +6,6 @@ import { GetAllQuestionListDto } from "./dto/get-all-question-list.dto";
 import { QuestionListContentsDto } from "./dto/question-list-contents.dto";
 import { MyQuestionListDto } from "./dto/my-question-list.dto";
 import { Question } from "./entity/question.entity";
-import { Transactional } from "typeorm-transactional";
 import { QuestionList } from "@/question-list/entity/question-list.entity";
 import { UpdateQuestionListDto } from "@/question-list/dto/update-question-list.dto";
 import { QuestionDto } from "@/question-list/dto/question.dto";
@@ -14,13 +13,15 @@ import { DeleteQuestionDto } from "@/question-list/dto/delete-question.dto";
 import { QuestionRepository } from "@/question-list/repository/question.respository";
 import { CategoryRepository } from "@/question-list/repository/category.repository";
 import { PaginateQueryDto } from "@/question-list/dto/paginate-query.dto";
-import { SelectQueryBuilder } from "typeorm";
+import { DataSource, In, SelectQueryBuilder } from "typeorm";
 import { PaginateMetaDto } from "@/question-list/dto/paginate-meta.dto";
 import { PaginateDto } from "@/question-list/dto/paginate.dto";
+import { QuestionListDto } from "@/question-list/dto/question-list.dto";
 
 @Injectable()
 export class QuestionListService {
     constructor(
+        private dataSource: DataSource,
         private readonly questionListRepository: QuestionListRepository,
         private readonly questionRepository: QuestionRepository,
         private readonly userRepository: UserRepository,
@@ -32,7 +33,10 @@ export class QuestionListService {
 
         let categoryId = null;
         if (query.category) {
-            categoryId = await this.categoryRepository.getCategoryIdByName(query.category);
+            const category = await this.categoryRepository.findOne({
+                where: { name: query.category },
+            });
+            categoryId = category.id;
             if (!categoryId) return {};
         }
 
@@ -45,8 +49,9 @@ export class QuestionListService {
             const categoryNames: string[] =
                 await this.categoryRepository.findCategoryNamesByQuestionListId(id);
 
-            const questionCount =
-                await this.questionRepository.getQuestionCountByQuestionListId(id);
+            const questionCount = await this.questionRepository.count({
+                where: { questionListId: id },
+            });
 
             const questionList: GetAllQuestionListDto = {
                 id,
@@ -61,39 +66,53 @@ export class QuestionListService {
     }
 
     // 질문 생성 메서드
-    @Transactional()
     async createQuestionList(createQuestionListDto: CreateQuestionListDto) {
         const { title, contents, categoryNames, isPublic, userId } = createQuestionListDto;
 
-        const categories = await this.categoryRepository.findCategoriesByNames(categoryNames);
+        const categories = await this.categoryRepository.find({
+            where: { name: In(categoryNames) },
+        });
         if (categories.length !== categoryNames.length) {
             throw new Error("Some category names were not found.");
         }
 
-        const questionList = new QuestionList();
-        questionList.title = title;
-        questionList.categories = categories;
-        questionList.isPublic = isPublic;
-        questionList.userId = userId;
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
 
-        const createdQuestionList =
-            await this.questionListRepository.createQuestionList(questionList);
+        try {
+            const questionList = new QuestionList();
+            questionList.title = title;
+            questionList.categories = categories;
+            questionList.isPublic = isPublic;
+            questionList.userId = userId;
 
-        const questions = contents.map((content, index) => {
-            const question = new Question();
-            question.content = content;
-            question.index = index;
-            question.questionList = createdQuestionList;
+            const createdQuestionList = await queryRunner.manager.save(questionList);
 
-            return question;
-        });
+            const questions = contents.map((content, index) => {
+                const question = new Question();
+                question.content = content;
+                question.index = index;
+                question.questionList = createdQuestionList;
 
-        const createdQuestions = await this.questionRepository.createQuestions(questions);
-        return { createdQuestionList, createdQuestions };
+                return question;
+            });
+            const createdQuestions = await queryRunner.manager.save(questions);
+
+            await queryRunner.commitTransaction();
+            return { createdQuestionList, createdQuestions };
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw new Error(error.message);
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     async getQuestionListContents(questionListId: number, userId: number) {
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         const { id, title, usage, isPublic } = questionList;
         if (!isPublic && questionList.userId !== userId) {
             throw new Error("This is private question list.");
@@ -140,35 +159,28 @@ export class QuestionListService {
         return { myQuestionLists, meta: result.meta };
     }
 
-    async findCategoriesByNames(categoryNames: string[]) {
-        const categories = await this.categoryRepository.findCategoriesByNames(categoryNames);
-
-        if (categories.length !== categoryNames.length) {
-            throw new Error("Some category names were not found.");
-        }
-
-        return categories;
-    }
-
     async updateQuestionList(updateQuestionListDto: UpdateQuestionListDto) {
         const { id, title, categoryNames, isPublic, userId } = updateQuestionListDto;
         const user = await this.userRepository.getUserByUserId(userId);
         if (!user) throw new Error("User not found.");
 
-        const questionList = await this.questionListRepository.getQuestionListById(id);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id },
+        });
         if (!questionList) throw new Error("Question list not found.");
         if (questionList.userId !== userId)
             throw new Error("You do not have permission to edit this question list.");
 
         if (title) questionList.title = title;
         if (categoryNames) {
-            questionList.categories =
-                await this.categoryRepository.findCategoriesByNames(categoryNames);
+            questionList.categories = await this.categoryRepository.find({
+                where: { name: In(categoryNames) },
+            });
         }
         if (isPublic !== undefined) questionList.isPublic = isPublic;
 
-        const updatedQuestionList =
-            await this.questionListRepository.updateQuestionList(questionList);
+        const updatedQuestionList: QuestionListDto =
+            await this.questionListRepository.save(questionList);
         updatedQuestionList.categoryNames =
             await this.categoryRepository.findCategoryNamesByQuestionListId(id);
         updatedQuestionList.categories = undefined;
@@ -180,12 +192,14 @@ export class QuestionListService {
         const user = await this.userRepository.getUserByUserId(userId);
         if (!user) throw new Error("User not found.");
 
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         if (!questionList) throw new Error("Question list not found.");
         if (questionList.userId !== userId)
             throw new Error("You do not have permission to delete this question list.");
 
-        return await this.questionListRepository.deleteQuestionList(questionListId);
+        return await this.questionListRepository.delete(questionListId);
     }
 
     async addQuestion(questionDto: QuestionDto) {
@@ -193,56 +207,65 @@ export class QuestionListService {
         const user = await this.userRepository.getUserByUserId(userId);
         if (!user) throw new Error("User not found.");
 
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         if (!questionList) throw new Error("Question list not found.");
         if (questionList.userId !== userId)
             throw new Error("You do not have permission to add a question to this question list.");
 
-        const existingQuestionsCount =
-            await this.questionRepository.getQuestionCountByQuestionListId(questionListId);
+        const existingQuestionCount = await this.questionRepository.count({
+            where: { questionListId },
+        });
         const question = new Question();
         question.content = content;
-        question.index = existingQuestionsCount;
+        question.index = existingQuestionCount;
         question.questionListId = questionListId;
 
-        await this.questionRepository.saveQuestion(question);
+        await this.questionRepository.save(question);
         return await this.getQuestionListContents(questionListId, userId);
     }
 
     async updateQuestion(questionDto: QuestionDto) {
         const { id, content, questionListId, userId } = questionDto;
 
-        const question = await this.questionRepository.getQuestionById(id);
+        const question = await this.questionRepository.findOne({
+            where: { id },
+        });
         if (!question) throw new Error("Question not found.");
 
         const user = await this.userRepository.getUserByUserId(userId);
         if (!user) throw new Error("User not found.");
 
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         if (!questionList) throw new Error("Question list not found.");
         if (questionList.userId !== userId)
             throw new Error(
                 "You do not have permission to update the question in this question list."
             );
 
-        const existingQuestion = await this.questionRepository.getQuestionById(id);
-        existingQuestion.content = content;
+        question.content = content;
+        await this.questionRepository.save(question);
 
-        await this.questionRepository.saveQuestion(existingQuestion);
         return await this.getQuestionListContents(questionListId, userId);
     }
 
-    @Transactional()
     async deleteQuestion(deleteQuestionDto: DeleteQuestionDto) {
         const { id, questionListId, userId } = deleteQuestionDto;
 
-        const question = await this.questionRepository.getQuestionById(id);
+        const question = await this.questionRepository.findOne({
+            where: { id },
+        });
         if (!question) throw new Error("Question not found.");
 
         const user = await this.userRepository.getUserByUserId(userId);
         if (!user) throw new Error("User not found.");
 
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         if (!questionList) throw new Error("Question list not found.");
         if (questionList.userId !== userId)
             throw new Error(
@@ -256,12 +279,25 @@ export class QuestionListService {
             questionIndex
         );
 
-        for (const q of questionsToUpdate) {
-            q.index -= 1;
-            await this.questionRepository.saveQuestion(q);
-        }
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
 
-        return await this.questionRepository.deleteQuestion(question);
+        try {
+            for (const q of questionsToUpdate) {
+                q.index -= 1;
+                await queryRunner.manager.save(q);
+            }
+
+            const result = await queryRunner.manager.delete(Question, question.id);
+            await queryRunner.commitTransaction();
+            return result;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw new Error(error.message);
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     async getScrappedQuestionLists(userId: number, query: PaginateQueryDto) {
@@ -276,7 +312,9 @@ export class QuestionListService {
         const user = await this.userRepository.getUserByUserId(userId);
 
         // 유효한 question list id 인지 확인
-        const questionList = await this.questionListRepository.getQuestionListById(questionListId);
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: questionListId },
+        });
         if (!questionList) throw new Error("Question list not found.");
 
         // 스크랩하려는 질문지가 내가 만든 질문지인지 확인

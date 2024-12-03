@@ -1,8 +1,9 @@
 import useAuth from "@hooks/useAuth.ts";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useToast from "@hooks/useToast.ts";
 import axios, { isAxiosError } from "axios";
+import { throttle } from "lodash";
 
 interface UseValidateProps {
   setIsSignUp: (isSignUp: boolean) => void;
@@ -13,13 +14,18 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
   const navigate = useNavigate();
   const toast = useToast();
 
+  const [errors, setErrors] = useState<string[]>();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [nickname, setNickname] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const emptyErrors = () => {
+    setErrors([]);
+  };
+
+  const handleLogin = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.post("/api/auth/login", {
@@ -47,23 +53,23 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [username, password]);
 
   const validate = () => {
-    const errors: string[] = [];
+    const errorArray: string[] = [];
 
     // 아이디 검증
     if (!username) {
-      errors.push("아이디는 필수입니다.");
+      errorArray.push("아이디는 필수입니다.");
     } else {
       if (username.length < 4) {
-        errors.push("아이디는 최소 4글자 이상이어야 합니다.");
+        errorArray.push("아이디는 최소 4글자 이상이어야 합니다.");
       }
       if (username.length > 20) {
-        errors.push("아이디는 20글자 이하여야 합니다.");
+        errorArray.push("아이디는 20글자 이하여야 합니다.");
       }
       if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-        errors.push(
+        errorArray.push(
           "아이디는 영문자, 숫자, 언더스코어(_)만 사용할 수 있습니다."
         );
       }
@@ -71,63 +77,57 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
 
     // 비밀번호 검증
     if (!password) {
-      errors.push("비밀번호는 필수입니다.");
+      errorArray.push("비밀번호는 필수입니다.");
     } else {
       if (password.length < 7) {
-        errors.push("비밀번호는 최소 7글자 이상이어야 합니다.");
+        errorArray.push("비밀번호는 최소 7글자 이상이어야 합니다.");
       }
       if (password.length > 20) {
-        errors.push("비밀번호는 20글자 이하여야 합니다.");
+        errorArray.push("비밀번호는 20글자 이하여야 합니다.");
       }
       if (!/[a-z]/.test(password)) {
-        errors.push("비밀번호는 최소 1개의 소문자를 포함해야 합니다.");
+        errorArray.push("비밀번호는 최소 1개의 소문자를 포함해야 합니다.");
       }
       if (!/[0-9]/.test(password)) {
-        errors.push("비밀번호는 최소 1개의 숫자를 포함해야 합니다.");
+        errorArray.push("비밀번호는 최소 1개의 숫자를 포함해야 합니다.");
       }
       if (password.includes(username)) {
-        errors.push("비밀번호에 아이디을 포함할 수 없습니다.");
+        errorArray.push("비밀번호에 아이디을 포함할 수 없습니다.");
       }
     }
 
     // 비밀번호 확인 검증
     if (!passwordCheck) {
-      errors.push("비밀번호 확인은 필수입니다.");
+      errorArray.push("비밀번호 확인은 필수입니다.");
     } else {
       if (password !== passwordCheck) {
-        errors.push("비밀번호가 일치하지 않습니다.");
+        errorArray.push("비밀번호가 일치하지 않습니다.");
       }
     }
 
     // 닉네임 검증
     if (!nickname) {
-      errors.push("닉네임은 필수입니다.");
+      errorArray.push("닉네임은 필수입니다.");
     } else {
       if (nickname.length < 2) {
-        errors.push("닉네임은 최소 2글자 이상이어야 합니다.");
+        errorArray.push("닉네임은 최소 2글자 이상이어야 합니다.");
       }
       if (nickname.length > 10) {
-        errors.push("닉네임은 10글자 이하여야 합니다.");
+        errorArray.push("닉네임은 10글자 이하여야 합니다.");
       }
     }
 
     return {
-      isValid: errors.length === 0,
-      errors,
+      isValid: errorArray.length === 0,
+      errorArray: errorArray,
     };
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = useCallback(async () => {
     try {
       setLoading(true);
-      const { isValid, errors } = validate();
-
-      if (errors.length > 0) {
-        errors.forEach((error) => {
-          toast.error(error);
-        });
-        return;
-      }
+      const { isValid, errorArray } = validate();
+      setErrors(errorArray);
 
       if (isValid) {
         const response = await axios.post("/api/user/signup", {
@@ -161,7 +161,19 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [username, password, passwordCheck, nickname]);
+
+  const throttledSignUp = useCallback(throttle(handleSignUp, 1000), [
+    username,
+    password,
+    passwordCheck,
+    nickname,
+  ]);
+
+  const throttledLogin = useCallback(throttle(handleLogin, 1000), [
+    username,
+    password,
+  ]);
 
   return {
     setUsername,
@@ -169,8 +181,10 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
     setPasswordCheck,
     setNickname,
     loading,
-    handleLogin,
-    handleSignUp,
+    handleLogin: throttledLogin,
+    handleSignUp: throttledSignUp,
+    errors,
+    emptyErrors,
   };
 };
 

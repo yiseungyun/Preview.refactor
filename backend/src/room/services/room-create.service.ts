@@ -26,14 +26,14 @@ export class RoomCreateService {
         const id = await this.generateRoomId();
         const socket = this.socketService.getSocket(socketId);
         const currentTime = Date.now();
-        const questionList = await this.questionListRepository.getQuestionListById(
-            dto.questionListId
-        );
+        const questionList = await this.questionListRepository.findOne({
+            where: { id: dto.questionListId },
+        });
         const questionListContent = await this.questionRepository.getContentsByQuestionListId(
             dto.questionListId
         );
         questionList.usage += 1;
-        await this.questionListRepository.updateQuestionList(questionList);
+        await this.questionListRepository.save(questionList);
 
         const roomDto = {
             ...dto,

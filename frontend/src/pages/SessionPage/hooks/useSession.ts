@@ -145,6 +145,7 @@ export const useSession = (sessionId: string) => {
     setNickname,
     reaction,
     peers,
+    peerConnections,
     userVideoDevices,
     userAudioDevices,
     isVideoOn,

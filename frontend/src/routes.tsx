@@ -16,7 +16,6 @@ export const routes = [
     element: <App />,
     path: "/",
   },
-
   {
     element: <SessionPage />,
     path: "/session/:sessionId",

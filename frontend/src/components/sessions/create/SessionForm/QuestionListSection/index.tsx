@@ -1,5 +1,5 @@
 import useSessionFormStore from "@/stores/useSessionFormStore";
-import SelectTitle from "@/components/common/SelectTitle";
+import SelectTitle from "@/components/common/Text/SelectTitle";
 import { MdOutlineArrowForwardIos } from "react-icons/md";
 
 interface ListSectionProps {

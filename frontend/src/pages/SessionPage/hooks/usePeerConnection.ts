@@ -87,11 +87,16 @@ const usePeerConnection = (socket: Socket) => {
 
       mediaDataChannel.onclose = () => {
         console.log("Media data channel closed.");
+        delete dataChannels.current[peerSocketId];
       };
 
-      // DataChannel 해보자
       pc.ondatachannel = (event) => {
         const channel = event.channel;
+
+        channel.onopen = () => {
+          dataChannels.current[peerSocketId] = channel;
+        };
+
         channel.onmessage = (e) => {
           const data = JSON.parse(e.data);
           console.log(data);

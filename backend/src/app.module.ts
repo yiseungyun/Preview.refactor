@@ -14,7 +14,6 @@ import { createDataSource, typeOrmConfig } from "./config/typeorm.config";
 import { QuestionListModule } from "./question-list/question-list.module";
 import { RedisOmModule } from "@moozeh/nestjs-redis-om";
 import { SigServerModule } from "@/signaling-server/sig-server.module";
-import { QuestionModule } from './question/question.module';
 
 @Module({
     imports: [
@@ -30,7 +29,6 @@ import { QuestionModule } from './question/question.module';
         UserModule,
         QuestionListModule,
         SigServerModule,
-        QuestionModule,
     ],
     controllers: [AppController],
     providers: [AppService],
