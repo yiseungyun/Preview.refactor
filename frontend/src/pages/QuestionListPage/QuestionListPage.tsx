@@ -25,8 +25,6 @@ const QuestionListPage = () => {
     tab,
   });
 
-  console.log(data);
-
   return (
     <SidebarPageLayout>
       <div className="max-w-6xl flex flex-col w-full px-12 pt-20  h-full">

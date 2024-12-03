@@ -32,8 +32,6 @@ export const getQuestionList = async ({
     },
   });
 
-  console.log(response);
-
   return response.data.data;
 };
 
