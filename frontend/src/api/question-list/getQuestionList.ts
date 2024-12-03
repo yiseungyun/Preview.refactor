@@ -7,10 +7,21 @@ interface QuestionListProps {
   categoryName?: string;
 }
 
+interface QuestionListResponse {
+  allQuestionLists: QuestionList[];
+  meta: {
+    itemsPerPage: number;
+    totalItems: number;
+    currentPage: number;
+    totalPages: number;
+    sortBy: string;
+  };
+}
+
 export const getQuestionList = async ({
   page,
   limit,
-}: QuestionListProps): Promise<QuestionList[]> => {
+}: QuestionListProps): Promise<QuestionListResponse> => {
   const response = await api.get("/api/question-list", {
     params: {
       page,
@@ -18,14 +29,14 @@ export const getQuestionList = async ({
     },
   });
 
-  return response.data.data.allQuestionLists;
+  return response.data.data;
 };
 
 export const getQuestionListWithCategory = async ({
   categoryName,
   page,
   limit,
-}: QuestionListProps): Promise<QuestionList[]> => {
+}: QuestionListProps): Promise<QuestionListResponse> => {
   const response = await api.post(
     `/api/question-list/category`,
     {
@@ -38,5 +49,5 @@ export const getQuestionListWithCategory = async ({
       },
     }
   );
-  return response.data.data.allQuestionLists;
+  return response.data.data;
 };
