@@ -10,10 +10,11 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import "dotenv/config";
 
-import { createDataSource, typeOrmConfig } from "./config/typeorm.config";
+import { createDataSource, typeOrmConfig } from "./infra/typeorm/typeorm.config";
 import { QuestionListModule } from "./question-list/question-list.module";
 import { RedisOmModule } from "@moozeh/nestjs-redis-om";
 import { SigServerModule } from "@/signaling-server/sig-server.module";
+import { redisConfig } from "@/infra/infra.config";
 
 @Module({
     imports: [
@@ -22,7 +23,7 @@ import { SigServerModule } from "@/signaling-server/sig-server.module";
             dataSourceFactory: async () => await createDataSource(), // 분리된 데이터소스 생성 함수 사용
         }),
         RedisOmModule.forRoot({
-            url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+            url: `redis://${redisConfig.host}:${redisConfig.port}`,
         }),
         RoomModule,
         AuthModule,

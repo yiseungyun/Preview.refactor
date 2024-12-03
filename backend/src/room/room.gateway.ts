@@ -1,43 +1,63 @@
 import {
     ConnectedSocket,
     MessageBody,
+    OnGatewayConnection,
     OnGatewayDisconnect,
+    OnGatewayInit,
     SubscribeMessage,
     WebSocketGateway,
+    WebSocketServer,
 } from "@nestjs/websockets";
 import "dotenv/config";
-import { Socket } from "socket.io";
-import { RoomService } from "./services/room.service";
+import { Server, Socket } from "socket.io";
+import { RoomService } from "./room.service";
 import { Logger, UsePipes, ValidationPipe } from "@nestjs/common";
 import { EMIT_EVENT, LISTEN_EVENT } from "@/room/room.events";
-import { CreateRoomDto } from "@/room/dto/create-room.dto";
-import { WebsocketService } from "@/websocket/websocket.service";
-import { JoinRoomDto } from "@/room/dto/join-room.dto";
+import {
+    CreateRoomDto,
+    FinishRoomDto,
+    JoinRoomDto,
+    MoveIndexDto,
+    ReactionDto,
+    RoomIdDto,
+} from "@/room/dto";
+import { InfraService } from "@/infra/infra.service";
 import { RoomRepository } from "@/room/room.repository";
-import { ReactionDto } from "@/room/dto/reaction.dto";
-import { RoomLeaveService } from "@/room/services/room-leave.service";
-import { RoomCreateService } from "@/room/services/room-create.service";
-import { RoomJoinService } from "@/room/services/room-join.service";
-import { websocketConfig } from "@/websocket/websocket.config";
-import { FinishRoomDto } from "@/room/dto/finish-room.dto";
-import { RoomIdDto } from "@/room/dto/room-id.dto";
-import { MoveIndexDto } from "@/room/dto/move-index.dto";
 
-@WebSocketGateway(websocketConfig)
-export class RoomGateway implements OnGatewayDisconnect {
-    private logger: Logger = new Logger("Room Gateway");
+import { gatewayConfig } from "@/infra/infra.config";
+
+import { FullRoomException, InProgressException } from "@/room/exceptions/join-room-exceptions";
+import { createAdapter } from "@socket.io/redis-adapter";
+
+@WebSocketGateway(gatewayConfig)
+export class RoomGateway implements OnGatewayDisconnect, OnGatewayInit, OnGatewayConnection {
+    @WebSocketServer()
+    private server: Server;
+    private logger: Logger = new Logger("Websocket");
 
     public constructor(
         private readonly roomService: RoomService,
-        private readonly roomLeaveService: RoomLeaveService,
-        private readonly roomCreateService: RoomCreateService,
-        private readonly roomJoinService: RoomJoinService,
-        private readonly socketService: WebsocketService,
+        private readonly infraService: InfraService,
         private readonly roomRepository: RoomRepository
     ) {}
 
+    public afterInit() {
+        const pubClient = this.infraService.getRedisClient();
+        const subClient = pubClient.duplicate();
+        const redisAdapter = createAdapter(pubClient, subClient);
+        this.server.adapter(redisAdapter);
+        this.infraService.setServer(this.server);
+    }
+
     public async handleDisconnect(client: Socket) {
         await this.handleLeaveRoom(client);
+        this.logger.log(`Client disconnected: ${client.id}`);
+        await this.infraService.removeSocketMetadata(client);
+    }
+
+    public async handleConnection(client: Socket) {
+        this.logger.log(`Client disconnected: ${client.id}`);
+        await this.infraService.createSocketMetadata(client);
     }
 
     @SubscribeMessage(LISTEN_EVENT.CREATE)
@@ -46,8 +66,8 @@ export class RoomGateway implements OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody() dto: CreateRoomDto
     ) {
-        // TODO: try - catch 로 에러 핸들링을 통해 이벤트 Emit 을 여기서 하기
-        await this.roomCreateService.createRoom({ ...dto, socketId: client.id });
+        const createRoomResponseDto = await this.roomService.createRoom(dto, client);
+        client.emit(EMIT_EVENT.CREATE, createRoomResponseDto);
     }
 
     @SubscribeMessage(LISTEN_EVENT.JOIN)
@@ -56,19 +76,26 @@ export class RoomGateway implements OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody() dto: JoinRoomDto
     ) {
-        await this.roomJoinService.joinRoom({ ...dto, socketId: client.id });
+        try {
+            const joinRoomResponseDto = await this.roomService.joinRoom(dto, client);
+            client.emit(EMIT_EVENT.JOIN, joinRoomResponseDto);
+        } catch (e) {
+            if (e instanceof InProgressException) client.emit(EMIT_EVENT.IN_PROGRESS, {});
+            else if (e instanceof FullRoomException) client.emit(EMIT_EVENT.FULL, {});
+            else throw e;
+        }
     }
 
     @SubscribeMessage(LISTEN_EVENT.LEAVE)
     public async handleLeaveRoom(client: Socket) {
-        await this.roomLeaveService.leaveRoom(client);
+        await this.roomService.leaveRoom(client);
     }
 
     @SubscribeMessage(LISTEN_EVENT.FINISH)
     @UsePipes(new ValidationPipe({ transform: true }))
     public async handleFinishRoom(@MessageBody() dto: FinishRoomDto) {
         const roomId = await this.roomService.finishRoom(dto.roomId);
-        this.socketService.emitToRoom(roomId, EMIT_EVENT.FINISH);
+        this.infraService.emitToRoom(roomId, EMIT_EVENT.FINISH);
     }
 
     @SubscribeMessage(LISTEN_EVENT.REACTION)
@@ -81,7 +108,7 @@ export class RoomGateway implements OnGatewayDisconnect {
 
         if (!room) return;
 
-        this.socketService.emitToRoom(room.id, EMIT_EVENT.REACTION, {
+        this.infraService.emitToRoom(room.id, EMIT_EVENT.REACTION, {
             socketId: client.id,
             reactionType: dto.reactionType,
         });
@@ -108,17 +135,14 @@ export class RoomGateway implements OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody() dto: RoomIdDto
     ) {
-        this.socketService.emitToRoom(dto.roomId, EMIT_EVENT.NEXT_QUESTION, {
+        this.infraService.emitToRoom(dto.roomId, EMIT_EVENT.NEXT_QUESTION, {
             currentIndex: await this.roomService.increaseIndex(dto.roomId, client.id),
         });
     }
 
     @SubscribeMessage(LISTEN_EVENT.CURRENT_INDEX)
-    public async handleCurrentIndex(
-        @ConnectedSocket() client: Socket,
-        @MessageBody() dto: RoomIdDto
-    ) {
-        this.socketService.emitToRoom(dto.roomId, EMIT_EVENT.CURRENT_INDEX, {
+    public async handleCurrentIndex(@MessageBody() dto: RoomIdDto) {
+        this.infraService.emitToRoom(dto.roomId, EMIT_EVENT.CURRENT_INDEX, {
             currentIndex: await this.roomService.getIndex(dto.roomId),
         });
     }
@@ -128,7 +152,7 @@ export class RoomGateway implements OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody() dto: MoveIndexDto
     ) {
-        this.socketService.emitToRoom(dto.roomId, EMIT_EVENT.MOVE_INDEX, {
+        this.infraService.emitToRoom(dto.roomId, EMIT_EVENT.MOVE_INDEX, {
             currentIndex: await this.roomService.setIndex(dto.roomId, client.id, dto.index),
         });
     }
@@ -141,12 +165,12 @@ export class RoomGateway implements OnGatewayDisconnect {
     ) {
         try {
             const status = await this.roomService.setProgress(roomId, socketId, toStatus);
-            this.socketService.emitToRoom(roomId, eventName, {
+            this.infraService.emitToRoom(roomId, eventName, {
                 status: "success",
                 inProgress: status,
             });
         } catch {
-            this.socketService.emitToRoom(roomId, eventName, {
+            this.infraService.emitToRoom(roomId, eventName, {
                 status: "error",
             });
         }

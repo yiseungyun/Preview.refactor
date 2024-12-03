@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@moozeh/nestjs-redis-om";
 import { Repository } from "redis-om";
 import { RoomEntity } from "@/room/room.entity";
-import { RoomDto } from "@/room/dto/room.dto";
 
 @Injectable()
 export class RoomRepository {
@@ -12,71 +11,18 @@ export class RoomRepository {
     ) {}
 
     // TODO : .from 메서드 구현 필요?
-    public async getAllRoom(): Promise<RoomDto[]> {
-        const allRooms = await this.roomRepository.search().return.all();
-        return allRooms.map((room: RoomEntity) => {
-            const connectionMap = JSON.parse(room.connectionMap || "{}");
-            return {
-                connectionMap: JSON.parse(room.connectionMap || "{}"),
-                createdAt: room.createdAt,
-                host: JSON.parse(room.host),
-                maxParticipants: room.maxParticipants,
-                maxQuestionListLength: room.maxQuestionListLength,
-                questionListId: room.questionListId,
-                questionListTitle: room.questionListTitle,
-                currentIndex: room.currentIndex,
-                status: room.status,
-                title: room.title,
-                id: room.id,
-                category: room.category,
-                inProgress: room.inProgress,
-                participants: Object.keys(connectionMap).length,
-            };
-        });
+    public async getAllRoom(): Promise<RoomEntity[]> {
+        return this.roomRepository.search().return.all();
     }
 
-    public async getRoom(id: string): Promise<RoomDto> {
+    public async getRoom(id: string): Promise<RoomEntity | null> {
         const room = await this.roomRepository.search().where("id").eq(id).return.first();
-
         if (!room) return null;
-
-        const connectionMap = JSON.parse(room.connectionMap || "{}");
-
-        return {
-            category: room.category,
-            inProgress: room.inProgress,
-            connectionMap,
-            createdAt: room.createdAt,
-            currentIndex: room.currentIndex,
-            maxQuestionListLength: room.maxQuestionListLength,
-            questionListId: room.questionListId,
-            questionListTitle: room.questionListTitle,
-            host: JSON.parse(room.host),
-            participants: Object.keys(connectionMap).length,
-            maxParticipants: room.maxParticipants,
-            status: room.status,
-            title: room.title,
-            id: room.id,
-        };
+        return room;
     }
 
-    public async setRoom(dto: RoomDto): Promise<void> {
-        const room = new RoomEntity();
-        room.id = dto.id;
-        room.category = dto.category;
-        room.inProgress = dto.inProgress;
-        room.title = dto.title;
-        room.status = dto.status;
-        room.currentIndex = dto.currentIndex;
-        room.connectionMap = JSON.stringify(dto.connectionMap);
-        room.maxParticipants = dto.maxParticipants;
-        room.maxQuestionListLength = dto.maxQuestionListLength;
-        room.questionListId = dto.questionListId;
-        room.questionListTitle = dto.questionListTitle;
-        room.createdAt = Date.now();
-        room.host = JSON.stringify(dto.host);
-
-        await this.roomRepository.save(room.id, room);
+    public async setRoom(entity: RoomEntity): Promise<void> {
+        await this.roomRepository.save(entity.id, entity);
     }
 
     public async removeRoom(id: string): Promise<void> {
