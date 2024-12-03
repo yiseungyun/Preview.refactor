@@ -3,6 +3,7 @@ import CategorySelect from "@components/common/Select/CategorySelect.tsx";
 import { options } from "@/constants/CategoryData.ts";
 import CreateButton from "@components/common/Button/CreateButton.tsx";
 import { IoMdAdd } from "react-icons/io";
+import Tabs from "@/pages/QuestionListPage/view/Tabs.tsx";
 
 interface QuestionListHeaderProps {
   selectedCategory: string;
@@ -17,7 +18,6 @@ const QuestionListHeader = ({
   tab,
   setTab,
 }: QuestionListHeaderProps) => {
-  const selectedClassName = "text-green-600 text-semibold-r";
   return (
     <div className="mb-12">
       <h1 className="text-bold-l text-gray-black dark:text-white mb-6">
@@ -36,23 +36,7 @@ const QuestionListHeader = ({
           icon={IoMdAdd}
         />
       </div>
-      <div className={"relative border-b mt-4 pt-4 py-2 flex gap-4  "}>
-        <button
-          onClick={() => setTab("ALL")}
-          className={`${tab === "ALL" && selectedClassName} w-28 h-full`}
-        >
-          전체 질문지
-        </button>
-        <button
-          onClick={() => setTab("SCRAP")}
-          className={`${tab === "SCRAP" && selectedClassName} w-28 h-full`}
-        >
-          스크랩한 질문지
-        </button>
-        <div
-          className={`absolute -z-0 pointer-events-none top-0 ${tab === "SCRAP" ? "left-32" : "left-0"} transition-all duration-200 pt-4 py-2 p-1 border-b border-green-200 h-full w-28`}
-        ></div>
-      </div>
+      <Tabs tab={tab} setTab={setTab} />
     </div>
   );
 };
