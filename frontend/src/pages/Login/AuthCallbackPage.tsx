@@ -34,7 +34,9 @@ const AuthCallbackPage = () => {
         } catch (error) {
           console.error("Failed to get user info", error);
         } finally {
-          navigate("/");
+          const redirectUrl = localStorage.getItem("redirectUrl") || "/";
+          localStorage.removeItem("redirectUrl");
+          navigate(redirectUrl);
         }
       }
     } catch (error) {

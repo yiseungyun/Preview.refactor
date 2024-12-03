@@ -22,7 +22,7 @@ const CreateSessionPage = () => {
           onClick={() => navigate("/sessions")}
         >
           <IoArrowBackSharp className="w-5 h-5" />
-          <span>면접 채널로 돌아가기</span>
+          <span>스터디 채널로 돌아가기</span>
         </button>
         <h1 className="text-bold-l mb-2">새로운 스터디 세션 만들기</h1>
         <p className="text-medium-l text-gray-400 mb-8">

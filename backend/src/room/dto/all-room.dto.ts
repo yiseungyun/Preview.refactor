@@ -1,8 +1,7 @@
-import { Connection, RoomStatus } from "@/room/domain/room";
-
 // DTO 클래스 정의
 import { Transform } from "class-transformer";
 import { IsBoolean, IsOptional } from "class-validator";
+import { Connection, RoomStatus } from "@/room/domain/room";
 
 export class AllRoomQueryParamDto {
     @IsOptional()

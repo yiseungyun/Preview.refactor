@@ -11,10 +11,11 @@ const Category = ({ tabName, tabText }: Props) => {
   return (
     <button
       className={`flex flex-row gap-1
-      ${tab === tabName
+      ${
+        tab === tabName
           ? "text-bold-s text-green-500"
           : "text-medium-l text-gray-400"
-        }`}
+      }`}
       onClick={() => setTab(tabName)}
     >
       <span

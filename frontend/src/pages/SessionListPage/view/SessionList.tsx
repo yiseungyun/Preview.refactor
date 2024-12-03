@@ -5,16 +5,12 @@ import type { Session } from "@/pages/SessionListPage/types/session";
 import NotFound from "@components/common/Animate/NotFound.tsx";
 
 interface SessionListProps {
-  listTitle: string;
+  inProgress: boolean;
   listLoading: boolean;
   sessionList: Session[];
 }
 
-const SessionList = ({
-  listTitle,
-  listLoading,
-  sessionList,
-}: SessionListProps) => {
+const SessionList = ({ inProgress, listLoading, sessionList }: SessionListProps) => {
   const toast = useToast();
   const renderSessionList = () => {
     return sessionList.map((session) => {
@@ -40,24 +36,22 @@ const SessionList = ({
 
   return (
     <div>
-      <h2 className={"text-semibold-l mb-4"}>{listTitle}</h2>
       {listLoading && <LoadingIndicator loadingState={listLoading} />}
-      <ul className={"grid grid-cols-1 xl:grid-cols-2 gap-4"}>
-        {!listLoading && sessionList.length <= 0 ? (
-          <li key={-1} className={"flex justify-center items-center"}>
-            <NotFound
-              message={"새로운 스터디 세션을 만들어 면접 준비를 시작해보세요!"}
-              className={""}
-              redirect={{
-                path: "/sessions/create",
-                buttonText: "새로운 세션 생성하러 가기 ",
-              }}
-            />
-          </li>
-        ) : (
-          renderSessionList()
-        )}
-      </ul>
+      {!listLoading && sessionList.length <= 0 ? (
+        <div key={-1} className={"flex justify-center items-center"}>
+          <NotFound
+            message={
+              inProgress ? "현재 진행 중인 세션이 없어요.\n세션을 생성해서 면접 연습을 시작하세요!"
+                : "공개된 세션이 없어요.\n세션을 생성해서 면접 연습을 시작하세요!"
+            }
+            className={""}
+          />
+        </div>
+      ) : (
+        <ul className={"w-full grid grid-cols-2 lg:grid-cols-3 gap-4"}>
+          {renderSessionList()}
+        </ul>
+      )}
     </div>
   );
 };

@@ -16,11 +16,11 @@ const QuestionInput = () => {
   };
 
   const addInput = () => {
-    if (inputValue.trim().length >= 10) {
+    if (inputValue.trim().length >= 5) {
       addQuestion(inputValue.trim());
       setInputValue("");
     } else {
-      toast.error("질문은 10자 이상 입력해주세요.");
+      toast.error("질문은 5자 이상 입력해주세요.");
     }
   };
 

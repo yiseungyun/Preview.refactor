@@ -105,9 +105,10 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
         </div>
         <button
           className={`flex items-center ml-auto w-10 h-10 rounded-custom-m
-            ${isSelected
-              ? "bg-green-200 text-green-50"
-              : "bg-gray-300 text-gray-50"
+            ${
+              isSelected
+                ? "bg-green-200 text-green-50"
+                : "bg-gray-300 text-gray-50"
             }`}
           onClick={() => {
             checkHandler(item.id, item.title);

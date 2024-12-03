@@ -40,7 +40,7 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response,
         @JwtTokenPair() pair: IJwtTokenPair
     ) {
-        if (!pair) throw new UnauthorizedException();
+        if (!pair) throw new InternalServerErrorException();
         return this.setCookie(res, pair.accessToken);
     }
 
