@@ -115,7 +115,9 @@ export class QuestionListController {
     ) {
         try {
             const { title, contents, categoryNames, isPublic } = body;
-            if (!token)
+            const userId = token ? token.userId : null;
+
+            if (!userId)
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     success: false,
                     message: "Login required.",
@@ -127,7 +129,7 @@ export class QuestionListController {
                 contents,
                 categoryNames,
                 isPublic,
-                userId: token.userId,
+                userId,
             };
 
             // 질문지 생성
@@ -161,12 +163,14 @@ export class QuestionListController {
         }
     ) {
         try {
-            if (!token) {
+            const userId = token ? token.userId : null;
+
+            if (!userId) {
                 // 로그인 안함
                 // isScrap: false
                 // 비공개 질문 접근 불가 처리
             }
-            const userId = token.userId;
+
             const { questionListId } = body;
             const questionListContents: QuestionListContentsDto =
                 await this.questionListService.getQuestionListContents(questionListId, userId);
@@ -195,12 +199,13 @@ export class QuestionListController {
         @JwtPayload() token: IJwtPayload
     ) {
         try {
-            if (!token)
+            const userId = token ? token.userId : null;
+
+            if (!userId)
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     success: false,
                     message: "Login required.",
                 });
-            const userId = token.userId;
 
             const { myQuestionLists, meta } = await this.questionListService.getMyQuestionLists(
                 userId,
@@ -232,12 +237,13 @@ export class QuestionListController {
         @Body() body: { title?: string; isPublic?: boolean; categoryNames?: string[] }
     ) {
         try {
-            if (!token)
+            const userId = token ? token.userId : null;
+
+            if (!userId)
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     success: false,
                     message: "Login required.",
                 });
-            const userId = token.userId;
 
             const { title, isPublic, categoryNames } = body;
             const updateQuestionListDto: UpdateQuestionListDto = {
@@ -274,12 +280,13 @@ export class QuestionListController {
         @Param("questionListId") questionListId: number
     ) {
         try {
-            if (!token)
+            const userId = token ? token.userId : null;
+
+            if (!userId)
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     success: false,
                     message: "Login required.",
                 });
-            const userId = token.userId;
 
             const result = await this.questionListService.deleteQuestionList(
                 questionListId,
@@ -315,12 +322,13 @@ export class QuestionListController {
         @Param("questionListId") questionListId: number
     ) {
         try {
-            if (!token)
+            const userId = token ? token.userId : null;
+
+            if (!userId)
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     success: false,
                     message: "Login required.",
                 });
-            const userId = token.userId;
 
             const { content } = body;
             const questionDto: QuestionDto = {
@@ -356,12 +364,13 @@ export class QuestionListController {
         @Param() params: { questionListId: number; questionId: number }
     ) {
         try {
-            if (!token)
+            const userId = token ? token.userId : null;
+
+            if (!userId)
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     success: false,
                     message: "Login required.",
                 });
-            const userId = token.userId;
 
             const { content } = body;
             const { questionListId, questionId } = params;
@@ -398,12 +407,13 @@ export class QuestionListController {
         @Param() params: { questionListId: number; questionId: number }
     ) {
         try {
-            if (!token)
+            const userId = token ? token.userId : null;
+
+            if (!userId)
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     success: false,
                     message: "Login required.",
                 });
-            const userId = token.userId;
 
             const { questionListId, questionId } = params;
             const deleteQuestionDto: DeleteQuestionDto = {
@@ -441,12 +451,13 @@ export class QuestionListController {
         @JwtPayload() token: IJwtPayload
     ) {
         try {
-            if (!token)
+            const userId = token ? token.userId : null;
+
+            if (!userId)
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     success: false,
                     message: "Login required.",
                 });
-            const userId = token.userId;
 
             const { scrappedQuestionLists, meta } =
                 await this.questionListService.getScrappedQuestionLists(userId, query);
@@ -475,12 +486,13 @@ export class QuestionListController {
         @Body() body: { questionListId: number }
     ) {
         try {
-            if (!token)
+            const userId = token ? token.userId : null;
+
+            if (!userId)
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     success: false,
                     message: "Login required.",
                 });
-            const userId = token.userId;
 
             const { questionListId } = body;
             const scrappedQuestionList = await this.questionListService.scrapQuestionList(
@@ -512,12 +524,13 @@ export class QuestionListController {
         @Param("questionListId") questionListId: number
     ) {
         try {
-            if (!token)
+            const userId = token ? token.userId : null;
+
+            if (!userId)
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     success: false,
                     message: "Login is required to create question list.",
                 });
-            const userId = token.userId;
 
             const unscrappedQuestionList = await this.questionListService.unscrapQuestionList(
                 questionListId,

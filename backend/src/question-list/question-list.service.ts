@@ -53,7 +53,9 @@ export class QuestionListService {
                 where: { questionListId: id },
             });
 
-            const isScrap = await this.questionListRepository.isQuestionListScrapped(id, userId);
+            const isScrap = userId
+                ? await this.questionListRepository.isQuestionListScrapped(id, userId)
+                : false;
 
             const questionList: GetAllQuestionListDto = {
                 id,
@@ -128,6 +130,7 @@ export class QuestionListService {
 
         const user = await this.userRepository.getUserByUserId(userId);
         const username = user.username;
+
         const questionListContents: QuestionListContentsDto = {
             id,
             title,
