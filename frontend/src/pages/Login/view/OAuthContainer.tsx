@@ -20,7 +20,9 @@ const OAuthContainer = () => {
       toast.success(
         "게스트로 로그인되었습니다. 환영합니다. " + nickname + "님!"
       );
-      navigate("/");
+      const redirectUrl = localStorage.getItem("redirectUrl") || "/";
+      localStorage.removeItem("redirectUrl");
+      navigate(redirectUrl);
     }
   };
 

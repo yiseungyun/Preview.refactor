@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import useAuth from "@hooks/useAuth.ts";
 import { useNavigate } from "react-router-dom";
+import { refreshAccessToken } from "@/api/user/auth.ts";
 
 export const api = axios.create({
   timeout: 5000,
@@ -14,17 +15,32 @@ api.interceptors.response.use(
     return response;
   },
   async (error: AxiosError) => {
+    const originalRequest = error.config;
+
     if (error.response?.status === 401) {
-      const { logOut } = useAuth();
-      const navigate = useNavigate();
-      const currentPath = window.location.pathname;
-      localStorage.setItem("redirectUrl", currentPath);
+      try {
+        const response = await refreshAccessToken();
+        if (response.data.success) {
+          // 토큰 갱신 성공 요청 다시 보내기
+          return axios(originalRequest!);
+        } else {
+          // 토큰 갱신 실패
+          // 로그아웃 처리
+          // 로그인 페이지로 리다이렉팅
+          const { logOut } = useAuth();
+          const navigate = useNavigate();
+          const currentPath = window.location.pathname;
+          localStorage.setItem("redirectUrl", currentPath);
 
-      // 로그아웃처리
-      logOut();
+          // 로그아웃처리
+          logOut();
 
-      // 로그인 페이지로 리다이렉트
-      navigate("/login", { replace: true });
+          // 로그인 페이지로 리다이렉트
+          navigate("/login", { replace: true });
+        }
+      } catch (error) {
+        return Promise.reject(error);
+      }
     }
     return Promise.reject(error);
   }
