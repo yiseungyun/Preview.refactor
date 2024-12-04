@@ -40,7 +40,7 @@ const Tabs = ({ tab, setTab }: TabsProps) => {
       </div>
       <Link
         to="/questions/create"
-        className="flex items-center gap-1 text-semibold-m text-gray-black pr-1 pb-2 hover:text-green-400"
+        className="flex items-center gap-1 text-semibold-m text-gray-black pr-1  hover:text-green-400"
       >
         <IoMdAdd />
         <span>질문지 생성하기</span>

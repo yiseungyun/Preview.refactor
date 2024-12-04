@@ -8,7 +8,7 @@ const Tab = ({ currentTab, tabStatus, setCurrentTab }: TabProps) => {
   return (
     <>
       <button
-        className={`w-32 h-full  py-2 
+        className={`w-32 h-full  
       ${
         currentTab === tabStatus
           ? "text-green-600 text-semibold-r"
@@ -17,7 +17,7 @@ const Tab = ({ currentTab, tabStatus, setCurrentTab }: TabProps) => {
         onClick={() => setCurrentTab(tabStatus)}
       >
         <span
-          className={` 
+          className={`block py-2
         ${currentTab === tabStatus ? " " : "border-transparent"}`}
         >
           {tabStatus ? "진행 중인 세션" : "공개된 세션"}
