@@ -26,16 +26,14 @@ export default defineConfig({
         target: env.VITE_API_URL,
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ""), // 필요한 경우 경로 재작성
+        rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
   },
   build: {
     rollupOptions: {
-      // 외부 모듈 설정 (번들에 포함하지 않을 디펜던시들)
       external: ["react", "react-dom"],
       output: {
-        // 외부 모듈을 UMD 빌드에서 어떻게 참조할지 설정
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
