@@ -58,7 +58,8 @@
 
 ## 🧩 설계
 
-<img width="1064" alt="architecture" src="https://github.com/user-attachments/assets/67ebaee3-9fe1-4743-ac5e-30b25d609a44">
+![image](https://github.com/user-attachments/assets/1725bf0f-8ff3-4dfe-b11e-e5b0c053514f)
+
 
 ## 🛠 기술 스택
 
