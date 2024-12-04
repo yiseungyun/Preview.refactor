@@ -93,7 +93,7 @@ coturn은 WebRTC에서 NAT와 방화벽 문제를 해결하기 위해 사용되�
 > 🔗 [TypeORM에서 트랜잭션 범위 최소화하기](https://www.notion.so/TypeORM-queryRunner-6037e88d14c94cf29046114f5de21e81?pvs=21)
 > 
 
-### [FE] axios interceptor를 사용한 401에러 일관적 처리
+### [FE] 토큰 재발급부터 요청 재시도까지 한번에 axios interceptor
 
 액세스 토큰 만료시 401 에러를 `Axios Interceptor`로 일괄 처리하여 자동으로 토큰 재발급 및 요청 재시도 구현했습니다. 토큰 재발급 실패시 세션 만료로 간주하여 로그인 페이지로 리다이렉트하는 일관된 에러 처리 구축해보았습니다. 중앙화된 토큰 관리가 되니, 코드 중복 제거 및 유지보수성이 향상되었고, 개별 컴포넌트의 토큰 관리 부담이 줄었습니다.
 
