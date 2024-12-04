@@ -93,10 +93,10 @@ const CommonTools = ({
   return (
     <>
       <div className={"inline-flex gap-2"}>
-        <ToolTip text="링크 복사">
+        <ToolTip text="세션 링크 복사">
           <button
-            className="aspect-square px-3 bg-white text-gray-600 rounded-custom-m border-custom-s border-gray-200 hover:text-blue-500"
-            aria-label={"링크 복사"}
+            className="aspect-square px-3 bg-green-200 text-white rounded-custom-m border-custom-s  border-green-200 hover:bg-green-100"
+            aria-label={"세션 링크 복사"}
             onClick={shareSessionLink}
           >
             <MdLink className="w-6 h-6" />
