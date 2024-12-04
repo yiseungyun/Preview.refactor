@@ -9,7 +9,7 @@ import {
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Response } from "express";
-import { setCookieConfig } from "@/config/cookie.config";
+import { setCookieConfig } from "@/infra/cookie/cookie.config";
 import { JwtPayload, JwtTokenPair } from "./jwt/jwt.decorator";
 import { IJwtPayload, IJwtToken, IJwtTokenPair } from "./jwt/jwt.model";
 
@@ -40,7 +40,7 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response,
         @JwtTokenPair() pair: IJwtTokenPair
     ) {
-        if (!pair) throw new UnauthorizedException();
+        if (!pair) throw new InternalServerErrorException();
         return this.setCookie(res, pair.accessToken);
     }
 

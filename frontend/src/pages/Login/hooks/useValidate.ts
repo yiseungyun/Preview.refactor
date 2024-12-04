@@ -39,7 +39,9 @@ const useValidate = ({ setIsSignUp }: UseValidateProps) => {
         toast.success("로그인에 성공했습니다.");
         auth.logIn();
         auth.setNickname(nickname);
-        navigate("/");
+        const redirectUrl = localStorage.getItem("redirectUrl") || "/";
+        localStorage.removeItem("redirectUrl");
+        navigate(redirectUrl);
       }
     } catch (err) {
       if (isAxiosError(err)) {

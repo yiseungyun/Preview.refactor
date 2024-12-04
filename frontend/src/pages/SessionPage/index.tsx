@@ -12,11 +12,6 @@ const SessionPage = () => {
   const { sessionId } = useParams();
   const toast = useToast();
 
-  if (!sessionId) {
-    toast.error("유효하지 않은 세션 아이디입니다.");
-    return null;
-  }
-
   const { socket } = useSocket();
   const {
     nickname,
@@ -45,6 +40,10 @@ const SessionPage = () => {
     stopStudySession,
   } = useSession(sessionId!);
 
+  if (!sessionId) {
+    toast.error("유효하지 않은 세션 아이디입니다.");
+    return null;
+  }
   return (
     <section className="w-screen min-h-[500px] h-screen flex flex-col">
       {roomMetadata ? null : (

@@ -1,6 +1,6 @@
 import ParticipantButton from "./ParticpantButton";
 import SelectTitle from "@/components/common/Text/SelectTitle";
-import useSessionFormStore from "@/stores/useSessionFormStore";
+import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
 const MEMBER_COUNTS = [1, 2, 3, 4, 5] as const;
 
 const ParticipantSection = () => {

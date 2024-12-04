@@ -1,6 +1,6 @@
 import { GrDown, GrUp } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
-import useSessionFormStore from "@/stores/useSessionFormStore";
+import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
 import axios from "axios";
 import { useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";

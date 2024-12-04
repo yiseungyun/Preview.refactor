@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Socket } from "socket.io-client";
-import { PeerConnection } from "@hooks/type/session";
+import { PeerConnection } from "@/pages/SessionPage/types/session";
 import { SIGNAL_EMIT_EVENT } from "@/constants/WebSocket/SignalingEvent.ts";
 
 interface User {
@@ -92,10 +92,6 @@ const usePeerConnection = (socket: Socket) => {
 
       pc.ondatachannel = (event) => {
         const channel = event.channel;
-
-        channel.onopen = () => {
-          dataChannels.current[peerSocketId] = channel;
-        };
 
         channel.onmessage = (e) => {
           const data = JSON.parse(e.data);

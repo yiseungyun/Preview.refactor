@@ -1,4 +1,4 @@
-import useSessionFormStore from "@/stores/useSessionFormStore";
+import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
 
 interface Props {
   selectedValue: 1 | 2 | 3 | 4 | 5;
