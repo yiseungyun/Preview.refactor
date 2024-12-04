@@ -28,7 +28,7 @@ export class QuestionListService {
         private readonly categoryRepository: CategoryRepository
     ) {}
 
-    async getAllQuestionLists(query: PaginateQueryDto) {
+    async getAllQuestionLists(query: PaginateQueryDto, userId: number) {
         const allQuestionLists: GetAllQuestionListDto[] = [];
 
         let categoryId = null;
@@ -53,12 +53,17 @@ export class QuestionListService {
                 where: { questionListId: id },
             });
 
+            const isScrap = userId
+                ? await this.questionListRepository.isQuestionListScrapped(id, userId)
+                : false;
+
             const questionList: GetAllQuestionListDto = {
                 id,
                 title,
                 categoryNames,
                 usage,
                 questionCount,
+                isScrap,
             };
             allQuestionLists.push(questionList);
         }
@@ -113,9 +118,14 @@ export class QuestionListService {
         const questionList = await this.questionListRepository.findOne({
             where: { id: questionListId },
         });
+
         const { id, title, usage, isPublic } = questionList;
-        if (!isPublic && questionList.userId !== userId) {
-            throw new Error("This is private question list.");
+        const authorId = questionList.userId;
+
+        if (!isPublic) {
+            if (!userId || questionList.userId !== userId) {
+                throw new Error("This is a private question list.");
+            }
         }
 
         const contents = await this.questionRepository.getContentsByQuestionListId(questionListId);
@@ -123,8 +133,15 @@ export class QuestionListService {
         const categoryNames =
             await this.categoryRepository.findCategoryNamesByQuestionListId(questionListId);
 
-        const user = await this.userRepository.getUserByUserId(userId);
-        const username = user.username;
+        const author = await this.userRepository.getUserByUserId(authorId);
+        const username = author.username;
+
+        const isScrap = userId
+            ? await this.questionListRepository.isQuestionListScrapped(id, userId)
+            : false;
+
+        const scrapCount = await this.questionListRepository.getScrapCount(id);
+
         const questionListContents: QuestionListContentsDto = {
             id,
             title,
@@ -132,6 +149,8 @@ export class QuestionListService {
             categoryNames,
             usage,
             username,
+            isScrap,
+            scrapCount: parseInt(scrapCount.count),
         };
 
         return questionListContents;

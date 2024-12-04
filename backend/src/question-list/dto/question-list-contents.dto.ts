@@ -7,4 +7,6 @@ export interface QuestionListContentsDto {
     contents: Question[];
     usage: number;
     username: string;
+    isScrap: boolean;
+    scrapCount: number;
 }
