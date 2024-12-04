@@ -5,6 +5,9 @@ import SearchBar from "@/components/common/Input/SearchBar";
 import QuestionList from "./QuestionList";
 import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
 import Pagination from "@components/common/Pagination";
+import { useGetMyQuestionList } from "@hooks/api/useGetMyQuestionList.ts";
+import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
+import { useGetScrapQuestionList } from "@hooks/api/useGetScrapQuestionList.ts";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
@@ -22,14 +25,40 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
   const [myListPage, setMyListPage] = useState(1);
   const [savedListPage, setSavedListPage] = useState(1);
 
-  const totalPages = {
-    myList: 14,
-    savedList: 8,
-  };
+  const {
+    data: myQuestionList,
+    isLoading: myQuestionLoading,
+    error: myQuestionError,
+  } = useGetMyQuestionList({
+    page: tab === "myList" ? myListPage : savedListPage,
+    limit: 4,
+  });
+
+  const {
+    data: scrapQuestionList,
+    isLoading: scrapQuestionLoading,
+    error: scrapError,
+  } = useGetScrapQuestionList({
+    page: tab === "myList" ? myListPage : savedListPage,
+    limit: 4,
+  });
+
+  const questionList =
+    tab === "myList"
+      ? myQuestionList?.myQuestionLists
+      : scrapQuestionList?.questionList;
+  const isLoading = tab === "myList" ? myQuestionLoading : scrapQuestionLoading;
+  const error = tab === "myList" ? myQuestionError : scrapError;
+  const totalPage =
+    tab === "myList"
+      ? myQuestionList?.meta.totalPages || 1
+      : scrapQuestionList?.meta.totalPages || 1;
+
+  console.log(questionList);
 
   const getCurrentPageProps = () => ({
     currentPage: tab === "myList" ? myListPage : savedListPage,
-    totalPage: totalPages[tab],
+    totalPage: totalPage,
     onPageChange: (page: number) => {
       if (tab === "myList") {
         setMyListPage(page);
@@ -54,7 +83,7 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
   return (
     <dialog
       ref={dialogRef}
-      className="w-42.5 rounded-custom-l shadow-8 pb-5"
+      className="w-42.5 rounded-custom-l shadow-lg pb-5"
       onMouseDown={handleMouseDown}
     >
       <div className="flex p-8">
@@ -67,7 +96,11 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
       <div className="mx-8 mb-8">
         <SearchBar text="질문지를 검색해주세요" />
       </div>
-      <QuestionList page={getCurrentPageProps().currentPage} />
+      <QuestionList
+        questionList={questionList || []}
+        questionLoading={isLoading}
+      />
+      <ErrorBlock error={error} message={"질문지를 불러오는데 실패했습니다."} />
       <Pagination {...getCurrentPageProps()} />
     </dialog>
   );

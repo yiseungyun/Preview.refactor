@@ -1,15 +1,17 @@
 import { GrDown, GrUp } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
 import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
-import axios from "axios";
 import { useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
+import { api } from "@/api/config/axios.ts";
+import { FaUsers } from "react-icons/fa6";
 
 interface Question {
   id: number;
   content: string;
+  index: number;
+  questionListId: number;
 }
-
 interface QuestionsMap {
   [key: number]: Question[];
 }
@@ -19,8 +21,8 @@ interface QuestionList {
   title: string;
   usage: number;
   isStarred?: boolean;
-  questionCount: number;
-  categoryNames: string[];
+  questionCount?: number;
+  categoryNames?: string[];
 }
 
 const QuestionItem = ({ item }: { item: QuestionList }) => {
@@ -61,13 +63,11 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
   const getQuestionListDetail = async () => {
     try {
       setQuestionLoading(true);
-      const response = await axios.post(`/api/question-list/contents`, {
+      const response = await api.post(`/api/question-list/contents`, {
         questionListId: item.id,
       });
-      console.log(response);
       const questionsData: Question[] =
         response.data.data.questionListContents.contents;
-      console.log(questionsData);
       setQuestionMap({ ...questionMap, [item.id]: questionsData });
       setQuestions(questionsData);
       setQuestionLoading(false);
@@ -76,29 +76,34 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
     }
   };
 
+  console.log(item);
+
   return (
     <>
       <div className="flex flex-row items-center w-full h-20 border-t-custom-s px-8 py-4">
         <button
-          className="mr-6"
+          className="mr-6 hover:bg-gray-200 p-1 rounded-md"
           onClick={() => {
             openHandler(item.id);
           }}
         >
           {isListOpen ? (
-            <GrUp className="w-5 h-5 text-gray-600" />
+            <GrUp className="w-5 h-5 text-gray-600 " />
           ) : (
             <GrDown className="w-5 h-5 text-gray-600" />
           )}
         </button>
         <div>
-          <div className="flex gap-3">
-            <div>{item.categoryNames[0]}</div>
-            {/*<span className="text-medium-s text-gray-600">*/}
-            {/*  {item.user_name} • {item.count}개의 질문*/}
-            {/*</span>*/}
-            <span className="text-medium-s text-gray-600">
-              {"유저"} • {item.questionCount}개의 질문
+          <div className="flex items-center leading-5 gap-3  mb-1">
+            <div
+              className={
+                "text-medium-s bg-green-100 bg-opacity-30 rounded-md px-2 text-white"
+              }
+            >
+              {item.categoryNames ? item.categoryNames[0]! : "미분류"}
+            </div>
+            <span className="inline-flex items-center gap-1 leading-5 text-medium-s text-gray-600">
+              <FaUsers /> {item.usage}
             </span>
           </div>
           <p className="text-semibold-r text-gray-black">{item.title}</p>
