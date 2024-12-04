@@ -12,6 +12,7 @@ import { Socket } from "socket.io-client";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 import useAuth from "@hooks/useAuth";
 import useStudy from "./useStudy";
+import useBlockNavigate from "@/pages/SessionPage/hooks/useBlockNavigate.ts";
 
 export const useSession = (sessionId: string) => {
   const { socket } = useSocket();
@@ -88,6 +89,8 @@ export const useSession = (sessionId: string) => {
     setRoomMetadata,
     handleReaction,
   });
+
+  useBlockNavigate();
 
   const isValidUser = (
     socket: Socket | null,
