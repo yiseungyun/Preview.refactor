@@ -15,9 +15,9 @@ const useSocket = () => {
 
     return () => {
       connectAttempted.current = false;
-    }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket, connect]);
+  }, [socket]);
 
   return { socket };
 };
