@@ -4,6 +4,7 @@ import {
   MdMic,
   MdMicOff,
   MdThumbUp,
+  MdLink,
 } from "react-icons/md";
 import { IoChevronDownSharp } from "react-icons/io5";
 import Modal from "../common/Modal";
@@ -12,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import useToast from "@/hooks/useToast";
 import useModal from "@/hooks/useModal";
 import useSocket from "@/hooks/useSocket";
+import ToolTip from "@components/common/ToolTip";
 
 interface CommonToolsProps {
   handleVideoToggle: () => void;
@@ -60,6 +62,14 @@ const CommonTools = ({
     navigate("/sessions");
   };
 
+  const shareSessionLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success(
+      `현재 세션의 링크가 복사되었습니다.
+동료에게 공유해보세요!`
+    );
+  };
+
   const modalProps = isHost
     ? {
         title: "세션을 종료할까요?",
@@ -83,6 +93,15 @@ const CommonTools = ({
   return (
     <>
       <div className={"inline-flex gap-2"}>
+        <ToolTip text="링크 복사">
+          <button
+            className="aspect-square px-3 bg-white text-gray-600 rounded-custom-m border-custom-s border-gray-200 hover:text-blue-500"
+            aria-label={"링크 복사"}
+            onClick={shareSessionLink}
+          >
+            <MdLink className="w-6 h-6" />
+          </button>
+        </ToolTip>
         <div className="relative">
           <select
             className="w-16 bg-white text-white py-3 rounded-custom-m border-custom-s border-gray-200"
