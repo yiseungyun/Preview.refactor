@@ -13,6 +13,7 @@ import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 const QuestionDetailPage = () => {
   const navigate = useNavigate();
   const { questionId } = useParams();
+
   const {
     data: question,
     isLoading,
