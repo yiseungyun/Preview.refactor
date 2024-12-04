@@ -16,7 +16,7 @@ const VideoProfileOverlay = ({
     !videoLoading && (
       <div
         className={
-          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-300/20 text-white  p-2 rounded-xl text-3xl overflow-hidden flex justify-center items-center"
+          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-300/20 text-white  p-2 rounded-xl text-3xl overflow-hidden flex justify-center items-center z-10"
         }
       >
         {profileImage ? (
