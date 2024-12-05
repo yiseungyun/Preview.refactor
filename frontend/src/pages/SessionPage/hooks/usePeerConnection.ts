@@ -83,6 +83,25 @@ const usePeerConnection = (socket: Socket) => {
       mediaDataChannel.onopen = () => {
         console.log("Media data channel opened.");
         dataChannels.current[peerSocketId] = mediaDataChannel;
+
+        const audioTracks = stream.getAudioTracks();
+        const audioEnabled = audioTracks.length > 0 && audioTracks[0].enabled;
+
+        const videoTracks = stream.getVideoTracks();
+        const videoEnabled =
+          videoTracks.length > 0 && videoTracks[0].label !== "blackTrack";
+        mediaDataChannel.send(
+          JSON.stringify({
+            type: "audio",
+            status: audioEnabled,
+          })
+        );
+        mediaDataChannel.send(
+          JSON.stringify({
+            type: "video",
+            status: videoEnabled,
+          })
+        );
       };
 
       mediaDataChannel.onclose = () => {
@@ -178,12 +197,20 @@ const usePeerConnection = (socket: Socket) => {
             },
           ];
         });
+
+        const audioTracks = e.streams[0].getAudioTracks();
+        const audioEnabled = audioTracks.length > 0 && audioTracks[0].enabled;
+
+        const videoTracks = e.streams[0].getVideoTracks();
+        const videoEnabled =
+          videoTracks.length > 0 && videoTracks[0].label !== "blackTrack";
+
         setPeerMediaStatus((prev) => {
           return {
             ...prev,
             [peerSocketId]: {
-              audio: e.streams[0].getAudioTracks().length > 0,
-              video: e.streams[0].getVideoTracks().length > 0,
+              audio: audioEnabled,
+              video: videoEnabled,
             },
           };
         });
