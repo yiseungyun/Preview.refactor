@@ -12,8 +12,8 @@ import { Socket } from "socket.io-client";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 import useAuth from "@hooks/useAuth";
 import useStudy from "./useStudy";
-import useBlockNavigate from "@/pages/SessionPage/hooks/useBlockNavigate.ts";
 import useModal from "@hooks/useModal.ts";
+import useBlockNavigate from "@/pages/SessionPage/hooks/useBlockNavigate.ts";
 
 export const useSession = (sessionId: string) => {
   const { socket } = useSocket();
@@ -56,6 +56,8 @@ export const useSession = (sessionId: string) => {
     videoLoading,
   } = useMediaDevices(dataChannels);
 
+  const { setShouldBlock } = useBlockNavigate();
+
   useEffect(() => {
     if (username) {
       setNickname(username);
@@ -96,9 +98,8 @@ export const useSession = (sessionId: string) => {
     setIsHost,
     setRoomMetadata,
     handleReaction,
+    setShouldBlock,
   });
-
-  useBlockNavigate();
 
   const isValidUser = (
     socket: Socket | null,
@@ -182,5 +183,6 @@ export const useSession = (sessionId: string) => {
     mediaPreviewModal,
     ready,
     setReady,
+    setShouldBlock,
   };
 };

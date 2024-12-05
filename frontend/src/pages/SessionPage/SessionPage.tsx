@@ -44,6 +44,7 @@ const SessionPage = () => {
     mediaPreviewModal,
     ready,
     setReady,
+    setShouldBlock,
   } = useSession(sessionId!);
 
   if (!sessionId) {
@@ -114,6 +115,7 @@ const SessionPage = () => {
             stopStudySession={stopStudySession}
             currentIndex={roomMetadata?.currentIndex ?? -1}
             maxQuestionLength={roomMetadata?.questionListContents.length ?? 0}
+            setShouldBlock={setShouldBlock}
           />
         </div>
         <SidebarContainer>
