@@ -10,7 +10,11 @@ interface SessionListProps {
   sessionList: Session[];
 }
 
-const SessionList = ({ inProgress, listLoading, sessionList }: SessionListProps) => {
+const SessionList = ({
+  inProgress,
+  listLoading,
+  sessionList,
+}: SessionListProps) => {
   const toast = useToast();
   const renderSessionList = () => {
     return sessionList.map((session) => {
@@ -38,10 +42,12 @@ const SessionList = ({ inProgress, listLoading, sessionList }: SessionListProps)
     <div>
       {listLoading && <LoadingIndicator loadingState={listLoading} />}
       {!listLoading && sessionList.length <= 0 ? (
-        <div key={-1} className={"flex justify-center items-center"}>
+        <div className={"flex justify-center items-center"}>
           <NotFound
+            key={-1}
             message={
-              inProgress ? "현재 진행 중인 세션이 없어요.\n세션을 생성해서 면접 연습을 시작하세요!"
+              inProgress
+                ? "현재 진행 중인 세션이 없어요.\n세션을 생성해서 면접 연습을 시작하세요!"
                 : "공개된 세션이 없어요.\n세션을 생성해서 면접 연습을 시작하세요!"
             }
             className={""}
