@@ -5,16 +5,8 @@ import { useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { api } from "@/api/config/axios.ts";
 import { FaUsers } from "react-icons/fa6";
-
-interface Question {
-  id: number;
-  content: string;
-  index: number;
-  questionListId: number;
-}
-interface QuestionsMap {
-  [key: number]: Question[];
-}
+import { useGetQuestionContent } from "@hooks/api/useGetQuestionContent.ts";
+import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
 
 interface QuestionList {
   id: number;
@@ -34,12 +26,15 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
     setSelectedOpenId,
   } = useSessionFormStore();
 
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [questionLoading, setQuestionLoading] = useState(true);
   const isSelected = questionId === item.id;
   const isListOpen = selectedOpenId === item.id;
+  const {
+    data,
+    isLoading: questionLoading,
+    error,
+  } = useGetQuestionContent(item.id);
 
-  const [questionMap, setQuestionMap] = useState<QuestionsMap>({});
+  const questions = data?.contents || [];
 
   const checkHandler = (id: number, title: string) => {
     setQuestionId(id);
@@ -51,28 +46,6 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
       setSelectedOpenId(-1);
     } else {
       setSelectedOpenId(id);
-    }
-
-    if (questionMap[id]) {
-      setQuestions(questionMap[id]);
-    } else {
-      getQuestionListDetail();
-    }
-  };
-
-  const getQuestionListDetail = async () => {
-    try {
-      setQuestionLoading(true);
-      const response = await api.post(`/api/question-list/contents`, {
-        questionListId: item.id,
-      });
-      const questionsData: Question[] =
-        response.data.data.questionListContents.contents;
-      setQuestionMap({ ...questionMap, [item.id]: questionsData });
-      setQuestions(questionsData);
-      setQuestionLoading(false);
-    } catch (e) {
-      console.error("질문지 리스트 디테일 불러오기 실패", e);
     }
   };
 
