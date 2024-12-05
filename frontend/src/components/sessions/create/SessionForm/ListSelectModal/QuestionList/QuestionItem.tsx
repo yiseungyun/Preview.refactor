@@ -38,6 +38,7 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
 
   const checkHandler = (id: number, title: string) => {
     setQuestionId(id);
+    setSelectedOpenId(id);
     setQuestionTitle(title);
   };
 
@@ -64,34 +65,38 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
             <GrDown className="w-5 h-5 text-gray-600" />
           )}
         </button>
-        <div>
-          <div className="flex items-center leading-5 gap-3  mb-1">
-            <div
-              className={
-                "text-medium-s bg-green-100 bg-opacity-30 rounded-md px-2 text-white"
-              }
-            >
-              {item.categoryNames ? item.categoryNames[0]! : "미분류"}
+        <div
+          className={"flex flex-grow justify-between cursor-pointer"}
+          onClick={() => {
+            checkHandler(item.id, item.title);
+          }}
+        >
+          <div>
+            <div className="flex items-center leading-5 gap-3  mb-1">
+              <div
+                className={
+                  "text-medium-s bg-green-100 bg-opacity-30 rounded-md px-2 text-white"
+                }
+              >
+                {item.categoryNames ? item.categoryNames[0]! : "미분류"}
+              </div>
+              <span className="inline-flex items-center gap-1 leading-5 text-medium-s text-gray-600">
+                <FaUsers /> {item.usage}
+              </span>
             </div>
-            <span className="inline-flex items-center gap-1 leading-5 text-medium-s text-gray-600">
-              <FaUsers /> {item.usage}
-            </span>
+            <p className="text-semibold-r text-gray-black">{item.title}</p>
           </div>
-          <p className="text-semibold-r text-gray-black">{item.title}</p>
-        </div>
-        <button
-          className={`flex items-center ml-auto w-10 h-10 rounded-custom-m
+          <button
+            className={`flex items-center ml-auto w-10 h-10 rounded-custom-m
             ${
               isSelected
                 ? "bg-green-200 text-green-50"
                 : "bg-gray-300 text-gray-50"
             }`}
-          onClick={() => {
-            checkHandler(item.id, item.title);
-          }}
-        >
-          <ImCheckmark className="m-auto w-5 h-5" />
-        </button>
+          >
+            <ImCheckmark className="m-auto w-5 h-5" />
+          </button>
+        </div>
       </div>
       {isListOpen ? (
         <div className="bg-gray-50 px-20 py-5 transition-all">
