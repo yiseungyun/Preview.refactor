@@ -23,14 +23,14 @@ interface ModalProps {
 const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
   const { tab, setTab, setSelectedOpenId } = useSessionFormStore();
   const [page, setPage] = useState(1);
-
+  const MAX_ITEM_PER_PAGE = 4;
   const {
     data: myQuestionList,
     isLoading: myQuestionLoading,
     error: myQuestionError,
   } = useGetMyQuestionList({
     page: page,
-    limit: 4,
+    limit: MAX_ITEM_PER_PAGE,
   });
 
   const {
@@ -39,7 +39,7 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
     error: scrapError,
   } = useGetScrapQuestionList({
     page: page,
-    limit: 4,
+    limit: MAX_ITEM_PER_PAGE,
   });
 
   const questionList =
