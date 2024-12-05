@@ -26,7 +26,11 @@ import { RoomRepository } from "@/room/room.repository";
 
 import { gatewayConfig } from "@/infra/infra.config";
 
-import { FullRoomException, InProgressException } from "@/room/exceptions/join-room-exceptions";
+import {
+    FullRoomException,
+    InProgressException,
+    RoomNotFoundException,
+} from "@/room/exceptions/join-room-exceptions";
 import { createAdapter } from "@socket.io/redis-adapter";
 
 @WebSocketGateway(gatewayConfig)
@@ -82,6 +86,7 @@ export class RoomGateway implements OnGatewayDisconnect, OnGatewayInit, OnGatewa
         } catch (e) {
             if (e instanceof InProgressException) client.emit(EMIT_EVENT.IN_PROGRESS, {});
             else if (e instanceof FullRoomException) client.emit(EMIT_EVENT.FULL, {});
+            else if (e instanceof RoomNotFoundException) client.emit(EMIT_EVENT.NOT_FOUND, {});
             else throw e;
         }
     }

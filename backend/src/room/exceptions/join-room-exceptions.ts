@@ -5,3 +5,7 @@ export class FullRoomException extends Error {
 export class InProgressException extends Error {
     name: "InProgressException";
 }
+
+export class RoomNotFoundException extends Error {
+    name: "RoomNotFoundException";
+}

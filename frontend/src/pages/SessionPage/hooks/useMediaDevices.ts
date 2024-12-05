@@ -74,7 +74,7 @@ const useMediaDevices = (dataChannels: DataChannels) => {
     };
   }, []);
 
-  const getMedia = async () => {
+  const getMedia = async (videoOn = true) => {
     try {
       if (streamRef.current) {
         // 이미 스트림이 있으면 종료
@@ -91,15 +91,19 @@ const useMediaDevices = (dataChannels: DataChannels) => {
 
       try {
         videoStream = await navigator.mediaDevices.getUserMedia({
-          video: selectedVideoDeviceId
-            ? { deviceId: selectedVideoDeviceId }
-            : true,
+          video: videoOn
+            ? selectedVideoDeviceId
+              ? { deviceId: selectedVideoDeviceId }
+              : true
+            : false,
           audio: false,
         });
       } catch (videoError) {
         console.warn("비디오 스트림을 가져오는데 실패했습니다:", videoError);
         setIsVideoOn(false);
       }
+
+      console.log(isVideoOn);
 
       try {
         audioStream = await navigator.mediaDevices.getUserMedia({
@@ -288,12 +292,14 @@ const useMediaDevices = (dataChannels: DataChannels) => {
     stream,
     isVideoOn,
     isMicOn,
+    setIsVideoOn,
     videoLoading,
     handleMicToggle,
     handleVideoToggle,
     setSelectedAudioDeviceId,
     setSelectedVideoDeviceId,
     getMedia,
+    getMediaStream,
   };
 };
 

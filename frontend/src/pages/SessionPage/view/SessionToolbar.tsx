@@ -23,6 +23,7 @@ interface Props {
   stopStudySession: () => void;
   currentIndex: number;
   maxQuestionLength: number;
+  setShouldBlock: (shouldBlock: boolean) => void;
 }
 
 const SessionToolbar = ({
@@ -44,6 +45,7 @@ const SessionToolbar = ({
   stopStudySession,
   currentIndex,
   maxQuestionLength,
+  setShouldBlock,
 }: Props) => {
   return (
     <div
@@ -64,6 +66,7 @@ const SessionToolbar = ({
         videoLoading={videoLoading}
         isHost={isHost}
         roomId={roomId}
+        setShouldBlock={setShouldBlock}
       />
       <HostOnlyTools
         isHost={isHost}

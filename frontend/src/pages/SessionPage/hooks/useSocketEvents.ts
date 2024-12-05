@@ -41,6 +41,7 @@ interface UseSocketEventsProps {
   setIsHost: Dispatch<SetStateAction<boolean>>;
   setRoomMetadata: Dispatch<SetStateAction<RoomMetadata | null>>;
   handleReaction: (data: { socketId: string; reactionType: string }) => void;
+  setShouldBlock: (shouldBlock: boolean) => void;
 }
 
 export const useSocketEvents = ({
@@ -54,10 +55,10 @@ export const useSocketEvents = ({
   setIsHost,
   setRoomMetadata,
   handleReaction,
+  setShouldBlock,
 }: UseSocketEventsProps) => {
   const navigate = useNavigate();
   const toast = useToast();
-
   const reactionTimeouts = useRef<{
     [key: string]: ReturnType<typeof setTimeout>;
   }>({});
@@ -70,10 +71,11 @@ export const useSocketEvents = ({
     [toast, closePeerConnection]
   );
 
-  const handleRoomFinished = useCallback(() => {
+  const handleRoomFinished = () => {
     toast.error("방장이 세션을 종료했습니다.");
+    setShouldBlock(false);
     navigate("/sessions");
-  }, [toast, navigate]);
+  };
 
   const handleHostChange = useCallback(
     (data: ResponseMasterChanged) => {
@@ -202,11 +204,13 @@ export const useSocketEvents = ({
 
     const handleRoomFull = () => {
       toast.error("해당 세션은 이미 유저가 가득 찼습니다.");
+      setShouldBlock(false);
       navigate("/sessions");
     };
 
     const handleRoomProgress = () => {
       toast.error("해당 세션은 현재 진행 중입니다.");
+      setShouldBlock(false);
       navigate("/sessions");
     };
 
@@ -229,6 +233,13 @@ export const useSocketEvents = ({
       }
     };
 
+    const handleRoomNotFound = async () => {
+      toast.error("해당 세션은 존재하지 않습니다.");
+      setShouldBlock(false);
+
+      navigate("/sessions");
+    };
+
     socket.on(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
     socket.on(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
     socket.on(SIGNAL_LISTEN_EVENT.CANDIDATE, handleGetCandidate);
@@ -238,6 +249,7 @@ export const useSocketEvents = ({
     socket.on(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
     socket.on(SESSION_LISTEN_EVENT.REACTION, handleReaction);
     socket.on(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
+    socket.on(SESSION_LISTEN_EVENT.NOT_FOUND, handleRoomNotFound);
     socket.on(STUDY_LISTEN_EVENT.INDEX, handleChangeIndex);
     socket.on(STUDY_LISTEN_EVENT.CURRENT, handleChangeIndex);
     socket.on(STUDY_LISTEN_EVENT.NEXT, handleChangeIndex);
@@ -255,6 +267,7 @@ export const useSocketEvents = ({
       socket.off(SESSION_LISTEN_EVENT.CHANGE_HOST, handleHostChange);
       socket.off(SESSION_LISTEN_EVENT.REACTION, handleReaction);
       socket.off(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
+      socket.off(SESSION_LISTEN_EVENT.NOT_FOUND, handleRoomNotFound);
       socket.off(STUDY_LISTEN_EVENT.INDEX, handleChangeIndex);
       socket.off(STUDY_LISTEN_EVENT.CURRENT, handleChangeIndex);
       socket.off(STUDY_LISTEN_EVENT.NEXT, handleChangeIndex);

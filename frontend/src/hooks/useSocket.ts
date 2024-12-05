@@ -4,7 +4,7 @@ import useSocketStore from "../stores/useSocketStore";
 const socketURL = import.meta.env.VITE_SIGNALING_SERVER;
 
 const useSocket = () => {
-  const { socket, connect } = useSocketStore();
+  const { socket, connect, disconnect } = useSocketStore();
   const connectAttempted = useRef(false);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const useSocket = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
-  return { socket };
+  return { socket, disconnect };
 };
 
 export default useSocket;

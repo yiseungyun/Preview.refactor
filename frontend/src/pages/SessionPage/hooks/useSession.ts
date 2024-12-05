@@ -12,6 +12,7 @@ import { Socket } from "socket.io-client";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 import useAuth from "@hooks/useAuth";
 import useStudy from "./useStudy";
+import useModal from "@hooks/useModal.ts";
 import useBlockNavigate from "@/pages/SessionPage/hooks/useBlockNavigate.ts";
 
 export const useSession = (sessionId: string) => {
@@ -31,6 +32,11 @@ export const useSession = (sessionId: string) => {
   const [nickname, setNickname] = useState<string>("");
   const [roomMetadata, setRoomMetadata] = useState<RoomMetadata | null>(null);
   const [isHost, setIsHost] = useState<boolean>(false);
+  const mediaPreviewModal = useModal();
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    mediaPreviewModal.openModal();
+  }, []);
 
   const {
     userVideoDevices,
@@ -40,13 +46,17 @@ export const useSession = (sessionId: string) => {
     stream,
     isVideoOn,
     isMicOn,
+    setIsVideoOn,
     handleMicToggle,
     handleVideoToggle,
     setSelectedAudioDeviceId,
     setSelectedVideoDeviceId,
     getMedia,
+    getMediaStream,
     videoLoading,
   } = useMediaDevices(dataChannels);
+
+  const { setShouldBlock } = useBlockNavigate();
 
   useEffect(() => {
     if (username) {
@@ -88,9 +98,8 @@ export const useSession = (sessionId: string) => {
     setIsHost,
     setRoomMetadata,
     handleReaction,
+    setShouldBlock,
   });
-
-  useBlockNavigate();
 
   const isValidUser = (
     socket: Socket | null,
@@ -113,13 +122,13 @@ export const useSession = (sessionId: string) => {
       return;
     }
 
-    const mediaStream = await getMedia();
+    const mediaStream = await getMedia(isVideoOn);
     if (!mediaStream) {
       toast.error(
         "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
       );
       return;
-    } else if (mediaStream.getVideoTracks().length === 0) {
+    } else if (isVideoOn && mediaStream.getVideoTracks().length === 0) {
       toast.error(
         "비디오 장치를 찾을 수 없습니다. 비디오 장치 없이 세션에 참가합니다."
       );
@@ -153,6 +162,7 @@ export const useSession = (sessionId: string) => {
     userAudioDevices,
     isVideoOn,
     isMicOn,
+    setIsVideoOn,
     stream,
     roomMetadata,
     isHost,
@@ -168,5 +178,11 @@ export const useSession = (sessionId: string) => {
     requestChangeIndex,
     startStudySession,
     stopStudySession,
+    getMedia,
+    getMediaStream,
+    mediaPreviewModal,
+    ready,
+    setReady,
+    setShouldBlock,
   };
 };

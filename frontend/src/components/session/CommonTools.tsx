@@ -28,6 +28,7 @@ interface CommonToolsProps {
   videoLoading: boolean;
   isHost: boolean;
   roomId: string;
+  setShouldBlock: (shouldBlock: boolean) => void;
 }
 
 const CommonTools = ({
@@ -43,6 +44,7 @@ const CommonTools = ({
   videoLoading,
   isHost,
   roomId,
+  setShouldBlock,
 }: CommonToolsProps) => {
   const navigate = useNavigate();
   const toast = useToast();
@@ -52,6 +54,7 @@ const CommonTools = ({
   const existHandler = () => {
     socket?.emit(SESSION_EMIT_EVENT.LEAVE, { roomId });
     toast.success("메인 화면으로 이동합니다.");
+    setShouldBlock(false);
     navigate("/sessions");
   };
 
@@ -59,6 +62,7 @@ const CommonTools = ({
     socket?.off(SESSION_EMIT_EVENT.FINISH);
     socket?.emit(SESSION_EMIT_EVENT.FINISH, { roomId });
     toast.success("메인 화면으로 이동합니다.");
+    setShouldBlock(false);
     navigate("/sessions");
   };
 
