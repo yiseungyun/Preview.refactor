@@ -10,7 +10,11 @@ import { Room, RoomStatus } from "@/room/domain/room";
 import { EMIT_EVENT } from "@/room/room.events";
 import { createHash } from "node:crypto";
 import { QuestionRepository } from "@/question-list/repository/question.respository";
-import { FullRoomException, InProgressException } from "@/room/exceptions/join-room-exceptions";
+import {
+    FullRoomException,
+    InProgressException,
+    RoomNotFoundException,
+} from "@/room/exceptions/join-room-exceptions";
 import { InfraService } from "@/infra/infra.service";
 import { QuestionListRepository } from "@/question-list/repository/question-list.repository";
 
@@ -74,7 +78,7 @@ export class RoomService {
         const room = Room.fromEntity(await this.roomRepository.getRoom(roomId));
 
         if (!socket) throw new Error("Invalid Socket");
-        if (!room.entity) throw new Error("RoomEntity Not found");
+        if (!room.entity) throw new RoomNotFoundException();
 
         await this.infraService.joinRoom(socket, room.entity.id);
 
