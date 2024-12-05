@@ -33,7 +33,7 @@ const SessionListPage = () => {
             <SearchBar text="세션을 검색하세요" />
           </div>
         </div>
-        <div className="relative flex justify-between mt-4 pt-4  mb-12 ">
+        <div className="relative flex justify-between mt-4 pt-4 mb-12 ">
           <TabContainer currentTab={currentTab} setCurrentTab={setCurrentTab} />
           <Link
             to="/sessions/create"
