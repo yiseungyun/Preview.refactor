@@ -1,9 +1,7 @@
 import { GrDown, GrUp } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
 import useSessionFormStore from "@/pages/CreateSessionPage/stores/useSessionFormStore";
-import { useState } from "react";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
-import { api } from "@/api/config/axios.ts";
 import { FaUsers } from "react-icons/fa6";
 import { useGetQuestionContent } from "@hooks/api/useGetQuestionContent.ts";
 import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
@@ -112,6 +110,10 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
           })}
         </div>
       ) : null}
+      <ErrorBlock
+        error={error}
+        message={"질문 목록을 불러오는데 실패했습니다."}
+      />
     </>
   );
 };
