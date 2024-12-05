@@ -84,7 +84,7 @@ export default {
       spacing: {
         0.1: "0.1rem",
         0.375: "0.375rem",
-        16: "16rem",
+        "sidebar": "16rem",
         17.5: "17.5rem",
         27.5: "27.5rem",
         42.5: "42.5rem",

@@ -36,7 +36,7 @@ const Sidebar = () => {
   return (
     <nav
       className={
-        "min-w-16 w-16 h-screen flex flex-col border-r-custom-s gap-1.5 justify-between overflow-y-hidden bg-white transition-colors dark:bg-gray-black dark:border-r-gray-400"
+        "min-w-sidebar w-sidebar h-screen flex flex-col border-r-custom-s gap-1.5 justify-between overflow-y-hidden bg-white transition-colors dark:bg-gray-black dark:border-r-gray-400"
       }
     >
       <div>
