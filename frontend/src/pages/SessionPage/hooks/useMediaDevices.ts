@@ -74,7 +74,7 @@ const useMediaDevices = (dataChannels: DataChannels) => {
     };
   }, []);
 
-  const getMedia = async (videoOn = true) => {
+  const getMedia = async () => {
     try {
       if (streamRef.current) {
         // 이미 스트림이 있으면 종료
@@ -90,14 +90,14 @@ const useMediaDevices = (dataChannels: DataChannels) => {
       let audioStream = null;
 
       try {
-        videoStream = await navigator.mediaDevices.getUserMedia({
-          video: videoOn
-            ? selectedVideoDeviceId
-              ? { deviceId: selectedVideoDeviceId }
-              : true
-            : false,
-          audio: false,
-        });
+        videoStream = isVideoOn
+          ? await navigator.mediaDevices.getUserMedia({
+              video: selectedVideoDeviceId
+                ? { deviceId: selectedVideoDeviceId }
+                : true,
+              audio: false,
+            })
+          : null;
       } catch (videoError) {
         console.warn("비디오 스트림을 가져오는데 실패했습니다:", videoError);
         setIsVideoOn(false);
@@ -120,7 +120,7 @@ const useMediaDevices = (dataChannels: DataChannels) => {
       // 스트림 병합 또는 개별 스트림 사용
       let combinedStream = null;
       const tracks = [
-        ...(videoStream?.getVideoTracks() || []),
+        ...(videoStream?.getVideoTracks() || [createDummyStream()]),
         ...(audioStream?.getAudioTracks() || []),
       ];
 
@@ -139,7 +139,6 @@ const useMediaDevices = (dataChannels: DataChannels) => {
         "미디어 스트림을 가져오는 도중 문제가 발생했습니다.",
         error
       );
-      // 에러 처리 로직 (예: 사용자에게 알림)
     } finally {
       setVideoLoading(false);
     }
@@ -182,20 +181,10 @@ const useMediaDevices = (dataChannels: DataChannels) => {
       if (isVideoOn) {
         for (const videoTrack of stream.getVideoTracks()) {
           // 비디오 끄기
-          if (!videoTrack.enabled) {
-            setIsVideoOn((prev) => !prev);
-            return;
-          }
+
           videoTrack.stop();
 
-          const blackCanvas = document.createElement("canvas");
-          blackCanvas.width = 640;
-          blackCanvas.height = 480;
-          const ctx = blackCanvas.getContext("2d");
-          ctx!.fillRect(0, 0, blackCanvas.width, blackCanvas.height);
-
-          const blackStream = blackCanvas.captureStream();
-          const blackTrack = blackStream.getVideoTracks()[0];
+          const blackTrack = createDummyStream();
           Object.values(peerConnections || {}).forEach((pc) => {
             const sender = pc
               .getSenders()
@@ -219,18 +208,22 @@ const useMediaDevices = (dataChannels: DataChannels) => {
         if (videoStream) {
           if (streamRef.current) {
             const oldVideoTracks = streamRef.current.getVideoTracks();
-            oldVideoTracks.forEach((track) =>
-              streamRef.current?.removeTrack(track)
-            );
+            oldVideoTracks.forEach((track) => {
+              track.stop();
+              streamRef.current?.removeTrack(track);
+            });
 
             streamRef.current.addTrack(newVideoTrack);
             setStream(streamRef.current);
 
+            console.log("피어업데이트", peerConnections);
             Object.values(peerConnections || {}).forEach((pc) => {
               const sender = pc
                 .getSenders()
-                .find((s) => s.track?.kind === "video");
+                .find((s) => s.track!.kind === "video");
               if (sender) {
+                console.log("비디오 켜기 업데이트");
+
                 sender.replaceTrack(newVideoTrack);
               }
             });
@@ -282,6 +275,19 @@ const useMediaDevices = (dataChannels: DataChannels) => {
     } catch (error) {
       console.error("오디오 스트림을 토글 할 수 없었습니다.", error);
     }
+  };
+
+  const createDummyStream = () => {
+    const blackCanvas = document.createElement("canvas");
+    blackCanvas.width = 640;
+    blackCanvas.height = 480;
+    const ctx = blackCanvas.getContext("2d");
+    ctx!.fillRect(0, 0, blackCanvas.width, blackCanvas.height);
+
+    const blackStream = blackCanvas.captureStream();
+    const blackTrack = blackStream.getVideoTracks()[0];
+
+    return blackTrack;
   };
 
   return {

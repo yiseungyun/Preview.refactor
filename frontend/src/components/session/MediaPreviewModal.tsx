@@ -38,9 +38,7 @@ const MediaPreviewModal = ({
   const getMediaPreview = useCallback(async () => {
     const mediaStream = await getMediaStream("video");
     if (!mediaStream) {
-      toast.error(
-        "비디오 장치를 찾을 수 없습니다. 비디오 장치 없이 세션에 참가합니다."
-      );
+      toast.error("비디오 장치를 찾을 수 없습니다.");
     }
     setPreview(mediaStream);
   }, []);
@@ -100,7 +98,7 @@ const MediaPreviewModal = ({
               className={"w-6 h-6"}
               type={"checkbox"}
               title={"dd"}
-              onClick={() => setIsVideoOn(!isVideoOn)}
+              onChange={() => setIsVideoOn(!isVideoOn)}
             />
             <span>내 비디오 끄고 참가하기</span>
           </label>
