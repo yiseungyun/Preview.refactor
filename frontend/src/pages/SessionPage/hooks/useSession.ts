@@ -40,11 +40,13 @@ export const useSession = (sessionId: string) => {
     stream,
     isVideoOn,
     isMicOn,
+    setIsVideoOn,
     handleMicToggle,
     handleVideoToggle,
     setSelectedAudioDeviceId,
     setSelectedVideoDeviceId,
     getMedia,
+    getMediaStream,
     videoLoading,
   } = useMediaDevices(dataChannels);
 
@@ -113,13 +115,13 @@ export const useSession = (sessionId: string) => {
       return;
     }
 
-    const mediaStream = await getMedia();
+    const mediaStream = await getMedia(isVideoOn);
     if (!mediaStream) {
       toast.error(
         "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
       );
       return;
-    } else if (mediaStream.getVideoTracks().length === 0) {
+    } else if (isVideoOn && mediaStream.getVideoTracks().length === 0) {
       toast.error(
         "비디오 장치를 찾을 수 없습니다. 비디오 장치 없이 세션에 참가합니다."
       );
@@ -153,6 +155,7 @@ export const useSession = (sessionId: string) => {
     userAudioDevices,
     isVideoOn,
     isMicOn,
+    setIsVideoOn,
     stream,
     roomMetadata,
     isHost,
@@ -168,5 +171,7 @@ export const useSession = (sessionId: string) => {
     requestChangeIndex,
     startStudySession,
     stopStudySession,
+    getMedia,
+    getMediaStream,
   };
 };

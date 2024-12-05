@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SessionSidebar from "@/pages/SessionPage/view/SessionSidebar";
 import SessionToolbar from "@/pages/SessionPage/view/SessionToolbar";
 import useSocket from "@hooks/useSocket";
@@ -7,11 +7,14 @@ import useToast from "@hooks/useToast";
 import SidebarContainer from "@/pages/SessionPage/view/SidebarContainer";
 import VideoLayout from "./view/VideoLayout";
 import { useSession } from "./hooks/useSession";
+import useModal from "@hooks/useModal.ts";
+import MediaPreviewModal from "@components/session/MediaPreviewModal.tsx";
+import { useEffect, useState } from "react";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
   const toast = useToast();
-
+  const navigate = useNavigate();
   const { socket } = useSocket();
   const {
     nickname,
@@ -22,6 +25,7 @@ const SessionPage = () => {
     userVideoDevices,
     userAudioDevices,
     isVideoOn,
+    setIsVideoOn,
     isMicOn,
     stream,
     roomMetadata,
@@ -38,14 +42,39 @@ const SessionPage = () => {
     requestChangeIndex,
     startStudySession,
     stopStudySession,
+    getMediaStream,
   } = useSession(sessionId!);
+
+  const modal = useModal();
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    modal.openModal();
+  }, []);
 
   if (!sessionId) {
     toast.error("유효하지 않은 세션 아이디입니다.");
     return null;
   }
+
   return (
     <section className="w-screen min-h-[500px] h-screen flex flex-col">
+      <MediaPreviewModal
+        modal={modal}
+        isVideoOn={isVideoOn}
+        setReady={setReady}
+        setIsVideoOn={setIsVideoOn}
+        nickname={nickname}
+        setNickname={setNickname}
+        getMediaStream={getMediaStream}
+        onConfirm={() => {
+          joinRoom();
+          modal.closeModal();
+        }}
+        onReject={() => {
+          modal.closeModal();
+          navigate("/");
+        }}
+      />
       {roomMetadata ? null : (
         <div className="w-full h-10 flex gap-2 bg-white shrink-0">
           <input
@@ -74,17 +103,21 @@ const SessionPage = () => {
             roomMetadata={roomMetadata}
             participantsCount={peers.length + 1}
           />
-          <VideoLayout
-            peers={peers}
-            nickname={nickname}
-            isMicOn={isMicOn}
-            isVideoOn={isVideoOn}
-            stream={stream}
-            reaction={reaction}
-            videoLoading={videoLoading}
-            peerMediaStatus={peerMediaStatus}
-            peerConnections={peerConnections}
-          />
+          {!ready ? (
+            <div className={"h-full"}></div>
+          ) : (
+            <VideoLayout
+              peers={peers}
+              nickname={nickname}
+              isMicOn={isMicOn}
+              isVideoOn={isVideoOn}
+              stream={stream}
+              reaction={reaction}
+              videoLoading={videoLoading}
+              peerMediaStatus={peerMediaStatus}
+              peerConnections={peerConnections}
+            />
+          )}
           <SessionToolbar
             requestChangeIndex={requestChangeIndex}
             handleVideoToggle={handleVideoToggle}

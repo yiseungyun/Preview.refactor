@@ -16,7 +16,7 @@ interface VideoContainerProps {
   isLocal: boolean;
   isSpeaking: boolean;
   reaction: string;
-  stream: MediaStream;
+  stream: MediaStream | undefined;
   videoLoading?: boolean;
   videoCount: number;
 }
@@ -94,7 +94,7 @@ const VideoContainer = ({
       className={`relative ${getVideoLayoutClass(videoCount)} ${speakingEffect} rounded-custom-l aspect-[4/3]`}
     >
       <div className="absolute inset-0 bg-gray-black rounded-custom-l overflow-hidden z-10">
-        <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
+        <DisplayMediaStream mediaStream={stream!} isLocal={isLocal} />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
           <p
             className={`bg-grayscale-500 ${localNickName} bg-opacity-70 text-white px-2 py-0.5 rounded`}
