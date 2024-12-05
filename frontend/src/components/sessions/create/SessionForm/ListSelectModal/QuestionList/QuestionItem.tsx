@@ -48,6 +48,20 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
     }
   };
 
+  const renderDropdownIcon = () => {
+    return isListOpen ? (
+      <GrUp className="w-5 h-5 text-gray-600 " />
+    ) : (
+      <GrDown className="w-5 h-5 text-gray-600" />
+    );
+  };
+
+  // TODO: 북마크한 질문지 데이터에 카테고리 데이터, 사용 횟수 데이터 백엔드에게 요청
+
+  const selectedStyle = isSelected
+    ? "bg-green-200 text-green-50"
+    : "bg-gray-300 text-gray-50";
+
   return (
     <>
       <div className="flex flex-row items-center w-full h-20 border-t-custom-s px-8 py-4">
@@ -57,11 +71,7 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
             openHandler(item.id);
           }}
         >
-          {isListOpen ? (
-            <GrUp className="w-5 h-5 text-gray-600 " />
-          ) : (
-            <GrDown className="w-5 h-5 text-gray-600" />
-          )}
+          {renderDropdownIcon()}
         </button>
         <div
           className={"flex flex-grow justify-between cursor-pointer"}
@@ -86,17 +96,14 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
           </div>
           <button
             className={`flex items-center ml-auto w-10 h-10 rounded-custom-m
-            ${
-              isSelected
-                ? "bg-green-200 text-green-50"
-                : "bg-gray-300 text-gray-50"
-            }`}
+            ${selectedStyle}`}
           >
             <ImCheckmark className="m-auto w-5 h-5" />
           </button>
         </div>
       </div>
-      {isListOpen ? (
+
+      {isListOpen && (
         <div className="bg-gray-50 px-20 py-5 transition-all">
           <div className={"h-fit"}>
             <LoadingIndicator loadingState={questionLoading} />
@@ -109,7 +116,8 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
             );
           })}
         </div>
-      ) : null}
+      )}
+
       <ErrorBlock
         error={error}
         message={"질문 목록을 불러오는데 실패했습니다."}
