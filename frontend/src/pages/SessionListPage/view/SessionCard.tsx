@@ -22,7 +22,7 @@ const SessionCard = ({
     <Link
       onClick={onEnter}
       to={`/session/${id}`}
-      className={`relative h-52 bg-white rounded-custom-m px-5 py-6 transition-all duration-200 ease-in-out hover:-translate-y-1.5 shadow-8
+      className={`relative h-52 bg-white rounded-custom-m px-5 py-6 transition-all duration-200 ease-in-out hover:-translate-y-1.5 border-custom-s border-gray-200
         ${inProgress === false ? "hover:shadow-16 hover:ring-1 hover:ring-green-200" : ""}`}
     >
       <div className="flex flex-col justify-between">
