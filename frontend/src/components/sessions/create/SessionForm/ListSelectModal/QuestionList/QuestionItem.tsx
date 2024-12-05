@@ -76,8 +76,6 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
     }
   };
 
-  console.log(item);
-
   return (
     <>
       <div className="flex flex-row items-center w-full h-20 border-t-custom-s px-8 py-4">
