@@ -20,7 +20,7 @@ const Tabs = ({ tab, setTab }: TabsProps) => {
 
   return (
     <div
-      className={"relative border-b mt-4 pt-4 py-2 flex gap-4 justify-between "}
+      className={"relative border-b mt-6 pt-4 py-2 flex gap-4 justify-between "}
     >
       <div className={"flex gap-4  "}>
         {tabs.map(
@@ -29,9 +29,8 @@ const Tabs = ({ tab, setTab }: TabsProps) => {
               <button
                 key={tab.value}
                 onClick={() => setTab(tab.value as Tab)}
-                className={`w-28 h-full ${
-                  selectedTab === index ? selectedClassName : ""
-                }`}
+                className={`w-28 h-full ${selectedTab === index ? selectedClassName : ""
+                  }`}
               >
                 {tab.name}
               </button>

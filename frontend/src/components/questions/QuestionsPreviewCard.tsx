@@ -21,18 +21,17 @@ const QuestionCard = ({
   return (
     <Link
       to={`/questions/${id}`}
-      className="bg-white backdrop-blur-sm border border-gray-200 rounded-xl p-4 hover:bg-gray-200/70 transition-all cursor-pointer group hover:border-green-200 dark:bg-gray-900/80 dark:border-gray-700 dark:hover:bg-gray-600/70 hover:shadow-lg"
+      className="bg-white backdrop-blur-sm border border-gray-200 rounded-xl p-4 hover:bg-gray-200/70 cursor-pointer group duration-200 ease-in-out hover:-translate-y-1.5 hover:border-green-200 dark:bg-gray-900/80 dark:border-gray-700 dark:hover:bg-gray-600/70 hover:shadow-16"
     >
       <div className="flex justify-between items-start mb-3 pt-1">
         <span className="px-3 py-0.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-600/20 dark:text-emerald-400 text-sm rounded-full">
           {category}
         </span>
         <FaStar
-          className={`w-5 h-5 ${
-            isStarred
-              ? "text-yellow-400 fill-yellow-400"
-              : "text-gray-500 group-hover:text-gray-400"
-          }`}
+          className={`w-5 h-5 ${isStarred
+            ? "text-yellow-400 fill-yellow-400"
+            : "text-gray-500 group-hover:text-gray-400"
+            }`}
         />
       </div>
       <h3 className="text-lg font-semibold text-black dark:text-white pl-1 mb-4 line-clamp-2">

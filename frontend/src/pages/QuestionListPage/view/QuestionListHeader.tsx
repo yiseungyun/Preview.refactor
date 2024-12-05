@@ -22,11 +22,13 @@ const QuestionListHeader = ({
         질문지 리스트
       </h1>
       <div className="h-11 flex gap-2 items-stretch justify-between">
-        <CategorySelect
-          value={selectedCategory}
-          setValue={setSelectedCategory}
-          options={options}
-        />
+        <div className="w-36">
+          <CategorySelect
+            value={selectedCategory}
+            setValue={setSelectedCategory}
+            options={options}
+          />
+        </div>
         <SearchBar text={"질문지 검색하기"} />
       </div>
       <Tabs tab={tab} setTab={setTab} />
