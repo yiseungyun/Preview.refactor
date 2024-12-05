@@ -134,6 +134,7 @@ const MediaPreviewModal = ({
               onConfirm();
               setReady(true);
               modal.closeModal();
+              preview?.getTracks().forEach((track) => track.stop());
             }}
             className={
               "rounded-custom-m px-16 py-4 bg-green-500 text-white hover:bg-green-600"
