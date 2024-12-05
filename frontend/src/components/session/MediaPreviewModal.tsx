@@ -47,7 +47,25 @@ const MediaPreviewModal = ({
 
   useEffect(() => {
     getMediaPreview();
+
+    return () => {
+      preview?.getTracks().forEach((track) => track.stop());
+    };
   }, []);
+
+  useEffect(() => {
+    if (modal.dialogRef.current) {
+      const dialog = modal.dialogRef.current;
+      const handleEscape = (event: globalThis.KeyboardEvent) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          onReject();
+          setReady(false);
+        }
+      };
+      dialog.addEventListener("keydown", (event) => handleEscape(event));
+    }
+  }, [modal.dialogRef.current]);
 
   return (
     modal.isOpen && (
