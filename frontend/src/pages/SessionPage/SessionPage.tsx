@@ -70,24 +70,6 @@ const SessionPage = () => {
           navigate("/");
         }}
       />
-      {roomMetadata ? null : (
-        <div className="w-full h-10 flex gap-2 bg-white shrink-0">
-          <input
-            type="text"
-            placeholder="닉네임"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            className="border p-2 mr-2"
-          />
-          <button
-            onClick={joinRoom}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Join Room
-          </button>
-        </div>
-      )}
-
       <div className={"w-full flex flex-1 min-h-0"}>
         <div
           className={
