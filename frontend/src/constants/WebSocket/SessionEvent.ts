@@ -14,4 +14,5 @@ export const SESSION_LISTEN_EVENT = {
   FINISH: "server:room__finish",
   CHANGE_HOST: "server:room__change_host",
   REACTION: "server:room__reaction",
+  NOT_FOUND: "server:room__not_found",
 } as const;

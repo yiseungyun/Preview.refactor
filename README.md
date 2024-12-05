@@ -58,7 +58,8 @@
 
 ## 🧩 설계
 
-<img width="1064" alt="architecture" src="https://github.com/user-attachments/assets/67ebaee3-9fe1-4743-ac5e-30b25d609a44">
+![image](https://github.com/user-attachments/assets/1725bf0f-8ff3-4dfe-b11e-e5b0c053514f)
+
 
 ## 🛠 기술 스택
 
@@ -74,6 +75,8 @@
 <br>   
 
 ## 🥊 기술적 경험
+
+저희들의 휘발되기엔 아까운 우리 팀의 개발 경험입니다! 더 자세한 경험들은 [이곳](https://alpine-tiglon-9f0.notion.site/87b7f1ce19564eda8127eca29d567d0f?v=f2df7d634605464d876ccf43c9197db4&pvs=4) 에서 확인하실 수 있습니다.
 
 ### [BE] Coturn 설치 및 config 파일 수정
 
