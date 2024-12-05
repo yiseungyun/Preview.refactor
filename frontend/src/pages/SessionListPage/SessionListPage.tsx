@@ -25,11 +25,13 @@ const SessionListPage = () => {
         <div className="">
           <h1 className={"text-bold-l mb-6"}>스터디 채널</h1>
           <div className={"h-11 flex gap-2 w-full"}>
-            <CategorySelect
-              value={"FE"}
-              setValue={setSelectedCategory}
-              options={options}
-            />
+            <div className="w-36">
+              <CategorySelect
+                value={"FE"}
+                setValue={setSelectedCategory}
+                options={options}
+              />
+            </div>
             <SearchBar text="세션을 검색하세요" />
           </div>
         </div>
