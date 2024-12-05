@@ -7,9 +7,7 @@ import useToast from "@hooks/useToast";
 import SidebarContainer from "@/pages/SessionPage/view/SidebarContainer";
 import VideoLayout from "./view/VideoLayout";
 import { useSession } from "./hooks/useSession";
-import useModal from "@hooks/useModal.ts";
 import MediaPreviewModal from "@components/session/MediaPreviewModal.tsx";
-import { useEffect, useState } from "react";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
@@ -43,13 +41,10 @@ const SessionPage = () => {
     startStudySession,
     stopStudySession,
     getMediaStream,
+    mediaPreviewModal,
+    ready,
+    setReady,
   } = useSession(sessionId!);
-
-  const modal = useModal();
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    modal.openModal();
-  }, []);
 
   if (!sessionId) {
     toast.error("유효하지 않은 세션 아이디입니다.");
@@ -59,7 +54,7 @@ const SessionPage = () => {
   return (
     <section className="w-screen min-h-[500px] h-screen flex flex-col">
       <MediaPreviewModal
-        modal={modal}
+        modal={mediaPreviewModal}
         isVideoOn={isVideoOn}
         setReady={setReady}
         setIsVideoOn={setIsVideoOn}
@@ -68,10 +63,10 @@ const SessionPage = () => {
         getMediaStream={getMediaStream}
         onConfirm={() => {
           joinRoom();
-          modal.closeModal();
+          mediaPreviewModal.closeModal();
         }}
         onReject={() => {
-          modal.closeModal();
+          mediaPreviewModal.closeModal();
           navigate("/");
         }}
       />

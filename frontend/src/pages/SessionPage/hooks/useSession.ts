@@ -13,6 +13,7 @@ import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 import useAuth from "@hooks/useAuth";
 import useStudy from "./useStudy";
 import useBlockNavigate from "@/pages/SessionPage/hooks/useBlockNavigate.ts";
+import useModal from "@hooks/useModal.ts";
 
 export const useSession = (sessionId: string) => {
   const { socket } = useSocket();
@@ -31,6 +32,11 @@ export const useSession = (sessionId: string) => {
   const [nickname, setNickname] = useState<string>("");
   const [roomMetadata, setRoomMetadata] = useState<RoomMetadata | null>(null);
   const [isHost, setIsHost] = useState<boolean>(false);
+  const mediaPreviewModal = useModal();
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    mediaPreviewModal.openModal();
+  }, []);
 
   const {
     userVideoDevices,
@@ -173,5 +179,8 @@ export const useSession = (sessionId: string) => {
     stopStudySession,
     getMedia,
     getMediaStream,
+    mediaPreviewModal,
+    ready,
+    setReady,
   };
 };
