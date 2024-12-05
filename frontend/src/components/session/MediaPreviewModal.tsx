@@ -118,7 +118,11 @@ const MediaPreviewModal = ({
           className={"text-semibold-r mt-4 flex w-full justify-center gap-4"}
         >
           <button
-            onClick={onReject}
+            onClick={() => {
+              onReject();
+              setReady(false);
+              preview?.getTracks().forEach((track) => track.stop());
+            }}
             className={
               "rounded-custom-m px-16 py-4 bg-gray-50 hover:bg-gray-100"
             }
