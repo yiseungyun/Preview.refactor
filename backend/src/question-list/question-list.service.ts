@@ -17,6 +17,7 @@ import { DataSource, In, SelectQueryBuilder } from "typeorm";
 import { PaginateMetaDto } from "@/question-list/dto/paginate-meta.dto";
 import { PaginateDto } from "@/question-list/dto/paginate.dto";
 import { QuestionListDto } from "@/question-list/dto/question-list.dto";
+import { Transactional } from "typeorm-transactional";
 
 @Injectable()
 export class QuestionListService {
@@ -71,6 +72,7 @@ export class QuestionListService {
     }
 
     // 질문 생성 메서드
+    @Transactional()
     async createQuestionList(createQuestionListDto: CreateQuestionListDto) {
         const { title, contents, categoryNames, isPublic, userId } = createQuestionListDto;
 
@@ -81,37 +83,24 @@ export class QuestionListService {
             throw new Error("Some category names were not found.");
         }
 
-        const queryRunner = this.dataSource.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
+        const questionList = new QuestionList();
+        questionList.title = title;
+        questionList.categories = categories;
+        questionList.isPublic = isPublic;
+        questionList.userId = userId;
 
-        try {
-            const questionList = new QuestionList();
-            questionList.title = title;
-            questionList.categories = categories;
-            questionList.isPublic = isPublic;
-            questionList.userId = userId;
+        const createdQuestionList = await this.questionListRepository.save(questionList);
 
-            const createdQuestionList = await queryRunner.manager.save(questionList);
+        const questions = contents.map((content, index) => {
+            const question = new Question();
+            question.content = content;
+            question.index = index;
+            question.questionList = createdQuestionList;
 
-            const questions = contents.map((content, index) => {
-                const question = new Question();
-                question.content = content;
-                question.index = index;
-                question.questionList = createdQuestionList;
-
-                return question;
-            });
-            const createdQuestions = await queryRunner.manager.save(questions);
-
-            await queryRunner.commitTransaction();
-            return { createdQuestionList, createdQuestions };
-        } catch (error) {
-            await queryRunner.rollbackTransaction();
-            throw new Error(error.message);
-        } finally {
-            await queryRunner.release();
-        }
+            return question;
+        });
+        const createdQuestions = await this.questionRepository.save(questions);
+        return { createdQuestionList, createdQuestions };
     }
 
     async getQuestionListContents(questionListId: number, userId: number) {
@@ -272,7 +261,8 @@ export class QuestionListService {
     }
 
     async deleteQuestion(deleteQuestionDto: DeleteQuestionDto) {
-        const { id, questionListId, userId } = deleteQuestionDto;
+        const { id, userId } = deleteQuestionDto;
+        const questionListId = await this.questionRepository.getQuestionListIdByQuestionId(id);
 
         const question = await this.questionRepository.findOne({
             where: { id },

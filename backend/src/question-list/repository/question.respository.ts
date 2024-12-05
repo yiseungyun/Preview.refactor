@@ -21,4 +21,13 @@ export class QuestionRepository extends Repository<Question> {
             .orderBy("question.index", "ASC")
             .getMany();
     }
+
+    async getQuestionListIdByQuestionId(questionId: number) {
+        const result = await this.createQueryBuilder("question")
+            .select("question.questionListId")
+            .where("question.id = :questionId", { questionId })
+            .getOne();
+
+        return result ? result.questionListId : null;
+    }
 }
