@@ -1,8 +1,10 @@
 import { useCallback, useEffect } from "react";
 import { BlockerFunction, useBlocker } from "react-router-dom";
+import useSocket from "@hooks/useSocket.ts";
 
 const useBlockNavigate = () => {
   const shouldBlock = true;
+  const { disconnect } = useSocket();
 
   const blocker = useBlocker(
     useCallback<BlockerFunction>(
@@ -23,6 +25,7 @@ const useBlockNavigate = () => {
 
       if (confirmed) {
         blocker.proceed();
+        disconnect();
       } else {
         blocker.reset();
       }
