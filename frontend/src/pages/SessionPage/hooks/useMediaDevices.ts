@@ -286,7 +286,10 @@ const useMediaDevices = (dataChannels: DataChannels) => {
 
     const blackStream = blackCanvas.captureStream();
     const blackTrack = blackStream.getVideoTracks()[0];
-
+    Object.defineProperty(blackTrack, "label", {
+      value: "blackTrack",
+      writable: false,
+    });
     return blackTrack;
   };
 
