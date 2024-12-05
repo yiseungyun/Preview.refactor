@@ -22,15 +22,14 @@ interface ModalProps {
 
 const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
   const { tab, setTab, setSelectedOpenId } = useSessionFormStore();
-  const [myListPage, setMyListPage] = useState(1);
-  const [savedListPage, setSavedListPage] = useState(1);
+  const [page, setPage] = useState(1);
 
   const {
     data: myQuestionList,
     isLoading: myQuestionLoading,
     error: myQuestionError,
   } = useGetMyQuestionList({
-    page: tab === "myList" ? myListPage : savedListPage,
+    page: page,
     limit: 4,
   });
 
@@ -39,7 +38,7 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
     isLoading: scrapQuestionLoading,
     error: scrapError,
   } = useGetScrapQuestionList({
-    page: tab === "myList" ? myListPage : savedListPage,
+    page: page,
     limit: 4,
   });
 
@@ -54,17 +53,11 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
       ? myQuestionList?.meta.totalPages || 1
       : scrapQuestionList?.meta.totalPages || 1;
 
-  console.log(questionList);
-
   const getCurrentPageProps = () => ({
-    currentPage: tab === "myList" ? myListPage : savedListPage,
+    currentPage: page,
     totalPage: totalPage,
     onPageChange: (page: number) => {
-      if (tab === "myList") {
-        setMyListPage(page);
-      } else {
-        setSavedListPage(page);
-      }
+      setPage(page);
     },
   });
 
