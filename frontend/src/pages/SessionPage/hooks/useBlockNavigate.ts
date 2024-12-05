@@ -30,6 +30,12 @@ const useBlockNavigate = () => {
   }, [blocker]);
 
   useEffect(() => {
+    return () => {
+      if (blocker) setShouldBlock(false);
+    };
+  }, []);
+
+  useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       return "";

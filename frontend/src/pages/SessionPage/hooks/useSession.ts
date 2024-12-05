@@ -122,7 +122,7 @@ export const useSession = (sessionId: string) => {
       return;
     }
 
-    const mediaStream = await getMedia(isVideoOn);
+    const mediaStream = await getMedia();
     if (!mediaStream) {
       toast.error(
         "미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요."
