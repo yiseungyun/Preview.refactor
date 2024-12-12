@@ -8,6 +8,8 @@ import Pagination from "@components/common/Pagination";
 import { useGetMyQuestionList } from "@hooks/api/useGetMyQuestionList.ts";
 import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
 import { useGetScrapQuestionList } from "@hooks/api/useGetScrapQuestionList.ts";
+import CategorySelect from "@components/common/Select/CategorySelect.tsx";
+import { options } from "@/constants/CategoryData.ts";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
@@ -23,6 +25,8 @@ interface ModalProps {
 const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
   const { tab, setTab, setSelectedOpenId } = useSessionFormStore();
   const [page, setPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
   const MAX_ITEM_PER_PAGE = 4;
   const {
     data: myQuestionList,
@@ -86,7 +90,12 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
           <IoMdClose className="text-gray-black w-7 h-7" />
         </button>
       </div>
-      <div className="mx-8 mb-8">
+      <div className="h-11 flex gap-2 items-stretch justify-between mx-8 mb-8">
+        <CategorySelect
+          value={selectedCategory}
+          setValue={setSelectedCategory}
+          options={options}
+        />
         <SearchBar text="질문지를 검색해주세요" />
       </div>
       <QuestionList
