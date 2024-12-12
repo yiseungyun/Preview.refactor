@@ -77,6 +77,7 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
     }
   };
 
+  // TODO: 카테고리 선택 시 해당 카테고리의 질문지 리스트를 불러오는 로직 추가
   return (
     <dialog
       ref={dialogRef}
