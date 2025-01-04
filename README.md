@@ -29,7 +29,7 @@
 
 ### 스터디룸 생성 
 
-<img width="100%" src="./docs/세션_생성.gif">
+![세션_생성](https://github.com/user-attachments/assets/28cc675a-c052-4f9f-bcf6-22898381b933)
 
 - 만들어둔 질문지/저장된 질문지 선택
 - 스터디룸 이름 설정 및 인원 수 선택
@@ -38,7 +38,7 @@
 
 ### 화상회의
 
-<img width="100%" src="./docs/비디오_오디오.gif">
+https://github.com/user-attachments/assets/cd7965c1-3f89-4345-b882-43309c767546
 
 - 1~5명까지 정해진 인원 수에 따라 화상회의
 - 비디오/오디오 제어 가능
@@ -47,7 +47,8 @@
 
 ### 면접 스터디
 
-<img width="100%" src="./docs/스터디_시작.gif" />
+https://github.com/user-attachments/assets/4b10f315-7d5a-43b1-9467-9907d46a33ab
+
 
 - 선택한 질문지를 통해 면접 스터디
 - 질문을 하나씩 넘겨가며 돌아가며 답변할 수 있는 환경 제공
@@ -55,7 +56,7 @@
 
 ### 스터디 채널
 
-<img width="100%" src="./docs/세션_입장.gif">
+https://github.com/user-attachments/assets/97b7f9fe-2886-477a-aeb0-fc5429675c74
 
 - 스터디 채널 페이지에서 다른 사람이 만들어둔 스터디룸에 입장
 - 입장 전 카메라 미리보기와 닉네임 설정을 통해 원하는대로 설정 후 입장
@@ -70,7 +71,7 @@
 
 ## 🧩 설계
 
-<img width="100%" src="./docs/시스템_아키텍처.png" alt="시스템 아키텍처"/>
+<img width="100%" alt="시스템_아키텍처" src="https://github.com/user-attachments/assets/fcf80234-c3fe-4bdd-ae09-9c2214a5bfa6" />
 
 <br/>
 
