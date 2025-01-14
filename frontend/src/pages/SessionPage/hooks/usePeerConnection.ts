@@ -9,11 +9,12 @@ interface User {
   isHost?: boolean;
 }
 
+const RETRY_CONNECTION = 1000;
+
 // 피어 간 연결 수립 역할을 하는 커스텀 훅
 const usePeerConnection = (socket: Socket) => {
   const [peers, setPeers] = useState<PeerConnection[]>([]); // 연결 관리
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
-
   const dataChannels = useRef<{ [peerId: string]: RTCDataChannel }>({});
   const [peerMediaStatus, setPeerMediaStatus] = useState<{
     [peerId: string]: {
@@ -88,8 +89,7 @@ const usePeerConnection = (socket: Socket) => {
         const audioEnabled = audioTracks.length > 0 && audioTracks[0].enabled;
 
         const videoTracks = stream.getVideoTracks();
-        const videoEnabled =
-          videoTracks.length > 0 && videoTracks[0].label !== "blackTrack";
+        const videoEnabled = videoTracks.length > 0 && videoTracks[0].label !== "blackTrack";
         mediaDataChannel.send(
           JSON.stringify({
             type: "audio",
@@ -165,10 +165,44 @@ const usePeerConnection = (socket: Socket) => {
       // 새로운 연결/연결 시도/연결 완료/연결 끊김/연결 실패/연결 종료
       pc.onconnectionstatechange = () => {
         console.log("연결 상태 변경:", pc.connectionState);
+        switch (pc.connectionState) {
+          case "disconnected":
+          case "failed":
+            closePeerConnection(peerSocketId);
+            setTimeout(() => {
+              createPeerConnection(
+                peerSocketId,
+                peerNickname,
+                stream,
+                isOffer,
+                localUser
+              );
+            }, RETRY_CONNECTION)
+            break;
+          default:
+            break;
+        }
       };
       // ICE 연결 상태 모니터링
       pc.oniceconnectionstatechange = () => {
         console.log("ICE 연결 상태 변경:", pc.iceConnectionState);
+        switch (pc.iceConnectionState) {
+          case "disconnected":
+          case "failed":
+            closePeerConnection(peerSocketId);
+            setTimeout(() => {
+              createPeerConnection(
+                peerSocketId,
+                peerNickname,
+                stream,
+                isOffer,
+                localUser
+              );
+            }, RETRY_CONNECTION)
+            break;
+          default:
+            break;
+        }
       };
 
       // 원격 스트림 처리(상대가 addTrack을 호출할 때)
