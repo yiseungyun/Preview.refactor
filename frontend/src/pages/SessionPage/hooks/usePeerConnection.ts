@@ -168,6 +168,7 @@ const usePeerConnection = (socket: Socket) => {
         switch (pc.connectionState) {
           case "disconnected":
           case "failed":
+            setPeers(prevPeers => prevPeers.filter(p => p.peerId !== peerSocketId))
             closePeerConnection(peerSocketId);
             setTimeout(() => {
               createPeerConnection(
@@ -178,6 +179,7 @@ const usePeerConnection = (socket: Socket) => {
                 localUser
               );
             }, RETRY_CONNECTION)
+            console.log("재연결 시도");
             break;
           default:
             break;
@@ -189,6 +191,7 @@ const usePeerConnection = (socket: Socket) => {
         switch (pc.iceConnectionState) {
           case "disconnected":
           case "failed":
+            setPeers(prevPeers => prevPeers.filter(p => p.peerId !== peerSocketId))
             closePeerConnection(peerSocketId);
             setTimeout(() => {
               createPeerConnection(
@@ -199,6 +202,7 @@ const usePeerConnection = (socket: Socket) => {
                 localUser
               );
             }, RETRY_CONNECTION)
+            console.log("재연결 시도");
             break;
           default:
             break;
