@@ -61,7 +61,7 @@ export const useAudioDetector = ({
       const average =
         dataArrayRef.current.reduce((a, b) => a + b) /
         dataArrayRef.current.length;
-      const db = 20 * Math.log10(average / 255);
+      const db = average === 0 ? -Infinity : 20 * Math.log10(average / 255);
 
       setSpeakingStates((prev) => ({
         ...prev,
@@ -71,15 +71,10 @@ export const useAudioDetector = ({
 
     intervalRefs.current.local = setInterval(checkLocalAudio, TIMER_INTERVAL);
 
-    if (connectionCount === 0) return;
-
     // 각 피어에 대해 오디오 레벨 모니터링
-    Object.entries(peerConnections.current).forEach(([peerId, connection]) => {
-      if (intervalRefs.current[peerId]) {
+    if (connectionCount > 0) {
+      Object.entries(peerConnections.current).forEach(([peerId, connection]) => {
         clearInterval(intervalRefs.current[peerId]);
-      }
-
-      if (!intervalRefs.current[peerId]) {
         intervalRefs.current[peerId] = setInterval(async () => {
           try {
             const stats = await connection.getStats();
@@ -99,10 +94,12 @@ export const useAudioDetector = ({
             }));
           } catch (error) {
             console.error(error);
+            clearInterval(intervalRefs.current[peerId]);
+            delete intervalRefs.current[peerId];
           }
         }, TIMER_INTERVAL);
-      }
-    });
+      });
+    }
 
     return () => {
       Object.values(intervalRefs.current).forEach((interval) => {
