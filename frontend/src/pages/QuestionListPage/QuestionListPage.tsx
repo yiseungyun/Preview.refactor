@@ -25,7 +25,7 @@ const QuestionListPage = () => {
     tab,
   });
   if (questionLoading) {
-    return <div className="text-center mt-12 text-medium-l text-gray-500">데이터를 불러오고 있습니다.</div>;
+    return <LoadingIndicator loadingState={questionLoading} />;
   }
 
   if (error) {
@@ -48,7 +48,6 @@ const QuestionListPage = () => {
           setTab={setTab}
         />
         <div className={"flex flex-col justify-between flex-grow"}>
-          <LoadingIndicator loadingState={questionLoading} />
           <QuestionsList
             questionList={questionList}
             tab={tab}
@@ -60,10 +59,6 @@ const QuestionListPage = () => {
               onPageChange={setPage}
             />
           </div>
-          <ErrorBlock
-            error={error}
-            message={"질문지 목록을 불러오는데 실패했습니다!"}
-          />
         </div>
       </div>
     </SidebarPageLayout>
