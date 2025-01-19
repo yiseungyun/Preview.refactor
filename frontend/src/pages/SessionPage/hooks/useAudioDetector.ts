@@ -94,8 +94,6 @@ export const useAudioDetector = ({
             }));
           } catch (error) {
             console.error(error);
-            clearInterval(intervalRefs.current[peerId]);
-            delete intervalRefs.current[peerId];
           }
         }, TIMER_INTERVAL);
       });

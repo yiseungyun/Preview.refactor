@@ -161,51 +161,34 @@ const usePeerConnection = (socket: Socket) => {
         };
       };
 
+      const handleConnectionFailure = () => {
+        setPeers(prevPeers => prevPeers.filter(p => p.peerId !== peerSocketId))
+        closePeerConnection(peerSocketId);
+        setTimeout(() => {
+          createPeerConnection(
+            peerSocketId,
+            peerNickname,
+            stream,
+            isOffer,
+            localUser
+          );
+        }, RETRY_CONNECTION)
+        console.log("재연결 시도");
+      }
+
       // 연결 상태 모니터링
       // 새로운 연결/연결 시도/연결 완료/연결 끊김/연결 실패/연결 종료
       pc.onconnectionstatechange = () => {
         console.log("연결 상태 변경:", pc.connectionState);
-        switch (pc.connectionState) {
-          case "disconnected":
-          case "failed":
-            setPeers(prevPeers => prevPeers.filter(p => p.peerId !== peerSocketId))
-            closePeerConnection(peerSocketId);
-            setTimeout(() => {
-              createPeerConnection(
-                peerSocketId,
-                peerNickname,
-                stream,
-                isOffer,
-                localUser
-              );
-            }, RETRY_CONNECTION)
-            console.log("재연결 시도");
-            break;
-          default:
-            break;
+        if (pc.connectionState === "disconnected" || pc.connectionState === "failed") {
+          handleConnectionFailure();
         }
       };
       // ICE 연결 상태 모니터링
       pc.oniceconnectionstatechange = () => {
         console.log("ICE 연결 상태 변경:", pc.iceConnectionState);
-        switch (pc.iceConnectionState) {
-          case "disconnected":
-          case "failed":
-            setPeers(prevPeers => prevPeers.filter(p => p.peerId !== peerSocketId))
-            closePeerConnection(peerSocketId);
-            setTimeout(() => {
-              createPeerConnection(
-                peerSocketId,
-                peerNickname,
-                stream,
-                isOffer,
-                localUser
-              );
-            }, RETRY_CONNECTION)
-            console.log("재연결 시도");
-            break;
-          default:
-            break;
+        if (pc.iceConnectionState === "disconnected" || pc.iceConnectionState === "failed") {
+          handleConnectionFailure();
         }
       };
 
@@ -214,27 +197,23 @@ const usePeerConnection = (socket: Socket) => {
       // 상대방 스트림 수신 -> 기존 연결인지 확인 -> 스트림 정보 업데이트/추가
       pc.ontrack = (e) => {
         console.log("Received remote track:", e.streams[0]);
-        console.log("변경된 peers", peers);
-        setPeers((prev) => {
-          // 이미 존재하는 피어인지 확인
+        setPeers((prev) => { // 이미 존재하는 피어인지 확인
           const exists = prev.find((p) => p.peerId === peerSocketId);
-          if (exists) {
-            // 기존 피어의 스트림 업데이트
+          if (exists) { // 기존 피어의 스트림 업데이트
             return prev.map((p) =>
               p.peerId === peerSocketId ? { ...p, stream: e.streams[0] } : p
             );
           }
           // 새로운 피어 추가
-          return [
-            ...prev,
-            {
-              peerId: peerSocketId,
-              peerNickname,
-              isHost: localUser.isHost,
-              stream: e.streams[0],
-            },
-          ];
+          return [...prev, {
+            peerId: peerSocketId,
+            peerNickname,
+            isHost: localUser.isHost,
+            stream: e.streams[0],
+          }];
         });
+
+        console.log("변경된 peers", peers);
 
         const audioTracks = e.streams[0].getAudioTracks();
         const audioEnabled = audioTracks.length > 0 && audioTracks[0].enabled;
@@ -291,6 +270,8 @@ const usePeerConnection = (socket: Socket) => {
       peerConnections.current[peerSocketId].close();
       // 연결 객체 제거
       delete peerConnections.current[peerSocketId];
+      // 데이터 채널 정리
+      delete dataChannels.current[peerSocketId];
       // UI에서 사용자 제거
       setPeers((prev) => prev.filter((peer) => peer.peerId !== peerSocketId));
     }
