@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { convertAmplitudeToDecibels, extractAudioLevelFromStats } from "./utils/covertToDecibels.ts";
 
 interface UseAudioDetectorProps {
   localStream: MediaStream | null;
@@ -41,7 +42,9 @@ export const useAudioDetector = ({
   useEffect(() => {
     if (!localStream) return;
 
-    audioContextRef.current = new AudioContext();
+    if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
+      audioContextRef.current = new AudioContext();
+    }
     analyserRef.current = audioContextRef.current.createAnalyser();
 
     analyserRef.current.fftSize = 2048;
@@ -61,7 +64,7 @@ export const useAudioDetector = ({
       const average =
         dataArrayRef.current.reduce((a, b) => a + b) /
         dataArrayRef.current.length;
-      const db = average === 0 ? -Infinity : 20 * Math.log10(average / 255);
+      const db = convertAmplitudeToDecibels(average);
 
       setSpeakingStates((prev) => ({
         ...prev,
@@ -78,15 +81,7 @@ export const useAudioDetector = ({
         intervalRefs.current[peerId] = setInterval(async () => {
           try {
             const stats = await connection.getStats();
-            let audioLevel = -Infinity;
-
-            stats.forEach((report) => {
-              if (report.type === "inbound-rtp" && report.kind === "audio") {
-                audioLevel = report.audioLevel
-                  ? 20 * Math.log10(report.audioLevel) // dB로 변환
-                  : -Infinity;
-              }
-            });
+            const audioLevel = extractAudioLevelFromStats(stats);
 
             setSpeakingStates((prev) => ({
               ...prev,
