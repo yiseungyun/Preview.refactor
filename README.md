@@ -90,79 +90,19 @@ https://github.com/user-attachments/assets/97b7f9fe-2886-477a-aeb0-fc5429675c74
 
 ## 🥊 기술적 경험
 
-저희들의 휘발되기엔 아까운 우리 팀의 개발 경험입니다! 더 자세한 경험들은 [이곳](https://alpine-tiglon-9f0.notion.site/87b7f1ce19564eda8127eca29d567d0f?v=f2df7d634605464d876ccf43c9197db4&pvs=4) 에서 확인하실 수 있습니다.
+저희들의 휘발되기엔 아까운 우리 팀의 개발 경험입니다! 더 자세한 경험들은 [이곳](https://alpine-tiglon-9f0.notion.site/87b7f1ce19564eda8127eca29d567d0f?v=f2df7d634605464d876ccf43c9197db4&pvs=4)에서 확인하실 수 있습니다.
 
-### [BE] Coturn 설치 및 config 파일 수정
+### Backend
+- [[송수민] Coturn 설치 및 config 파일 수정](https://www.notion.so/coturn-config-299c854b69dd4bd9ac5823830ef3bc8d?pvs=21)
+- [[송수민] 트랜잭션 최적화: queryRunner는 만능이 아니다](https://www.notion.so/TypeORM-queryRunner-6037e88d14c94cf29046114f5de21e81?pvs=21)
+- [[김찬우] Facade 패턴으로 redis-om 엔티티에 도메인 로직 결합하기](https://www.notion.so/Facade-redis-om-4f02cb197ced4835bbf11824c1323c6f?pvs=21)
+- [[김찬우] 협업을 위한 더러운 코드](https://www.notion.so/88d142476081439380ae207edc25c400?pvs=21)
 
-`coturn`은 WebRTC에서 NAT와 방화벽 문제를 해결하기 위해 사용되는 오픈소스 TURN/STUN 서버입니다. 설치 후 `/etc/turnserver.conf` 파일에서 `listening-port`, `external-ip`, `min-port`, `verbose` 등을 설정하여 서버 동작을 최적화했습니다. 인증 방식(`lt-cred-mech`)과 사용자 계정을 설정해 보안을 강화하며, NAT 뒤에서의 통신을 지원하도록 `external-ip`를 공인 IP와 매핑했습니다.
-
-> 작성자: 송수민
-> 
-> 🔗 [coturn 설치 및 config 파일 수정](https://www.notion.so/coturn-config-299c854b69dd4bd9ac5823830ef3bc8d?pvs=21)
-> 
-
-### [BE] 트랜잭션 최적화: queryRunner는 만능이 아니다
-
-프로젝트에서 데이터 일관성을 보장하기 위해 질문지 생성과 질문 삭제 로직에서 트랜잭션이 필요했습니다. 초기에 `@Transactional()`을 사용해 메서드 단위로 트랜잭션을 구현했고, 불필요한 트랜잭션 범위를 없애기 위해 `queryRunner`로 대체해서 개선했습니다. `k6`를 이용한 부하 테스트를 진행했고, 그 결과 `queryRunner`를 사용하는 것이 무조건 성능 개선을 보장하는 것은 아니며, 상황에 따라 적합한 방식을 선택하는 것이 중요하다는 것을 알게 되었습니다.
-
-> 작성자: 송수민
-> 
-> 🔗 [트랜잭션 최적화: queryRunner는 만능이 아니다](https://www.notion.so/TypeORM-queryRunner-6037e88d14c94cf29046114f5de21e81?pvs=21)
-> 
-
-### [FE] 토큰 재발급부터 요청 재시도까지 한번에 axios interceptor
-
-액세스 토큰 만료시 401 에러를 `Axios Interceptor`로 일괄 처리하여 자동으로 토큰 재발급 및 요청 재시도 구현했습니다. 토큰 재발급 실패시 세션 만료로 간주하여 로그인 페이지로 리다이렉트하는 일관된 에러 처리 구축해보았습니다. 중앙화된 토큰 관리가 되니, 코드 중복 제거 및 유지보수성이 향상되었고, 개별 컴포넌트의 토큰 관리 부담이 줄었습니다.
-
-> 작성자: 서정우
-> 
-> 🔗 [axios interceptor를 사용한 401에러 일관적 처리](https://www.notion.so/axios-interceptor-401-151696f85d1f80cf9e6fe73452dcecb2?pvs=21)
-> 
-
-### [FE] 카메라 인디케이터 항상 켜져있던 문제 해결하기
-
-카메라 끄기시 인디케이터 계속 켜지는 UX 문제를 `track.stop()`으로 해결하고, `useRef`+`useState`로 스트림 관리 구조 개선했습니다. 이 과정에서 발생한 다른 참가자 화면 멈춤 문제를 `PeerConnections` 업데이트로 해결했고, 결과적으로 카메라 끄기시 인디케이터도 꺼지고 참가자간 동기화도 잘 되는 안정적인 기능이 되었습니다.
-
-> 작성자: 서정우
-> 
-> 🔗 [카메라 인디케이터 항상 켜져있던 문제 해결하기](https://www.notion.so/151696f85d1f80b78315ef65a8011d48?pvs=21)
-> 
-
-### [BE] Facade 패턴으로 redis-om 엔티티에 도메인 로직 결합하기
-
-Redis에서 복잡한 객체를 직렬화/역직렬화하는 반복 작업의 문제를 인식하였습니다. 그래서 여러 해결 방안을 시도하고 각각의 장단점을 분석하는 과정을 통해, DDD의 개념을 완전히 도입하기보다, 도메인 로직 분리라는 핵심 아이디어만 채택하여서 문제를 해결했습니다. 그 과정에서 결과적으로 Facade 패턴을 자연스럽게 도출이 되었습니다.
-
-> 작성자: 김찬우
-> 
-> 🔗 [Facade 패턴으로 redis-om 엔티티에 도메인 로직 결합하기](https://www.notion.so/Facade-redis-om-4f02cb197ced4835bbf11824c1323c6f?pvs=21)
-> 
-
-### [BE] 협업을 위한 더러운 코드
-
-`깔끔한 코드`를 만들기 위해 과도한 리팩토링을 시도했습니다. 협업보다 개인의 코드 품질 추구가 우선시되고 있었고, 멘토링을 통해 `코드의 길이보다 구조와 역할이 더 중요함`을 깨달았습니다. 절대적인 규칙이나 패턴을 맹목적으로 따르지 않고 상황에 맞는 판단의 중요성을 배웠습니다.
-
-> 작성자: 김찬우
-> 
-> 🔗 [협업을 위한 더러운 코드](https://www.notion.so/88d142476081439380ae207edc25c400?pvs=21)
-> 
-
-### [FE] useSession 테스트 코드 작성하기
-
-핵심 기능인 화상회의에 관한 코드가 모여있는 useSession 훅이 너무 많은 일을 하고 있었습니다. 분리해서 리팩토링을 진행하고 싶었는데 잘못하다가 여태까지 구현했던 것에 문제가 생길거 같았고, 클라이언트 측 동작을 테스트하기 위해 모킹을 이용해 테스트 코드를 작성했습니다. 이후 해당 훅을 분리하는 과정에서 테스트 코드를 통해 오류 없이 리팩토링을 진행할 수 있었고, 테스트 코드의 필요성에 대해 배웠습니다.
-
-> 작성자: 이승윤
-> 
-> 🔗 [useSession 테스트 코드 작성하기](https://www.notion.so/1426605560518007b5e7ed30b2cdb8ee?pvs=21)
->
-
-### [FE] 상대방의 비디오가 보이지 않던 문제 해결하기
-
-내 비디오는 보이는데 상대방의 비디오가 보이지 않는 문제가 있었습니다. 소켓 연결부터 피어의 상태관리까지 디버깅 코드를 넣어 관찰한 결과 디버깅 코드는 문제가 없었고, 비디오 스트림을 처리하는 코드를 보고 잘못된 방식으로 처리하고 있다는 것을 깨달았습니다. 문제가 생긴 부분을 체크하기 위해 단계별로 어디가 문제인지 찾아가며 문제를 찾는 범위를 좁히는 것의 중요성을 배웠습니다.
-
-> 작성자: 이승윤
-> 
-> 🔗 [상대방의 비디오가 보이지 않던 문제 해결하기](https://www.notion.so/151660556051802d911bf5421f085ffd?pvs=21)
-> 
+### Frontend
+- [[서정우] 토큰 재발급부터 요청 재시도까지 한번에 axios interceptor](https://www.notion.so/axios-interceptor-401-151696f85d1f80cf9e6fe73452dcecb2?pvs=21)
+- [[서정우] 카메라 인디케이터 항상 켜져있던 문제 해결하기](https://www.notion.so/151696f85d1f80b78315ef65a8011d48?pvs=21)
+- [[이승윤] useSession 테스트 코드 작성하기](https://www.notion.so/1426605560518007b5e7ed30b2cdb8ee?pvs=21)
+- [[이승윤] 화상회의 페이지 개선하기](https://velog.io/@yiseungyun/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98-%ED%8E%98%EC%9D%B4%EC%A7%80-%EA%B0%9C%EC%84%A0%ED%95%98%EA%B8%B0)
 
 <br/>
 
