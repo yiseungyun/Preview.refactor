@@ -10,8 +10,8 @@ interface AudioLevels {
   [peerId: string]: boolean;
 }
 
-const CHECK_PEERCONNECTION = 1000;
-const TIMER_INTERVAL = 100;
+const CHECK_PEERCONNECTION_MS = 1000;
+const TIMER_INTERVAL_MS = 100;
 
 export const useAudioDetector = ({
   localStream,
@@ -33,7 +33,7 @@ export const useAudioDetector = ({
       if (currentCount !== connectionCount) {
         setConnectionCount(currentCount);
       }
-    }, CHECK_PEERCONNECTION);
+    }, CHECK_PEERCONNECTION_MS);
 
     return () => clearInterval(checkConnections);
   }, [peerConnections, connectionCount]);
@@ -69,7 +69,7 @@ export const useAudioDetector = ({
       }));
     };
 
-    intervalRefs.current.local = setInterval(checkLocalAudio, TIMER_INTERVAL);
+    intervalRefs.current.local = setInterval(checkLocalAudio, TIMER_INTERVAL_MS);
 
     // 각 피어에 대해 오디오 레벨 모니터링
     if (connectionCount > 0) {
@@ -95,7 +95,7 @@ export const useAudioDetector = ({
           } catch (error) {
             console.error(error);
           }
-        }, TIMER_INTERVAL);
+        }, TIMER_INTERVAL_MS);
       });
     }
 

@@ -9,7 +9,7 @@ interface User {
   isHost?: boolean;
 }
 
-const RETRY_CONNECTION = 1000;
+const RETRY_CONNECTION_MS = 1000;
 
 // 피어 간 연결 수립 역할을 하는 커스텀 훅
 const usePeerConnection = (socket: Socket) => {
@@ -172,7 +172,7 @@ const usePeerConnection = (socket: Socket) => {
             isOffer,
             localUser
           );
-        }, RETRY_CONNECTION)
+        }, RETRY_CONNECTION_MS)
         console.log("재연결 시도");
       }
 
