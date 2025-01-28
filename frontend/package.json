@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
@@ -29,6 +29,7 @@
     "zustand": "^5.0.1"
   },
   "devDependencies": {
+    "vite": "^5.4.10",
     "@eslint/js": "^9.13.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@testing-library/jest-dom": "^6.6.3",
@@ -53,7 +54,6 @@
     "ts-jest": "^29.1.0",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.11.0",
-    "vite": "^5.4.10",
     "vite-plugin-remove-console": "^2.2.0"
   }
 }
