@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { throttle } from "lodash";
 import useObserver from "@/pages/IntroPage/hooks/useObserver.ts";
-import LeftCard from "./view/leftCard.tsx";
-import RightCard from "./view/rightCard.tsx";
+import LeftCard from "./view/LeftCard.tsx";
+import RightCard from "./view/RightCard.tsx";
 
 const IntroPage = () => {
   const navigate = useNavigate();
