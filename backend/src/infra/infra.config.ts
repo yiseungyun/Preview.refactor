@@ -9,5 +9,9 @@ export const gatewayConfig = {
 export const redisConfig = {
     host: process.env.REDIS_HOST,
     port: parseInt(process.env.REDIS_PORT),
-    password: process.env.REDIS_PASSWORD,
+    retryStrategy: (times) => {
+        return Math.min(times * 50, 2000);
+    },
+    maxRetriesPerRequest: 50,
+    enableReadyCheck: false,
 };

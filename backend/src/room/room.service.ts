@@ -27,7 +27,7 @@ export class RoomService {
         private readonly infraService: InfraService,
         private readonly questionListRepository: QuestionListRepository,
         private readonly questionRepository: QuestionRepository
-    ) {}
+    ) { }
 
     public async leaveRoom(socket: Socket) {
         const rooms = await this.infraService.getSocketMetadata(socket);
@@ -247,6 +247,10 @@ export class RoomService {
     // TODO: 동시성 고려해봐야하지 않을까?
     private async generateRoomId() {
         const client = this.infraService.getRedisClient();
+
+        client.on("error", err => {
+            console.error(err);
+        })
 
         const idString = await client.get(RoomService.ROOM_ID_CREATE_KEY);
 

@@ -43,11 +43,29 @@ export class RoomGateway implements OnGatewayDisconnect, OnGatewayInit, OnGatewa
         private readonly roomService: RoomService,
         private readonly infraService: InfraService,
         private readonly roomRepository: RoomRepository
-    ) {}
+    ) { }
 
     public afterInit() {
         const pubClient = this.infraService.getRedisClient();
+
+        if (!pubClient) {
+            throw new Error("Failed to create Redis PubClient.");
+        }
+
+        pubClient.on('error', (err) => {
+            console.error('Redis PubClient Error:', err);
+        });
+
         const subClient = pubClient.duplicate();
+
+        if (!subClient) {
+            throw new Error("Failed to create Redis SubClient.");
+        }
+
+        subClient.on('error', (err) => {
+            console.error('Redis SubClient Error:', err);
+        });
+
         const redisAdapter = createAdapter(pubClient, subClient);
         this.server.adapter(redisAdapter);
         this.infraService.setServer(this.server);
