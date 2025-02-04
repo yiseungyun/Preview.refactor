@@ -31,7 +31,6 @@ const SessionPage = () => {
     requestChangeIndex,
     startStudySession,
     stopStudySession,
-    getMediaStream,
     mediaPreviewModal,
     ready,
     setReady,
@@ -50,7 +49,6 @@ const SessionPage = () => {
         setReady={setReady}
         nickname={nickname}
         setNickname={setNickname}
-        getMediaStream={getMediaStream}
         onConfirm={() => {
           joinRoom();
           mediaPreviewModal.closeModal();

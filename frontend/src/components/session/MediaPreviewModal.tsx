@@ -2,6 +2,7 @@ import VideoContainer from "@components/session/VideoContainer.tsx";
 import { useCallback, useEffect, useState } from "react";
 import useToast from "@hooks/useToast.ts";
 import { useMediaStore } from "@/pages/SessionPage/stores/useMediaStore";
+import { mediaStreamService } from "@/pages/SessionPage/services/mediaStreamService";
 
 interface MediaPreviewModalProps {
   modal: UseModalReturn;
@@ -10,7 +11,6 @@ interface MediaPreviewModalProps {
   onConfirm: () => void;
   onReject: () => void;
   setReady: (ready: boolean) => void;
-  getMediaStream: (type: "video" | "audio") => Promise<MediaStream | undefined>;
 }
 
 interface UseModalReturn {
@@ -26,7 +26,6 @@ const MediaPreviewModal = ({
   setNickname,
   onConfirm,
   onReject,
-  getMediaStream,
   setReady,
 }: MediaPreviewModalProps) => {
   const isVideoOn = useMediaStore(state => state.isVideoOn);
@@ -36,9 +35,10 @@ const MediaPreviewModal = ({
   const toast = useToast();
 
   const getMediaPreview = useCallback(async () => {
-    const mediaStream = await getMediaStream("video");
+    const mediaStream = await mediaStreamService.getMediaStream("video");
     if (!mediaStream) {
       toast.error("비디오 장치를 찾을 수 없습니다.");
+      return;
     }
     setPreview(mediaStream);
   }, []);

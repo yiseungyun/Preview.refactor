@@ -47,8 +47,7 @@ export const useSession = (sessionId: string) => {
   const {
     handleMicToggle,
     handleVideoToggle,
-    getMedia,
-    getMediaStream,
+    getMedia
   } = useMediaDevices(dataChannels);
 
   const { setShouldBlock } = useBlockNavigate();
@@ -165,7 +164,6 @@ export const useSession = (sessionId: string) => {
     startStudySession,
     stopStudySession,
     getMedia,
-    getMediaStream,
     mediaPreviewModal,
     ready,
     setReady,
