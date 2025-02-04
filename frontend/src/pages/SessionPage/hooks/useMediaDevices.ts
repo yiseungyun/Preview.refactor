@@ -1,5 +1,6 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 import { createDummyStream } from "./utils/createDummyStream";
+import { useMediaStore } from "../stores/useMediaStore";
 
 type MediaStreamType = "video" | "audio";
 interface PeerConnectionsMap {
@@ -13,25 +14,23 @@ interface DataChannelMessage {
 }
 
 const useMediaDevices = (dataChannels: DataChannels) => {
-  // 유저의 미디어 장치 리스트
-  const [userAudioDevices, setUserAudioDevices] = useState<MediaDeviceInfo[]>([]);
-  const [userVideoDevices, setUserVideoDevices] = useState<MediaDeviceInfo[]>([]);
-
-  // 유저가 선택한 미디어 장치
-  const [selectedVideoDeviceId, setSelectedVideoDeviceId] = useState<string>("");
-  const [selectedAudioDeviceId, setSelectedAudioDeviceId] = useState<string>("");
-
-  // 본인 미디어 스트림
-  const [stream, setStream] = useState<MediaStream | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const [videoLoading, setVideoLoading] = useState<boolean>(false);
 
-  // 미디어 온오프 상태
-  const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
-  const [isMicOn, setIsMicOn] = useState<boolean>(true);
+  const {
+    stream,
+    setStream,
+    setVideoLoading,
+    setUserAudioDevices,
+    setUserVideoDevices,
+    isMicOn,
+    isVideoOn,
+    setIsMicOn,
+    setIsVideoOn,
+    selectedAudioDeviceId,
+    selectedVideoDeviceId
+  } = useMediaStore();
 
   useEffect(() => {
-    // 비디오 디바이스 목록 가져오기
     const getUserDevices = async () => {
       try {
         const devices = await navigator.mediaDevices.enumerateDevices();
@@ -66,7 +65,6 @@ const useMediaDevices = (dataChannels: DataChannels) => {
   const getMedia = async () => {
     try {
       if (streamRef.current) {
-        // 이미 스트림이 있으면 종료
         streamRef.current.getTracks().forEach((track) => {
           track.stop();
         });
@@ -74,7 +72,6 @@ const useMediaDevices = (dataChannels: DataChannels) => {
       }
       setVideoLoading(true);
 
-      // 비디오와 오디오 스트림을 따로 가져오기
       let videoStream = null;
       let audioStream = null;
 
@@ -104,7 +101,6 @@ const useMediaDevices = (dataChannels: DataChannels) => {
         setIsMicOn(false);
       }
 
-      // 스트림 병합 또는 개별 스트림 사용
       let combinedStream = null;
       const tracks = [
         ...(videoStream?.getVideoTracks() || [createDummyStream()]),
@@ -131,7 +127,6 @@ const useMediaDevices = (dataChannels: DataChannels) => {
     }
   };
 
-  // 특정 미디어 스트림만 가져오는 함수
   const getMediaStream = async (mediaType: MediaStreamType) => {
     try {
       return navigator.mediaDevices.getUserMedia(
@@ -158,16 +153,13 @@ const useMediaDevices = (dataChannels: DataChannels) => {
     });
   };
 
-  // 미디어 스트림 토글 관련
   const handleVideoToggle = async (peerConnections: PeerConnectionsMap) => {
     try {
       if (!stream) return;
       setVideoLoading(true);
 
-      // 비디오 껐다키기
       if (isVideoOn) {
         for (const videoTrack of stream.getVideoTracks()) {
-          // 비디오 끄기
           videoTrack.stop();
 
           const blackTrack = createDummyStream();
@@ -202,7 +194,6 @@ const useMediaDevices = (dataChannels: DataChannels) => {
             streamRef.current.addTrack(newVideoTrack);
             setStream(streamRef.current);
 
-            console.log("피어업데이트", peerConnections);
             Object.values(peerConnections || {}).forEach((pc) => {
               const sender = pc
                 .getSenders()
@@ -264,19 +255,8 @@ const useMediaDevices = (dataChannels: DataChannels) => {
   };
 
   return {
-    userAudioDevices,
-    userVideoDevices,
-    selectedAudioDeviceId,
-    selectedVideoDeviceId,
-    stream,
-    isVideoOn,
-    isMicOn,
-    setIsVideoOn,
-    videoLoading,
     handleMicToggle,
     handleVideoToggle,
-    setSelectedAudioDeviceId,
-    setSelectedVideoDeviceId,
     getMedia,
     getMediaStream,
   };

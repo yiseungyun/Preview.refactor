@@ -14,6 +14,7 @@ import useAuth from "@hooks/useAuth";
 import useStudy from "./useStudy";
 import useModal from "@hooks/useModal.ts";
 import useBlockNavigate from "@/pages/SessionPage/hooks/useBlockNavigate.ts";
+import { useMediaStore } from "../stores/useMediaStore";
 
 export const useSession = (sessionId: string) => {
   const { socket } = useSocket();
@@ -38,22 +39,16 @@ export const useSession = (sessionId: string) => {
     mediaPreviewModal.openModal();
   }, []);
 
+  const stream = useMediaStore(state => state.stream);
+  const isVideoOn = useMediaStore(state => state.isVideoOn);
+  const selectedVideoDeviceId = useMediaStore(state => state.selectedVideoDeviceId);
+  const selectedAudioDeviceId = useMediaStore(state => state.selectedAudioDeviceId);
+
   const {
-    userVideoDevices,
-    userAudioDevices,
-    selectedAudioDeviceId,
-    selectedVideoDeviceId,
-    stream,
-    isVideoOn,
-    isMicOn,
-    setIsVideoOn,
     handleMicToggle,
     handleVideoToggle,
-    setSelectedAudioDeviceId,
-    setSelectedVideoDeviceId,
     getMedia,
     getMediaStream,
-    videoLoading,
   } = useMediaDevices(dataChannels);
 
   const { setShouldBlock } = useBlockNavigate();
@@ -158,22 +153,13 @@ export const useSession = (sessionId: string) => {
     reaction,
     peers,
     peerConnections,
-    userVideoDevices,
-    userAudioDevices,
-    isVideoOn,
-    isMicOn,
-    setIsVideoOn,
-    stream,
     roomMetadata,
     isHost,
     participants,
     handleMicToggle: () => handleMicToggle(),
     handleVideoToggle: () => handleVideoToggle(peerConnections.current),
-    setSelectedAudioDeviceId,
-    setSelectedVideoDeviceId,
     joinRoom,
     emitReaction,
-    videoLoading,
     peerMediaStatus,
     requestChangeIndex,
     startStudySession,

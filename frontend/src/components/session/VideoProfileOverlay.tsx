@@ -20,13 +20,13 @@ const VideoProfileOverlay = ({
       {profileImage ? (
         <div className="aspect-1 w-2/3 h-2/3 bg-gray-400 rounded-full overflow-hidden">
           <img
-            className={"object-cover h-full opacity-100"}
+            className="object-cover h-full opacity-100"
             src={profileImage}
             alt={nickname + "프로필 이미지"}
           />
         </div>
       ) : (
-        <span className={"w-full text-center"}>{nickname}</span>
+        <span className="w-full text-center">{nickname}</span>
       )}
     </div>
   );

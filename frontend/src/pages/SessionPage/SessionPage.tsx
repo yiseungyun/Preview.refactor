@@ -20,22 +20,13 @@ const SessionPage = () => {
     reaction,
     peers,
     peerConnections,
-    userVideoDevices,
-    userAudioDevices,
-    isVideoOn,
-    setIsVideoOn,
-    isMicOn,
-    stream,
     roomMetadata,
     isHost,
     participants,
     handleMicToggle,
     handleVideoToggle,
-    setSelectedAudioDeviceId,
-    setSelectedVideoDeviceId,
     joinRoom,
     emitReaction,
-    videoLoading,
     peerMediaStatus,
     requestChangeIndex,
     startStudySession,
@@ -56,9 +47,7 @@ const SessionPage = () => {
     <section className="w-screen min-h-[500px] h-screen flex flex-col">
       <MediaPreviewModal
         modal={mediaPreviewModal}
-        isVideoOn={isVideoOn}
         setReady={setReady}
-        setIsVideoOn={setIsVideoOn}
         nickname={nickname}
         setNickname={setNickname}
         getMediaStream={getMediaStream}
@@ -87,11 +76,7 @@ const SessionPage = () => {
             <VideoLayout
               peers={peers}
               nickname={nickname}
-              isMicOn={isMicOn}
-              isVideoOn={isVideoOn}
-              stream={stream}
               reaction={reaction}
-              videoLoading={videoLoading}
               peerMediaStatus={peerMediaStatus}
               peerConnections={peerConnections}
             />
@@ -101,13 +86,6 @@ const SessionPage = () => {
             handleVideoToggle={handleVideoToggle}
             handleMicToggle={handleMicToggle}
             emitReaction={emitReaction}
-            userVideoDevices={userVideoDevices}
-            userAudioDevices={userAudioDevices}
-            setSelectedVideoDeviceId={setSelectedVideoDeviceId}
-            setSelectedAudioDeviceId={setSelectedAudioDeviceId}
-            isVideoOn={isVideoOn}
-            isMicOn={isMicOn}
-            videoLoading={videoLoading}
             isHost={isHost}
             roomId={sessionId}
             isInProgress={roomMetadata?.inProgress ?? false}

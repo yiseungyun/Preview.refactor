@@ -14,18 +14,12 @@ import useToast from "@/hooks/useToast";
 import useModal from "@/hooks/useModal";
 import useSocket from "@/hooks/useSocket";
 import ToolTip from "@components/common/ToolTip";
+import { useMediaStore } from "@/pages/SessionPage/stores/useMediaStore";
 
 interface CommonToolsProps {
   handleVideoToggle: () => void;
   handleMicToggle: () => void;
   emitReaction: (reactionType: string) => void;
-  userVideoDevices: MediaDeviceInfo[];
-  userAudioDevices: MediaDeviceInfo[];
-  setSelectedVideoDeviceId: (deviceId: string) => void;
-  setSelectedAudioDeviceId: (deviceId: string) => void;
-  isVideoOn: boolean;
-  isMicOn: boolean;
-  videoLoading: boolean;
   isHost: boolean;
   roomId: string;
   setShouldBlock: (shouldBlock: boolean) => void;
@@ -35,17 +29,18 @@ const CommonTools = ({
   handleVideoToggle,
   handleMicToggle,
   emitReaction,
-  userVideoDevices,
-  userAudioDevices,
-  setSelectedVideoDeviceId,
-  setSelectedAudioDeviceId,
-  isVideoOn,
-  isMicOn,
-  videoLoading,
   isHost,
   roomId,
   setShouldBlock,
 }: CommonToolsProps) => {
+  const isVideoOn = useMediaStore(state => state.isVideoOn);
+  const isMicOn = useMediaStore(state => state.isMicOn);
+  const userVideoDevices = useMediaStore(state => state.userVideoDevices);
+  const userAudioDevices = useMediaStore(state => state.userVideoDevices);
+  const videoLoading = useMediaStore(state => state.videoLoading);
+  const setSelectedVideoDeviceId = useMediaStore(state => state.setSelectedVideoDeviceId);
+  const setSelectedAudioDeviceId = useMediaStore(state => state.setSelectedAudioDeviceId);
+
   const navigate = useNavigate();
   const toast = useToast();
   const modal = useModal();
@@ -68,31 +63,28 @@ const CommonTools = ({
 
   const shareSessionLink = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success(
-      `현재 세션의 링크가 복사되었습니다.
-동료에게 공유해보세요!`
-    );
+    toast.success("현재 세션의 링크가 복사되었습니다. 동료에게 공유해보세요!");
   };
 
   const modalProps = isHost
     ? {
-        title: "세션을 종료할까요?",
-        subtitle: "호스트 권한을 주지 않으면 모두 나가져요!",
-        leftButton: "호스트 권한 전달",
-        rightButton: "종료하기",
-        type: "red" as const,
-        onLeftClick: existHandler,
-        onRightClick: destroyAndExitHandler,
-      }
+      title: "세션을 종료할까요?",
+      subtitle: "호스트 권한을 주지 않으면 방이 종료됩니다.",
+      leftButton: "호스트 권한 전달",
+      rightButton: "종료하기",
+      type: "red" as const,
+      onLeftClick: existHandler,
+      onRightClick: destroyAndExitHandler,
+    }
     : {
-        title: "지금 나가면 다시 들어올 수 없어요!",
-        subtitle: "정말 종료하시겠어요?",
-        leftButton: "취소하기",
-        rightButton: "종료하기",
-        type: "red" as const,
-        onLeftClick: () => {},
-        onRightClick: existHandler,
-      };
+      title: "지금 나가면 다시 들어올 수 없어요!",
+      subtitle: "정말 종료하시겠어요?",
+      leftButton: "취소하기",
+      rightButton: "종료하기",
+      type: "red" as const,
+      onLeftClick: () => { },
+      onRightClick: existHandler,
+    };
 
   return (
     <>
@@ -126,11 +118,10 @@ const CommonTools = ({
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
             aria-label={isMicOn ? "마이크 끄기" : "마이크 켜기"}
           >
-            {isMicOn ? (
-              <MdMic className="w-6 h-6 hover:text-green-500" />
-            ) : (
-              <MdMicOff className="w-6 h-6 text-point-1 hover:text-green-500" />
-            )}
+            {isMicOn
+              ? <MdMic className="w-6 h-6 hover:text-green-500" />
+              : <MdMicOff className="w-6 h-6 text-point-1 hover:text-green-500" />
+            }
           </button>
           <span className="absolute top-1/2 -translate-y-1/2 right-2 pointer-events-none">
             <IoChevronDownSharp className="w-3.5 h-3.5 text-gray-500" />
@@ -157,11 +148,10 @@ const CommonTools = ({
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
             aria-label={isVideoOn ? "비디오 끄기" : "비디오 켜기"}
           >
-            {isVideoOn ? (
-              <MdVideocam className="w-6 h-6 hover:text-green-500" />
-            ) : (
-              <MdVideocamOff className="w-6 h-6 text-point-1 hover:text-green-500" />
-            )}
+            {isVideoOn
+              ? <MdVideocam className="w-6 h-6 hover:text-green-500" />
+              : <MdVideocamOff className="w-6 h-6 text-point-1 hover:text-green-500" />
+            }
           </button>
           <span className="absolute top-1/2 -translate-y-1/2 right-2 pointer-events-none">
             <IoChevronDownSharp className="w-3.5 h-3.5 text-gray-500" />
