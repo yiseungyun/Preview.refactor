@@ -7,7 +7,7 @@ import {
   SESSION_LISTEN_EVENT,
 } from "@/constants/WebSocket/SessionEvent";
 import { SIGNAL_LISTEN_EVENT } from "@/constants/WebSocket/SignalingEvent";
-import useMediaDevices from "@/pages/SessionPage/hooks/useMediaDevices";
+import useMediaDevices from "@/pages/SessionPage/hooks/useMediaStream";
 import usePeerConnection from "@/pages/SessionPage/hooks/usePeerConnection";
 import { useSession } from "@/pages/SessionPage/hooks/useSession";
 import {
