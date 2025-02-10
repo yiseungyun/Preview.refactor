@@ -1,54 +1,99 @@
 import { useNavigate, useParams } from "react-router-dom";
 import SessionSidebar from "@/pages/SessionPage/view/SessionSidebar";
 import SessionToolbar from "@/pages/SessionPage/view/SessionToolbar";
-import useSocket from "@hooks/useSocket";
 import SessionHeader from "@/pages/SessionPage/view/SessionHeader";
 import useToast from "@hooks/useToast";
 import SidebarContainer from "@/pages/SessionPage/view/SidebarContainer";
 import VideoLayout from "./view/VideoLayout";
-import { useSession } from "./hooks/useSession";
 import MediaPreviewModal from "@components/session/MediaPreviewModal.tsx";
+import useSocket from "@/hooks/useSocket";
+import useAuth from "@/hooks/useAuth";
+import { useMediaStore } from "./stores/useMediaStore";
+import { usePeerStore } from "./stores/usePeerStore";
+import { useSessionStore } from "./stores/useSessionStore";
+import useModal from "@/hooks/useModal";
+import usePeerConnection from "./hooks/usePeerConnection";
+import { useEffect } from "react";
+import useMediaStream from "./hooks/useMediaStream";
+import { Socket } from "socket.io-client";
+import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
+  const { nickname: username } = useAuth();
+  const { socket } = useSocket();
   const toast = useToast();
   const navigate = useNavigate();
-  const { socket } = useSocket();
-  const {
-    nickname,
-    setNickname,
-    reaction,
-    peers,
-    peerConnections,
-    roomMetadata,
-    isHost,
-    participants,
-    handleMicToggle,
-    handleVideoToggle,
-    joinRoom,
-    emitReaction,
-    peerMediaStatus,
-    requestChangeIndex,
-    startStudySession,
-    stopStudySession,
-    mediaPreviewModal,
-    ready,
-    setReady,
-    setShouldBlock,
-  } = useSession(sessionId!);
+
+  const { isVideoOn, selectedVideoDeviceId, selectedAudioDeviceId } = useMediaStore();
+  const { peers } = usePeerStore();
+  const { nickname, ready, setNickname, updateParticipants } = useSessionStore();
+
+  const { peerConnections, dataChannels } = usePeerConnection();
+  const { getMedia } = useMediaStream(dataChannels);
+  const mediaPreviewModal = useModal();
+
+  useEffect(() => {
+    mediaPreviewModal.openModal();
+  }, []);
+
+  useEffect(() => {
+    if (username) {
+      setNickname(username);
+    }
+  }, [username]);
+
+  useEffect(() => {
+    if (selectedAudioDeviceId || selectedVideoDeviceId) {
+      getMedia();
+    }
+  }, [selectedAudioDeviceId, selectedVideoDeviceId, getMedia]);
+
+  useEffect(() => {
+    updateParticipants();
+  }, [peers]);
 
   if (!sessionId) {
     toast.error("유효하지 않은 세션 아이디입니다.");
     return null;
   }
 
+  const isValidUser = (
+    socket: Socket | null,
+    nickname: string
+  ): socket is Socket => {
+    if (!socket) {
+      toast.error("소켓 연결이 필요합니다.");
+      return false;
+    }
+    if (!nickname) {
+      toast.error("닉네임을 입력해주세요.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const joinRoom = async () => {
+    if (!isValidUser(socket, nickname)) return;
+
+    const mediaStream = await getMedia();
+    if (!mediaStream) {
+      toast.error("미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요.");
+      return;
+    } else if (isVideoOn && mediaStream.getVideoTracks().length === 0) {
+      toast.error("비디오 장치를 찾을 수 없습니다. 비디오 장치 없이 세션에 참가합니다.");
+    } else if (mediaStream.getAudioTracks().length === 0) {
+      toast.error("오디오 장치를 찾을 수 없습니다. 오디오 장치 없이 세션에 참가합니다.");
+    }
+
+    socket.emit(SESSION_EMIT_EVENT.JOIN, { roomId: sessionId, nickname });
+  };
+
   return (
     <section className="w-screen min-h-[500px] h-screen flex flex-col">
       <MediaPreviewModal
         modal={mediaPreviewModal}
-        setReady={setReady}
-        nickname={nickname}
-        setNickname={setNickname}
         onConfirm={() => {
           joinRoom();
           mediaPreviewModal.closeModal();
@@ -58,51 +103,20 @@ const SessionPage = () => {
           navigate("/");
         }}
       />
-      <div className={"w-full flex flex-1 min-h-0"}>
-        <div
-          className={
-            "camera-area flex flex-col w-full flex-grow bg-gray-50 items-center"
-          }
-        >
-          <SessionHeader
-            roomMetadata={roomMetadata}
-            participantsCount={peers.length + 1}
-          />
+      <div className="w-full flex flex-1 min-h-0">
+        <div className="camera-area flex flex-col w-full flex-grow bg-gray-50 items-center">
+          <SessionHeader />
           {!ready ? (
-            <div className={"h-full"}></div>
+            <div className="h-full"></div>
           ) : (
             <VideoLayout
-              peers={peers}
-              nickname={nickname}
-              reaction={reaction}
-              peerMediaStatus={peerMediaStatus}
               peerConnections={peerConnections}
             />
           )}
-          <SessionToolbar
-            requestChangeIndex={requestChangeIndex}
-            handleVideoToggle={handleVideoToggle}
-            handleMicToggle={handleMicToggle}
-            emitReaction={emitReaction}
-            isHost={isHost}
-            roomId={sessionId}
-            isInProgress={roomMetadata?.inProgress ?? false}
-            startStudySession={startStudySession}
-            stopStudySession={stopStudySession}
-            currentIndex={roomMetadata?.currentIndex ?? -1}
-            maxQuestionLength={roomMetadata?.questionListContents.length ?? 0}
-            setShouldBlock={setShouldBlock}
-          />
+          <SessionToolbar />
         </div>
         <SidebarContainer>
-          <SessionSidebar
-            socket={socket}
-            questionList={roomMetadata?.questionListContents ?? []}
-            currentIndex={roomMetadata?.currentIndex ?? -1}
-            participants={participants}
-            roomId={sessionId}
-            isHost={isHost}
-          />
+          <SessionSidebar />
         </SidebarContainer>
       </div>
     </section>

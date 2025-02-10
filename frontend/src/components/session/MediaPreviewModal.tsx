@@ -2,15 +2,13 @@ import VideoContainer from "@components/session/VideoContainer.tsx";
 import { useCallback, useEffect, useState } from "react";
 import useToast from "@hooks/useToast.ts";
 import { useMediaStore } from "@/pages/SessionPage/stores/useMediaStore";
-import { mediaStreamService } from "@/pages/SessionPage/services/mediaStreamService";
+import { mediaManager } from "@/pages/SessionPage/services/mediaManager";
+import { useSessionStore } from "@/pages/SessionPage/stores/useSessionStore";
 
 interface MediaPreviewModalProps {
   modal: UseModalReturn;
-  nickname?: string;
-  setNickname: (nickname: string) => void;
   onConfirm: () => void;
   onReject: () => void;
-  setReady: (ready: boolean) => void;
 }
 
 interface UseModalReturn {
@@ -22,20 +20,18 @@ interface UseModalReturn {
 
 const MediaPreviewModal = ({
   modal,
-  nickname,
-  setNickname,
   onConfirm,
-  onReject,
-  setReady,
+  onReject
 }: MediaPreviewModalProps) => {
-  const isVideoOn = useMediaStore(state => state.isVideoOn);
-  const setIsVideoOn = useMediaStore(state => state.setIsVideoOn);
-
   const [preview, setPreview] = useState<MediaStream | undefined>();
   const toast = useToast();
 
+  const isVideoOn = useMediaStore(state => state.isVideoOn);
+  const setIsVideoOn = useMediaStore(state => state.setIsVideoOn);
+  const { nickname, setNickname, setReady } = useSessionStore();
+
   const getMediaPreview = useCallback(async () => {
-    const mediaStream = await mediaStreamService.getMediaStream("video");
+    const mediaStream = await mediaManager.getMediaStream("video");
     if (!mediaStream) {
       toast.error("비디오 장치를 찾을 수 없습니다.");
       return;
@@ -122,13 +118,13 @@ const MediaPreviewModal = ({
             onClick={handleReject}
             className="rounded-custom-m px-16 py-4 bg-gray-50 hover:bg-gray-100"
           >
-            세션 나가기
+            나가기
           </button>
           <button
             onClick={handleConfirm}
             className="rounded-custom-m px-16 py-4 bg-green-500 text-white hover:bg-green-600"
           >
-            세션 참가
+            참가하기
           </button>
         </div>
       </dialog>

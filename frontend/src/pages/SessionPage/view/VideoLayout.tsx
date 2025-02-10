@@ -1,25 +1,23 @@
 import VideoContainer from "@/components/session/VideoContainer";
-import { PeerConnection } from "@/pages/SessionPage/types/session";
 import { useAudioDetector } from "../hooks/useAudioDetector";
 import { useMediaStore } from "../stores/useMediaStore";
+import { usePeerStore } from "../stores/usePeerStore";
+import { useSessionStore } from "../stores/useSessionStore";
+import { useReaction } from "../hooks/useReaction";
 
 interface VideoLayoutProps {
-  peers: PeerConnection[];
-  nickname: string;
-  reaction: string;
-  peerMediaStatus: Record<string, { audio: boolean; video: boolean }>;
   peerConnections: React.MutableRefObject<{ [key: string]: RTCPeerConnection }>;
 }
 
 const VideoLayout = ({
-  peers,
-  nickname,
-  reaction,
-  peerMediaStatus,
   peerConnections,
 }: VideoLayoutProps) => {
   const stream = useMediaStore(state => state.stream);
+  const { peers, peerMediaStatus } = usePeerStore();
+  const { nickname } = useSessionStore();
   const videoCount = 1 + peers.length;
+
+  const { reaction } = useReaction();
   const { speakingStates } = useAudioDetector({
     localStream: stream,
     peerConnections,

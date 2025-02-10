@@ -15,47 +15,45 @@ import useModal from "@/hooks/useModal";
 import useSocket from "@/hooks/useSocket";
 import ToolTip from "@components/common/ToolTip";
 import { useMediaStore } from "@/pages/SessionPage/stores/useMediaStore";
+import { useSessionStore } from "@/pages/SessionPage/stores/useSessionStore";
+import useBlockNavigate from "@/pages/SessionPage/hooks/useBlockNavigate";
+import { useReaction } from "@/pages/SessionPage/hooks/useReaction";
+import useMediaStream from "@/pages/SessionPage/hooks/useMediaStream";
+import usePeerConnection from "@/pages/SessionPage/hooks/usePeerConnection";
 
-interface CommonToolsProps {
-  handleVideoToggle: () => void;
-  handleMicToggle: () => void;
-  emitReaction: (reactionType: string) => void;
-  isHost: boolean;
-  roomId: string;
-  setShouldBlock: (shouldBlock: boolean) => void;
-}
-
-const CommonTools = ({
-  handleVideoToggle,
-  handleMicToggle,
-  emitReaction,
-  isHost,
-  roomId,
-  setShouldBlock,
-}: CommonToolsProps) => {
-  const isVideoOn = useMediaStore(state => state.isVideoOn);
-  const isMicOn = useMediaStore(state => state.isMicOn);
-  const userVideoDevices = useMediaStore(state => state.userVideoDevices);
-  const userAudioDevices = useMediaStore(state => state.userVideoDevices);
-  const videoLoading = useMediaStore(state => state.videoLoading);
-  const setSelectedVideoDeviceId = useMediaStore(state => state.setSelectedVideoDeviceId);
-  const setSelectedAudioDeviceId = useMediaStore(state => state.setSelectedAudioDeviceId);
-
+const CommonTools = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const modal = useModal();
   const { socket } = useSocket();
 
+  const { setShouldBlock } = useBlockNavigate();
+  const { emitReaction } = useReaction();
+  const { peerConnections, dataChannels } = usePeerConnection();
+  const { handleMicToggle, handleVideoToggle } = useMediaStream(dataChannels);
+  const { isVideoOn, isMicOn, userVideoDevices, userAudioDevices, videoLoading, setSelectedVideoDeviceId, setSelectedAudioDeviceId } = useMediaStore();
+  const { roomId, isHost } = useSessionStore();
+
+  if (!socket) return null;
+
+  const handleVideoClick = async () => {
+    await handleVideoToggle(peerConnections.current);
+  }
+
+  const handleMicClick = async () => {
+    await handleMicToggle();
+  }
+
   const existHandler = () => {
-    socket?.emit(SESSION_EMIT_EVENT.LEAVE, { roomId });
+    socket.emit(SESSION_EMIT_EVENT.LEAVE, { roomId });
     toast.success("메인 화면으로 이동합니다.");
     setShouldBlock(false);
     navigate("/sessions");
   };
 
   const destroyAndExitHandler = () => {
-    socket?.off(SESSION_EMIT_EVENT.FINISH);
-    socket?.emit(SESSION_EMIT_EVENT.FINISH, { roomId });
+    socket.off(SESSION_EMIT_EVENT.FINISH);
+    socket.emit(SESSION_EMIT_EVENT.FINISH, { roomId });
     toast.success("메인 화면으로 이동합니다.");
     setShouldBlock(false);
     navigate("/sessions");
@@ -114,7 +112,7 @@ const CommonTools = ({
             )}
           </select>
           <button
-            onClick={handleMicToggle}
+            onClick={handleMicClick}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
             aria-label={isMicOn ? "마이크 끄기" : "마이크 켜기"}
           >
@@ -144,7 +142,7 @@ const CommonTools = ({
           </select>
           <button
             disabled={videoLoading}
-            onClick={handleVideoToggle}
+            onClick={handleVideoClick}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
             aria-label={isVideoOn ? "비디오 끄기" : "비디오 켜기"}
           >
