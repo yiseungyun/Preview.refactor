@@ -2,7 +2,7 @@ import { createDummyStream } from "../hooks/utils/createDummyStream.ts";
 
 type MediaStreamType = "video" | "audio";
 
-class MediaStreamService {
+class MediaManager {
   async getUserDevices() {
     const devices = await navigator.mediaDevices.enumerateDevices();
 
@@ -42,12 +42,13 @@ class MediaStreamService {
     }
   };
 
-  replaceVideoTrack(peerConnection: RTCPeerConnection, newTrack: MediaStreamTrack) {
+  async replaceVideoTrack(peerConnection: RTCPeerConnection, newTrack: MediaStreamTrack) {
     const sender = peerConnection
       .getSenders()
       .find((s) => s.track?.kind === "video");
+
     if (sender) {
-      return sender.replaceTrack(newTrack);
+      return await sender.replaceTrack(newTrack);
     }
   }
 
@@ -64,4 +65,4 @@ class MediaStreamService {
   }
 }
 
-export const mediaStreamService = new MediaStreamService();
+export const mediaManager = new MediaManager();
