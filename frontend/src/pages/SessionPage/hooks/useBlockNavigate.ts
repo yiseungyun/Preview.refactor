@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useBlocker } from "react-router-dom";
-import useSocket from "@hooks/useSocket.ts";
 
-const useBlockNavigate = () => {
+const useBlockNavigate = (disconnect: () => void) => {
   const shouldBlockRef = useRef<boolean>(true);
-  const { disconnect } = useSocket();
   const blocker = useBlocker(({ currentLocation, nextLocation }) => {
     return (
       shouldBlockRef.current &&

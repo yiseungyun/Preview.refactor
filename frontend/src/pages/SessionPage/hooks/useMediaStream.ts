@@ -1,7 +1,7 @@
 import { MutableRefObject, useEffect, useRef } from "react";
 import { createDummyStream } from "./utils/createDummyStream.ts";
 import { useMediaStore } from "../stores/useMediaStore.tsx";
-import { mediaManager } from "../services/mediaManager.ts";
+import { mediaManager } from "../services/MediaManager.ts";
 
 interface PeerConnectionsMap {
   [key: string]: RTCPeerConnection;
@@ -96,13 +96,16 @@ const useMediaStream = (dataChannels: DataChannels) => {
       setVideoLoading(true);
 
       if (isVideoOn) {
-        stream.getVideoTracks().forEach((videoTrack) => {
-          videoTrack.stop();
-          const blackTrack = createDummyStream();
-          Object.values(peerConnections).forEach((pc) => {
-            mediaManager.replaceVideoTrack(pc, blackTrack);
-          });
-        })
+        const blackTrack = createDummyStream();
+        stream.getVideoTracks().forEach((track) => {
+          stream.removeTrack(track);
+          track.stop();
+        });
+        stream.addTrack(blackTrack);
+
+        await Promise.all(Object.values(peerConnections).map(async (pc) => {
+          await mediaManager.replaceVideoTrack(pc, blackTrack);
+        }));
 
         sendMessageToDataChannels({ type: "video", status: false });
       } else {
@@ -118,16 +121,12 @@ const useMediaStream = (dataChannels: DataChannels) => {
 
         stream.addTrack(newVideoTrack);
 
+        await Promise.all(Object.values(peerConnections).map(async (pc) => {
+          await mediaManager.replaceVideoTrack(pc, newVideoTrack);
+        }));
+
         streamRef.current = stream;
         setStream(stream);
-
-        Object.values(peerConnections).forEach((pc) => {
-          const sender = pc.getSenders().find(s => s.track?.kind === "video");
-          if (sender) {
-            sender.replaceTrack(newVideoTrack);
-          }
-        });
-
         sendMessageToDataChannels({ type: "video", status: true });
       }
       setIsVideoOn((prev) => !prev);

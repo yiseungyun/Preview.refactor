@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { usePeerStore } from './usePeerStore';
 
 type RoomStatus = "PUBLIC" | "PRIVATE";
 
@@ -48,25 +47,24 @@ interface SessionState {
   setIsHost: (isHost: boolean) => void;
   setRoomId: (roomId: string) => void;
   setRoomMetadata: (metadata: RoomMetadata | ((prev: RoomMetadata) => RoomMetadata)) => void;
-  setParticipants: (participants: Participant[]) => void;
-  updateParticipants: () => void;
+  setParticipants: (participants: Participant[] | ((prev: Participant[]) => Participant[])) => void;
   setReady: (ready: boolean) => void;
 }
 
-export const useSessionStore = create<SessionState>((set, get) => ({
+export const useSessionStore = create<SessionState>((set) => ({
   nickname: "",
   isHost: false,
   roomId: "",
   roomMetadata: {
     title: "",
     status: "PUBLIC",
-    participants: -1,
-    maxParticipants: -1,
+    participants: 0,
+    maxParticipants: 0,
     createdAt: 0,
     inProgress: false,
     host: { socketId: "", createdAt: 0, nickname: "" },
     category: "",
-    questionListId: -1,
+    questionListId: 0,
     questionListContents: [],
     currentIndex: -1
   },
@@ -79,20 +77,23 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   setRoomMetadata: (metadata) => set((state) => ({
     roomMetadata: typeof metadata === 'function' ? metadata(state.roomMetadata) : metadata
   })),
-  setParticipants: (participants) => set({ participants }),
-  updateParticipants: () => {
-    const { nickname, isHost } = get();
-    const peers = usePeerStore.getState().peers;
+  setParticipants: (participants) =>
+    set((state: SessionState) => {
+      const newParticipants = typeof participants === 'function'
+        ? participants(state.participants)
+        : participants;
 
-    set({
-      participants: [
-        { nickname, isHost },
-        ...peers.map((peer) => ({
-          nickname: peer.peerNickname,
-          isHost: peer.isHost || false,
-        }))
-      ]
-    });
-  },
+      const uniqueParticipantsMap = new Map(
+        newParticipants.map(participant => [
+          participant.id,
+          participant
+        ])
+      );
+
+      const uniqueParticipants = Array.from(uniqueParticipantsMap.values());
+      return {
+        participants: uniqueParticipants
+      } as Partial<SessionState>;
+    }),
   setReady: (ready) => set({ ready }),
 }));

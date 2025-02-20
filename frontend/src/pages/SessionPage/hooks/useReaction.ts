@@ -7,12 +7,11 @@ import {
 import { SESSION_EMIT_EVENT, SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 import { usePeerStore } from "../stores/usePeerStore";
 import { useSessionStore } from "../stores/useSessionStore";
-import useSocket from "@/hooks/useSocket.ts";
+import { Socket } from "socket.io-client";
 
 const REACTION_DURATION_MS = 3000;
 
-export const useReaction = () => {
-  const { socket } = useSocket();
+export const useReaction = (socket: Socket) => {
   const [reaction, setReaction] = useState("");
   const { setPeers } = usePeerStore();
   const { roomId } = useSessionStore();

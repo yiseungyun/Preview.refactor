@@ -7,9 +7,7 @@ import SidebarContainer from "@/pages/SessionPage/view/SidebarContainer";
 import VideoLayout from "./view/VideoLayout";
 import MediaPreviewModal from "@components/session/MediaPreviewModal.tsx";
 import useSocket from "@/hooks/useSocket";
-import useAuth from "@/hooks/useAuth";
 import { useMediaStore } from "./stores/useMediaStore";
-import { usePeerStore } from "./stores/usePeerStore";
 import { useSessionStore } from "./stores/useSessionStore";
 import useModal from "@/hooks/useModal";
 import usePeerConnection from "./hooks/usePeerConnection";
@@ -17,41 +15,32 @@ import { useEffect } from "react";
 import useMediaStream from "./hooks/useMediaStream";
 import { Socket } from "socket.io-client";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
+import { useStudyRoom } from "./hooks/useStudyRoom";
 
 const SessionPage = () => {
   const { sessionId } = useParams();
-  const { nickname: username } = useAuth();
-  const { socket } = useSocket();
+  const { socket, disconnect } = useSocket();
   const toast = useToast();
   const navigate = useNavigate();
 
   const { isVideoOn, selectedVideoDeviceId, selectedAudioDeviceId } = useMediaStore();
-  const { peers } = usePeerStore();
-  const { nickname, ready, setNickname, updateParticipants } = useSessionStore();
+  const { ready, setRoomId } = useSessionStore();
 
-  const { peerConnections, dataChannels } = usePeerConnection();
+  const { peerConnections, dataChannels } = usePeerConnection(socket!);
   const { getMedia } = useMediaStream(dataChannels);
+  useStudyRoom(socket!, disconnect);
   const mediaPreviewModal = useModal();
 
   useEffect(() => {
     mediaPreviewModal.openModal();
+    setRoomId(sessionId!);
   }, []);
-
-  useEffect(() => {
-    if (username) {
-      setNickname(username);
-    }
-  }, [username]);
 
   useEffect(() => {
     if (selectedAudioDeviceId || selectedVideoDeviceId) {
       getMedia();
     }
-  }, [selectedAudioDeviceId, selectedVideoDeviceId, getMedia]);
-
-  useEffect(() => {
-    updateParticipants();
-  }, [peers]);
+  }, [selectedAudioDeviceId, selectedVideoDeviceId]);
 
   if (!sessionId) {
     toast.error("유효하지 않은 세션 아이디입니다.");
@@ -74,7 +63,7 @@ const SessionPage = () => {
     return true;
   };
 
-  const joinRoom = async () => {
+  const joinRoom = async (nickname: string) => {
     if (!isValidUser(socket, nickname)) return;
 
     const mediaStream = await getMedia();
@@ -94,8 +83,8 @@ const SessionPage = () => {
     <section className="w-screen min-h-[500px] h-screen flex flex-col">
       <MediaPreviewModal
         modal={mediaPreviewModal}
-        onConfirm={() => {
-          joinRoom();
+        onConfirm={async (nickname: string) => {
+          await joinRoom(nickname);
           mediaPreviewModal.closeModal();
         }}
         onReject={() => {
@@ -109,11 +98,9 @@ const SessionPage = () => {
           {!ready ? (
             <div className="h-full"></div>
           ) : (
-            <VideoLayout
-              peerConnections={peerConnections}
-            />
+            <VideoLayout peerConnections={peerConnections} socket={socket!} />
           )}
-          <SessionToolbar />
+          <SessionToolbar socket={socket!} disconnect={disconnect} />
         </div>
         <SidebarContainer>
           <SessionSidebar />

@@ -4,20 +4,23 @@ import { useMediaStore } from "../stores/useMediaStore";
 import { usePeerStore } from "../stores/usePeerStore";
 import { useSessionStore } from "../stores/useSessionStore";
 import { useReaction } from "../hooks/useReaction";
+import { Socket } from "socket.io-client";
 
 interface VideoLayoutProps {
   peerConnections: React.MutableRefObject<{ [key: string]: RTCPeerConnection }>;
+  socket: Socket;
 }
 
 const VideoLayout = ({
   peerConnections,
+  socket
 }: VideoLayoutProps) => {
   const stream = useMediaStore(state => state.stream);
   const { peers, peerMediaStatus } = usePeerStore();
   const { nickname } = useSessionStore();
   const videoCount = 1 + peers.length;
 
-  const { reaction } = useReaction();
+  const { reaction } = useReaction(socket);
   const { speakingStates } = useAudioDetector({
     localStream: stream,
     peerConnections,

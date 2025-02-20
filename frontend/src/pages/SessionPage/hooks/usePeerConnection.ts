@@ -6,9 +6,7 @@ import { SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
 import { useSessionStore } from "../stores/useSessionStore";
 import useToast from "@/hooks/useToast";
 import { usePeerStore } from "../stores/usePeerStore";
-import useSocket from "@/hooks/useSocket.ts";
-import { MediaStatusEvent, PeerEvent } from "../types/event";
-import { EventEmitter } from "../services/EventEmitter.ts";
+import { Socket } from "socket.io-client";
 
 interface UserInfo {
   socketId: string;
@@ -39,57 +37,32 @@ interface RoomJoinResponse {
   currentIndex: number;
 }
 
-const usePeerConnection = () => {
+const usePeerConnection = (socket: Socket) => {
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const dataChannels = useRef<{ [peerId: string]: RTCDataChannel }>({});
-  const { socket } = useSocket();
   const toast = useToast();
-  const { setPeers, setPeerMediaStatus } = usePeerStore();
-  const { stream } = useMediaStore();
-  const { nickname, setRoomMetadata, setIsHost } = useSessionStore();
+  const setPeers = usePeerStore(state => state.setPeers);
+  const setPeerMediaStatus = usePeerStore(state => state.setPeerMediaStatus);
+  const stream = useMediaStore(state => state.stream);
+  const nickname = useSessionStore(state => state.nickname);
+  const isHost = useSessionStore(state => state.isHost);
+  const setRoomMetadata = useSessionStore(state => state.setRoomMetadata);
+  const setIsHost = useSessionStore(state => state.setIsHost);
+  const setParticipants = useSessionStore(state => state.setParticipants);
   const webRTCManagerRef = useRef<WebRTCManager | null>(null);
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !nickname || !stream) return;
 
-    const eventEmitter = new EventEmitter();
-
-    eventEmitter.on('peer:updated', (event: PeerEvent) => {
-      setPeers(prev => {
-        const exists = prev.find(p => p.peerId === event.peerId);
-        if (exists) {
-          return prev.map(p =>
-            p.peerId === event.peerId ? { ...p, stream: event.stream } : p
-          );
-        }
-        return [...prev, {
-          peerId: event.peerId,
-          peerNickname: event.peerNickname,
-          isHost: event.isHost ?? false,
-          stream: event.stream
-        }];
-      });
-    });
-
-    eventEmitter.on('peer:removed', (peerId: string) => {
-      setPeers(prev => prev.filter(p => p.peerId !== peerId));
-    });
-
-    eventEmitter.on('media:statusChanged', (event: MediaStatusEvent) => {
-      setPeerMediaStatus(prev => ({
-        ...prev,
-        [event.peerId]: {
-          ...prev[event.peerId] ?? { audio: true, video: true },
-          [event.type]: event.status
-        }
-      }));
-    });
-
-    webRTCManagerRef.current = new WebRTCManager(
+    webRTCManagerRef.current = WebRTCManager.createInstance(
       socket,
       peerConnections,
       dataChannels,
-      eventEmitter,
+      setPeers,
+      setPeerMediaStatus,
+      setParticipants,
+      isHost,
+      nickname
     );
 
     const handleGetOffer = async (data: {
@@ -97,6 +70,16 @@ const usePeerConnection = () => {
       offerSendID: string;
       offerSendNickname: string;
     }) => {
+      const existingPc = peerConnections.current[data.offerSendID];
+      if (existingPc) {
+        if (existingPc.connectionState === "failed" ||
+          existingPc.connectionState === "disconnected") {
+          webRTCManagerRef.current?.closePeerConnection(data.offerSendID);
+        } else if (existingPc.signalingState !== "stable") {
+          return;
+        }
+      }
+
       const pc = await webRTCManagerRef.current?.createPeerConnection(
         data.offerSendID,
         data.offerSendNickname,
@@ -108,22 +91,24 @@ const usePeerConnection = () => {
       if (!pc) return;
 
       try {
-        await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+        await Promise.all([
+          pc.setRemoteDescription(new RTCSessionDescription(data.sdp)),
+          new Promise(async (resolve) => {
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
 
-        if (pc.signalingState === "have-remote-offer") {
-          const answer = await pc.createAnswer();
-          await pc.setLocalDescription(answer);
+            socket?.emit(SIGNAL_EMIT_EVENT.ANSWER, {
+              answerReceiveID: data.offerSendID,
+              sdp: answer,
+              answerSendID: socket.id,
+            });
 
-          socket.emit(SIGNAL_EMIT_EVENT.ANSWER, {
-            answerReceiveID: data.offerSendID,
-            sdp: answer,
-            answerSendID: socket.id,
-          });
-        } else {
-          console.log("Unexpected signaling state:", pc.signalingState);
-        }
+            resolve(true);
+          })
+        ]);
       } catch (error) {
         console.error("Error handling offer:", error);
+        webRTCManagerRef.current?.closePeerConnection(data.offerSendID);
       }
     };
 
@@ -132,10 +117,18 @@ const usePeerConnection = () => {
       answerSendID: string;
     }) => {
       const pc = peerConnections.current[data.answerSendID];
-      if (!pc) return;
+      if (!pc) {
+        console.error("해당 피어에 대한 연결이 없습니다:", data.answerSendID);
+        return;
+      }
 
       try {
+        if (pc.signalingState === "stable") {
+          console.log("이미 시그널링이 완료된 상태입니다");
+          return;
+        }
         await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+        console.log("Remote answer 설정 완료");
       } catch (error) {
         console.error("Error handling answer:", error);
       }
@@ -149,38 +142,16 @@ const usePeerConnection = () => {
       if (!pc) return;
 
       try {
-        if (pc.signalingState === "closed") {
-          return;
+        if (pc.remoteDescription) {
+          await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
         }
-
-        if (!pc.remoteDescription) {
-          const maxAttempts = 5;
-          let attempts = 0;
-
-          while (!pc.remoteDescription && attempts < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            attempts++;
-          }
-
-          if (!pc.remoteDescription) {
-            console.error("Failed to set remote description after waiting");
-            return;
-          }
-        }
-
-        await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
       } catch (error) {
         console.error("Error handling ICE candidate:", error);
-        console.log({
-          signalingState: pc.signalingState,
-          connectionState: pc.connectionState,
-          iceConnectionState: pc.iceConnectionState
-        });
       }
     };
 
     const handleAllUsers = async (data: RoomJoinResponse) => {
-      const roomMetadata = {
+      const response = {
         id: data.id,
         title: data.title,
         category: data.category,
@@ -195,39 +166,29 @@ const usePeerConnection = () => {
         currentIndex: data.currentIndex,
       };
 
-      setRoomMetadata(roomMetadata);
-      setIsHost(roomMetadata.host.socketId === socket.id);
+      setRoomMetadata(response);
+      setIsHost(response.host.socketId === socket?.id);
+      setParticipants(prev => {
+        const participantExists = prev.some(p => p.nickname === nickname);
+        if (participantExists) return prev;
 
-      Object.entries(data.connectionMap).forEach(async ([socketId, userInfo]) => {
-        const pc = await webRTCManagerRef.current?.createPeerConnection(
+        return [...prev,
+        { id: socket?.id, isHost: response.host.socketId === socket?.id, nickname }]
+      });
+
+      for (const [socketId, userInfo] of Object.entries(data.connectionMap)) {
+        await webRTCManagerRef.current?.createPeerConnection(
           socketId,
           userInfo.nickname,
           stream,
           true,
           {
             nickname,
-            isHost: roomMetadata.host.socketId === userInfo.socketId,
+            isHost: response.host.socketId === userInfo.socketId,
           }
         );
-
-        if (pc && pc.signalingState === "stable") {
-          try {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            const offer = await pc.createOffer();
-            await pc.setLocalDescription(offer);
-
-            socket.emit(SIGNAL_EMIT_EVENT.OFFER, {
-              offerReceiveID: socketId,
-              sdp: offer,
-              offerSendID: socket.id,
-              offerSendNickname: nickname,
-            });
-          } catch (error) {
-            console.error("Error creating offer:", error);
-          }
-        }
-      });
-    };
+      }
+    }
 
     const handleUserExit = ({ socketId }: { socketId: string }) => {
       toast.error("유저가 나갔습니다.");
@@ -241,12 +202,6 @@ const usePeerConnection = () => {
     socket.on(SESSION_LISTEN_EVENT.QUIT, handleUserExit);
 
     return () => {
-      socket.off(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
-      socket.off(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
-      socket.off(SIGNAL_LISTEN_EVENT.CANDIDATE, handleGetCandidate);
-      socket.off(SESSION_LISTEN_EVENT.JOIN, handleAllUsers);
-      socket.off(SESSION_LISTEN_EVENT.QUIT, handleUserExit);
-
       if (webRTCManagerRef.current) {
         Object.keys(peerConnections.current).forEach(peerId => {
           webRTCManagerRef.current?.closePeerConnection(peerId);
@@ -254,24 +209,25 @@ const usePeerConnection = () => {
         webRTCManagerRef.current = null;
       };
 
-      Object.values(peerConnections.current).forEach((pc) => {
-        pc.ontrack = null;
-        pc.onicecandidate = null;
-        pc.oniceconnectionstatechange = null;
-        pc.onconnectionstatechange = null;
+      Object.values(dataChannels.current).forEach(channel => {
+        channel.close();
+      });
+      dataChannels.current = {};
+
+      Object.values(peerConnections.current).forEach(pc => {
         pc.close();
       });
+      peerConnections.current = {};
 
-      eventEmitter.removeAllListeners();
-      setPeers([]);
-      setPeerMediaStatus({});
+      socket.off(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
+      socket.off(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
+      socket.off(SIGNAL_LISTEN_EVENT.CANDIDATE, handleGetCandidate);
+      socket.off(SESSION_LISTEN_EVENT.JOIN, handleAllUsers);
+      socket.off(SESSION_LISTEN_EVENT.QUIT, handleUserExit);
     };
-  }, [socket, stream, nickname]);
+  }, [socket, nickname, stream]);
 
-  return {
-    peerConnections,
-    dataChannels,
-  };
+  return { peerConnections, dataChannels };
 };
 
 export default usePeerConnection;

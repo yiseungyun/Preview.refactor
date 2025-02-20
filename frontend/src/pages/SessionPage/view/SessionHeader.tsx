@@ -1,20 +1,44 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSessionStore } from "../stores/useSessionStore";
 
 const SECOND = 1000;
 
 const SessionHeader = () => {
+  const startTimeRef = useRef<number | null>(null);
+  const animationFrameRef = useRef<number>();
   const [uptime, setUptime] = useState<number>(0);
-  const { roomMetadata } = useSessionStore();
+  const roomMetadata = useSessionStore(state => state.roomMetadata);
 
   useEffect(() => {
-    if (!roomMetadata.inProgress) return;
-    const interval = setInterval(() => {
-      setUptime((prev) => prev + 1);
-    }, SECOND);
+    if (!roomMetadata.inProgress) {
+      startTimeRef.current = null;
+      setUptime(0);
+      return;
+    }
+
+    startTimeRef.current = Date.now();
+    let lastUpdate = 0;
+
+    const updateTimer = () => {
+      if (!startTimeRef.current) return;
+
+      const now = Date.now();
+      const currentSecond = Math.floor((now - startTimeRef.current) / SECOND);
+
+      if (currentSecond !== lastUpdate) {
+        setUptime(currentSecond);
+        lastUpdate = currentSecond;
+      }
+
+      animationFrameRef.current = requestAnimationFrame(updateTimer);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(updateTimer);
 
     return () => {
-      clearInterval(interval);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
   }, [roomMetadata.inProgress]);
 

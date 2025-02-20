@@ -3,16 +3,22 @@ import { useEffect, useState } from "react";
 import ToolTip from "../common/ToolTip";
 import { useSessionStore } from "@/pages/SessionPage/stores/useSessionStore";
 import useStudyProgress from "@/pages/SessionPage/hooks/useStudyProgress";
+import { Socket } from "socket.io-client";
+
+interface HostOnlyToolsProps {
+  socket: Socket;
+  disconnect: () => void;
+}
 
 const COOLDOWN_TIME_MS = 2000;
 const studyButtonClass = "bg-transparent rounded-xl border h-10 px-3 py-2 text-medium-xs";
 const directionButtonClass = "relative inline-flex items-center bg-transparent rounded-full border-custom-s h-10 px-3 py-2 disabled:opacity-50 overflow-hidden";
 const disabledClass = "origin-left absolute w-full h-full bg-gray-400/50 top-0 left-0 animate-progress";
 
-const HostOnlyTools = () => {
+const HostOnlyTools = ({ socket, disconnect }: HostOnlyToolsProps) => {
   const [changeCooldown, setChangeCooldown] = useState(false);
   const { isHost, roomMetadata } = useSessionStore();
-  const { requestChangeIndex, startStudySession, stopStudySession } = useStudyProgress();
+  const { requestChangeIndex, startStudySession, stopStudySession } = useStudyProgress({ socket, disconnect });
   const maxQuestionLength = roomMetadata.questionListContents.length;
 
   useEffect(() => {

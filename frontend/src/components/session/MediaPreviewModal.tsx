@@ -2,12 +2,13 @@ import VideoContainer from "@components/session/VideoContainer.tsx";
 import { useCallback, useEffect, useState } from "react";
 import useToast from "@hooks/useToast.ts";
 import { useMediaStore } from "@/pages/SessionPage/stores/useMediaStore";
-import { mediaManager } from "@/pages/SessionPage/services/mediaManager";
 import { useSessionStore } from "@/pages/SessionPage/stores/useSessionStore";
+import { mediaManager } from "@/pages/SessionPage/services/MediaManager.ts";
+import useAuth from "@/hooks/useAuth";
 
 interface MediaPreviewModalProps {
   modal: UseModalReturn;
-  onConfirm: () => void;
+  onConfirm: (nickname: string) => Promise<void>;
   onReject: () => void;
 }
 
@@ -25,10 +26,18 @@ const MediaPreviewModal = ({
 }: MediaPreviewModalProps) => {
   const [preview, setPreview] = useState<MediaStream | undefined>();
   const toast = useToast();
+  const { nickname: username } = useAuth();
 
   const isVideoOn = useMediaStore(state => state.isVideoOn);
   const setIsVideoOn = useMediaStore(state => state.setIsVideoOn);
   const { nickname, setNickname, setReady } = useSessionStore();
+  const [tempNickname, setTempNickname] = useState("");
+
+  useEffect(() => {
+    if (username) {
+      setTempNickname(username);
+    }
+  }, [username]);
 
   const getMediaPreview = useCallback(async () => {
     const mediaStream = await mediaManager.getMediaStream("video");
@@ -67,9 +76,10 @@ const MediaPreviewModal = ({
     preview?.getTracks().forEach((track) => track.stop());
   }
 
-  const handleConfirm = () => {
-    onConfirm();
+  const handleConfirm = async () => {
+    setNickname(tempNickname);
     setReady(true);
+    await onConfirm(tempNickname);
     modal.closeModal();
     preview?.getTracks().forEach((track) => track.stop());
   }
@@ -108,9 +118,9 @@ const MediaPreviewModal = ({
           <input
             className="rounded-custom-m px-4 py-2 bg-gray-50 hover:bg-gray-100"
             type={"text"}
-            defaultValue={nickname}
+            value={tempNickname}
             placeholder={"닉네임 변경"}
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={(e) => setTempNickname(e.target.value)}
           />
         </div>
         <div className="text-semibold-r mt-4 flex w-full justify-center gap-4">

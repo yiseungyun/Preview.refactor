@@ -4,7 +4,8 @@ import { TbCrown } from "react-icons/tb";
 import { useSessionStore } from "../stores/useSessionStore";
 
 const SessionSidebar = () => {
-  const { roomMetadata, participants } = useSessionStore();
+  const roomMetadata = useSessionStore(state => state.roomMetadata);
+  const participants = useSessionStore(state => state.participants)
 
   return (
     <div className="flex flex-grow px-4 gap-2 items-stretch w-[22rem] bg-white shrink-0">

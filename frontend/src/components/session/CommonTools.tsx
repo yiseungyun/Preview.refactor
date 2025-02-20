@@ -12,7 +12,6 @@ import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 import { useNavigate } from "react-router-dom";
 import useToast from "@/hooks/useToast";
 import useModal from "@/hooks/useModal";
-import useSocket from "@/hooks/useSocket";
 import ToolTip from "@components/common/ToolTip";
 import { useMediaStore } from "@/pages/SessionPage/stores/useMediaStore";
 import { useSessionStore } from "@/pages/SessionPage/stores/useSessionStore";
@@ -20,16 +19,21 @@ import useBlockNavigate from "@/pages/SessionPage/hooks/useBlockNavigate";
 import { useReaction } from "@/pages/SessionPage/hooks/useReaction";
 import useMediaStream from "@/pages/SessionPage/hooks/useMediaStream";
 import usePeerConnection from "@/pages/SessionPage/hooks/usePeerConnection";
+import { Socket } from "socket.io-client";
 
-const CommonTools = () => {
+interface CommonToolsProps {
+  socket: Socket;
+  disconnect: () => void;
+}
+
+const CommonTools = ({ socket, disconnect }: CommonToolsProps) => {
   const navigate = useNavigate();
   const toast = useToast();
   const modal = useModal();
-  const { socket } = useSocket();
 
-  const { setShouldBlock } = useBlockNavigate();
-  const { emitReaction } = useReaction();
-  const { peerConnections, dataChannels } = usePeerConnection();
+  const { setShouldBlock } = useBlockNavigate(disconnect);
+  const { emitReaction } = useReaction(socket);
+  const { peerConnections, dataChannels } = usePeerConnection(socket);
   const { handleMicToggle, handleVideoToggle } = useMediaStream(dataChannels);
   const { isVideoOn, isMicOn, userVideoDevices, userAudioDevices, videoLoading, setSelectedVideoDeviceId, setSelectedAudioDeviceId } = useMediaStore();
   const { roomId, isHost } = useSessionStore();
@@ -61,7 +65,7 @@ const CommonTools = () => {
 
   const shareSessionLink = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success("현재 세션의 링크가 복사되었습니다. 동료에게 공유해보세요!");
+    toast.success("링크가 복사되었습니다.");
   };
 
   const modalProps = isHost
@@ -89,7 +93,7 @@ const CommonTools = () => {
       <div className={"inline-flex gap-2"}>
         <ToolTip text="세션 링크 복사">
           <button
-            className="aspect-square px-3 bg-green-200 text-white rounded-custom-m border-custom-s  border-green-200 hover:bg-green-100"
+            className="aspect-square px-3 bg-green-200 text-white rounded-custom-m border-custom-s border-green-200 hover:bg-green-100"
             aria-label={"세션 링크 복사"}
             onClick={shareSessionLink}
           >
