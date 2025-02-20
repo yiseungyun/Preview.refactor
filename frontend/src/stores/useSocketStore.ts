@@ -3,20 +3,18 @@ import { Socket, io } from "socket.io-client";
 
 interface SocketStore {
   socket: Socket | null;
-  isConnecting: boolean;
   isConnected: boolean;
   error: Error | null;
   connect: (socketURL: string) => Promise<void>;
   disconnect: () => void;
 }
 
-const useSocketStore = create<SocketStore>((set) => ({
+const useSocketStore = create<SocketStore>((set, get) => ({
   socket: null,
-  isConnecting: false,
   isConnected: false,
   error: null,
   connect: async (socketURL) => {
-    set({ isConnecting: true, error: null });
+    if (get().socket) return;
 
     try {
       const newSocket = io(socketURL);
@@ -26,7 +24,6 @@ const useSocketStore = create<SocketStore>((set) => ({
           console.log("소켓을 성공적으로 연결했습니다.");
           set({
             socket: newSocket,
-            isConnecting: false,
             isConnected: true,
             error: null
           });
@@ -36,7 +33,6 @@ const useSocketStore = create<SocketStore>((set) => ({
         newSocket.on("connect_error", (error: Error) => {
           console.error("소켓 에러", error);
           set({
-            isConnecting: false,
             error,
             isConnected: false
           });
@@ -46,7 +42,6 @@ const useSocketStore = create<SocketStore>((set) => ({
         newSocket.on("disconnect", () => {
           set({
             isConnected: false,
-            isConnecting: false
           });
         });
 
@@ -60,7 +55,6 @@ const useSocketStore = create<SocketStore>((set) => ({
           if (!newSocket.connected) {
             const error = new Error("Connection timeout");
             set({
-              isConnecting: false,
               error,
               isConnected: false
             });
@@ -70,7 +64,6 @@ const useSocketStore = create<SocketStore>((set) => ({
       });
     } catch (error) {
       set({
-        isConnecting: false,
         error: error as Error,
         isConnected: false
       });
@@ -82,7 +75,6 @@ const useSocketStore = create<SocketStore>((set) => ({
       state.socket?.disconnect();
       return {
         socket: null,
-        isConnecting: false,
         isConnected: false,
         error: null
       };
