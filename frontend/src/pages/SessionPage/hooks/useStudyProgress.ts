@@ -37,15 +37,15 @@ const useStudyProgress = ({ socket, disconnect }: StudyProgressProps) => {
 
       if (status === "success") {
         setRoomMetadata((prev) => ({ ...prev, inProgress: inProgress }));
-        if (inProgress) toast.success("방장이 스터디를 시작했습니다.");
-        else toast.error("방장이 스터디를 중지했습니다.");
+        if (inProgress) toast.success("호스트가 스터디를 시작했습니다.");
+        else toast.error("호스트가 스터디를 중지했습니다.");
       } else {
-        toast.error("세션 진행을 시작하지 못했습니다.");
+        toast.error("스터디를 시작하지 못했습니다.");
       }
     };
 
     const handleRoomProgress = () => {
-      toast.error("해당 세션은 현재 진행 중입니다.");
+      toast.error("해당 채널은 진행 중입니다.");
       setShouldBlock(false);
       navigate("/sessions");
     };

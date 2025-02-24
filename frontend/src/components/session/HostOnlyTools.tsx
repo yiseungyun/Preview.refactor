@@ -49,17 +49,13 @@ const HostOnlyTools = ({ socket, disconnect }: HostOnlyToolsProps) => {
           roomMetadata.inProgress ?
             <button
               className={studyButtonClass}
-              onClick={() => {
-                stopStudySession();
-              }}
+              onClick={() => { stopStudySession() }}
             >
               스터디 종료하기
             </button>
             : <button
               className={studyButtonClass}
-              onClick={() => {
-                startStudySession();
-              }}
+              onClick={() => { startStudySession() }}
             >
               스터디 시작하기
             </button>

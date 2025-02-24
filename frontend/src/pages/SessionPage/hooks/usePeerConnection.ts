@@ -54,15 +54,13 @@ const usePeerConnection = (socket: Socket) => {
   useEffect(() => {
     if (!socket || !nickname || !stream) return;
 
-    webRTCManagerRef.current = WebRTCManager.createInstance(
+    webRTCManagerRef.current = WebRTCManager.getInstance(
       socket,
       peerConnections,
       dataChannels,
       setPeers,
       setPeerMediaStatus,
       setParticipants,
-      isHost,
-      nickname
     );
 
     const handleGetOffer = async (data: {
@@ -85,7 +83,7 @@ const usePeerConnection = (socket: Socket) => {
         data.offerSendNickname,
         stream,
         false,
-        { nickname, isHost: false }
+        { id: socket.id!, nickname, isHost }
       );
 
       if (!pc) return;
@@ -117,18 +115,11 @@ const usePeerConnection = (socket: Socket) => {
       answerSendID: string;
     }) => {
       const pc = peerConnections.current[data.answerSendID];
-      if (!pc) {
-        console.error("해당 피어에 대한 연결이 없습니다:", data.answerSendID);
-        return;
-      }
+      if (!pc) return;
 
       try {
-        if (pc.signalingState === "stable") {
-          console.log("이미 시그널링이 완료된 상태입니다");
-          return;
-        }
+        if (pc.signalingState === "stable") return;
         await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-        console.log("Remote answer 설정 완료");
       } catch (error) {
         console.error("Error handling answer:", error);
       }
@@ -167,13 +158,15 @@ const usePeerConnection = (socket: Socket) => {
       };
 
       setRoomMetadata(response);
-      setIsHost(response.host.socketId === socket?.id);
+      setIsHost(response.host.socketId === socket.id);
+
       setParticipants(prev => {
-        const participantExists = prev.some(p => p.nickname === nickname);
+        const participantExists = prev.some(p => p.id === socket.id);
         if (participantExists) return prev;
 
-        return [...prev,
-        { id: socket?.id, isHost: response.host.socketId === socket?.id, nickname }]
+        return [...prev, {
+          id: socket.id!, isHost: response.host.socketId === socket.id, nickname
+        }]
       });
 
       for (const [socketId, userInfo] of Object.entries(data.connectionMap)) {
@@ -183,6 +176,7 @@ const usePeerConnection = (socket: Socket) => {
           stream,
           true,
           {
+            id: userInfo.socketId,
             nickname,
             isHost: response.host.socketId === userInfo.socketId,
           }

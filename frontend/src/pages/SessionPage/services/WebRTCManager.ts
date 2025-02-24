@@ -2,16 +2,16 @@ import { Socket } from "socket.io-client";
 import { SIGNAL_EMIT_EVENT } from "@/constants/WebSocket/SignalingEvent";
 
 interface User {
-  id?: string;
+  id: string;
   nickname: string;
-  isHost?: boolean;
+  isHost: boolean;
 }
 
 interface PeerConnection {
   peerId: string;
   peerNickname: string;
   stream: MediaStream;
-  isHost?: boolean;
+  isHost: boolean;
   reaction?: string;
 }
 
@@ -25,7 +25,7 @@ interface PeerMediaStatuses {
 }
 
 interface Participant {
-  id?: string;
+  id: string;
   nickname: string;
   isHost: boolean;
 }
@@ -51,8 +51,6 @@ class WebRTCManager {
   private setPeers;
   private setPeerMediaStatus;
   private setParticipants;
-  private isHost: boolean;
-  private nickname;
 
   private constructor(
     socket: Socket,
@@ -60,9 +58,9 @@ class WebRTCManager {
     dataChannels: { current: DataChannels },
     setPeers: (update: (prev: PeerConnection[]) => PeerConnection[]) => void,
     setPeerMediaStatus: (update: (prev: PeerMediaStatuses) => PeerMediaStatuses) => void,
-    setParticipants: (participants: Participant[]) => void,
-    isHost: boolean,
-    nickname: string,
+    setParticipants: (
+      participants: Participant[] | ((prev: Participant[]) => Participant[])
+    ) => void,
   ) {
     this.socket = socket;
     this.peerConnections = peerConnections.current;
@@ -77,19 +75,20 @@ class WebRTCManager {
     this.setPeers = setPeers;
     this.setPeerMediaStatus = setPeerMediaStatus;
     this.setParticipants = setParticipants;
-    this.isHost = isHost;
-    this.nickname = nickname;
   }
 
-  public static createInstance(
+  public static getInstance(
     socket: Socket,
     peerConnections: { current: PeerConnections },
     dataChannels: { current: DataChannels },
-    setPeers: (update: (prev: PeerConnection[]) => PeerConnection[]) => void,
-    setPeerMediaStatus: (update: (prev: PeerMediaStatuses) => PeerMediaStatuses) => void,
-    setParticipants: (participants: Participant[]) => void,
-    isHost: boolean,
-    nickname: string,
+    setPeers: (peers: PeerConnection[] | ((prev: PeerConnection[]) => PeerConnection[])) => void,
+    setPeerMediaStatus: (
+      status: Record<string, PeerMediaStatus> |
+        ((prev: Record<string, PeerMediaStatus>) => Record<string, PeerMediaStatus>)
+    ) => void,
+    setParticipants: (
+      participants: Participant[] | ((prev: Participant[]) => Participant[])
+    ) => void,
   ): WebRTCManager {
     if (WebRTCManager.instance) {
       return WebRTCManager.instance;
@@ -102,8 +101,6 @@ class WebRTCManager {
       setPeers,
       setPeerMediaStatus,
       setParticipants,
-      isHost,
-      nickname
     );
 
     return WebRTCManager.instance;
@@ -124,26 +121,34 @@ class WebRTCManager {
     stream: MediaStream,
     peerIsHost: boolean
   ) => {
-    this.setPeers(prev => {
+    this.setPeers((prev) => {
       const newPeers = prev.map(p =>
         p.peerId === peerId ? { ...p, stream } : p
       );
-      if (!prev.find(p => p.peerId === peerId)) {
+
+      const isNewPeer = !prev.find(p => p.peerId === peerId);
+
+      if (isNewPeer) {
         newPeers.push({
           peerId,
           peerNickname,
           isHost: peerIsHost,
           stream
         });
-      }
 
-      this.setParticipants([
-        { nickname: this.nickname, isHost: this.isHost },
-        ...newPeers.map((peer) => ({
-          nickname: peer.peerNickname,
-          isHost: peer.isHost || false,
-        }))
-      ]);
+        this.setParticipants((prevParticipants) => {
+          const alreadyExists = prevParticipants.some(p => p.id === peerId);
+          if (alreadyExists) {
+            return prevParticipants;
+          }
+
+          return [...prevParticipants, {
+            id: peerId,
+            nickname: peerNickname,
+            isHost: peerIsHost
+          }];
+        });
+      }
 
       return newPeers;
     });
@@ -151,17 +156,11 @@ class WebRTCManager {
 
   private peerRemoved = (peerId: string) => {
     this.setPeers(prev => {
-      const newPeers = prev.filter(p => p.peerId !== peerId);
+      return prev.filter(p => p.peerId !== peerId);
+    });
 
-      this.setParticipants([
-        { nickname: this.nickname, isHost: this.isHost },
-        ...newPeers.map((peer) => ({
-          nickname: peer.peerNickname,
-          isHost: peer.isHost || false,
-        }))
-      ]);
-
-      return newPeers;
+    this.setParticipants(prev => {
+      return prev.filter(p => p.id !== peerId);
     });
   };
 
@@ -274,7 +273,7 @@ class WebRTCManager {
     };
 
     pc.ontrack = (e) => {
-      this.peerUpdated(peerSocketId, peerNickname, e.streams[0], localUser.isHost || false);
+      this.peerUpdated(peerSocketId, peerNickname, e.streams[0], localUser.isHost);
 
       const audioTracks = e.streams[0].getAudioTracks();
       const videoTracks = e.streams[0].getVideoTracks();
@@ -283,15 +282,6 @@ class WebRTCManager {
     };
 
     pc.onconnectionstatechange = () => {
-      console.log(`Connection state changed for peer ${peerSocketId}: ${pc.connectionState}`);
-      console.log(`ICE connection state: ${pc.iceConnectionState}`);
-      console.log(`Signaling state: ${pc.signalingState}`);
-      if (pc.connectionState === "connected") {
-        console.log("Peer connection fully established");
-        // 연결이 완료되면 스트림 상태 재확인
-        const senders = pc.getSenders();
-        console.log("Active senders:", senders);
-      }
       if (pc.connectionState === "disconnected" || pc.connectionState === "failed") {
         this.handleConnectionFailure(peerSocketId, peerNickname, stream, isOffer, localUser);
       }

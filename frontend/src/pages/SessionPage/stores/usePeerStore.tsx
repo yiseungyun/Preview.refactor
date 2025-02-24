@@ -4,7 +4,7 @@ interface PeerConnection {
   peerId: string;
   peerNickname: string;
   stream: MediaStream;
-  isHost?: boolean;
+  isHost: boolean;
   reaction?: string;
 }
 

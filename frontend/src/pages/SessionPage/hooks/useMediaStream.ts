@@ -131,7 +131,7 @@ const useMediaStream = (dataChannels: DataChannels) => {
       }
       setIsVideoOn((prev) => !prev);
     } catch (error) {
-      console.error("비디오 스트림을 토글 할 수 없었습니다.", error);
+      console.error("비디오 설정을 변경할 수 없습니다.", error);
     } finally {
       setVideoLoading(false);
     }
@@ -149,7 +149,7 @@ const useMediaStream = (dataChannels: DataChannels) => {
       setIsMicOn((prev) => !prev);
       sendMessageToDataChannels({ type: "audio", status: !isMicOn });
     } catch (error) {
-      console.error("오디오 스트림을 토글 할 수 없었습니다.", error);
+      console.error("오디오 설정을 변경할 수 없습니다.", error);
     }
   };
 

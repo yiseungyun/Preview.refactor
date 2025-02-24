@@ -2,10 +2,15 @@ import { FaClipboardList, FaFolder } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import { TbCrown } from "react-icons/tb";
 import { useSessionStore } from "../stores/useSessionStore";
+import { useEffect } from "react";
 
 const SessionSidebar = () => {
   const roomMetadata = useSessionStore(state => state.roomMetadata);
-  const participants = useSessionStore(state => state.participants)
+  const participants = useSessionStore(state => state.participants);
+
+  useEffect(() => {
+    console.log(participants);
+  }, [participants]);
 
   return (
     <div className="flex flex-grow px-4 gap-2 items-stretch w-[22rem] bg-white shrink-0">
@@ -13,8 +18,7 @@ const SessionSidebar = () => {
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-3 pt-6">
             <h2 className="inline-flex gap-1 items-center text-semibold-m">
-              <FaClipboardList />
-              현재 질문
+              <FaClipboardList />현재 질문
             </h2>
             <div className="border border-accent-gray p-2 bg-transparent rounded-xl">
               {roomMetadata.currentIndex >= 0 ? (
@@ -48,11 +52,11 @@ const SessionSidebar = () => {
           </div>
           <div className="flex flex-col gap-3 mt-4">
             <h2 className="inline-flex gap-1 items-center text-semibold-m">
-              <FaFolder /> 이전 질문
+              <FaFolder />이전 질문
             </h2>
             <ul>
               {roomMetadata.currentIndex <= 0 && (
-                <li className="text-medium-s"> 여기에 이전 질문이 기록됩니다.</li>
+                <li className="text-medium-s">이전 질문이 기록됩니다.</li>
               )}
               {roomMetadata.questionListContents.map((question, index) => {
                 if (index < roomMetadata.currentIndex)

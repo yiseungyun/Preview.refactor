@@ -21,7 +21,6 @@ export const useStudyRoom = (socket: Socket, disconnect: () => void) => {
   const { setShouldBlock } = useBlockNavigate(disconnect);
   const setIsHost = useSessionStore(state => state.setIsHost);
   const setPeers = usePeerStore(state => state.setPeers);
-  const nickname = useSessionStore(state => state.nickname);
   const setNickname = useSessionStore(state => state.setNickname);
   const setParticipants = useSessionStore(state => state.setParticipants);
 
@@ -44,26 +43,15 @@ export const useStudyRoom = (socket: Socket, disconnect: () => void) => {
         toast.success(`${data.nickname}님이 호스트가 되었습니다.`);
       }
 
-      setPeers(prev => {
-        const newPeers = prev.map(peer => ({
-          ...peer,
-          isHost: peer.peerId === data.socketId
-        }));
+      setPeers(prev => prev.map(peer => ({
+        ...peer,
+        isHost: peer.peerId === data.socketId
+      })))
 
-        const updatedParticipants = [
-          {
-            nickname,
-            isHost: isLocalUserNewHost
-          },
-          ...newPeers.map(peer => ({
-            nickname: peer.peerNickname,
-            isHost: peer.isHost
-          }))
-        ];
-
-        setParticipants(updatedParticipants);
-        return newPeers;
-      });
+      setParticipants(prev => prev.map(participant => ({
+        ...participant,
+        isHost: participant.id === data.socketId
+      })));
     }
 
     const handleRoomFull = () => {

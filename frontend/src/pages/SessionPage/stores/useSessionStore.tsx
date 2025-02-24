@@ -30,7 +30,7 @@ interface UserInfo {
 }
 
 interface Participant {
-  id?: string;
+  id: string;
   nickname: string;
   isHost: boolean;
 }
@@ -83,16 +83,8 @@ export const useSessionStore = create<SessionState>((set) => ({
         ? participants(state.participants)
         : participants;
 
-      const uniqueParticipantsMap = new Map(
-        newParticipants.map(participant => [
-          participant.id,
-          participant
-        ])
-      );
-
-      const uniqueParticipants = Array.from(uniqueParticipantsMap.values());
       return {
-        participants: uniqueParticipants
+        participants: newParticipants
       } as Partial<SessionState>;
     }),
   setReady: (ready) => set({ ready }),
