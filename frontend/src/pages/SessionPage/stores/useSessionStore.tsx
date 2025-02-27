@@ -36,7 +36,7 @@ interface Participant {
 }
 
 interface SessionState {
-  nickname: string;
+  nickname: string | null;
   isHost: boolean;
   roomId: string;
   roomMetadata: RoomMetadata;
@@ -52,7 +52,7 @@ interface SessionState {
 }
 
 export const useSessionStore = create<SessionState>((set) => ({
-  nickname: "",
+  nickname: null,
   isHost: false,
   roomId: "",
   roomMetadata: {

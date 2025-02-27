@@ -5,20 +5,38 @@ import { usePeerStore } from "../stores/usePeerStore";
 import { useSessionStore } from "../stores/useSessionStore";
 import { useReaction } from "../hooks/useReaction";
 import { Socket } from "socket.io-client";
+import { useEffect, useRef, useState } from "react";
+import WebRTCManager from "../services/WebRTCManager";
 
 interface VideoLayoutProps {
-  peerConnections: React.MutableRefObject<{ [key: string]: RTCPeerConnection }>;
   socket: Socket;
 }
 
-const VideoLayout = ({
-  peerConnections,
-  socket
-}: VideoLayoutProps) => {
+const VideoLayout = ({ socket }: VideoLayoutProps) => {
   const stream = useMediaStore(state => state.stream);
   const peers = usePeerStore(state => state.peers);
   const peerMediaStatus = usePeerStore(state => state.peerMediaStatus);
   const nickname = useSessionStore(state => state.nickname);
+
+  const setPeers = usePeerStore(state => state.setPeers);
+  const setPeerMediaStatus = usePeerStore(state => state.setPeerMediaStatus);
+  const setParticipants = useSessionStore(state => state.setParticipants);
+
+  const [peerConnections, setPeerConnections] = useState<{ [key: string]: RTCPeerConnection }>({});
+  const webRTCManagerRef = useRef<WebRTCManager | null>(null);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    webRTCManagerRef.current = WebRTCManager.getInstance(
+      socket,
+      setPeers,
+      setPeerMediaStatus,
+      setParticipants,
+    );
+
+    setPeerConnections(webRTCManagerRef.current.getPeerConnection());
+  }, [socket]);
 
   const { reaction } = useReaction(socket);
   const { speakingStates } = useAudioDetector({

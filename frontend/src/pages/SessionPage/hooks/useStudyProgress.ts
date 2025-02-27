@@ -19,7 +19,10 @@ interface StudyProgressProps {
 const useStudyProgress = ({ socket, disconnect }: StudyProgressProps) => {
   const navigate = useNavigate();
   const toast = useToast();
-  const { isHost, roomId, roomMetadata, setRoomMetadata } = useSessionStore();
+  const isHost = useSessionStore(state => state.isHost);
+  const roomId = useSessionStore(state => state.roomId);
+  const roomMetadata = useSessionStore(state => state.roomMetadata);
+  const setRoomMetadata = useSessionStore(state => state.setRoomMetadata);
   const { setShouldBlock } = useBlockNavigate(disconnect);
 
   useEffect(() => {

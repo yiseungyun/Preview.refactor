@@ -1,7 +1,7 @@
 interface VideoProfileOverlayProps {
   isVideoOn: boolean;
   videoLoading: boolean;
-  nickname: string;
+  nickname: string | null;
   profileImage?: string;
 }
 

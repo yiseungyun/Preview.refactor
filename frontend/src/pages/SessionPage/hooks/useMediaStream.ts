@@ -1,36 +1,49 @@
-import { MutableRefObject, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { createDummyStream } from "./utils/createDummyStream.ts";
 import { useMediaStore } from "../stores/useMediaStore.tsx";
 import { mediaManager } from "../services/MediaManager.ts";
+import WebRTCManager from "../services/WebRTCManager.ts";
+import { Socket } from "socket.io-client";
+import { usePeerStore } from "../stores/usePeerStore.tsx";
+import { useSessionStore } from "../stores/useSessionStore.tsx";
 
 interface PeerConnectionsMap {
   [key: string]: RTCPeerConnection;
 }
 
-type DataChannels = MutableRefObject<{ [peerId: string]: RTCDataChannel }>;
 interface DataChannelMessage {
   type: "audio" | "video";
   status: boolean;
 }
 
-const useMediaStream = (dataChannels: DataChannels) => {
+const useMediaStream = (socket: Socket) => {
   const streamRef = useRef<MediaStream | null>(null);
+  const setPeers = usePeerStore(state => state.setPeers);
+  const setPeerMediaStatus = usePeerStore(state => state.setPeerMediaStatus);
+  const setParticipants = useSessionStore(state => state.setParticipants);
+  const stream = useMediaStore(state => state.stream);
+  const setStream = useMediaStore(state => state.setStream);
+  const setVideoLoading = useMediaStore(state => state.setVideoLoading);
+  const setUserAudioDevices = useMediaStore(state => state.setUserAudioDevices);
+  const setUserVideoDevices = useMediaStore(state => state.setUserVideoDevices);
+  const isMicOn = useMediaStore(state => state.isMicOn);
+  const isVideoOn = useMediaStore(state => state.isVideoOn);
+  const setIsMicOn = useMediaStore(state => state.setIsMicOn);
+  const setIsVideoOn = useMediaStore(state => state.setIsVideoOn);
+  const selectedAudioDeviceId = useMediaStore(state => state.selectedAudioDeviceId);
+  const selectedVideoDeviceId = useMediaStore(state => state.selectedVideoDeviceId);
 
-  const {
-    stream,
-    setStream,
-    setVideoLoading,
-    setUserAudioDevices,
-    setUserVideoDevices,
-    isMicOn,
-    isVideoOn,
-    setIsMicOn,
-    setIsVideoOn,
-    selectedAudioDeviceId,
-    selectedVideoDeviceId
-  } = useMediaStore();
+  const webRTCManagerRef = useRef<WebRTCManager | null>(null);
 
   useEffect(() => {
+    if (!socket) return;
+
+    webRTCManagerRef.current = WebRTCManager.getInstance(
+      socket,
+      setPeers,
+      setPeerMediaStatus,
+      setParticipants,
+    )
     const initializeDevices = async () => {
       try {
         const { audioDevices, videoDevices, hasPermission } = await mediaManager.getUserDevices();
@@ -47,18 +60,16 @@ const useMediaStream = (dataChannels: DataChannels) => {
     };
 
     initializeDevices();
-  }, []);
 
-  useEffect(() => {
     return () => {
       mediaManager.stopTracks(streamRef.current);
+      setStream(null);
     };
-  }, []);
+  }, [socket]);
 
   const getMedia = async () => {
     try {
       mediaManager.stopTracks(streamRef.current);
-      setStream(null);
       setVideoLoading(true);
 
       const videoStream = isVideoOn
@@ -85,7 +96,10 @@ const useMediaStream = (dataChannels: DataChannels) => {
   };
 
   const sendMessageToDataChannels = (message: DataChannelMessage) => {
-    Object.values(dataChannels.current).forEach((channel) => {
+    if (!webRTCManagerRef.current) return;
+
+    const dataChannels = webRTCManagerRef.current.getDataChannels();
+    Object.values(dataChannels).forEach((channel) => {
       channel.send(JSON.stringify(message));
     });
   };

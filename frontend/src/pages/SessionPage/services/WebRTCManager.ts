@@ -12,7 +12,7 @@ interface PeerConnection {
   peerNickname: string;
   stream: MediaStream;
   isHost: boolean;
-  reaction?: string;
+  reaction: string;
 }
 
 interface PeerMediaStatus {
@@ -45,8 +45,8 @@ class WebRTCManager {
 
   private socket;
   private pcConfig;
-  private peerConnections;
-  private dataChannels;
+  private peerConnections: PeerConnections = {};
+  private dataChannels: DataChannels = {};
   private pendingIceCandidates: Map<string, RTCIceCandidate[]> = new Map();
   private setPeers;
   private setPeerMediaStatus;
@@ -54,8 +54,6 @@ class WebRTCManager {
 
   private constructor(
     socket: Socket,
-    peerConnections: { current: PeerConnections },
-    dataChannels: { current: DataChannels },
     setPeers: (update: (prev: PeerConnection[]) => PeerConnection[]) => void,
     setPeerMediaStatus: (update: (prev: PeerMediaStatuses) => PeerMediaStatuses) => void,
     setParticipants: (
@@ -63,8 +61,6 @@ class WebRTCManager {
     ) => void,
   ) {
     this.socket = socket;
-    this.peerConnections = peerConnections.current;
-    this.dataChannels = dataChannels.current;
     this.pcConfig = {
       iceServers: [{
         urls: import.meta.env.VITE_STUN_SERVER_URL,
@@ -79,8 +75,6 @@ class WebRTCManager {
 
   public static getInstance(
     socket: Socket,
-    peerConnections: { current: PeerConnections },
-    dataChannels: { current: DataChannels },
     setPeers: (peers: PeerConnection[] | ((prev: PeerConnection[]) => PeerConnection[])) => void,
     setPeerMediaStatus: (
       status: Record<string, PeerMediaStatus> |
@@ -96,8 +90,6 @@ class WebRTCManager {
 
     WebRTCManager.instance = new WebRTCManager(
       socket,
-      peerConnections,
-      dataChannels,
       setPeers,
       setPeerMediaStatus,
       setParticipants,
@@ -113,6 +105,14 @@ class WebRTCManager {
     this.peerConnections = {};
     this.dataChannels = {};
     WebRTCManager.instance = null;
+  }
+
+  public getPeerConnection() {
+    return this.peerConnections;
+  }
+
+  public getDataChannels() {
+    return this.dataChannels;
   }
 
   private peerUpdated = (
@@ -133,7 +133,8 @@ class WebRTCManager {
           peerId,
           peerNickname,
           isHost: peerIsHost,
-          stream
+          stream,
+          reaction: ""
         });
 
         this.setParticipants((prevParticipants) => {

@@ -10,8 +10,8 @@ interface MediaState {
 
   userVideoDevices: MediaDeviceInfo[];
   userAudioDevices: MediaDeviceInfo[];
-  selectedVideoDeviceId: string;
-  selectedAudioDeviceId: string;
+  selectedVideoDeviceId: string | null;
+  selectedAudioDeviceId: string | null;
 
   setStream: (stream: MediaStream | null) => void;
   setIsVideoOn: SetState<boolean>;
@@ -32,8 +32,8 @@ export const useMediaStore = create<MediaState>((set) => ({
 
   userVideoDevices: [],
   userAudioDevices: [],
-  selectedVideoDeviceId: "",
-  selectedAudioDeviceId: "",
+  selectedVideoDeviceId: null,
+  selectedAudioDeviceId: null,
 
   setStream: (stream) => set({ stream }),
   setIsVideoOn: (value) => set((state) => ({

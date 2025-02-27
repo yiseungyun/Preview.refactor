@@ -38,8 +38,6 @@ interface RoomJoinResponse {
 }
 
 const usePeerConnection = (socket: Socket) => {
-  const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
-  const dataChannels = useRef<{ [peerId: string]: RTCDataChannel }>({});
   const toast = useToast();
   const setPeers = usePeerStore(state => state.setPeers);
   const setPeerMediaStatus = usePeerStore(state => state.setPeerMediaStatus);
@@ -56,19 +54,20 @@ const usePeerConnection = (socket: Socket) => {
 
     webRTCManagerRef.current = WebRTCManager.getInstance(
       socket,
-      peerConnections,
-      dataChannels,
       setPeers,
       setPeerMediaStatus,
       setParticipants,
     );
+
+    const peerConnections = webRTCManagerRef.current.getPeerConnection();
+    const dataChannels = webRTCManagerRef.current.getDataChannels();
 
     const handleGetOffer = async (data: {
       sdp: RTCSessionDescription;
       offerSendID: string;
       offerSendNickname: string;
     }) => {
-      const existingPc = peerConnections.current[data.offerSendID];
+      const existingPc = peerConnections[data.offerSendID];
       if (existingPc) {
         if (existingPc.connectionState === "failed" ||
           existingPc.connectionState === "disconnected") {
@@ -114,7 +113,7 @@ const usePeerConnection = (socket: Socket) => {
       sdp: RTCSessionDescription;
       answerSendID: string;
     }) => {
-      const pc = peerConnections.current[data.answerSendID];
+      const pc = peerConnections[data.answerSendID];
       if (!pc) return;
 
       try {
@@ -129,7 +128,7 @@ const usePeerConnection = (socket: Socket) => {
       candidate: RTCIceCandidate;
       candidateSendID: string;
     }) => {
-      const pc = peerConnections.current[data.candidateSendID];
+      const pc = peerConnections[data.candidateSendID];
       if (!pc) return;
 
       try {
@@ -165,7 +164,7 @@ const usePeerConnection = (socket: Socket) => {
         if (participantExists) return prev;
 
         return [...prev, {
-          id: socket.id!, isHost: response.host.socketId === socket.id, nickname
+          id: socket.id!, nickname, isHost: response.host.socketId === socket.id
         }]
       });
 
@@ -196,22 +195,12 @@ const usePeerConnection = (socket: Socket) => {
     socket.on(SESSION_LISTEN_EVENT.QUIT, handleUserExit);
 
     return () => {
-      if (webRTCManagerRef.current) {
-        Object.keys(peerConnections.current).forEach(peerId => {
-          webRTCManagerRef.current?.closePeerConnection(peerId);
-        });
-        webRTCManagerRef.current = null;
-      };
+      webRTCManagerRef.current?.cleanup();
+      webRTCManagerRef.current = null;
 
-      Object.values(dataChannels.current).forEach(channel => {
+      Object.values(dataChannels).forEach(channel => {
         channel.close();
       });
-      dataChannels.current = {};
-
-      Object.values(peerConnections.current).forEach(pc => {
-        pc.close();
-      });
-      peerConnections.current = {};
 
       socket.off(SIGNAL_LISTEN_EVENT.OFFER, handleGetOffer);
       socket.off(SIGNAL_LISTEN_EVENT.ANSWER, handleGetAnswer);
@@ -220,8 +209,6 @@ const usePeerConnection = (socket: Socket) => {
       socket.off(SESSION_LISTEN_EVENT.QUIT, handleUserExit);
     };
   }, [socket, nickname, stream]);
-
-  return { peerConnections, dataChannels };
 };
 
 export default usePeerConnection;

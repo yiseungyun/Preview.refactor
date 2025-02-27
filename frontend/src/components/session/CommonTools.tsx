@@ -18,8 +18,10 @@ import { useSessionStore } from "@/pages/SessionPage/stores/useSessionStore";
 import useBlockNavigate from "@/pages/SessionPage/hooks/useBlockNavigate";
 import { useReaction } from "@/pages/SessionPage/hooks/useReaction";
 import useMediaStream from "@/pages/SessionPage/hooks/useMediaStream";
-import usePeerConnection from "@/pages/SessionPage/hooks/usePeerConnection";
 import { Socket } from "socket.io-client";
+import { usePeerStore } from "@/pages/SessionPage/stores/usePeerStore";
+import WebRTCManager from "@/pages/SessionPage/services/WebRTCManager";
+import { useEffect, useRef, useState } from "react";
 
 interface CommonToolsProps {
   socket: Socket;
@@ -33,15 +35,31 @@ const CommonTools = ({ socket, disconnect }: CommonToolsProps) => {
 
   const { setShouldBlock } = useBlockNavigate(disconnect);
   const { emitReaction } = useReaction(socket);
-  const { peerConnections, dataChannels } = usePeerConnection(socket);
-  const { handleMicToggle, handleVideoToggle } = useMediaStream(dataChannels);
+  const { handleMicToggle, handleVideoToggle } = useMediaStream(socket);
   const { isVideoOn, isMicOn, userVideoDevices, userAudioDevices, videoLoading, setSelectedVideoDeviceId, setSelectedAudioDeviceId } = useMediaStore();
   const { roomId, isHost } = useSessionStore();
 
-  if (!socket) return null;
+  const setPeers = usePeerStore(state => state.setPeers);
+  const setPeerMediaStatus = usePeerStore(state => state.setPeerMediaStatus);
+  const setParticipants = useSessionStore(state => state.setParticipants);
+
+  const [peerConnections, setPeerConnections] = useState<{ [key: string]: RTCPeerConnection }>({});
+  const webRTCManagerRef = useRef<WebRTCManager | null>(null);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    webRTCManagerRef.current = WebRTCManager.getInstance(
+      socket,
+      setPeers,
+      setPeerMediaStatus,
+      setParticipants,
+    )
+    setPeerConnections(webRTCManagerRef.current.getPeerConnection());
+  }, [socket]);
 
   const handleVideoClick = async () => {
-    await handleVideoToggle(peerConnections.current);
+    await handleVideoToggle(peerConnections);
   }
 
   const handleMicClick = async () => {

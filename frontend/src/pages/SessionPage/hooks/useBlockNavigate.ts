@@ -33,11 +33,6 @@ const useBlockNavigate = (disconnect: () => void) => {
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
-
-  useEffect(() => {
-    return () => {
       shouldBlockRef.current = false;
     };
   }, []);

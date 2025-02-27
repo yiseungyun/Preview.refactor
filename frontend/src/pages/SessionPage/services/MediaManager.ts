@@ -27,7 +27,7 @@ class MediaManager {
 
   async getMediaStream(
     mediaType: MediaStreamType,
-    deviceId?: string,
+    deviceId: string | null,
   ) {
     try {
       const constraints = {

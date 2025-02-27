@@ -3,7 +3,7 @@ import { convertAmplitudeToDecibels, extractAudioLevelFromStats } from "./utils/
 
 interface UseAudioDetectorProps {
   localStream: MediaStream | null;
-  peerConnections: React.MutableRefObject<{ [key: string]: RTCPeerConnection }>;
+  peerConnections: { [key: string]: RTCPeerConnection };
   audioThreshold?: number;
 }
 
@@ -30,7 +30,7 @@ export const useAudioDetector = ({
 
   useEffect(() => {
     const checkConnections = setInterval(() => {
-      const currentCount = Object.keys(peerConnections.current).length;
+      const currentCount = Object.keys(peerConnections).length;
       if (currentCount !== connectionCount) {
         setConnectionCount(currentCount);
       }
@@ -76,7 +76,7 @@ export const useAudioDetector = ({
 
     // 각 피어에 대해 오디오 레벨 모니터링
     if (connectionCount > 0) {
-      Object.entries(peerConnections.current).forEach(([peerId, connection]) => {
+      Object.entries(peerConnections).forEach(([peerId, connection]) => {
         clearInterval(intervalRefs.current[peerId]);
         intervalRefs.current[peerId] = setInterval(async () => {
           try {

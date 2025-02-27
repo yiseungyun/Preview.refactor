@@ -24,7 +24,7 @@ const MediaPreviewModal = ({
   onConfirm,
   onReject
 }: MediaPreviewModalProps) => {
-  const [preview, setPreview] = useState<MediaStream | undefined>();
+  const [preview, setPreview] = useState<MediaStream | null>(null);
   const toast = useToast();
   const { nickname: username } = useAuth();
 
@@ -40,7 +40,7 @@ const MediaPreviewModal = ({
   }, [username]);
 
   const getMediaPreview = useCallback(async () => {
-    const mediaStream = await mediaManager.getMediaStream("video");
+    const mediaStream = await mediaManager.getMediaStream("video", null);
     if (!mediaStream) {
       toast.error("비디오 장치를 찾을 수 없습니다.");
       return;
@@ -93,12 +93,11 @@ const MediaPreviewModal = ({
         <h3 className="text-bold-m">비디오 미리보기</h3>
         <div className="w-[400px] p-4">
           <VideoContainer
-            nickname={nickname || ""}
+            nickname={nickname}
             isLocal={true}
             isSpeaking={false}
             reaction={""}
-            stream={isVideoOn ? preview : undefined}
-            videoCount={1}
+            stream={isVideoOn ? preview : null}
             isVideoOn={isVideoOn}
           />
         </div>
@@ -109,15 +108,15 @@ const MediaPreviewModal = ({
           >
             <input
               defaultChecked={!isVideoOn || false}
-              className={"w-6 h-6"}
-              type={"checkbox"}
+              className="w-6 h-6"
+              type="checkbox"
               onChange={() => setIsVideoOn(!isVideoOn)}
             />
             <span>내 비디오 끄고 참가하기</span>
           </label>
           <input
             className="rounded-custom-m px-4 py-2 bg-gray-50 hover:bg-gray-100"
-            type={"text"}
+            type="text"
             value={tempNickname}
             placeholder={"닉네임 변경"}
             onChange={(e) => setTempNickname(e.target.value)}

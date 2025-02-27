@@ -23,11 +23,13 @@ const SessionPage = () => {
   const toast = useToast();
   const navigate = useNavigate();
 
-  const { isVideoOn, selectedVideoDeviceId, selectedAudioDeviceId } = useMediaStore();
-  const { ready, setRoomId } = useSessionStore();
+  const isVideoOn = useMediaStore(state => state.isVideoOn);
+  const selectedVideoDeviceId = useMediaStore(state => state.selectedVideoDeviceId);
+  const selectedAudioDeviceId = useMediaStore(state => state.selectedAudioDeviceId);
+  const setRoomId = useSessionStore(state => state.setRoomId);
 
-  const { peerConnections, dataChannels } = usePeerConnection(socket!);
-  const { getMedia } = useMediaStream(dataChannels);
+  usePeerConnection(socket!);
+  const { getMedia } = useMediaStream(socket!);
   useStudyRoom(socket!, disconnect);
   const mediaPreviewModal = useModal();
 
@@ -95,11 +97,7 @@ const SessionPage = () => {
       <div className="w-full flex flex-1 min-h-0">
         <div className="camera-area flex flex-col w-full flex-grow bg-gray-50 items-center">
           <SessionHeader />
-          {!ready ? (
-            <div className="h-full"></div>
-          ) : (
-            <VideoLayout peerConnections={peerConnections} socket={socket!} />
-          )}
+          <VideoLayout socket={socket!} />
           <SessionToolbar socket={socket!} disconnect={disconnect} />
         </div>
         <SidebarContainer>
