@@ -22,8 +22,7 @@ const IntroPage = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const handleScroll = () => {
     if (!contentRef.current) return;
-    const scrollTop = (contentRef.current.parentNode as HTMLDivElement)
-      .scrollTop;
+    const scrollTop = (contentRef.current.parentNode as HTMLDivElement).scrollTop;
     if (scrollTop && scrollTop > 10) {
       setIsScrolled(true);
     } else {
@@ -64,7 +63,6 @@ const IntroPage = () => {
             </p>
             <img className="w-[40rem] mx-auto" src="preview-logo3.png" alt="preview 로고" />
             <div>
-
             </div>
           </div>
           {!isScrolled && (
@@ -73,7 +71,6 @@ const IntroPage = () => {
             </div>
           )}
         </div>
-
         <div className="py-32 px-8 opacity-0" ref={cards[0]}>
           <RightCard
             index={"01"}
@@ -95,7 +92,6 @@ const IntroPage = () => {
             onClick={() => navigate("/questions/create")}
           />
         </div>
-
         <div className="py-32 px-8 bg-gray-900/50 opacity-0" ref={cards[1]}>
           <LeftCard
             index={"02"}

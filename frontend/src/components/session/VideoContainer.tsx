@@ -8,17 +8,17 @@ import DisplayMediaStream from "./DisplayMediaStream.tsx";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import VideoProfileOverlay from "@components/session/VideoProfileOverlay.tsx";
 import VideoReactionBox from "@components/session/VideoReactionBox.tsx";
+import { useMediaStore } from "@/pages/SessionPage/stores/useMediaStore.tsx";
+import { usePeerStore } from "@/pages/SessionPage/stores/usePeerStore.tsx";
 
 interface VideoContainerProps {
-  nickname: string;
-  isMicOn: boolean;
-  isVideoOn: boolean;
+  nickname: string | null;
   isLocal: boolean;
   isSpeaking: boolean;
   reaction: string;
-  stream: MediaStream | undefined;
-  videoLoading?: boolean;
-  videoCount: number;
+  stream: MediaStream | null;
+  isMicOn?: boolean;
+  isVideoOn?: boolean;
 }
 
 const getVideoLayoutClass = (count: number) => {
@@ -48,39 +48,29 @@ const getVideoLayoutClass = (count: number) => {
 
 const VideoContainer = ({
   nickname,
-  isMicOn,
-  isVideoOn,
   isLocal,
   isSpeaking,
   reaction,
   stream,
-  videoLoading,
-  videoCount,
+  isVideoOn = false,
+  isMicOn = false
 }: VideoContainerProps) => {
-  const renderReaction = (reactionType: string) => {
-    switch (reactionType) {
-      case "thumbs_up":
-        return "👍";
-      case "":
-      default:
-        return "";
-    }
-  };
+  isMicOn = isLocal ? useMediaStore(state => state.isMicOn) : isMicOn;
+  isVideoOn = isLocal ? useMediaStore(state => state.isVideoOn) : isVideoOn;
+  const videoLoading = isLocal ? useMediaStore(state => state.videoLoading) : null;
+  const peers = usePeerStore(state => state.peers);
+  const videoCount = 1 + peers.length;
 
   const renderMicIcon = () => {
-    return isMicOn ? (
-      <BsMic className="text-white" />
-    ) : (
-      <BsMicMute className="text-point-1" />
-    );
+    return isMicOn
+      ? <BsMic className="text-white" />
+      : <BsMicMute className="text-point-1" />
   };
 
   const renderVideoIcon = () => {
-    return isVideoOn ? (
-      <BsCameraVideo className="text-white" />
-    ) : (
-      <BsCameraVideoOff className="text-point-1" />
-    );
+    return isVideoOn
+      ? <BsCameraVideo className="text-white" />
+      : <BsCameraVideoOff className="text-point-1" />
   };
 
   const speakingEffect = isSpeaking
@@ -90,28 +80,20 @@ const VideoContainer = ({
   const localNickName = isLocal ? "text-semibold-r" : "text-medium-m";
 
   return (
-    <div
-      className={`relative ${getVideoLayoutClass(videoCount)} ${speakingEffect} rounded-custom-l aspect-[4/3]`}
-    >
+    <div className={`relative ${getVideoLayoutClass(videoCount)} ${speakingEffect} rounded-custom-l aspect-[4/3]`}>
       <div className="absolute inset-0 bg-gray-black rounded-custom-l overflow-hidden z-10">
-        <DisplayMediaStream mediaStream={stream!} isLocal={isLocal} />
+        <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
-          <p
-            className={`bg-grayscale-500 ${localNickName} bg-opacity-70 text-white px-2 py-0.5 rounded`}
-          >
+          <p className={`bg-grayscale-500 ${localNickName} bg-opacity-70 text-white px-2 py-0.5 rounded`}>
             {isVideoOn && nickname}
           </p>
-          <div className={"inline-flex gap-4 px-2 items-center"}>
+          <div className="inline-flex gap-4 px-2 items-center">
             {renderMicIcon()}
             {renderVideoIcon()}
           </div>
         </div>
         {videoLoading && (
-          <div
-            className={
-              "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white animate-pulse text-3xl"
-            }
-          >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white animate-pulse text-3xl">
             <LoadingIndicator loadingState={videoLoading} type={"spinner"} />
           </div>
         )}
@@ -121,7 +103,7 @@ const VideoContainer = ({
         videoLoading={videoLoading || false}
         nickname={nickname}
       />
-      <VideoReactionBox reaction={reaction} renderReaction={renderReaction} />
+      <VideoReactionBox reaction={reaction} />
     </div>
   );
 };

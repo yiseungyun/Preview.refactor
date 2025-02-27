@@ -1,11 +1,19 @@
 interface VideoReactionBoxProps {
   reaction: string;
-  renderReaction: (reactionType: string) => string;
 }
+
+const renderReaction = (reactionType: string) => {
+  switch (reactionType) {
+    case "thumbs_up":
+      return "👍";
+    case "":
+    default:
+      return "";
+  }
+};
 
 const VideoReactionBox = ({
   reaction,
-  renderReaction,
 }: VideoReactionBoxProps) => {
   return (
     <div

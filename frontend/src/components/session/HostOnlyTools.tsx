@@ -1,16 +1,13 @@
 import { MdArrowForwardIos, MdArrowBackIosNew } from "react-icons/md";
 import { useEffect, useState } from "react";
 import ToolTip from "../common/ToolTip";
+import { useSessionStore } from "@/pages/SessionPage/stores/useSessionStore";
+import useStudyProgress from "@/pages/SessionPage/hooks/useStudyProgress";
+import { Socket } from "socket.io-client";
 
-// 툴바에서 호스트만 사용가능 도구들 분리
 interface HostOnlyToolsProps {
-  isHost: boolean;
-  isInProgress: boolean;
-  stopStudySession: () => void;
-  startStudySession: () => void;
-  requestChangeIndex: (type: "next" | "prev") => void;
-  currentIndex: number;
-  maxQuestionLength: number;
+  socket: Socket;
+  disconnect: () => void;
 }
 
 const COOLDOWN_TIME_MS = 2000;
@@ -18,16 +15,11 @@ const studyButtonClass = "bg-transparent rounded-xl border h-10 px-3 py-2 text-m
 const directionButtonClass = "relative inline-flex items-center bg-transparent rounded-full border-custom-s h-10 px-3 py-2 disabled:opacity-50 overflow-hidden";
 const disabledClass = "origin-left absolute w-full h-full bg-gray-400/50 top-0 left-0 animate-progress";
 
-const HostOnlyTools = ({
-  isHost,
-  isInProgress,
-  stopStudySession,
-  startStudySession,
-  requestChangeIndex,
-  currentIndex,
-  maxQuestionLength,
-}: HostOnlyToolsProps) => {
+const HostOnlyTools = ({ socket, disconnect }: HostOnlyToolsProps) => {
   const [changeCooldown, setChangeCooldown] = useState(false);
+  const { isHost, roomMetadata } = useSessionStore();
+  const { requestChangeIndex, startStudySession, stopStudySession } = useStudyProgress({ socket, disconnect });
+  const maxQuestionLength = roomMetadata.questionListContents.length;
 
   useEffect(() => {
     if (!changeCooldown) return;
@@ -54,33 +46,29 @@ const HostOnlyTools = ({
     <>
       <div className={"inline-flex gap-4 items-center mx-8"}>
         {
-          isInProgress ?
+          roomMetadata.inProgress ?
             <button
               className={studyButtonClass}
-              onClick={() => {
-                stopStudySession();
-              }}
+              onClick={() => { stopStudySession() }}
             >
               스터디 종료하기
             </button>
             : <button
               className={studyButtonClass}
-              onClick={() => {
-                startStudySession();
-              }}
+              onClick={() => { startStudySession() }}
             >
               스터디 시작하기
             </button>
         }
       </div>
-      {isInProgress && (
+      {roomMetadata.inProgress && (
         <div className={"study-toolbar"}>
           <ToolTip text="이전 질문">
             <button
               onClick={() => handleChangeIndex("prev")}
               className={directionButtonClass}
               aria-label={"이전 질문 버튼"}
-              disabled={changeCooldown || currentIndex === 0}
+              disabled={changeCooldown || roomMetadata.currentIndex === 0}
             >
               <MdArrowBackIosNew />
               {changeCooldown && <div className={disabledClass}></div>}
@@ -91,9 +79,7 @@ const HostOnlyTools = ({
               onClick={() => handleChangeIndex("next")}
               className={directionButtonClass}
               aria-label={"다음 질문 버튼"}
-              disabled={
-                changeCooldown || currentIndex === maxQuestionLength - 1
-              }
+              disabled={changeCooldown || roomMetadata.currentIndex === maxQuestionLength - 1}
             >
               <MdArrowForwardIos />
               {changeCooldown && <div className={disabledClass}></div>}

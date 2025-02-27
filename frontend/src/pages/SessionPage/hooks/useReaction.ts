@@ -1,23 +1,20 @@
 import {
-  Dispatch,
-  SetStateAction,
   useCallback,
   useEffect,
   useRef,
   useState,
 } from "react";
+import { SESSION_EMIT_EVENT, SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
+import { usePeerStore } from "../stores/usePeerStore";
+import { useSessionStore } from "../stores/useSessionStore";
 import { Socket } from "socket.io-client";
-import { PeerConnection } from "@/pages/SessionPage/types/session";
-import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 
-const REACTION_DURATION = 3000;
+const REACTION_DURATION_MS = 3000;
 
-export const useReaction = (
-  socket: Socket | null,
-  sessionId: string,
-  setPeers: Dispatch<SetStateAction<PeerConnection[]>>
-) => {
+export const useReaction = (socket: Socket) => {
   const [reaction, setReaction] = useState("");
+  const setPeers = usePeerStore(state => state.setPeers);
+  const roomId = useSessionStore(state => state.roomId);
 
   const reactionTimeouts = useRef<{
     [key: string]: ReturnType<typeof setTimeout>;
@@ -27,13 +24,11 @@ export const useReaction = (
     (reactionType: string) => {
       if (socket) {
         socket.emit(SESSION_EMIT_EVENT.REACTION, {
-          roomId: sessionId,
+          roomId: roomId,
           reactionType: reactionType,
         });
       }
-    },
-    [socket, sessionId]
-  );
+    }, [socket, roomId]);
 
   const addReaction = useCallback(
     (senderId: string, reactionType: string) => {
@@ -42,9 +37,7 @@ export const useReaction = (
           peer.peerId === senderId ? { ...peer, reaction: reactionType } : peer
         )
       );
-    },
-    [setPeers]
-  );
+    }, [setPeers]);
 
   const handleReaction = ({
     socketId,
@@ -62,23 +55,28 @@ export const useReaction = (
       reactionTimeouts.current[socketId] = setTimeout(() => {
         setReaction("");
         delete reactionTimeouts.current[socketId];
-      }, REACTION_DURATION);
+      }, REACTION_DURATION_MS);
     } else {
       addReaction(socketId, reactionType);
       reactionTimeouts.current[socketId] = setTimeout(() => {
         addReaction(socketId, "");
         delete reactionTimeouts.current[socketId];
-      }, REACTION_DURATION);
+      }, REACTION_DURATION_MS);
     }
   };
 
   useEffect(() => {
+    if (!socket) return;
+    socket.on(SESSION_LISTEN_EVENT.REACTION, handleReaction);
+
     return () => {
+      socket.off(SESSION_LISTEN_EVENT.REACTION, handleReaction);
+
       Object.values(reactionTimeouts.current).forEach((timeout) =>
         clearTimeout(timeout)
       );
-    };
-  }, []);
+    }
+  }, [socket]);
 
-  return { reaction, emitReaction, handleReaction };
+  return { reaction, emitReaction };
 };
