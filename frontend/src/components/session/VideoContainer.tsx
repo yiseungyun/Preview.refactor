@@ -9,14 +9,14 @@ import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import VideoProfileOverlay from "@components/session/VideoProfileOverlay.tsx";
 import VideoReactionBox from "@components/session/VideoReactionBox.tsx";
 import { useMediaStore } from "@/pages/SessionPage/stores/useMediaStore.tsx";
+import { usePeerStore } from "@/pages/SessionPage/stores/usePeerStore.tsx";
 
 interface VideoContainerProps {
-  nickname: string;
+  nickname: string | null;
   isLocal: boolean;
   isSpeaking: boolean;
   reaction: string;
-  stream: MediaStream | undefined;
-  videoCount: number;
+  stream: MediaStream | null;
   isMicOn?: boolean;
   isVideoOn?: boolean;
 }
@@ -52,23 +52,14 @@ const VideoContainer = ({
   isSpeaking,
   reaction,
   stream,
-  videoCount,
   isVideoOn = false,
   isMicOn = false
 }: VideoContainerProps) => {
   isMicOn = isLocal ? useMediaStore(state => state.isMicOn) : isMicOn;
   isVideoOn = isLocal ? useMediaStore(state => state.isVideoOn) : isVideoOn;
   const videoLoading = isLocal ? useMediaStore(state => state.videoLoading) : null;
-
-  const renderReaction = (reactionType: string) => {
-    switch (reactionType) {
-      case "thumbs_up":
-        return "👍";
-      case "":
-      default:
-        return "";
-    }
-  };
+  const peers = usePeerStore(state => state.peers);
+  const videoCount = 1 + peers.length;
 
   const renderMicIcon = () => {
     return isMicOn
@@ -91,7 +82,7 @@ const VideoContainer = ({
   return (
     <div className={`relative ${getVideoLayoutClass(videoCount)} ${speakingEffect} rounded-custom-l aspect-[4/3]`}>
       <div className="absolute inset-0 bg-gray-black rounded-custom-l overflow-hidden z-10">
-        <DisplayMediaStream mediaStream={stream!} isLocal={isLocal} />
+        <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
           <p className={`bg-grayscale-500 ${localNickName} bg-opacity-70 text-white px-2 py-0.5 rounded`}>
             {isVideoOn && nickname}
@@ -112,7 +103,7 @@ const VideoContainer = ({
         videoLoading={videoLoading || false}
         nickname={nickname}
       />
-      <VideoReactionBox reaction={reaction} renderReaction={renderReaction} />
+      <VideoReactionBox reaction={reaction} />
     </div>
   );
 };

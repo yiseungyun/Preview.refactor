@@ -13,8 +13,8 @@ const REACTION_DURATION_MS = 3000;
 
 export const useReaction = (socket: Socket) => {
   const [reaction, setReaction] = useState("");
-  const { setPeers } = usePeerStore();
-  const { roomId } = useSessionStore();
+  const setPeers = usePeerStore(state => state.setPeers);
+  const roomId = useSessionStore(state => state.roomId);
 
   const reactionTimeouts = useRef<{
     [key: string]: ReturnType<typeof setTimeout>;

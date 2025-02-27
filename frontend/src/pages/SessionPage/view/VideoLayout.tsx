@@ -16,9 +16,9 @@ const VideoLayout = ({
   socket
 }: VideoLayoutProps) => {
   const stream = useMediaStore(state => state.stream);
-  const { peers, peerMediaStatus } = usePeerStore();
-  const { nickname } = useSessionStore();
-  const videoCount = 1 + peers.length;
+  const peers = usePeerStore(state => state.peers);
+  const peerMediaStatus = usePeerStore(state => state.peerMediaStatus);
+  const nickname = useSessionStore(state => state.nickname);
 
   const { reaction } = useReaction(socket);
   const { speakingStates } = useAudioDetector({
@@ -33,29 +33,19 @@ const VideoLayout = ({
           nickname={nickname}
           isLocal={true}
           isSpeaking={speakingStates["local"]}
-          reaction={reaction || ""}
-          stream={stream!}
-          videoCount={videoCount}
+          reaction={reaction}
+          stream={stream}
         />
         {peers.map((peer) => (
           <VideoContainer
             key={peer.peerId}
             nickname={peer.peerNickname}
-            isMicOn={
-              peerMediaStatus[peer.peerId]
-                ? peerMediaStatus[peer.peerId].audio
-                : true
-            }
-            isVideoOn={
-              peerMediaStatus[peer.peerId]
-                ? peerMediaStatus[peer.peerId].video
-                : true
-            }
+            isMicOn={peerMediaStatus[peer.peerId].audio}
+            isVideoOn={peerMediaStatus[peer.peerId].video}
             isLocal={false}
             isSpeaking={speakingStates[peer.peerId]}
-            reaction={peer.reaction || ""}
+            reaction={peer.reaction}
             stream={peer.stream}
-            videoCount={videoCount}
           />
         ))}
       </div>
