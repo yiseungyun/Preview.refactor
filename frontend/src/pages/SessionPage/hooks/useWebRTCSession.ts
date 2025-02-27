@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 import WebRTCManager from "../services/WebRTCManager.ts";
 import { SIGNAL_EMIT_EVENT, SIGNAL_LISTEN_EVENT } from "@/constants/WebSocket/SignalingEvent.ts";
-import { useMediaStore } from "../stores/useMediaStore";
+import { useMediaStore } from "../stores/useMediaStore.tsx";
 import { SESSION_LISTEN_EVENT } from "@/constants/WebSocket/SessionEvent.ts";
-import { useSessionStore } from "../stores/useSessionStore";
+import { useSessionStore } from "../stores/useSessionStore.tsx";
 import useToast from "@/hooks/useToast";
-import { usePeerStore } from "../stores/usePeerStore";
+import { usePeerStore } from "../stores/usePeerStore.tsx";
 import { Socket } from "socket.io-client";
 
 interface UserInfo {
@@ -37,7 +37,7 @@ interface RoomJoinResponse {
   currentIndex: number;
 }
 
-const usePeerConnection = (socket: Socket) => {
+const useWebRTCSession = (socket: Socket) => {
   const toast = useToast();
   const setPeers = usePeerStore(state => state.setPeers);
   const setPeerMediaStatus = usePeerStore(state => state.setPeerMediaStatus);
@@ -211,4 +211,4 @@ const usePeerConnection = (socket: Socket) => {
   }, [socket, nickname, stream]);
 };
 
-export default usePeerConnection;
+export default useWebRTCSession;

@@ -10,7 +10,7 @@ import useSocket from "@/hooks/useSocket";
 import { useMediaStore } from "./stores/useMediaStore";
 import { useSessionStore } from "./stores/useSessionStore";
 import useModal from "@/hooks/useModal";
-import usePeerConnection from "./hooks/usePeerConnection";
+import useWebRTCSession from "./hooks/useWebRTCSession";
 import { useEffect } from "react";
 import useMediaStream from "./hooks/useMediaStream";
 import { Socket } from "socket.io-client";
@@ -28,7 +28,7 @@ const SessionPage = () => {
   const selectedAudioDeviceId = useMediaStore(state => state.selectedAudioDeviceId);
   const setRoomId = useSessionStore(state => state.setRoomId);
 
-  usePeerConnection(socket!);
+  useWebRTCSession(socket!);
   const { getMedia } = useMediaStream(socket!);
   useStudyRoom(socket!, disconnect);
   const mediaPreviewModal = useModal();
