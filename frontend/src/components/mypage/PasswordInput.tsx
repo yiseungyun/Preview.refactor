@@ -18,9 +18,7 @@ const PasswordInput = ({
   return (
     <div className="relative w-full">
       <input
-        className={
-          "text-medium-m w-full h-11 p-4 pr-20 border-custom-s rounded-custom-m"
-        }
+        className="text-medium-m w-full h-11 p-4 pr-20 border-custom-s rounded-custom-m"
         type={showPassword ? "text" : "password"}
         placeholder={placeholder}
         value={password}

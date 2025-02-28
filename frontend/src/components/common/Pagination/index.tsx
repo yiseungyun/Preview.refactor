@@ -1,6 +1,6 @@
 import { MdArrowBackIosNew } from "react-icons/md";
 import { MdArrowForwardIos } from "react-icons/md";
-import { MAX_BUTTON } from "../../sessions/create/SessionForm/ListSelectModal/constant";
+import { MAX_BUTTON } from "../../channels/create/ChannelForm/ListSelectModal/constant";
 
 interface PagenationProps {
   currentPage: number;
@@ -43,11 +43,10 @@ const Pagination = ({
         <button
           key={number}
           onClick={() => onPageChange(number)}
-          className={`w-9 h-9 rounded-custom-s ${
-            currentPage === number
-              ? "bg-gray-500 text-white text-semibold-m"
-              : "text-gray-black text-medium-l"
-          }`}
+          className={`w-9 h-9 rounded-custom-s ${currentPage === number
+            ? "bg-gray-500 text-white text-semibold-m"
+            : "text-gray-black text-medium-l"
+            }`}
         >
           {number}
         </button>

@@ -22,7 +22,7 @@ const commonRoutes = [
     icon: <FaClipboardList />,
   },
   {
-    path: "/sessions",
+    path: "/channels",
     label: "스터디 채널",
     icon: <FaLayerGroup />,
   },

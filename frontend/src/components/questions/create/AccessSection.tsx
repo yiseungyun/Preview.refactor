@@ -1,6 +1,6 @@
 import SelectTitle from "@/components/common/Text/SelectTitle";
 import AccessButton from "@/components/common/Button/AccessButton";
-import useQuestionFormStore from "@/pages/CreateQuestionPage/stores/useQuestionFormStore";
+import useQuestionFormStore from "@/pages/questions/create/stores/useQuestionFormStore";
 
 const AccessSection = () => {
   const { access, setAccess } = useQuestionFormStore();

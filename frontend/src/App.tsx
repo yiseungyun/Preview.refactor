@@ -1,7 +1,13 @@
-import IntroPage from "@/pages/IntroPage/IntroPage.tsx";
+import { Outlet } from "react-router-dom";
 
 function App() {
-  return <IntroPage />;
+  return (
+    <div className="app">
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  );
 }
 
 export default App;

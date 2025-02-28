@@ -20,18 +20,12 @@ const NotFound = ({ message, className, redirect }: NotFoundProps) => {
         style={{ width: 200 }}
         className={"dark:invert"}
       />
-      <div
-        className={
-          "text-medium-m text-gray-500 text-center flex flex-col gap-0.5"
-        }
-      >
+      <div className="text-medium-m text-gray-500 text-center flex flex-col gap-0.5">
         {message?.split("\n").map((text) => <p key={text}>{text}</p>)}
       </div>
       {redirect && (
         <Link
-          className={
-            "bg-green-100 hover:bg-green-100/80 text-white text-semibold-r rounded-xl px-4 py-1 mt-2"
-          }
+          className="bg-green-100 hover:bg-green-100/80 text-white text-semibold-r rounded-xl px-4 py-1 mt-2"
           to={redirect.path}
         >
           {redirect.buttonText}

@@ -23,7 +23,7 @@ const DefaultButton = ({
   return (
     <button
       disabled={disabled}
-      className={`w-full h-12 flex flex-row items-center justify-center gap-2 rounded-custom-m text-semibold-r ${buttonColor} hover:opacity-80 disabled:opacity-50   `}
+      className={`w-full h-12 flex flex-row items-center justify-center gap-2 rounded-custom-m text-semibold-r ${buttonColor} hover:opacity-80 disabled:opacity-50`}
       onClick={onClick}
     >
       {Icon ? <Icon /> : null}
