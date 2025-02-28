@@ -21,9 +21,7 @@ const CategorySelect = <T,>({
   defaultText,
 }: SelectProps<T>) => {
   return (
-    <div
-      className={`relative   h-full border-custom-s rounded-custom-m border-gray-200 ${backgroundColor}`}
-    >
+    <div className={`relative h-full border-custom-s rounded-custom-m border-gray-200 ${backgroundColor}`}>
       <select
         defaultValue={value as string}
         onChange={(e) => setValue(e.target.value as T)}

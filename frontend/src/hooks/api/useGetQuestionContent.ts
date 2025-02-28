@@ -8,7 +8,7 @@ import {
 import {
   deleteScrapQuestionList,
   postScrapQuestionList,
-} from "@/pages/QuestionDetailPage/api/scrapAPI.ts";
+} from "@/pages/questions/detail/api/scrapAPI";
 import useToast from "@hooks/useToast.ts";
 import { isAxiosError } from "axios";
 

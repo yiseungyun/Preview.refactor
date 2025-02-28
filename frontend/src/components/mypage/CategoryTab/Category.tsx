@@ -8,18 +8,13 @@ interface Props {
 const Category = ({ tabName, tabText, tab, setTab }: Props) => {
   return (
     <button
-      className={`flex flex-row gap-1
-      ${
-        tab === tabName
-          ? "text-bold-s text-green-500"
-          : "text-medium-l text-gray-400"
-      }`}
+      className={`flex flex-row gap-1 ${tab === tabName
+        ? "text-bold-s text-green-500"
+        : "text-medium-l text-gray-400"
+        }`}
       onClick={() => setTab(tabName)}
     >
-      <span
-        className={`px-1 pb-1 border-b-2
-      ${tab === tabName ? "border-green-500" : "border-gray-white"}`}
-      >
+      <span className={`px-1 pb-1 border-b-2 ${tab === tabName ? "border-green-500" : "border-gray-white"}`}>
         {tabText}
       </span>
     </button>

@@ -4,7 +4,7 @@ interface TitleProps {
 
 const PageTitle = ({ title }: TitleProps) => {
   return (
-    <h1 className={"text-bold-l mb-6 text-gray-black dark:text-white"}>
+    <h1 className="text-bold-l mb-6 text-gray-black dark:text-white">
       {title}
     </h1>
   );

@@ -43,7 +43,7 @@ const LoadingIndicator = ({
       <div className={`w-full flex flex-col items-center ${className}`}>
         {render()}
         {text && (
-          <p className={"animate-pulse text-xl text-gray-400"}>{text}</p>
+          <p className="animate-pulse text-xl text-gray-400">{text}</p>
         )}
       </div>
     )

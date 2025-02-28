@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import useQuestionFormStore from "@/pages/CreateQuestionPage/stores/useQuestionFormStore";
+import useQuestionFormStore from "@/pages/questions/create/stores/useQuestionFormStore";
 import useToast from "@/hooks/useToast";
 import { adjustHeight } from "../utils/textareaHeight";
 

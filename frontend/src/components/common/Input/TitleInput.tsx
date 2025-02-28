@@ -51,17 +51,13 @@ const TitleInput = ({
     <div className="relative w-full">
       <input
         value={value}
-        className={
-          "text-medium-m w-full h-11 p-4 pr-20 border-custom-s rounded-custom-m"
-        }
+        className="text-medium-m w-full h-11 p-4 pr-20 border-custom-s rounded-custom-m"
         placeholder={placeholder}
         onChange={changeHandler}
         minLength={minLength}
         maxLength={maxLength}
       />
-      <div
-        className={`absolute right-4 bottom-3 text-medium-s ${getCounterColor()} transition-colors`}
-      >
+      <div className={`absolute right-4 bottom-3 text-medium-s ${getCounterColor()} transition-colors`}>
         {getMessage()}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { api } from "@/api/config/axios.ts";
-import { Session } from "@/pages/SessionListPage/types/session";
+import { Session } from "@/pages/channels/types/channel";
 
 interface GetSessionListRequest {
   inProgress: boolean;
