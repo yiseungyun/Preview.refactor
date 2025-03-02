@@ -5,10 +5,7 @@ import { useGetQuestionContent } from "@hooks/api/useGetQuestionContent.ts";
 import ButtonSection from "@components/questions/detail/ButtonSection.tsx";
 import { useEffect } from "react";
 import SidebarPageLayout from "@components/layout/SidebarPageLayout.tsx";
-
 import useToast from "@hooks/useToast.ts";
-import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
-import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 
 const QuestionDetailPage = () => {
   const navigate = useNavigate();
@@ -16,8 +13,6 @@ const QuestionDetailPage = () => {
 
   const {
     data: question,
-    isLoading,
-    error,
     toggleScrap,
   } = useGetQuestionContent(Number(questionId!));
   // TODO: isScrapped 상태를 서버에서 가져오는 로직이 추가되면 해당 로직을 추가
@@ -44,11 +39,6 @@ const QuestionDetailPage = () => {
             "flex flex-col gap-4 w-47.5 p-8 bg-gray-white rounded-custom-l shadow-16 mb-8"
           }
         >
-          <LoadingIndicator loadingState={isLoading} />
-          <ErrorBlock
-            error={error}
-            message={"질문지를 불러오는데 실패했습니다."}
-          />
           <QuestionTitle questionId={questionId!} />
           <QuestionList questionId={questionId!} />
           {question && (

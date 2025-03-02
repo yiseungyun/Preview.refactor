@@ -6,7 +6,6 @@ import QuestionList from "./QuestionList";
 import useSessionFormStore from "@/pages/channels/create/stores/useSessionFormStore";
 import Pagination from "@components/common/Pagination";
 import { useGetMyQuestionList } from "@hooks/api/useGetMyQuestionList.ts";
-import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
 import { useGetScrapQuestionList } from "@hooks/api/useGetScrapQuestionList.ts";
 import CategorySelect from "@components/common/Select/CategorySelect.tsx";
 import { options } from "@/constants/CategoryData.ts";
@@ -28,20 +27,12 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
   const [selectedCategory, setSelectedCategory] = useState("");
 
   const MAX_ITEM_PER_PAGE = 4;
-  const {
-    data: myQuestionList,
-    isLoading: myQuestionLoading,
-    error: myQuestionError,
-  } = useGetMyQuestionList({
+  const { data: myQuestionList } = useGetMyQuestionList({
     page: page,
     limit: MAX_ITEM_PER_PAGE,
   });
 
-  const {
-    data: scrapQuestionList,
-    isLoading: scrapQuestionLoading,
-    error: scrapError,
-  } = useGetScrapQuestionList({
+  const { data: scrapQuestionList } = useGetScrapQuestionList({
     page: page,
     limit: MAX_ITEM_PER_PAGE,
   });
@@ -50,8 +41,7 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
     tab === "myList"
       ? myQuestionList?.myQuestionLists
       : scrapQuestionList?.questionList;
-  const isLoading = tab === "myList" ? myQuestionLoading : scrapQuestionLoading;
-  const error = tab === "myList" ? myQuestionError : scrapError;
+
   const totalPage =
     tab === "myList"
       ? myQuestionList?.meta.totalPages || 1
@@ -99,11 +89,7 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
         />
         <SearchBar text="질문지를 검색해주세요" />
       </div>
-      <QuestionList
-        questionList={questionList || []}
-        questionLoading={isLoading}
-      />
-      <ErrorBlock error={error} message={"질문지를 불러오는데 실패했습니다."} />
+      <QuestionList questionList={questionList || []} />
       <Pagination {...getCurrentPageProps()} />
     </dialog>
   );
