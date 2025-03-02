@@ -1,5 +1,4 @@
 import QuestionItem from "./QuestionItem";
-import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import NotFound from "@components/common/Animate/NotFound.tsx";
 
 interface QuestionList {
@@ -20,13 +19,11 @@ interface Question {
 
 interface QuestionItemProps {
   questionList: QuestionList[];
-  questionLoading: boolean;
 }
 
-const QuestionList = ({ questionList, questionLoading }: QuestionItemProps) => {
+const QuestionList = ({ questionList }: QuestionItemProps) => {
   return (
     <div className="mb-4 h-80 overflow-y-auto">
-      <LoadingIndicator loadingState={questionLoading} />
       {questionList.length > 0 ? (
         questionList.map((item, id) => {
           return (
@@ -38,8 +35,8 @@ const QuestionList = ({ questionList, questionLoading }: QuestionItemProps) => {
       ) : (
         <div className="flex justify-center items-center h-80">
           <NotFound
-            className={"flex justify-center h-50"}
-            message={"아직 질문지 리스트가 없어요!"}
+            className="flex justify-center h-50"
+            message="아직 질문지 리스트가 없어요!"
             redirect={{
               path: "/questions/create",
               buttonText: "질문지 만들러 가기",

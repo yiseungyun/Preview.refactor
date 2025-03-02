@@ -12,8 +12,10 @@ import AuthCallbackPage from "./pages/login/callback";
 import MyPage from "./pages/mypage";
 import App from "./App";
 import IntroPage from "./pages/intro";
+import { Suspense } from "react";
 
 // TODO: 코드 분할을 통해 라우트 로딩 최적화
+// TODO: 페이지 별 로딩 페이지를 스켈레톤 UI로 적용
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -24,18 +26,33 @@ export const router = createBrowserRouter([
       {
         path: "channels",
         children: [
-          { index: true, element: <ChannelListPage /> },
+          {
+            index: true,
+            element:
+              <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
+                <ChannelListPage />
+              </Suspense>
+          },
           { path: "create", element: <CreateChannelPage /> },
         ]
       },
       {
         path: "channel/:channelId",
-        element: <ChannelPage />
+        element:
+          <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
+            <ChannelPage />
+          </Suspense>
       },
       {
         path: "questions",
         children: [
-          { index: true, element: <QuestionListPage /> },
+          {
+            index: true,
+            element:
+              <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
+                <QuestionListPage />
+              </Suspense>
+          },
           {
             path: "create",
             element: (
@@ -44,7 +61,13 @@ export const router = createBrowserRouter([
               </ProtectedRouteLayout>
             )
           },
-          { path: ":questionId", element: <QuestionDetailPage /> }
+          {
+            path: ":questionId",
+            element:
+              <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
+                <QuestionDetailPage />
+              </Suspense>
+          }
         ]
       },
       {
@@ -58,7 +81,9 @@ export const router = createBrowserRouter([
         path: "mypage",
         element: (
           <ProtectedRouteLayout>
-            <MyPage />
+            <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
+              <MyPage />
+            </Suspense>
           </ProtectedRouteLayout>
         )
       }

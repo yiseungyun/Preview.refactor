@@ -1,7 +1,6 @@
 import { MdEdit } from "react-icons/md";
 import ProfileIcon from "@components/mypage/ProfileIcon";
-import { useUserStore } from "@/stores/useUserStore";
-import { useEffect } from "react";
+import { useGetUserData } from "./hooks/useGetUserData";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
@@ -11,12 +10,7 @@ interface UseModalReturn {
 }
 
 const Profile = ({ modal }: { modal: UseModalReturn }) => {
-  const user = useUserStore((state) => state.user);
-  const { getMyInfo } = useUserStore();
-
-  useEffect(() => {
-    getMyInfo();
-  }, []);
+  const { data: user } = useGetUserData();
 
   return (
     <div className="w-full flex flex-row gap-8">

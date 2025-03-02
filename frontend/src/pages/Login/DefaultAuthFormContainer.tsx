@@ -38,7 +38,7 @@ const DefaultAuthFormContainer = ({
       if (isSignUp) handleSignUp();
       else handleLogin();
     } catch (err) {
-      console.error("로그인 도중 에러", err);
+      console.error("로그인 중 에러", err);
     }
   };
 
@@ -53,7 +53,6 @@ const DefaultAuthFormContainer = ({
           onChange={(e) => setUsername(e.target.value)}
         />
       </div>
-
       <div className={"relative"}>
         <input
           type={isPasswordVisible ? "text" : "password"}
@@ -73,7 +72,6 @@ const DefaultAuthFormContainer = ({
           {isPasswordVisible ? <MdOutlineVisibility /> : <BiHide />}
         </div>
       </div>
-
       {isSignUp && (
         <>
           <div>

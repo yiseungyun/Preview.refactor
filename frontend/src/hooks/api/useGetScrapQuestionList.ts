@@ -1,5 +1,5 @@
-import getScrapQuestionList from "@/api/question-list/getScrapQuestionList";
-import { useQuery } from "@tanstack/react-query";
+import getScrapQuestionList from "@/api/question-list/scrap/getScrapQuestionList";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 interface UseGetQuestionListProps {
   page?: number;
@@ -10,14 +10,10 @@ export const useGetScrapQuestionList = ({
   page = 1,
   limit,
 }: UseGetQuestionListProps) => {
-  const { data, isLoading, error } = useQuery({
+  const { data } = useSuspenseQuery({
     queryKey: ["scrapQuestions", page, limit],
     queryFn: () => getScrapQuestionList({ page, limit }),
   });
 
-  return {
-    data,
-    isLoading,
-    error,
-  };
+  return { data };
 };

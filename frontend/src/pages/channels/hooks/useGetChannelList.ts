@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { getSessionList } from "@/api/session-list/getSessionList.ts";
 
 interface ChannelListRequest {
@@ -6,7 +6,7 @@ interface ChannelListRequest {
 }
 
 export const useGetChannelList = ({ inProgress }: ChannelListRequest) => {
-  const { data, isLoading, error } = useQuery({
+  const { data } = useSuspenseQuery({
     queryKey: ["channelList", inProgress],
     queryFn: () => getSessionList({ inProgress }),
     staleTime: 60 * 1000,
@@ -15,9 +15,5 @@ export const useGetChannelList = ({ inProgress }: ChannelListRequest) => {
     refetchOnWindowFocus: true,
   });
 
-  return {
-    data,
-    isLoading,
-    error,
-  };
+  return { data };
 };

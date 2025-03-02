@@ -1,6 +1,4 @@
-import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import { useQuestionList } from "@hooks/api/useGetQuestionList.ts";
-import ErrorBlock from "@components/common/Error/ErrorBlock.tsx";
 import QuestionsList from "./QuestionsList.tsx";
 import useCategory from "./hooks/useCategory.ts";
 import Pagination from "@components/common/Pagination";
@@ -14,28 +12,12 @@ const QuestionListPage = () => {
   const { selectedCategory, setSelectedCategory } = useCategory();
   const [page, setPage] = useState(1);
   const [tab, setTab] = useState<Tab>("ALL");
-  const {
-    data,
-    error,
-    isLoading: questionLoading,
-  } = useQuestionList({
+  const { data } = useQuestionList({
     category: selectedCategory,
     page: page,
     limit: 12,
     tab,
   });
-
-  if (questionLoading) {
-    return <LoadingIndicator loadingState={questionLoading} />;
-  }
-
-  if (error) {
-    return <ErrorBlock error={error} message={"질문지 목록을 불러오는데 실패했습니다."} />;
-  }
-
-  if (!data) {
-    return <div className="text-center mt-12 text-medium-l text-gray-500">데이터를 불러올 수 없습니다.</div>;
-  }
 
   const questionList = tab === "ALL" ? data.allQuestionLists || [] : data.questionList || [];
 

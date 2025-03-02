@@ -11,26 +11,10 @@ const QuestionSection = () => {
   const [tab, setTab] = useState<TabName>("myList");
   const [myListPage, setMyListPage] = useState(1);
   const [savedListPage, setSavedListPage] = useState(1);
-  const [currentPage, setCurrentPage] = useState(
-    tab === "myList" ? myListPage : savedListPage
-  );
+  const [currentPage, setCurrentPage] = useState(tab === "myList" ? myListPage : savedListPage);
 
-  const {
-    data: myData,
-    isLoading: isMyListLoading,
-    error: myListError,
-  } = useGetMyQuestionList({ page: myListPage, limit: 8 });
-  const {
-    data: scrapData,
-    isLoading: isScrapListLoading,
-    error: scrapListError,
-  } = useGetScrapQuestionList({ page: savedListPage, limit: 8 });
-
-  const isLoading = tab === "myList" ? isMyListLoading : isScrapListLoading;
-  const error = tab === "myList" ? myListError : scrapListError;
-
-  if (isLoading) return <div>로딩 중</div>;
-  if (error) return <div>에러 발생</div>;
+  const { data: myData } = useGetMyQuestionList({ page: myListPage, limit: 8 });
+  const { data: scrapData } = useGetScrapQuestionList({ page: savedListPage, limit: 8 });
 
   const totalPages = {
     myList: myData?.meta.totalPages || 0,

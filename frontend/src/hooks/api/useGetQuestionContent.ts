@@ -2,15 +2,13 @@ import getQuestionContent from "@/api/question-list/getQuestionContent";
 import {
   QueryFilters,
   useMutation,
-  useQuery,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
-import {
-  deleteScrapQuestionList,
-  postScrapQuestionList,
-} from "@/pages/questions/detail/api/scrapAPI";
 import useToast from "@hooks/useToast.ts";
 import { isAxiosError } from "axios";
+import { deleteScrapQuestionList } from "@/api/question-list/scrap/deleteScrapQuestionList";
+import { postScrapQuestionList } from "@/api/question-list/scrap/editScrapQuestionList";
 
 interface QuestionContent {
   id: number;
@@ -33,32 +31,28 @@ interface ApiResponse {
 export const useGetQuestionContent = (questionListId: number) => {
   const queryClient = useQueryClient();
   const toast = useToast();
-  const { data, isLoading, error } = useQuery<ApiResponse>({
+  const { data } = useSuspenseQuery<ApiResponse>({
     queryKey: ["questions", questionListId],
     queryFn: () => getQuestionContent(questionListId),
     staleTime: 0,
   });
 
-  // 스크랩 토글 뮤테이션
   const { mutate: toggleScrap } = useMutation({
     mutationFn: (isCurrentlyScraped: boolean) =>
       isCurrentlyScraped
         ? deleteScrapQuestionList(questionListId)
         : postScrapQuestionList(questionListId),
     onMutate: async (isCurrentlyScraped) => {
-      // 진행 중인 리페치 취소
       await queryClient.cancelQueries([
         "questions",
         questionListId,
       ] as QueryFilters);
 
-      // 이전 데이터 저장
       const previousData = queryClient.getQueryData<ApiResponse>([
         "questions",
         questionListId,
       ]);
 
-      // 낙관적 업데이트
       queryClient.setQueryData<ApiResponse>(
         ["questions", questionListId],
         (old) => ({
@@ -70,7 +64,6 @@ export const useGetQuestionContent = (questionListId: number) => {
       return { previousData };
     },
     onError: (error, _variables, context) => {
-      // 에러시 롤백
       queryClient.setQueryData(
         ["questions", questionListId],
         context?.previousData
@@ -84,7 +77,6 @@ export const useGetQuestionContent = (questionListId: number) => {
       }
     },
     onSettled: () => {
-      // 쿼리 무효화 및 리페치
       queryClient.invalidateQueries([
         "questions",
         questionListId,
@@ -100,8 +92,6 @@ export const useGetQuestionContent = (questionListId: number) => {
 
   return {
     data,
-    isLoading,
-    error,
     toggleScrap: handleToggleScrap,
   };
 };

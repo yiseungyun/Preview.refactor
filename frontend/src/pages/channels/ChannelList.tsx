@@ -1,4 +1,3 @@
-import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import ChannelCard from "./ChannelCard";
 import useToast from "@hooks/useToast.ts";
 import type { Channel } from "@/pages/channels/types/channel";
@@ -6,13 +5,11 @@ import NotFound from "@components/common/Animate/NotFound.tsx";
 
 interface ChannelListProps {
   inProgress: boolean;
-  listLoading: boolean;
   channelList: Channel[];
 }
 
 const ChannelList = ({
   inProgress,
-  listLoading,
   channelList,
 }: ChannelListProps) => {
   const toast = useToast();
@@ -40,15 +37,14 @@ const ChannelList = ({
 
   return (
     <div>
-      {listLoading && <LoadingIndicator loadingState={listLoading} />}
-      {!listLoading && channelList.length <= 0 ? (
+      {channelList.length <= 0 ? (
         <div className={"flex justify-center items-center"}>
           <NotFound
             key={-1}
             message={
               inProgress
-                ? "현재 진행 중인 세션이 없어요.\n세션을 생성해서 면접 연습을 시작하세요!"
-                : "공개된 세션이 없어요.\n세션을 생성해서 면접 연습을 시작하세요!"
+                ? "현재 진행 중인 스터디 채널 없어요.\n채널을 생성해서 면접 연습을 시작하세요!"
+                : "공개된 스터디 채널이 없어요.\n채널을 생성해서 면접 연습을 시작하세요!"
             }
             className={""}
           />

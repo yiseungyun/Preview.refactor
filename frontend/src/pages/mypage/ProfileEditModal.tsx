@@ -3,8 +3,9 @@ import { IoMdClose } from "react-icons/io";
 import ButtonSection from "@components/mypage/ButtonSection";
 import { useEffect, useState } from "react";
 import useToast from "@/hooks/useToast";
-import { useUserStore } from "@/stores/useUserStore";
-import PasswordInput from "../../components/mypage/PasswordInput";
+import PasswordInput from "@components/mypage/PasswordInput";
+import { useGetUserData } from "./hooks/useGetUserData";
+import { useEditUserData } from "./hooks/useEditUserData";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
@@ -33,8 +34,9 @@ const ProfileEditModal = ({
   const [originalPassword, setOriginalPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [nickname, setNickname] = useState("");
-  const user = useUserStore((state) => state.user);
-  const { editMyInfo } = useUserStore();
+
+  const { data: user } = useGetUserData();
+  const editUserMutation = useEditUserData();
 
   const [formData, setFormData] = useState<EditForm>({
     avatarUrl: user?.avatarUrl || "",
@@ -76,9 +78,7 @@ const ProfileEditModal = ({
     }
   };
 
-  const handleClose = () => {
-    resetModal();
-  };
+  const handleClose = () => { resetModal(); };
 
   const handleChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -139,13 +139,15 @@ const ProfileEditModal = ({
       }
     }
 
-    try {
-      await editMyInfo(formData);
-      toast.success("회원 정보가 변경되었습니다.");
-      resetModal();
-    } catch (error) {
-      toast.error("회원 정보 변경에 실패하였습니다.");
-    }
+    editUserMutation.mutate(formData, {
+      onSuccess: () => {
+        toast.success("회원 정보가 변경되었습니다.");
+        resetModal();
+      },
+      onError: () => {
+        toast.error("회원 정보 변경에 실패했습니다.");
+      }
+    });
   };
 
   return (

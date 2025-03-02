@@ -23,7 +23,7 @@ const CreateChannelPage = () => {
       <div className={"p-20"}>
         <button
           className="flex items-center gap-4 mb-5 text-gray-black text-medium-l"
-          onClick={() => navigate("/sessions")}
+          onClick={() => navigate("/channels")}
         >
           <IoArrowBackSharp className="w-5 h-5" />
           <span>채널 목록으로 돌아가기</span>

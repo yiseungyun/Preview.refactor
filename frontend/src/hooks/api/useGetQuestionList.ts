@@ -2,7 +2,7 @@ import {
   getQuestionList,
   getQuestionListWithScrap,
 } from "@/api/question-list/getQuestionList";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 interface UseGetQuestionListProps {
   page?: number;
@@ -17,17 +17,13 @@ export const useQuestionList = ({
   category = "전체",
   tab = "ALL",
 }: UseGetQuestionListProps) => {
-  const { data, isLoading, error } = useQuery({
+  const { data } = useSuspenseQuery({
     queryKey: ["questions", page, limit, category, tab],
     queryFn: () =>
       tab === "ALL"
         ? getQuestionList({ page, limit, category })
-        : getQuestionListWithScrap({ page: page!, limit: limit || 12 }),
+        : getQuestionListWithScrap({ page, limit: limit || 12 }),
   });
 
-  return {
-    data,
-    isLoading,
-    error,
-  };
+  return { data };
 };

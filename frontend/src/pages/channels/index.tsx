@@ -6,18 +6,13 @@ import { options } from "@/constants/CategoryData.ts";
 import SidebarPageLayout from "@components/layout/SidebarPageLayout.tsx";
 import TabContainer from "./TabContainer";
 import { Link } from "react-router-dom";
-import { useGetChannelList } from "./api/useGetChannelList";
-import ErrorBlock from "@components/common/Error/ErrorBlock";
+import { useGetChannelList } from "./hooks/useGetChannelList";
 import ChannelList from "./ChannelList";
 
 const ChannelListPage = () => {
   const [currentTab, setCurrentTab] = useState(false);
   const [_, setSelectedCategory] = useState<string>("전체");
-  const {
-    data: channelList,
-    isLoading,
-    error,
-  } = useGetChannelList({ inProgress: currentTab });
+  const { data: channelList } = useGetChannelList({ inProgress: currentTab });
 
   return (
     <SidebarPageLayout>
@@ -49,11 +44,6 @@ const ChannelListPage = () => {
         <ChannelList
           inProgress={currentTab}
           channelList={channelList || []}
-          listLoading={isLoading}
-        />
-        <ErrorBlock
-          error={error}
-          message={"채널 목록을 불러오는데 실패했습니다"}
         />
       </div>
     </SidebarPageLayout>
