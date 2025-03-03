@@ -13,8 +13,8 @@ const QuestionSection = () => {
   const [savedListPage, setSavedListPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(tab === "myList" ? myListPage : savedListPage);
 
-  const { data: myData } = useGetMyQuestionList({ page: myListPage, limit: 8 });
-  const { data: scrapData } = useGetScrapQuestionList({ page: savedListPage, limit: 8 });
+  const { data: myData } = useGetMyQuestionList({ page: myListPage, limit: 6 });
+  const { data: scrapData } = useGetScrapQuestionList({ page: savedListPage, limit: 6 });
 
   const totalPages = {
     myList: myData?.meta.totalPages || 0,

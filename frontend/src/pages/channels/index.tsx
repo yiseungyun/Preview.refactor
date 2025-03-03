@@ -25,7 +25,7 @@ const ChannelListPage = () => {
               options={options}
             />
           </div>
-          <SearchBar text="채널을 검색하세요" />
+          <SearchBar text="채널 검색하기" />
         </div>
       </div>
       <div className="relative flex justify-between mt-4 pt-4 mb-12">

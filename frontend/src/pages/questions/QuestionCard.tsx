@@ -37,7 +37,7 @@ const QuestionCard = ({
           {usage}
         </span>
       </div>
-    </Link >
+    </Link>
   );
 };
 

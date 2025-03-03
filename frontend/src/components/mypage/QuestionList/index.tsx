@@ -1,5 +1,5 @@
 import { useGetMyQuestionList } from "@/hooks/api/useGetMyQuestionList";
-import QuestionItem from "@components/mypage/QuestionList/QuestionItem";
+import QuestionItem from "@/components/mypage/QuestionList/QuestionItem";
 import { useGetScrapQuestionList } from "@/hooks/api/useGetScrapQuestionList";
 
 interface ListProps {
@@ -14,7 +14,7 @@ const QuestionList = ({ tab, page }: ListProps) => {
   const currentQuestionList = tab === "myList" ? myData?.myQuestionLists : scrapData?.questionList;
 
   return (
-    <div className="my-4 w-full grid grid-cols-2 gap-3">
+    <div className="my-4 w-full h-68 grid grid-cols-2 xl:grid-cols-3 gap-4">
       {
         currentQuestionList && currentQuestionList.length > 0 ? (
           currentQuestionList.map((question) => (
@@ -26,9 +26,7 @@ const QuestionList = ({ tab, page }: ListProps) => {
             />
           ))
         ) : (
-          <div className="col-span-2 flex items-center justify-center min-h-20">
-            질문 목록이 비어있습니다
-          </div>
+          <p>질문 목록이 비어있습니다</p>
         )}
     </div>
   );

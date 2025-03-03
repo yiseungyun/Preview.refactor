@@ -3,9 +3,9 @@ import Sidebar from "../common/Sidebar";
 
 const SidebarLayout = () => {
   return (
-    <section className="flex w-screen h-screen">
+    <section className="flex h-screen">
       <Sidebar />
-      <main className="overflow-y-scroll w-full">
+      <main className="w-full overflow-y-scroll">
         <Outlet />
       </main>
     </section>
