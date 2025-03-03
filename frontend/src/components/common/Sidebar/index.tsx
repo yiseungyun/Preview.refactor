@@ -17,7 +17,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     setSelected("/" + window.location.pathname.split("/")[1]);
-  }, []);
+  }, [window.location.pathname]);
 
   const logoutHandler = () => {
     logOut();
