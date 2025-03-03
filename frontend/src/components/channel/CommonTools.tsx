@@ -19,9 +19,6 @@ import useBlockNavigate from "@/pages/channel/hooks/useBlockNavigate";
 import { useReaction } from "@/pages/channel/hooks/useReaction";
 import useMediaStream from "@/pages/channel/hooks/useMediaStream";
 import { Socket } from "socket.io-client";
-import { usePeerStore } from "@/pages/channel/stores/usePeerStore";
-import WebRTCManager from "@/pages/channel/services/WebRTCManager";
-import { useEffect, useRef, useState } from "react";
 
 interface CommonToolsProps {
   socket: Socket;
@@ -39,27 +36,8 @@ const CommonTools = ({ socket, disconnect }: CommonToolsProps) => {
   const { isVideoOn, isMicOn, userVideoDevices, userAudioDevices, videoLoading, setSelectedVideoDeviceId, setSelectedAudioDeviceId } = useMediaStore();
   const { roomId, isHost } = useSessionStore();
 
-  const setPeers = usePeerStore(state => state.setPeers);
-  const setPeerMediaStatus = usePeerStore(state => state.setPeerMediaStatus);
-  const setParticipants = useSessionStore(state => state.setParticipants);
-
-  const [peerConnections, setPeerConnections] = useState<{ [key: string]: RTCPeerConnection }>({});
-  const webRTCManagerRef = useRef<WebRTCManager | null>(null);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    webRTCManagerRef.current = WebRTCManager.getInstance(
-      socket,
-      setPeers,
-      setPeerMediaStatus,
-      setParticipants,
-    )
-    setPeerConnections(webRTCManagerRef.current.getPeerConnection());
-  }, [socket]);
-
   const handleVideoClick = async () => {
-    await handleVideoToggle(peerConnections);
+    await handleVideoToggle();
   }
 
   const handleMicClick = async () => {
