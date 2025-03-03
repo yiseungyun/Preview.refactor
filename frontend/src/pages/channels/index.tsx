@@ -15,9 +15,9 @@ const ChannelListPage = () => {
 
   return (
     <div className="flex flex-col max-w-6xl w-full px-12 pt-20 pb-4">
-      <div className="">
+      <div>
         <h1 className="text-bold-l mb-6">스터디 채널</h1>
-        <div className={"h-11 flex gap-2 w-full"}>
+        <div className="h-11 flex gap-2 w-full">
           <div className="w-36">
             <CategorySelect
               value={"FE"}

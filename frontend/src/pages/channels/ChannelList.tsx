@@ -38,7 +38,7 @@ const ChannelList = ({
   return (
     <div>
       {channelList.length <= 0 ? (
-        <div className={"flex justify-center items-center"}>
+        <div className="flex justify-center items-center">
           <NotFound
             key={-1}
             message={
@@ -46,11 +46,11 @@ const ChannelList = ({
                 ? "현재 진행 중인 스터디 채널 없어요.\n채널을 생성해서 면접 연습을 시작하세요!"
                 : "공개된 스터디 채널이 없어요.\n채널을 생성해서 면접 연습을 시작하세요!"
             }
-            className={""}
+            className=""
           />
         </div>
       ) : (
-        <ul className={"w-full grid grid-cols-2 lg:grid-cols-3 gap-4"}>
+        <ul className="w-full grid grid-cols-2 lg:grid-cols-3 gap-4">
           {renderChannelList()}
         </ul>
       )}
