@@ -2,11 +2,12 @@ import useAuth from "@hooks/useAuth.ts";
 import { IoMdAdd } from "react-icons/io";
 import { Link } from "react-router-dom";
 
-interface TabsProps {
-  tab: "ALL" | "SCRAP";
-  setTab: (value: "ALL" | "SCRAP") => void;
-}
 type Tab = "ALL" | "SCRAP";
+
+interface TabsProps {
+  tab: Tab;
+  setTab: (value: Tab) => void;
+}
 
 const Tabs = ({ tab, setTab }: TabsProps) => {
   const { isLoggedIn } = useAuth();
@@ -19,10 +20,8 @@ const Tabs = ({ tab, setTab }: TabsProps) => {
   const selectedClassName = "text-green-600 text-semibold-r";
 
   return (
-    <div
-      className={"relative border-b mt-6 pt-4 py-2 flex gap-4 justify-between"}
-    >
-      <div className={"flex gap-4"}>
+    <div className="relative border-b mt-6 pt-4 py-2 flex gap-4 justify-between">
+      <div className="flex gap-4">
         {tabs.map(
           (tab, index) =>
             tab && (
