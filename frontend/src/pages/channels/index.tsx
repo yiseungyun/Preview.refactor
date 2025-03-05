@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import SearchBar from "@components/common/Input/SearchBar";
 import CategorySelect from "@components/common/Select/CategorySelect";
 import { options } from "@/constants/CategoryData.ts";
 import TabContainer from "./TabContainer";
 import { Link } from "react-router-dom";
-import { useGetChannelList } from "./hooks/useGetChannelList";
+import DeferredComponent from "@/components/common/Wrapper/DeferredComponent";
 import ChannelList from "./ChannelList";
+import SkeletonChannelCard from "./SkeletonChannelCard";
 
 const ChannelListPage = () => {
   const [currentTab, setCurrentTab] = useState(false);
   const [_, setSelectedCategory] = useState<string>("전체");
-  const { data: channelList } = useGetChannelList({ inProgress: currentTab });
 
   return (
     <div className="flex flex-col max-w-6xl w-full px-12 pt-20 pb-4">
@@ -39,10 +39,17 @@ const ChannelListPage = () => {
         </Link>
         <div className="absolute bottom-0 -z-10 w-full h-0.1 bg-gray-100" />
       </div>
-      <ChannelList
-        inProgress={currentTab}
-        channelList={channelList || []}
-      />
+      <Suspense fallback={
+        <DeferredComponent>
+          <ul className="w-full grid grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array(6).fill(null).map((_, index) => (
+              <li key={index}><SkeletonChannelCard /></li>
+            ))}
+          </ul>
+        </DeferredComponent>
+      }>
+        <ChannelList inProgress={currentTab} />
+      </Suspense>
     </div>
   );
 };

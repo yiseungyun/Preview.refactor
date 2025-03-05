@@ -1,36 +1,32 @@
 import ChannelCard from "./ChannelCard";
-import useToast from "@hooks/useToast.ts";
-import type { Channel } from "@/pages/channels/types/channel";
 import NotFound from "@components/common/Animate/NotFound.tsx";
+import { useGetChannelList } from "./hooks/useGetChannelList";
 
 interface ChannelListProps {
   inProgress: boolean;
-  channelList: Channel[];
 }
 
 const ChannelList = ({
   inProgress,
-  channelList,
 }: ChannelListProps) => {
-  const toast = useToast();
+  const { data: channelList } = useGetChannelList({ inProgress });
+
   const renderChannelList = () => {
     return channelList.map((channel) => {
       return (
-        <ChannelCard
-          key={channel.id}
-          id={channel.id}
-          inProgress={channel.inProgress}
-          category={channel.category}
-          title={channel.title}
-          host={channel.host.nickname ?? "익명"}
-          questionListId={channel.questionListId}
-          questionListTitle={channel.questionListTitle}
-          participants={channel.participants}
-          maxParticipants={channel.maxParticipants}
-          onEnter={() => {
-            toast.success("채널에 참가했습니다.");
-          }}
-        />
+        <li key={channel.id}>
+          <ChannelCard
+            id={channel.id}
+            inProgress={channel.inProgress}
+            category={channel.category}
+            title={channel.title}
+            host={channel.host.nickname ?? "익명"}
+            questionListId={channel.questionListId}
+            questionListTitle={channel.questionListTitle}
+            participants={channel.participants}
+            maxParticipants={channel.maxParticipants}
+          />
+        </li>
       );
     });
   };

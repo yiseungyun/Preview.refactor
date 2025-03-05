@@ -1,9 +1,9 @@
 import { FaUserGroup } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import type { Channel } from "@/pages/channels/types/channel";
+import useToast from "@/hooks/useToast";
 
 interface ChannelCardProps extends Omit<Channel, "host" | "createdAt"> {
-  onEnter: () => void;
   host: string;
 }
 
@@ -16,15 +16,16 @@ const ChannelCard = ({
   maxParticipants,
   inProgress,
   questionListTitle,
-  onEnter,
 }: ChannelCardProps) => {
+  const toast = useToast();
+
   return (
     <li className={`relative h-52 bg-white rounded-custom-m px-5 py-6 transition-all duration-200 ease-in-out hover:-translate-y-1.5 border-custom-s border-gray-200
       ${inProgress === false ? "hover:shadow-16 hover:ring-1 hover:ring-green-200" : ""}`}>
       <Link
-        onClick={onEnter}
         to={`/channel/${id}`}
         className="w-full h-full"
+        onClick={() => toast.success("채널에 참가했습니다.")}
       >
         <div className="flex flex-col justify-between">
           <div className="flex-grow flex flex-col items-start">
