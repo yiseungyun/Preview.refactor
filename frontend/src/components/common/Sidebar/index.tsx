@@ -38,7 +38,7 @@ const Sidebar = () => {
         </header>
         <hr className="mx-3" />
         <ul
-          className="flex flex-col gap-2 items-center mx-2 pb-4 p-2"
+          className="flex flex-col gap-2 items-center m-2 p-2"
           aria-label="사이드바 링크 리스트"
         >
           {currentRoutes.map((route) => {

@@ -4,7 +4,7 @@ import CreateChannelPage from "./pages/channels/create";
 import ChannelListPage from "./pages/channels";
 import ChannelPage from "./pages/channel";
 import QuestionListPage from "./pages/questions";
-import ProtectedRouteLayout from "./components/layout/ProtectedRouteLayout";
+import ProtectedRouteLayout from "./components/common/Wrapper/ProtectedRouteLayout";
 import CreateQuestionPage from "./pages/questions/create";
 import QuestionDetailPage from "./pages/questions/detail";
 import LoginPage from "./pages/login";
@@ -13,7 +13,7 @@ import MyPage from "./pages/mypage";
 import App from "./App";
 import IntroPage from "./pages/intro";
 import { Suspense } from "react";
-import SidebarLayout from "./components/layout/SidebarLayout";
+import SidebarLayout from "./components/common/Wrapper/SidebarLayout";
 
 // TODO: 코드 분할을 통해 라우트 로딩 최적화
 // TODO: 페이지 별 로딩 페이지를 스켈레톤 UI로 적용
@@ -32,10 +32,7 @@ export const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element:
-                  <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
-                    <ChannelListPage />
-                  </Suspense>
+                element: <ChannelListPage />
               },
               {
                 path: "create",
