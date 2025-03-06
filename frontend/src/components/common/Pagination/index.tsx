@@ -1,6 +1,6 @@
 import { MdArrowBackIosNew } from "react-icons/md";
 import { MdArrowForwardIos } from "react-icons/md";
-import { MAX_BUTTON } from "../../channels/create/ChannelForm/ListSelectModal/constant";
+import { MAX_BUTTON } from "../../../constants/PaginationData";
 
 interface PagenationProps {
   currentPage: number;
@@ -32,10 +32,10 @@ const Pagination = ({
   const showNextButton = endPage < totalPage;
 
   return (
-    <div className="flex justify-center gap-1">
+    <div className="flex justify-center gap-1 mb-2">
       <button
         onClick={() => onPageChange(startPage - 1)}
-        className={`px-2 py-1 text-gray-black ${!showPrevButton && "invisible"}`}
+        className={`px-2 py-1 text-gray-600 ${!showPrevButton && "invisible"}`}
       >
         <MdArrowBackIosNew />
       </button>
@@ -43,8 +43,8 @@ const Pagination = ({
         <button
           key={number}
           onClick={() => onPageChange(number)}
-          className={`w-9 h-9 rounded-custom-s ${currentPage === number
-            ? "bg-gray-500 text-white text-semibold-m"
+          className={`w-9 h-9 rounded-full ${currentPage === number
+            ? "text-green-400 text-semibold-m border-green-400 border"
             : "text-gray-black text-medium-l"
             }`}
         >
@@ -53,7 +53,7 @@ const Pagination = ({
       ))}
       <button
         onClick={() => onPageChange(endPage + 1)}
-        className={`px-2 py-1 text-gray-black ${!showNextButton && "invisible"}`}
+        className={`px-2 py-1 text-gray-600 ${!showNextButton && "invisible"}`}
       >
         <MdArrowForwardIos />
       </button>
