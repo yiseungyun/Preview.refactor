@@ -3,14 +3,13 @@ import { IoMdAdd } from "react-icons/io";
 import SearchBar from "@components/common/Input/SearchBar";
 import CategorySelect from "@components/common/Select/CategorySelect";
 import { options } from "@/constants/CategoryData.ts";
-import TabContainer from "./TabContainer";
 import { Link } from "react-router-dom";
-import DeferredComponent from "@/components/common/Wrapper/DeferredComponent";
 import ChannelList from "./ChannelList";
-import SkeletonChannelCard from "./SkeletonChannelCard";
+import { TabItem, TabList, TabPanel, TabProvider } from "@/components/common/Tab";
+import SkeletonChannelList from "./SkeletonChannelList";
+import TabListContent from "@/components/common/Tab/TabListContent";
 
 const ChannelListPage = () => {
-  const [currentTab, setCurrentTab] = useState(false);
   const [_, setSelectedCategory] = useState<string>("전체");
 
   return (
@@ -20,7 +19,7 @@ const ChannelListPage = () => {
         <div className="h-11 flex gap-2 w-full">
           <div className="w-36">
             <CategorySelect
-              value={"FE"}
+              value="FE"
               setValue={setSelectedCategory}
               options={options}
             />
@@ -28,28 +27,28 @@ const ChannelListPage = () => {
           <SearchBar text="채널 검색하기" />
         </div>
       </div>
-      <div className="relative flex justify-between mt-4 pt-4 mb-12">
-        <TabContainer currentTab={currentTab} setCurrentTab={setCurrentTab} />
-        <Link
-          to="/channels/create"
-          className="flex items-center gap-1 text-semibold-r text-gray-black pr-1 pb-2 hover:text-green-400"
-        >
-          <IoMdAdd />
-          <span>채널 생성하기</span>
-        </Link>
-        <div className="absolute bottom-0 -z-10 w-full h-0.1 bg-gray-100" />
-      </div>
-      <Suspense fallback={
-        <DeferredComponent>
-          <ul className="w-full grid grid-cols-2 lg:grid-cols-3 gap-4">
-            {Array(6).fill(null).map((_, index) => (
-              <li key={index}><SkeletonChannelCard /></li>
-            ))}
-          </ul>
-        </DeferredComponent>
-      }>
-        <ChannelList inProgress={currentTab} />
-      </Suspense>
+      <TabProvider defaultTab="pending" className="mt-8">
+        <TabList>
+          <TabItem id="pending">대기 중인 채널</TabItem>
+          <TabItem id="inProgress">진행 중인 채널</TabItem>
+          <TabListContent className="absolute right-0 text-semibold-m text-gray-black pb-2 hover:text-green-400">
+            <Link to="/channels/create" className="flex items-center gap-1">
+              <IoMdAdd />
+              <span>채널 생성하기</span>
+            </Link>
+          </TabListContent>
+        </TabList>
+        <TabPanel id="pending" className="mt-8">
+          <Suspense fallback={<SkeletonChannelList />}>
+            <ChannelList inProgress={false} />
+          </Suspense>
+        </TabPanel>
+        <TabPanel id="inProgress" className="mt-8">
+          <Suspense fallback={<SkeletonChannelList />}>
+            <ChannelList inProgress={true} />
+          </Suspense>
+        </TabPanel>
+      </TabProvider>
     </div>
   );
 };

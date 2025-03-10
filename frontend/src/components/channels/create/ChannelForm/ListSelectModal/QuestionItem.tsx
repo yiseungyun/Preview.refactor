@@ -13,7 +13,15 @@ interface QuestionList {
   categoryNames?: string[];
 }
 
-const QuestionItem = ({ item }: { item: QuestionList }) => {
+interface ItemProps {
+  item: QuestionList;
+  className?: string;
+}
+
+const QuestionItem = ({
+  item,
+  className = ""
+}: ItemProps) => {
   const {
     questionId,
     selectedOpenId,
@@ -30,7 +38,6 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
 
   const checkHandler = (id: number, title: string) => {
     setQuestionId(id);
-    setSelectedOpenId(id);
     setQuestionTitle(title);
   };
 
@@ -56,7 +63,7 @@ const QuestionItem = ({ item }: { item: QuestionList }) => {
 
   return (
     <>
-      <div className="flex flex-row items-center w-full h-20 border-t-custom-s px-8 py-4">
+      <div className={`flex flex-row items-center w-full h-20 border-t-custom-s px-8 py-4 ${className}`}>
         <button
           className="mr-6 hover:bg-gray-200 p-1 rounded-md"
           onClick={() => { openHandler(item.id); }}

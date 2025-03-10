@@ -11,7 +11,7 @@ interface UseGetQuestionListProps {
   tab: "ALL" | "SCRAP";
 }
 
-export const useQuestionList = ({
+export const useGetQuestionList = ({
   page,
   limit,
   category = "전체",

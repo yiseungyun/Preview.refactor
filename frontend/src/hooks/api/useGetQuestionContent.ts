@@ -34,7 +34,7 @@ export const useGetQuestionContent = (questionListId: number) => {
   const { data } = useSuspenseQuery<ApiResponse>({
     queryKey: ["questions", questionListId],
     queryFn: () => getQuestionContent(questionListId),
-    staleTime: 0,
+    staleTime: 3000,
   });
 
   const { mutate: toggleScrap } = useMutation({
@@ -68,7 +68,7 @@ export const useGetQuestionContent = (questionListId: number) => {
         ["questions", questionListId],
         context?.previousData
       );
-      console.error("스크랩 토글 실패:", error);
+      console.error("스크랩 실패:", error);
       if (
         isAxiosError(error) &&
         error?.response!.data.error === "Can't scrap my question list."

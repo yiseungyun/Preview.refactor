@@ -48,10 +48,7 @@ export const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element:
-                  <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
-                    <QuestionListPage />
-                  </Suspense>
+                element: <QuestionListPage />
               },
               {
                 path: "create",
@@ -83,9 +80,7 @@ export const router = createBrowserRouter([
             path: "mypage",
             element: (
               <ProtectedRouteLayout>
-                <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
-                  <MyPage />
-                </Suspense>
+                <MyPage />
               </ProtectedRouteLayout>
             )
           }
