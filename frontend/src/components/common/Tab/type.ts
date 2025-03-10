@@ -10,6 +10,7 @@ export interface ItemProps {
 
 export interface ListProps {
   children: React.ReactNode;
+  underline?: boolean;
 }
 
 export interface ListContentProps {
