@@ -1,6 +1,8 @@
 import { MdEdit } from "react-icons/md";
 import ProfileIcon from "@components/mypage/ProfileIcon";
 import useAuthStore from "@/stores/useAuthStore";
+import ProfileEditModal from "./ProfileEditModal";
+import { Suspense } from "react";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
@@ -14,6 +16,9 @@ const Profile = ({ modal }: { modal: UseModalReturn }) => {
 
   return (
     <div className="w-full flex flex-row gap-8">
+      <Suspense fallback={null}>
+        <ProfileEditModal modal={modal} />
+      </Suspense>
       <ProfileIcon url="" />
       <div className="flex flex-col my-2">
         <div className="flex flex-row mb-2 items-center gap-2">

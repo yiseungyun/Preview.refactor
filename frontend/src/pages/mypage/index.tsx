@@ -1,5 +1,4 @@
 import PageTitle from "@components/common/Text/PageTitle";
-import ProfileEditModal from "./ProfileEditModal";
 import Profile from "./Profile";
 import useModal from "@hooks/useModal";
 import { TabItem, TabList, TabPanel, TabProvider } from "@components/common/Tab";
@@ -14,7 +13,6 @@ const MyPage = () => {
     <div className="flex flex-col flex-shrink-0 max-w-6xl w-6xl px-12 pt-20 pb-8 overflow-auto no-scrollbar">
       <PageTitle title="마이페이지" />
       <div className="flex flex-col gap-8 min-w-5xl w-5xl flex-shrink-0 px-8 pt-8 pb-6 bg-white shadow-8 rounded-custom-l">
-        {modal.isOpen && <ProfileEditModal modal={modal} />}
         <Profile modal={modal} />
         <TabProvider defaultTab="my" className="mt-4">
           <TabList>
