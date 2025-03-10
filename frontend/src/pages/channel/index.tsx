@@ -91,7 +91,7 @@ const ChannelPage = () => {
         }}
         onReject={() => {
           mediaPreviewModal.closeModal();
-          navigate("/");
+          navigate("/channels");
         }}
       />
       <div className="w-full flex flex-1 min-h-0">

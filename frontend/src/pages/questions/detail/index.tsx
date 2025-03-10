@@ -4,7 +4,6 @@ import QuestionList from "@components/questions/detail/QuestionList.tsx";
 import { useGetQuestionContent } from "@hooks/api/useGetQuestionContent.ts";
 import ButtonSection from "@components/questions/detail/ButtonSection.tsx";
 import { useEffect } from "react";
-import SidebarPageLayout from "@components/layout/SidebarPageLayout.tsx";
 import useToast from "@hooks/useToast.ts";
 
 const QuestionDetailPage = () => {
@@ -32,26 +31,20 @@ const QuestionDetailPage = () => {
   };
 
   return (
-    <SidebarPageLayout>
-      <div className={"flex h-fit gap-8 max-w-7xl px-12 pt-20"}>
-        <div
-          className={
-            "flex flex-col gap-4 w-47.5 p-8 bg-gray-white rounded-custom-l shadow-16 mb-8"
-          }
-        >
-          <QuestionTitle questionId={questionId!} />
-          <QuestionList questionId={questionId!} />
-          {question && (
-            <ButtonSection
-              isScrapped={question.isScrap ?? false}
-              scrapQuestionList={toggleScrap}
-              unScrapQuestionList={toggleScrap}
-              shareQuestionList={shareQuestionList}
-            />
-          )}
-        </div>
+    <div className="flex h-fit gap-8 max-w-7xl px-12 pt-20">
+      <div className="flex flex-col gap-4 w-47.5 p-8 bg-gray-white rounded-custom-l shadow-16 mb-8">
+        <QuestionTitle questionId={questionId!} />
+        <QuestionList questionId={questionId!} />
+        {question && (
+          <ButtonSection
+            isScrapped={question.isScrap ?? false}
+            scrapQuestionList={toggleScrap}
+            unScrapQuestionList={toggleScrap}
+            shareQuestionList={shareQuestionList}
+          />
+        )}
       </div>
-    </SidebarPageLayout>
+    </div>
   );
 };
 

@@ -7,10 +7,6 @@ import { Socket } from "socket.io-client";
 import { usePeerStore } from "../stores/usePeerStore.tsx";
 import { useSessionStore } from "../stores/useSessionStore.tsx";
 
-interface PeerConnectionsMap {
-  [key: string]: RTCPeerConnection;
-}
-
 interface DataChannelMessage {
   type: "audio" | "video";
   status: boolean;
@@ -104,10 +100,12 @@ const useMediaStream = (socket: Socket) => {
     });
   };
 
-  const handleVideoToggle = async (peerConnections: PeerConnectionsMap) => {
+  const handleVideoToggle = async () => {
     try {
-      if (!stream) return;
+      if (!stream || !webRTCManagerRef.current) return;
       setVideoLoading(true);
+
+      const peerConnections = webRTCManagerRef.current.getPeerConnection();
 
       if (isVideoOn) {
         const blackTrack = createDummyStream();

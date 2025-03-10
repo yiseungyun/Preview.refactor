@@ -104,7 +104,7 @@ const MediaPreviewModal = ({
         <div className="text-medium-r mt-4 flex w-full justify-center gap-4">
           <label
             className="inline-flex gap-2 items-center rounded-custom-m px-4 py-2 bg-transparent"
-            id={"checkbox"}
+            id="checkbox"
           >
             <input
               defaultChecked={!isVideoOn || false}

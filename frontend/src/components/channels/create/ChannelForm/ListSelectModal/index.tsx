@@ -1,14 +1,11 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import CategoryTab from "@/components/channels/create/ChannelForm/ListSelectModal/CategoryTab";
 import SearchBar from "@/components/common/Input/SearchBar";
 import QuestionList from "./QuestionList";
 import useSessionFormStore from "@/pages/channels/create/stores/useSessionFormStore";
-import Pagination from "@components/common/Pagination";
-import { useGetMyQuestionList } from "@hooks/api/useGetMyQuestionList.ts";
-import { useGetScrapQuestionList } from "@hooks/api/useGetScrapQuestionList.ts";
 import CategorySelect from "@components/common/Select/CategorySelect.tsx";
 import { options } from "@/constants/CategoryData.ts";
+import { TabItem, TabList, TabPanel, TabProvider } from "@/components/common/Tab";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
@@ -22,42 +19,11 @@ interface ModalProps {
 }
 
 const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
-  const { tab, setTab, setSelectedOpenId } = useSessionFormStore();
-  const [page, setPage] = useState(1);
+  const { setSelectedOpenId } = useSessionFormStore();
   const [selectedCategory, setSelectedCategory] = useState("");
-
-  const MAX_ITEM_PER_PAGE = 4;
-  const { data: myQuestionList } = useGetMyQuestionList({
-    page: page,
-    limit: MAX_ITEM_PER_PAGE,
-  });
-
-  const { data: scrapQuestionList } = useGetScrapQuestionList({
-    page: page,
-    limit: MAX_ITEM_PER_PAGE,
-  });
-
-  const questionList =
-    tab === "myList"
-      ? myQuestionList?.myQuestionLists
-      : scrapQuestionList?.questionList;
-
-  const totalPage =
-    tab === "myList"
-      ? myQuestionList?.meta.totalPages || 1
-      : scrapQuestionList?.meta.totalPages || 1;
-
-  const getCurrentPageProps = () => ({
-    currentPage: page,
-    totalPage: totalPage,
-    onPageChange: (page: number) => {
-      setPage(page);
-    },
-  });
 
   const closeHandler = () => {
     closeModal();
-    setTab("myList");
     setSelectedOpenId(-1);
   };
 
@@ -76,7 +42,6 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
     >
       <div className="flex p-8">
         <h3 className="text-bold-m text-gray-black mr-6">질문 리스트</h3>
-        <CategoryTab />
         <button className="ml-auto" onClick={closeHandler}>
           <IoMdClose className="text-gray-black w-7 h-7" />
         </button>
@@ -89,8 +54,22 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
         />
         <SearchBar text="질문지를 검색해주세요" />
       </div>
-      <QuestionList questionList={questionList || []} />
-      <Pagination {...getCurrentPageProps()} />
+      <TabProvider defaultTab="my" className="mt-4 mx-8">
+        <TabList underline={false}>
+          <TabItem id="my">나의 질문지</TabItem>
+          <TabItem id="scrap">스크랩한 질문지</TabItem>
+        </TabList>
+        <TabPanel id="my">
+          <Suspense fallback={<br />}>
+            <QuestionList id="myList" />
+          </Suspense>
+        </TabPanel>
+        <TabPanel id="scrap">
+          <Suspense fallback={<br />}>
+            <QuestionList id="savedList" />
+          </Suspense>
+        </TabPanel>
+      </TabProvider>
     </dialog>
   );
 };

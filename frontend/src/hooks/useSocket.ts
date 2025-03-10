@@ -10,7 +10,6 @@ const useSocket = () => {
   const isConnected = useSocketStore(state => state.isConnected);
 
   useEffect(() => {
-    console.log("useSocket", socket);
     if (socket) return;
 
     const connectSocket = async () => {

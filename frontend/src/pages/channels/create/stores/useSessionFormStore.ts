@@ -7,7 +7,6 @@ interface SessionFormState {
   questionTitle: string;
   participant: 1 | 2 | 3 | 4 | 5;
   access: "PRIVATE" | "PUBLIC";
-  tab: "myList" | "savedList";
   selectedOpenId: number;
 
   setCategory: (category: string) => void;
@@ -16,7 +15,6 @@ interface SessionFormState {
   setQuestionTitle: (title: string) => void;
   setParticipant: (count: 1 | 2 | 3 | 4 | 5) => void;
   setAccess: (access: "PRIVATE" | "PUBLIC") => void;
-  setTab: (tab: "myList" | "savedList") => void;
   setSelectedOpenId: (selectedOpenId: number) => void;
 
   resetForm: () => void;
@@ -30,7 +28,6 @@ const initialState = {
   questionTitle: "",
   participant: 1 as const,
   access: "PUBLIC" as const,
-  tab: "myList" as const,
   selectedOpenId: -1,
 };
 
@@ -43,7 +40,6 @@ const useSessionFormStore = create<SessionFormState>((set, get) => ({
   setQuestionTitle: (title) => set({ questionTitle: title }),
   setParticipant: (participant) => set({ participant }),
   setAccess: (access) => set({ access }),
-  setTab: (tab) => set({ tab }),
   setSelectedOpenId: (id) => set({ selectedOpenId: id }),
 
   resetForm: () => set(initialState),

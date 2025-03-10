@@ -1,6 +1,8 @@
 import { MdEdit } from "react-icons/md";
 import ProfileIcon from "@components/mypage/ProfileIcon";
-import { useGetUserData } from "./hooks/useGetUserData";
+import useAuthStore from "@/stores/useAuthStore";
+import ProfileEditModal from "./ProfileEditModal";
+import { Suspense } from "react";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
@@ -10,11 +12,14 @@ interface UseModalReturn {
 }
 
 const Profile = ({ modal }: { modal: UseModalReturn }) => {
-  const { data: user } = useGetUserData();
+  const nickname = useAuthStore(state => state.nickname);
 
   return (
     <div className="w-full flex flex-row gap-8">
-      <ProfileIcon url={user?.avatarUrl || ""} />
+      <Suspense fallback={null}>
+        <ProfileEditModal modal={modal} />
+      </Suspense>
+      <ProfileIcon url="" />
       <div className="flex flex-col my-2">
         <div className="flex flex-row mb-2 items-center gap-2">
           <p className="text-gray-black text-semibold-xl">회원 정보</p>
@@ -22,7 +27,7 @@ const Profile = ({ modal }: { modal: UseModalReturn }) => {
             <MdEdit className="w-5 h-5 text-gray-400" />
           </button>
         </div>
-        <p className="text-gray-black text-medium-xl">{user?.nickname}</p>
+        <p className="text-gray-black text-medium-xl">{nickname}</p>
       </div>
     </div>
   );

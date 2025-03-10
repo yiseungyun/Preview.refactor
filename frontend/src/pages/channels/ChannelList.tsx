@@ -1,18 +1,27 @@
 import ChannelCard from "./ChannelCard";
-import useToast from "@hooks/useToast.ts";
-import type { Channel } from "@/pages/channels/types/channel";
 import NotFound from "@components/common/Animate/NotFound.tsx";
+import { useGetChannelList } from "@hooks/api/useGetChannelList";
 
 interface ChannelListProps {
   inProgress: boolean;
-  channelList: Channel[];
 }
 
 const ChannelList = ({
   inProgress,
-  channelList,
 }: ChannelListProps) => {
-  const toast = useToast();
+  const { data: channelList } = useGetChannelList({ inProgress });
+
+  if (channelList.length <= 0) {
+    return (
+      <div className="flex justify-center items-center">
+        <NotFound
+          key={-1}
+          message={inProgress ? "현재 진행 중인 스터디 채널 없어요.\n채널을 생성해서 면접 연습을 시작하세요!" : "공개된 스터디 채널이 없어요.\n채널을 생성해서 면접 연습을 시작하세요!"}
+        />
+      </div>
+    )
+  }
+
   const renderChannelList = () => {
     return channelList.map((channel) => {
       return (
@@ -27,9 +36,6 @@ const ChannelList = ({
           questionListTitle={channel.questionListTitle}
           participants={channel.participants}
           maxParticipants={channel.maxParticipants}
-          onEnter={() => {
-            toast.success("채널에 참가했습니다.");
-          }}
         />
       );
     });
@@ -37,23 +43,9 @@ const ChannelList = ({
 
   return (
     <div>
-      {channelList.length <= 0 ? (
-        <div className={"flex justify-center items-center"}>
-          <NotFound
-            key={-1}
-            message={
-              inProgress
-                ? "현재 진행 중인 스터디 채널 없어요.\n채널을 생성해서 면접 연습을 시작하세요!"
-                : "공개된 스터디 채널이 없어요.\n채널을 생성해서 면접 연습을 시작하세요!"
-            }
-            className={""}
-          />
-        </div>
-      ) : (
-        <ul className={"w-full grid grid-cols-2 lg:grid-cols-3 gap-4"}>
-          {renderChannelList()}
-        </ul>
-      )}
+      <ul className="w-full grid grid-cols-2 lg:grid-cols-3 gap-4">
+        {renderChannelList()}
+      </ul>
     </div>
   );
 };

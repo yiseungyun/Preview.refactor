@@ -12,7 +12,7 @@ const useBlockNavigate = (disconnect: () => void) => {
 
   useEffect(() => {
     if (shouldBlockRef.current && blocker.state === "blocked") {
-      const confirmed = window.confirm("정말 세션에서 나가시겠습니까? 변경사항이 저장되지 않을 수 있습니다.");
+      const confirmed = window.confirm("정말 채널에서 나가시겠습니까? 변경사항이 저장되지 않을 수 있습니다.");
 
       if (confirmed) {
         blocker.proceed();
