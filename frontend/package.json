@@ -10,7 +10,8 @@
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "preview": "vite preview",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "skeleton": "node src/utils/skeleton/main.js"
   },
   "dependencies": {
     "@babel/generator": "^7.26.9",
