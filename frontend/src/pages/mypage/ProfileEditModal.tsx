@@ -5,7 +5,7 @@ import useToast from "@hooks/useToast";
 import PasswordInput from "@components/mypage/PasswordInput";
 import { useGetUserData } from "./hooks/useGetUserData";
 import { useEditUserData } from "./hooks/useEditUserData";
-import { IoMdClose } from "@/components/common/Icons/IoMdClose";
+import { IoMdClose } from "@/components/common/Icons";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;

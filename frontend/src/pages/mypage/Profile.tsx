@@ -2,7 +2,7 @@ import ProfileIcon from "@components/mypage/ProfileIcon";
 import useAuthStore from "@/stores/useAuthStore";
 import ProfileEditModal from "./ProfileEditModal";
 import { Suspense } from "react";
-import { MdEdit } from "@/components/common/Icons/MdEdit";
+import { MdEdit } from "@/components/common/Icons";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;

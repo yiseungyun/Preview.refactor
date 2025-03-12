@@ -5,7 +5,7 @@ import useSessionFormStore from "@/pages/channels/create/stores/useSessionFormSt
 import CategorySelect from "@components/common/Select/CategorySelect.tsx";
 import { options } from "@/constants/CategoryData.ts";
 import { TabItem, TabList, TabPanel, TabProvider } from "@/components/common/Tab";
-import { IoMdClose } from "@/components/common/Icons/IoMdClose";
+import { IoMdClose } from "@/components/common/Icons";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;

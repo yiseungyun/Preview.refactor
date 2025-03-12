@@ -1,5 +1,4 @@
-import { IoEyeOffOutline } from "../common/Icons/IoEyeOffOutline";
-import { IoEyeOutline } from "../common/Icons/IoEyeOutline";
+import { IoEyeOffOutline, IoEyeOutline } from "../common/Icons";
 
 interface PasswordInputProps {
   placeholder: string;

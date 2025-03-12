@@ -7,7 +7,7 @@ import ChannelList from "./ChannelList";
 import { TabItem, TabList, TabPanel, TabProvider } from "@/components/common/Tab";
 import SkeletonChannelList from "./SkeletonChannelList";
 import TabListContent from "@/components/common/Tab/TabListContent";
-import { IoMdAdd } from "@/components/common/Icons/IoMdAdd";
+import { IoMdAdd } from "@/components/common/Icons";
 
 const ChannelListPage = () => {
   const [_, setSelectedCategory] = useState<string>("전체");

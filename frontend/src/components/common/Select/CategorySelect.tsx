@@ -28,7 +28,7 @@ const CategorySelect = <T,>({
         className="w-full text-medium-m rounded-custom-m text-gray-600 appearance-none pl-4 pr-8 h-full"
       >
         {defaultText && (
-          <option value="" disabled>
+          <option value="전체" disabled>
             {defaultText}
           </option>
         )}

@@ -7,8 +7,7 @@ import {
   unauthenticatedRoutes,
 } from "./routesConfig";
 import SidebarMenu from "./SidebarMenu";
-import { FaGithub } from "../Icons/FaGithub";
-import previewLogo from "@/../public/preview-logo2-low.webp";
+import { FaGithub } from "../Icons";
 
 const Sidebar = () => {
   const { isLoggedIn, logOut } = useAuth();
@@ -35,7 +34,7 @@ const Sidebar = () => {
     <nav className="min-w-sidebar w-sidebar h-screen flex flex-col border-r-custom-s justify-between overflow-y-hidden bg-white transition-colors">
       <div>
         <header className="py-7">
-          <img className="w-68 h-24 px-9" src={previewLogo} alt="Preview 로고" />
+          <img width={300} height={180} className="px-9" src="/preview-logo2-low.webp" alt="Preview 로고" />
         </header>
         <hr className="mx-3" />
         <ul

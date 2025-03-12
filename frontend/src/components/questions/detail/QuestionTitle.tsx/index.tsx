@@ -1,7 +1,4 @@
-import { FaRegBookmark } from "@/components/common/Icons/FaRegBookmark";
-import { FaRegUser } from "@/components/common/Icons/FaRegUser";
-import { MdEdit } from "@/components/common/Icons/MdEdit";
-import { RiDeleteBin6Fill } from "@/components/common/Icons/RiDeleteBin6Fill";
+import { FaRegBookmark, FaRegUser, MdEdit, RiDeleteBin6Fill } from "@/components/common/Icons";
 import { useGetQuestionContent } from "@/hooks/api/useGetQuestionContent";
 
 const QuestionTitle = ({ questionId }: { questionId: string }) => {

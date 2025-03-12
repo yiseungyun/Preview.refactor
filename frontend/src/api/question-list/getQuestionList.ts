@@ -1,5 +1,13 @@
 import { api } from "@/api/config/axios.ts";
-import type { QuestionList } from "@/pages/QuestionListPage/types/QuestionList";
+
+interface QuestionList {
+  id: number;
+  title: string;
+  usage: number;
+  isStarred?: boolean;
+  questionCount: number;
+  categoryNames: string[];
+}
 
 interface QuestionListProps {
   page?: number;

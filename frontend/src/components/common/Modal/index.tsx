@@ -1,4 +1,4 @@
-import { IoMdClose } from "../Icons/IoMdClose";
+import { IoMdClose } from "../Icons";
 import ModalTitle from "./Title";
 
 interface UseModalReturn {

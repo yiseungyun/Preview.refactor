@@ -1,6 +1,5 @@
 import { MAX_BUTTON } from "../../../constants/PaginationData";
-import { MdArrowBackIosNew } from "../Icons/MdArrowBackIosNew";
-import { MdArrowForwardIos } from "../Icons/MdArrowForwardIos";
+import { MdArrowBackIosNew, MdArrowForwardIos } from "../Icons";
 
 interface PagenationProps {
   currentPage: number;

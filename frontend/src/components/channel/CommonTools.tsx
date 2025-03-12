@@ -10,13 +10,7 @@ import useBlockNavigate from "@/pages/channel/hooks/useBlockNavigate";
 import { useReaction } from "@/pages/channel/hooks/useReaction";
 import useMediaStream from "@/pages/channel/hooks/useMediaStream";
 import { Socket } from "socket.io-client";
-import { MdLink } from "../common/Icons/MdLink";
-import { MdMic } from "../common/Icons/MdMic";
-import { MdMicOff } from "../common/Icons/MdMicOff";
-import { IoChevronDownSharp } from "../common/Icons/IoChevronDownSharp";
-import { MdVideocam } from "../common/Icons/MdVideocam";
-import { MdVideocamOff } from "../common/Icons/MdVideocamOff";
-import { MdThumbUp } from "../common/Icons/MdThumbUp";
+import { IoChevronDownSharp, MdLink, MdMic, MdMicOff, MdThumbUp, MdVideocam, MdVideocamOff } from "../common/Icons";
 
 interface CommonToolsProps {
   socket: Socket;

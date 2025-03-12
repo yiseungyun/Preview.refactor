@@ -1,7 +1,4 @@
-import { FaUsers } from "@/components/common/Icons/FaUsers";
-import { GrDown } from "@/components/common/Icons/GrDown";
-import { GrUp } from "@/components/common/Icons/GrUp";
-import { ImCheckmark } from "@/components/common/Icons/ImCheckmark";
+import { FaUsers, GrDown, GrUp, ImCheckmark } from "@/components/common/Icons";
 import useSessionFormStore from "@/pages/channels/create/stores/useSessionFormStore";
 import { useGetQuestionContent } from "@hooks/api/useGetQuestionContent.ts";
 

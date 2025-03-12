@@ -7,7 +7,6 @@ import { throttle } from "lodash";
 import useObserver from "./hooks/useObserver.ts";
 import LeftCard from "./LeftCard.tsx";
 import RightCard from "./RightCard.tsx";
-import previewLogo from "@/../public/preview-logo3.webp";
 
 const IntroPage = () => {
   const navigate = useNavigate();
@@ -76,7 +75,7 @@ const IntroPage = () => {
           <p className="text-green-100 mb-10 text-semibold-xl text-[2rem] text-center">
             함께하는 면접 스터디
           </p>
-          <img width="640" className="mx-auto" src={previewLogo} loading="eager" alt="preview 로고" />
+          <img width="640" className="mx-auto" src="preview-logo3.webp" loading="eager" alt="preview 로고" />
           <div>
           </div>
         </div>

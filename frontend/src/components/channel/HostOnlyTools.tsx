@@ -3,8 +3,7 @@ import ToolTip from "../common/ToolTip";
 import { useSessionStore } from "@/pages/channel/stores/useSessionStore";
 import useStudyProgress from "@/pages/channel/hooks/useStudyProgress";
 import { Socket } from "socket.io-client";
-import { MdArrowBackIosNew } from "../common/Icons/MdArrowBackIosNew";
-import { MdArrowForwardIos } from "../common/Icons/MdArrowForwardIos";
+import { MdArrowBackIosNew, MdArrowForwardIos } from "../common/Icons";
 
 interface HostOnlyToolsProps {
   socket: Socket;

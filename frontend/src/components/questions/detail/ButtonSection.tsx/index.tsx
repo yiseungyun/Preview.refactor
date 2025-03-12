@@ -1,7 +1,5 @@
 import Button from "@/components/common/Button/DefaultButton";
-import { FaBookmark } from "@/components/common/Icons/FaBookmark";
-import { FaRegBookmark } from "@/components/common/Icons/FaRegBookmark";
-import { IoMdShare } from "@/components/common/Icons/IoMdShare";
+import { FaBookmark, FaRegBookmark, IoMdShare } from "@/components/common/Icons";
 import useAuth from "@hooks/useAuth.ts";
 
 interface ButtonSectionProps {

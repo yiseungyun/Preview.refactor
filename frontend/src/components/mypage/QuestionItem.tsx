@@ -3,9 +3,7 @@ import { useDeleteQuesitonList } from "@hooks/api/useDeleteQuestionList";
 import Modal from "@components/common/Modal";
 import useModal from "@/hooks/useModal";
 import { useGetQuestionContent } from "@/hooks/api/useGetQuestionContent";
-import { MdEdit } from "../common/Icons/MdEdit";
-import { RiDeleteBin6Fill } from "../common/Icons/RiDeleteBin6Fill";
-import { FaBookmark } from "../common/Icons/FaBookmark";
+import { MdEdit, RiDeleteBin6Fill, FaBookmark } from "../common/Icons";
 
 interface ItemProps {
   questionListId: number;

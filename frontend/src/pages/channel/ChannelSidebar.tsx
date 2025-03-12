@@ -1,8 +1,5 @@
-import { FaClipboardList } from "@/components/common/Icons/FaClipboardList";
+import { FaClipboardList, FaUserGroup, TbCrown, FaFolder } from "@/components/common/Icons";
 import { useSessionStore } from "./stores/useSessionStore";
-import { FaUserGroup } from "@/components/common/Icons/FaUserGroup";
-import { TbCrown } from "@/components/common/Icons/TbCrown";
-import { FaFolder } from "@/components/common/Icons/FaFolder";
 
 const ChannelSidebar = () => {
   const roomMetadata = useSessionStore(state => state.roomMetadata);

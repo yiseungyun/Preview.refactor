@@ -1,10 +1,5 @@
 import { ReactElement } from "react";
-import { IoHomeSharp } from "../Icons/IoHomeSharp";
-import { IoPersonSharp } from "../Icons/IoPersonSharp";
-import { FaClipboardList } from "../Icons/FaClipboardList";
-import { FaLayerGroup } from "../Icons/FaLayerGroup";
-import { MdLogout } from "../Icons/MdLogout";
-import { MdLogin } from "../Icons/MdLogin";
+import { IoHomeSharp, IoPersonSharp, FaClipboardList, FaLayerGroup, MdLogout, MdLogin } from "../Icons";
 
 export interface Route {
   path?: string;

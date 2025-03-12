@@ -1,4 +1,4 @@
-import { IoIosSearch } from "../Icons/IoIosSearch";
+import { IoIosSearch } from "../Icons";
 
 interface Props {
   text: string;

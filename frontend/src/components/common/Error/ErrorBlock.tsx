@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { IoMdWarning } from "../Icons/IoMdWarning";
+import { IoMdWarning } from "../Icons";
 interface ErrorBlockProps {
   error: Error | AxiosError | null;
   message?: string;

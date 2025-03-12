@@ -1,5 +1,4 @@
-import { MdEdit } from "@/components/common/Icons/MdEdit";
-import { RiDeleteBin6Fill } from "@/components/common/Icons/RiDeleteBin6Fill";
+import { MdEdit, RiDeleteBin6Fill } from "@/components/common/Icons";
 
 interface ItemProps {
   content: string;

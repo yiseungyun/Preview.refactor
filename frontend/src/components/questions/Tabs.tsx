@@ -1,6 +1,6 @@
 import useAuth from "@hooks/useAuth";
 import { Link } from "react-router-dom";
-import { IoMdAdd } from "../common/Icons/IoMdAdd";
+import { IoMdAdd } from "../common/Icons";
 
 type Tab = "ALL" | "SCRAP";
 

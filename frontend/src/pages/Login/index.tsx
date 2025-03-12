@@ -4,7 +4,7 @@ import DrawingSnowman from "@components/common/Animate/DrawingSnowman.tsx";
 import { useEffect, useState } from "react";
 import LoginTitle from "@/pages/login/LoginTitle";
 import LoginForm from "@/pages/login/LoginForm";
-import { FaHome } from "@/components/common/Icons/FaHome";
+import { FaHome } from "@/components/common/Icons";
 
 const LoginPage = () => {
   const { isLoggedIn } = useAuth();

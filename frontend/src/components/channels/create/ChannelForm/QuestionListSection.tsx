@@ -1,6 +1,6 @@
 import useSessionFormStore from "@/pages/channels/create/stores/useSessionFormStore";
 import SelectTitle from "@/components/common/Text/SelectTitle";
-import { MdOutlineArrowForwardIos } from "@/components/common/Icons/MdOutlineArrowForwardIos";
+import { MdOutlineArrowForwardIos } from "@/components/common/Icons";
 
 interface ListSectionProps {
   openModal: () => void;

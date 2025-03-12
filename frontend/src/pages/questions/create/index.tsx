@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import QuestionForm from "./QuestionForm";
-import { IoArrowBackSharp } from "@/components/common/Icons/IoArrowBackSharp";
+import { IoArrowBackSharp } from "@/components/common/Icons";
 
 const CreateQuestionPage = () => {
   return (

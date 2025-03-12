@@ -11,7 +11,7 @@ import TabListContent from "@components/common/Tab/TabListContent.tsx";
 import { Link } from "react-router-dom";
 import TabPanel from "@components/common/Tab/TabPanel.tsx";
 import SkeletonQuestionList from "./SkeletonQuestionList.tsx";
-import { IoMdAdd } from "@/components/common/Icons/IoMdAdd.tsx";
+import { IoMdAdd } from "@/components/common/Icons";
 
 const QuestionListPage = () => {
   const { selectedCategory, setSelectedCategory } = useCategory();

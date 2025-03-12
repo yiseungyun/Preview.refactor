@@ -1,4 +1,4 @@
-import { IoIosClose } from "../Icons/IoIosClose.tsx";
+import { IoIosClose } from "../Icons";
 import ProgressBar from "../ProgressBar.tsx";
 
 interface ToastProps {
