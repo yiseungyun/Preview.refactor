@@ -1,7 +1,8 @@
-import { FaGithub, FaRegUserCircle } from "react-icons/fa";
 import useToast from "@hooks/useToast.ts";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@hooks/useAuth.ts";
+import { FaGithub } from "@/components/common/Icons/FaGithub";
+import { FaRegUserCircle } from "@/components/common/Icons/FaRegUserCircle";
 
 const OAuthContainer = () => {
   const toast = useToast();
@@ -33,7 +34,7 @@ const OAuthContainer = () => {
         type="button"
         className="w-full bg-gray-900 text-white py-3 rounded-md hover:bg-gray-800 transition-colors font-medium text-lg shadow-16 flex items-center justify-center gap-3"
       >
-        <FaGithub className="w-5 h-5" />
+        <FaGithub size={5} />
         GitHub으로 계속하기
       </button>
       <button
@@ -41,7 +42,7 @@ const OAuthContainer = () => {
         type="button"
         className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-400 transition-colors font-medium text-lg shadow-16 flex items-center justify-center gap-3"
       >
-        <FaRegUserCircle className="w-5 h-5" />
+        <FaRegUserCircle size={5} />
         GUEST로 계속하기
       </button>
     </>

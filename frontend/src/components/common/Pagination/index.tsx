@@ -1,6 +1,6 @@
-import { MdArrowBackIosNew } from "react-icons/md";
-import { MdArrowForwardIos } from "react-icons/md";
 import { MAX_BUTTON } from "../../../constants/PaginationData";
+import { MdArrowBackIosNew } from "../Icons/MdArrowBackIosNew";
+import { MdArrowForwardIos } from "../Icons/MdArrowForwardIos";
 
 interface PagenationProps {
   currentPage: number;

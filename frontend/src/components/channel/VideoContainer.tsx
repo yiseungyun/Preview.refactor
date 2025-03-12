@@ -1,15 +1,13 @@
-import {
-  BsMic,
-  BsMicMute,
-  BsCameraVideo,
-  BsCameraVideoOff,
-} from "react-icons/bs";
 import DisplayMediaStream from "./DisplayMediaStream.tsx";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import VideoProfileOverlay from "@/components/channel/VideoProfileOverlay.tsx";
 import VideoReactionBox from "@/components/channel/VideoReactionBox.tsx";
 import { useMediaStore } from "@/pages/channel/stores/useMediaStore.tsx";
 import { usePeerStore } from "@/pages/channel/stores/usePeerStore.tsx";
+import { BsCameraVideoOff } from "../common/Icons/BsCameraVideoOff.tsx";
+import { BsCameraVideo } from "../common/Icons/BsCameraVideo.tsx";
+import { BsMic } from "../common/Icons/BsMic.tsx";
+import { BsMicMute } from "../common/Icons/BsMicMute.tsx";
 
 interface VideoContainerProps {
   nickname: string | null;

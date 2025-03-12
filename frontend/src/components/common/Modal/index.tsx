@@ -1,4 +1,4 @@
-import { IoMdClose } from "react-icons/io";
+import { IoMdClose } from "../Icons/IoMdClose";
 import ModalTitle from "./Title";
 
 interface UseModalReturn {
@@ -26,7 +26,7 @@ const Modal = ({
   leftButton,
   rightButton,
   type,
-  onLeftClick = () => {},
+  onLeftClick = () => { },
   onRightClick,
 }: ModalProps) => {
   const handleButtonClick = (callback: () => void) => () => {
@@ -49,7 +49,7 @@ const Modal = ({
       onMouseDown={handleMouseDown}
     >
       <button onClick={closeModal}>
-        <IoMdClose className="text-gray-600 w-6 h-6 absolute right-8 top-6" />
+        <IoMdClose size={6} className="text-gray-600 absolute right-8 top-6" />
       </button>
       <ModalTitle title={title} subtitle={subtitle} />
       <div className="flex w-full gap-2">

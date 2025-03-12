@@ -1,4 +1,4 @@
-import { IoChevronDownSharp } from "react-icons/io5";
+import { IoChevronDownSharp } from "../Icons/IoChevronDownSharp";
 
 type Option<T> = {
   label: string;
@@ -39,7 +39,7 @@ const CategorySelect = <T,>({
         ))}
       </select>
       <span className="absolute top-1/2 -translate-y-1/2 right-3 pointer-events-none">
-        <IoChevronDownSharp className="w-4 h-4 text-gray-500" />
+        <IoChevronDownSharp size={4} className="text-gray-500" />
       </span>
     </div>
   );

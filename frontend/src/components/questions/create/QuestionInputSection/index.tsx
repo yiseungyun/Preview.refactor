@@ -1,4 +1,4 @@
-import SelectTitle from "@/components/common/Text/SelectTitle";
+import SelectTitle from "@components/common/Text/SelectTitle";
 import QuestionInput from "./QuestionInput";
 import QuestionList from "./QuestionList";
 import useQuestionFormStore from "@/pages/questions/create/stores/useQuestionFormStore";

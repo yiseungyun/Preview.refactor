@@ -1,7 +1,10 @@
-import { MdLogout, MdLogin } from "react-icons/md";
-import { FaClipboardList, FaLayerGroup } from "react-icons/fa";
-import { IoPersonSharp, IoHomeSharp } from "react-icons/io5";
 import { ReactElement } from "react";
+import { IoHomeSharp } from "../Icons/IoHomeSharp";
+import { IoPersonSharp } from "../Icons/IoPersonSharp";
+import { FaClipboardList } from "../Icons/FaClipboardList";
+import { FaLayerGroup } from "../Icons/FaLayerGroup";
+import { MdLogout } from "../Icons/MdLogout";
+import { MdLogin } from "../Icons/MdLogin";
 
 export interface Route {
   path?: string;

@@ -1,7 +1,8 @@
-import { GrDown, GrUp } from "react-icons/gr";
-import { ImCheckmark } from "react-icons/im";
+import { FaUsers } from "@/components/common/Icons/FaUsers";
+import { GrDown } from "@/components/common/Icons/GrDown";
+import { GrUp } from "@/components/common/Icons/GrUp";
+import { ImCheckmark } from "@/components/common/Icons/ImCheckmark";
 import useSessionFormStore from "@/pages/channels/create/stores/useSessionFormStore";
-import { FaUsers } from "react-icons/fa6";
 import { useGetQuestionContent } from "@hooks/api/useGetQuestionContent.ts";
 
 interface QuestionList {
@@ -51,9 +52,9 @@ const QuestionItem = ({
 
   const renderDropdownIcon = () => {
     return isListOpen ? (
-      <GrUp className="w-5 h-5 text-gray-600 " />
+      <GrUp size={5} className="text-gray-600" />
     ) : (
-      <GrDown className="w-5 h-5 text-gray-600" />
+      <GrDown size={5} className="text-gray-600" />
     );
   };
 
@@ -86,7 +87,7 @@ const QuestionItem = ({
             <p className="text-semibold-r text-gray-black">{item.title}</p>
           </div>
           <button className={`flex items-center ml-auto w-10 h-10 rounded-custom-m ${selectedStyle}`}>
-            <ImCheckmark className="m-auto w-5 h-5" />
+            <ImCheckmark size={5} className="m-auto" />
           </button>
         </div>
       </div>

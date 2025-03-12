@@ -1,9 +1,9 @@
 import useToast from "@hooks/useToast.ts";
 import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
 import useValidate from "./hooks/useValidate";
-import { BiHide } from "react-icons/bi";
 import { useState } from "react";
-import { MdOutlineVisibility } from "react-icons/md";
+import { MdOutlineVisibility } from "@/components/common/Icons/MdOutlineVisibility";
+import { BiHide } from "@/components/common/Icons/BiHide";
 
 interface DefaultAuthFormContainerProps {
   isSignUp: boolean;
@@ -69,7 +69,11 @@ const DefaultAuthFormContainer = ({
           aria-label={"비밀번호 보기"}
           title={"비밀번호 보기 / 숨기기"}
         >
-          {isPasswordVisible ? <MdOutlineVisibility /> : <BiHide />}
+          {
+            isPasswordVisible ?
+              <MdOutlineVisibility /> :
+              <BiHide />
+          }
         </div>
       </div>
       {isSignUp && (

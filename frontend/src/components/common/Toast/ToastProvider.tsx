@@ -1,5 +1,5 @@
 import Toast from "./Toast.tsx";
-import useToastStore from "../../../stores/useToastStore.ts";
+import useToastStore from "@stores/useToastStore.ts";
 
 interface Toast {
   id: number;

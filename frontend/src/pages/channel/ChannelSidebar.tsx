@@ -1,7 +1,8 @@
-import { FaClipboardList, FaFolder } from "react-icons/fa";
-import { FaUserGroup } from "react-icons/fa6";
-import { TbCrown } from "react-icons/tb";
+import { FaClipboardList } from "@/components/common/Icons/FaClipboardList";
 import { useSessionStore } from "./stores/useSessionStore";
+import { FaUserGroup } from "@/components/common/Icons/FaUserGroup";
+import { TbCrown } from "@/components/common/Icons/TbCrown";
+import { FaFolder } from "@/components/common/Icons/FaFolder";
 
 const ChannelSidebar = () => {
   const roomMetadata = useSessionStore(state => state.roomMetadata);
@@ -30,8 +31,7 @@ const ChannelSidebar = () => {
           </div>
           <div className="flex flex-col gap-3 mt-4">
             <h2 className="inline-flex gap-1 items-center text-semibold-m">
-              <FaUserGroup />
-              참가자
+              <FaUserGroup />참가자
             </h2>
             <ul>
               {participants.map((participant, index) => (

@@ -1,6 +1,6 @@
-import useAuth from "@hooks/useAuth.ts";
-import { IoMdAdd } from "react-icons/io";
+import useAuth from "@hooks/useAuth";
 import { Link } from "react-router-dom";
+import { IoMdAdd } from "../common/Icons/IoMdAdd";
 
 type Tab = "ALL" | "SCRAP";
 
@@ -28,8 +28,7 @@ const Tabs = ({ tab, setTab }: TabsProps) => {
               <button
                 key={tab.value}
                 onClick={() => setTab(tab.value as Tab)}
-                className={`w-28 h-full ${selectedTab === index ? selectedClassName : ""
-                  }`}
+                className={`w-28 h-full ${selectedTab === index ? selectedClassName : ""}`}
               >
                 {tab.name}
               </button>
@@ -45,7 +44,7 @@ const Tabs = ({ tab, setTab }: TabsProps) => {
       </Link>
       <div
         className={`absolute -z-0 pointer-events-none top-0 ${tab === "SCRAP" ? "left-32" : "left-0"} transition-all duration-200 pt-4 py-2 p-1 border-b border-green-200 h-full w-28`}
-      ></div>
+      />
     </div>
   );
 };

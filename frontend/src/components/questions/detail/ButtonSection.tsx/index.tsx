@@ -1,6 +1,7 @@
 import Button from "@/components/common/Button/DefaultButton";
-import { FaBookmark, FaRegBookmark } from "react-icons/fa";
-import { IoMdShare } from "react-icons/io";
+import { FaBookmark } from "@/components/common/Icons/FaBookmark";
+import { FaRegBookmark } from "@/components/common/Icons/FaRegBookmark";
+import { IoMdShare } from "@/components/common/Icons/IoMdShare";
 import useAuth from "@hooks/useAuth.ts";
 
 interface ButtonSectionProps {
@@ -22,14 +23,14 @@ const ButtonSection = ({
       <Button
         text="공유하기"
         type="gray"
-        icon={IoMdShare}
+        icon={<IoMdShare />}
         onClick={shareQuestionList}
       />
       <Button
         disabled={!isLoggedIn}
         text={isScrapped ? "스크랩 취소" : "스크랩하기"}
         type={isScrapped ? "gray" : "green"}
-        icon={isScrapped ? FaBookmark : FaRegBookmark}
+        icon={isScrapped ? <FaBookmark /> : <FaRegBookmark />}
         onClick={isScrapped ? unScrapQuestionList : scrapQuestionList}
       />
     </div>
