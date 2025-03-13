@@ -3,7 +3,7 @@ import createSession from "/introduce/createSession.png";
 import inSession from "/introduce/inSession.png";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { throttle } from "lodash";
+import throttle from "lodash/throttle";
 import useObserver from "./hooks/useObserver.ts";
 import LeftCard from "./LeftCard.tsx";
 import RightCard from "./RightCard.tsx";
