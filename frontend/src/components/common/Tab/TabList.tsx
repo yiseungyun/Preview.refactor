@@ -26,7 +26,7 @@ const TabList = ({ children, underline = true }: ListProps) => {
   }, [activeTab]);
 
   return (
-    <div className="relative flex gap-6 my-2 ml-2 pb-2" ref={listRef}>
+    <div role="tablist" className="relative flex gap-6 my-2 ml-2 pb-2" ref={listRef}>
       {children}
       {
         underline &&
