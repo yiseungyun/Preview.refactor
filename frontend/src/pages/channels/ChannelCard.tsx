@@ -33,7 +33,7 @@ const ChannelCard = ({
               {category[0]}
             </span>
             <div className="px-0.5">
-              <h3 className="text-semibold-m mt-2 mb-0.5">{title}</h3>
+              <h2 className="text-semibold-m mt-2 mb-0.5">{title}</h2>
               <p className="text-medium-m text-gray-400">
                 {questionListTitle ?? "함께 면접 스터디에 참여해보세요!"}
               </p>

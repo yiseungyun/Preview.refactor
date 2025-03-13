@@ -16,8 +16,8 @@ const SidebarMenu = ({
   onClick,
 }: SidebarMenuProps) => {
   const activeClass = isSelected
-    ? "bg-green-100 dark:text-gray-black text-white text-semibold-m"
-    : "bg-transparent dark:text-white text-gray-black text-medium-l transition-color duration-300 hover:bg-gray-200/30";
+    ? "bg-green-100 text-white text-semibold-m"
+    : "bg-transparent text-gray-black text-medium-l transition-color duration-300 hover:bg-gray-200/30";
 
   return (
     <li className={`${activeClass} cursor-pointer w-full rounded-lg`}>

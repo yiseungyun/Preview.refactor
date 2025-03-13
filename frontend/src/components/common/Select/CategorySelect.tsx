@@ -22,7 +22,10 @@ const CategorySelect = <T,>({
 }: SelectProps<T>) => {
   return (
     <div className={`relative h-full border-custom-s rounded-custom-m border-gray-200 ${backgroundColor}`}>
+      <label aria-label="카테고리" className="absolute opacity-0">카테고리</label>
       <select
+        name="category"
+        aria-label="카테고리"
         defaultValue={value as string}
         onChange={(e) => setValue(e.target.value as T)}
         className="w-full text-medium-m rounded-custom-m text-gray-600 appearance-none pl-4 pr-8 h-full"
