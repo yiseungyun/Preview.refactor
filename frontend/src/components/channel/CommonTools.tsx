@@ -108,8 +108,8 @@ const CommonTools = ({ socket, disconnect }: CommonToolsProps) => {
           aria-label={isMicOn ? "마이크 끄기" : "마이크 켜기"}
         >
           {isMicOn
-            ? <MdMic className="hover:text-green-500" />
-            : <MdMicOff className="hover:text-green-500" />
+            ? <MdMic size={6} className="hover:text-green-500" />
+            : <MdMicOff size={6} className="hover:text-green-500" />
           }
         </button>
         <span className="absolute top-1/2 -translate-y-1/2 right-2 pointer-events-none">
