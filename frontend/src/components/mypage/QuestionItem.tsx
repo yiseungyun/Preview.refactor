@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { MdEdit } from "react-icons/md";
-import { RiDeleteBin6Fill } from "react-icons/ri";
-import { FaBookmark } from "react-icons/fa";
 import { useDeleteQuesitonList } from "@hooks/api/useDeleteQuestionList";
 import Modal from "@components/common/Modal";
 import useModal from "@/hooks/useModal";
 import { useGetQuestionContent } from "@/hooks/api/useGetQuestionContent";
+import { MdEdit, RiDeleteBin6Fill, FaBookmark } from "../common/Icons";
 
 interface ItemProps {
   questionListId: number;
@@ -62,15 +60,15 @@ const QuestionItem = ({ questionListId, type, page }: ItemProps) => {
                   className="w-5 h-5"
                   onClick={() => navigate("/")} // TODO: 질문지 수정 페이지로 이동
                 >
-                  <MdEdit className="w-5 h-5" />
+                  <MdEdit size={5} />
                 </button>
                 <button className="w-5 h-5" onClick={openDeleteModal}>
-                  <RiDeleteBin6Fill className="w-5 h-5" />
+                  <RiDeleteBin6Fill size={5} />
                 </button>
               </>
             ) : (
               <button className="w-5 h-5">
-                <FaBookmark className="w-5 h-5 mt-1" />
+                <FaBookmark size={5} className="mt-1" />
               </button>
             )}
           </div>

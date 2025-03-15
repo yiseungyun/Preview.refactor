@@ -15,7 +15,7 @@ const ErrorPage = () => {
             4
           </span>
           <DotLottiePlayer
-            className={"w-full"}
+            className="w-full"
             src={snowmanAnimate}
             autoplay
             loop

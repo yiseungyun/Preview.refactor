@@ -1,6 +1,5 @@
-import { IoMdWarning } from "react-icons/io";
 import { AxiosError } from "axios";
-
+import { IoMdWarning } from "../Icons";
 interface ErrorBlockProps {
   error: Error | AxiosError | null;
   message?: string;

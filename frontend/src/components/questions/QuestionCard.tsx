@@ -1,5 +1,5 @@
-import { FaUserGroup } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { FaUserGroup } from "../common/Icons";
 
 interface QuestionCardProps {
   id: number;

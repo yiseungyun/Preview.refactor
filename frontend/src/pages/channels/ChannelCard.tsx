@@ -1,7 +1,7 @@
-import { FaUserGroup } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import type { Channel } from "@/pages/channels/types/channel";
 import useToast from "@/hooks/useToast";
+import { FaUserGroup } from "@/components/common/Icons";
 
 interface ChannelCardProps extends Omit<Channel, "host" | "createdAt"> {
   host: string;
@@ -33,7 +33,7 @@ const ChannelCard = ({
               {category[0]}
             </span>
             <div className="px-0.5">
-              <h3 className="text-semibold-m mt-2 mb-0.5">{title}</h3>
+              <h2 className="text-semibold-m mt-2 mb-0.5">{title}</h2>
               <p className="text-medium-m text-gray-400">
                 {questionListTitle ?? "함께 면접 스터디에 참여해보세요!"}
               </p>

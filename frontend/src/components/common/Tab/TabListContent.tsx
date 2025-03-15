@@ -5,7 +5,7 @@ const TabListContent = ({
   className
 }: ListContentProps) => {
   return (
-    <div className={className}>
+    <div role="tab" className={className}>
       {children}
     </div>
   )

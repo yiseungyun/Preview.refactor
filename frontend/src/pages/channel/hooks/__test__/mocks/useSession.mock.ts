@@ -1,7 +1,25 @@
-import {
-  MockPeerConnections,
-  MockSocket,
-} from "@/pages/SessionPage/types/session.test";
+import { Socket } from "socket.io-client";
+
+type MockSocket = Partial<Socket> & {
+  emit: jest.Mock;
+  on: jest.Mock;
+  off: jest.Mock;
+  id: string;
+};
+
+interface MockPeerConnection {
+  ontrack: null | ((event: any) => void);
+  onicecandidate: null | ((event: any) => void);
+  oniceconnectionstatechange: null | (() => void);
+  onconnectionstatechange: null | (() => void);
+  close: jest.Mock;
+}
+
+interface MockPeerConnections {
+  current: {
+    [key: string]: MockPeerConnection;
+  };
+}
 
 export const mockSocket: MockSocket = {
   emit: jest.fn(),

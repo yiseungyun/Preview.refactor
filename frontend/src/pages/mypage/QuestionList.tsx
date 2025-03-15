@@ -48,7 +48,7 @@ const QuestionList = ({ id }: ListProps) => {
           )
         }
       </div>
-      <div className="mt-10 pb-4">
+      <div className="mt-10 pb-2">
         <Pagination {...getCurrentPageProps()} />
       </div>
     </div>

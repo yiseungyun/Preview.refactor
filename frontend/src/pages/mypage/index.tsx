@@ -14,7 +14,7 @@ const MyPage = () => {
       <PageTitle title="마이페이지" />
       <div className="flex flex-col gap-8 min-w-5xl w-5xl flex-shrink-0 px-8 pt-8 pb-6 bg-white shadow-8 rounded-custom-l">
         <Profile modal={modal} />
-        <TabProvider defaultTab="my" className="mt-4">
+        <TabProvider defaultTab="my">
           <TabList>
             <TabItem id="my">나의 질문지</TabItem>
             <TabItem id="scrap">스크랩한 질문지</TabItem>

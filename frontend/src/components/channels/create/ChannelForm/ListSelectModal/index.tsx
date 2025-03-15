@@ -1,11 +1,11 @@
 import { Suspense, useState } from "react";
-import { IoMdClose } from "react-icons/io";
 import SearchBar from "@/components/common/Input/SearchBar";
 import QuestionList from "./QuestionList";
 import useSessionFormStore from "@/pages/channels/create/stores/useSessionFormStore";
 import CategorySelect from "@components/common/Select/CategorySelect.tsx";
 import { options } from "@/constants/CategoryData.ts";
 import { TabItem, TabList, TabPanel, TabProvider } from "@/components/common/Tab";
+import { IoMdClose } from "@/components/common/Icons";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
@@ -43,7 +43,7 @@ const ListSelectModal = ({ modal: { dialogRef, closeModal } }: ModalProps) => {
       <div className="flex p-8">
         <h3 className="text-bold-m text-gray-black mr-6">질문 리스트</h3>
         <button className="ml-auto" onClick={closeHandler}>
-          <IoMdClose className="text-gray-black w-7 h-7" />
+          <IoMdClose className="text-gray-black" />
         </button>
       </div>
       <div className="h-11 flex gap-2 items-stretch justify-between mx-8 mb-8">

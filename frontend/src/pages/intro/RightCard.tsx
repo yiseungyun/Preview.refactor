@@ -34,6 +34,7 @@ const RightCard = ({
         <img
           src={image}
           alt={buttonText}
+          loading="lazy"
           className="w-2xl rounded-xl shadow-16 mt-24"
         />
       </div>

@@ -21,6 +21,7 @@ const LeftCard = ({
         <img
           src={image}
           alt={buttonText}
+          loading="lazy"
           className="w-full rounded-xl shadow-16 mt-24"
         />
       </div>

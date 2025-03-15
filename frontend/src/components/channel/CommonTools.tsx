@@ -1,12 +1,3 @@
-import {
-  MdVideocam,
-  MdVideocamOff,
-  MdMic,
-  MdMicOff,
-  MdThumbUp,
-  MdLink,
-} from "react-icons/md";
-import { IoChevronDownSharp } from "react-icons/io5";
 import Modal from "../common/Modal";
 import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +10,7 @@ import useBlockNavigate from "@/pages/channel/hooks/useBlockNavigate";
 import { useReaction } from "@/pages/channel/hooks/useReaction";
 import useMediaStream from "@/pages/channel/hooks/useMediaStream";
 import { Socket } from "socket.io-client";
+import { IoChevronDownSharp, MdLink, MdMic, MdMicOff, MdThumbUp, MdVideocam, MdVideocamOff } from "../common/Icons";
 
 interface CommonToolsProps {
   socket: Socket;
@@ -92,7 +84,7 @@ const CommonTools = ({ socket, disconnect }: CommonToolsProps) => {
           aria-label="세션 링크 복사"
           onClick={shareSessionLink}
         >
-          <MdLink className="w-6 h-6" />
+          <MdLink size={6} />
         </button>
       </ToolTip>
       <div className="relative">
@@ -116,12 +108,12 @@ const CommonTools = ({ socket, disconnect }: CommonToolsProps) => {
           aria-label={isMicOn ? "마이크 끄기" : "마이크 켜기"}
         >
           {isMicOn
-            ? <MdMic className="w-6 h-6 hover:text-green-500" />
-            : <MdMicOff className="w-6 h-6 text-point-1 hover:text-green-500" />
+            ? <MdMic size={6} className="hover:text-green-500" />
+            : <MdMicOff size={6} className="hover:text-green-500" />
           }
         </button>
         <span className="absolute top-1/2 -translate-y-1/2 right-2 pointer-events-none">
-          <IoChevronDownSharp className="w-3.5 h-3.5 text-gray-500" />
+          <IoChevronDownSharp size={3.5} className="text-gray-500" />
         </span>
       </div>
       <div className="relative">
@@ -146,12 +138,12 @@ const CommonTools = ({ socket, disconnect }: CommonToolsProps) => {
           aria-label={isVideoOn ? "비디오 끄기" : "비디오 켜기"}
         >
           {isVideoOn
-            ? <MdVideocam className="w-6 h-6 hover:text-green-500" />
-            : <MdVideocamOff className="w-6 h-6 text-point-1 hover:text-green-500" />
+            ? <MdVideocam size={6} className="hover:text-green-500" />
+            : <MdVideocamOff size={6} className="hover:text-green-500" />
           }
         </button>
         <span className="absolute top-1/2 -translate-y-1/2 right-2 pointer-events-none">
-          <IoChevronDownSharp className="w-3.5 h-3.5 text-gray-500" />
+          <IoChevronDownSharp size={3.5} className="text-gray-500" />
         </span>
       </div>
       <button
@@ -159,7 +151,7 @@ const CommonTools = ({ socket, disconnect }: CommonToolsProps) => {
         className="aspect-square px-3 bg-white text-gray-600 rounded-custom-m border-custom-s border-gray-200"
         aria-label="좋아요"
       >
-        <MdThumbUp className="w-5 h-5 hover:text-green-500" />
+        <MdThumbUp size={5} className="hover:text-green-500" />
       </button>
       <button
         className="bg-point-1 rounded-custom-m border-custom-s border-gray-200 text-white text-semibold-r px-4"

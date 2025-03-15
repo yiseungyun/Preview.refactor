@@ -1,4 +1,4 @@
-import VideoContainer from "@/components/channel/VideoContainer";
+import VideoContainer from "@components/channel/VideoContainer";
 import { useAudioDetector } from "./hooks/useAudioDetector";
 import { useMediaStore } from "./stores/useMediaStore";
 import { usePeerStore } from "./stores/usePeerStore";

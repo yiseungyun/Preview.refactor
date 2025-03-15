@@ -1,9 +1,7 @@
-import { IconType } from "react-icons";
-
 interface ButtonProps {
   text: string;
   type: "gray" | "green";
-  icon?: IconType;
+  icon?: React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
 }
@@ -11,7 +9,7 @@ interface ButtonProps {
 const DefaultButton = ({
   text,
   type,
-  icon: Icon,
+  icon = null,
   onClick,
   disabled,
 }: ButtonProps) => {
@@ -26,7 +24,7 @@ const DefaultButton = ({
       className={`w-full h-12 flex flex-row items-center justify-center gap-2 rounded-custom-m text-semibold-r ${buttonColor} hover:opacity-80 disabled:opacity-50`}
       onClick={onClick}
     >
-      {Icon ? <Icon /> : null}
+      {icon}
       {text}
     </button>
   );

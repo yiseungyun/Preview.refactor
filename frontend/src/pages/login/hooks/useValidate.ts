@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useToast from "@hooks/useToast.ts";
 import axios, { isAxiosError } from "axios";
-import { throttle } from "lodash";
+import throttle from "lodash/throttle";
 
 interface UseValidateProps {
   setIsSignUp: (isSignUp: boolean) => void;

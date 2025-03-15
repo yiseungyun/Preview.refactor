@@ -1,11 +1,11 @@
-import TitleInput from "@/components/common/Input/TitleInput";
-import { IoMdClose } from "react-icons/io";
+import TitleInput from "@components/common/Input/TitleInput";
 import ButtonSection from "@components/mypage/ButtonSection";
 import { useEffect, useState } from "react";
-import useToast from "@/hooks/useToast";
+import useToast from "@hooks/useToast";
 import PasswordInput from "@components/mypage/PasswordInput";
 import { useGetUserData } from "./hooks/useGetUserData";
 import { useEditUserData } from "./hooks/useEditUserData";
+import { IoMdClose } from "@/components/common/Icons";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;
@@ -159,7 +159,7 @@ const ProfileEditModal = ({
       <div className="flex p-8">
         <h3 className="text-bold-m text-gray-black mr-6">회원 정보 수정</h3>
         <button className="ml-auto" onClick={handleClose}>
-          <IoMdClose className="text-gray-black w-7 h-7" />
+          <IoMdClose className="text-gray-black" size={7} />
         </button>
       </div>
       <div className="flex flex-col px-8 gap-4 pb-4">

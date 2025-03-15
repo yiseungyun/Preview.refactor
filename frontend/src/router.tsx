@@ -1,19 +1,19 @@
 import { createBrowserRouter } from "react-router-dom";
-import ErrorPage from "./pages/error";
-import CreateChannelPage from "./pages/channels/create";
-import ChannelListPage from "./pages/channels";
-import ChannelPage from "./pages/channel";
-import QuestionListPage from "./pages/questions";
+import { lazy, Suspense } from "react";
 import ProtectedRouteLayout from "./components/common/Wrapper/ProtectedRouteLayout";
-import CreateQuestionPage from "./pages/questions/create";
-import QuestionDetailPage from "./pages/questions/detail";
-import LoginPage from "./pages/login";
-import AuthCallbackPage from "./pages/login/callback";
-import MyPage from "./pages/mypage";
 import App from "./App";
-import IntroPage from "./pages/intro";
-import { Suspense } from "react";
 import SidebarLayout from "./components/common/Wrapper/SidebarLayout";
+const ErrorPage = lazy(() => import("./pages/error"));
+const IntroPage = lazy(() => import("./pages/intro"));
+const CreateChannelPage = lazy(() => import("./pages/channels/create"));
+const ChannelListPage = lazy(() => import("./pages/channels"));
+const ChannelPage = lazy(() => import("./pages/channel"));
+const QuestionListPage = lazy(() => import("./pages/questions"));
+const CreateQuestionPage = lazy(() => import("./pages/questions/create"));
+const QuestionDetailPage = lazy(() => import("./pages/questions/detail"));
+const LoginPage = lazy(() => import("./pages/login"));
+const AuthCallbackPage = lazy(() => import("./pages/login/callback"));
+const MyPage = lazy(() => import("./pages/mypage"));
 
 // TODO: 코드 분할을 통해 라우트 로딩 최적화
 // TODO: 페이지 별 로딩 페이지를 스켈레톤 UI로 적용
@@ -36,10 +36,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: "create",
-                element:
-                  <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
-                    <CreateChannelPage />
-                  </Suspense>
+                element: <CreateChannelPage />
               },
             ]
           },
@@ -54,18 +51,13 @@ export const router = createBrowserRouter([
                 path: "create",
                 element: (
                   <ProtectedRouteLayout>
-                    <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
-                      <CreateQuestionPage />
-                    </Suspense>
+                    <CreateQuestionPage />
                   </ProtectedRouteLayout>
                 )
               },
               {
                 path: ":questionId",
-                element:
-                  <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
-                    <QuestionDetailPage />
-                  </Suspense>
+                element: <QuestionDetailPage />
               }
             ]
           },
@@ -88,10 +80,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "channel/:channelId",
-        element:
-          <Suspense fallback={<div>Suspense로 로딩 중 표시</div>}>
-            <ChannelPage />
-          </Suspense>
+        element: <Suspense fallback={null}><ChannelPage /></Suspense>
       },
     ],
   }

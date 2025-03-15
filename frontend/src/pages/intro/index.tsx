@@ -3,7 +3,7 @@ import createSession from "/introduce/createSession.png";
 import inSession from "/introduce/inSession.png";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { throttle } from "lodash";
+import throttle from "lodash/throttle";
 import useObserver from "./hooks/useObserver.ts";
 import LeftCard from "./LeftCard.tsx";
 import RightCard from "./RightCard.tsx";
@@ -19,6 +19,7 @@ const IntroPage = () => {
 
   const { observer } = useObserver();
   const contentRef = useRef<HTMLDivElement>(null);
+
   const handleScroll = () => {
     if (!contentRef.current) return;
     const scrollTop = (contentRef.current.parentNode as HTMLDivElement).scrollTop;
@@ -28,16 +29,21 @@ const IntroPage = () => {
       setIsScrolled(false);
     }
   };
+
   const throttledHandleScroll = useCallback(throttle(handleScroll, 16), []);
 
   useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.parentNode?.addEventListener(
-        "scroll",
-        throttledHandleScroll
-      );
+    const parentNode = contentRef.current?.parentNode as HTMLDivElement;
+
+    if (parentNode) {
+      parentNode.addEventListener("scroll", throttledHandleScroll);
+
+      return () => {
+        parentNode.removeEventListener("scroll", throttledHandleScroll);
+        throttledHandleScroll.cancel();
+      };
     }
-  }, []);
+  }, [throttledHandleScroll]);
 
   useEffect(() => {
     if (observer.current) {
@@ -46,8 +52,18 @@ const IntroPage = () => {
           observer.current!.observe(card.current);
         }
       });
+
+      return () => {
+        cards.forEach((card) => {
+          if (card.current && observer.current) {
+            observer.current.unobserve(card.current);
+          }
+        });
+
+        if (observer.current) observer.current.disconnect();
+      };
     }
-  }, []);
+  }, [observer]);
 
   return (
     <div
@@ -59,7 +75,7 @@ const IntroPage = () => {
           <p className="text-green-100 mb-10 text-semibold-xl text-[2rem] text-center">
             함께하는 면접 스터디
           </p>
-          <img className="w-[40rem] mx-auto" src="preview-logo3.png" alt="preview 로고" />
+          <img width="640" className="mx-auto" src="preview-logo3.webp" loading="eager" alt="preview 로고" />
           <div>
           </div>
         </div>

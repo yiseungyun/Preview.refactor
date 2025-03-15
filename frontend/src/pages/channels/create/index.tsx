@@ -1,8 +1,8 @@
-import { IoArrowBackSharp } from "react-icons/io5";
 import SessionForm from "./ChannelForm";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import useSessionFormStore from "./stores/useSessionFormStore";
+import { IoArrowBackSharp } from "@/components/common/Icons";
 
 const CreateChannelPage = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const CreateChannelPage = () => {
         className="flex items-center gap-4 mb-5 text-gray-black text-medium-l"
         onClick={() => navigate("/channels")}
       >
-        <IoArrowBackSharp className="w-5 h-5" />
+        <IoArrowBackSharp size={5} />
         <span>채널 목록으로 돌아가기</span>
       </button>
       <h1 className="text-bold-l mb-2">새로운 스터디 채널 만들기</h1>

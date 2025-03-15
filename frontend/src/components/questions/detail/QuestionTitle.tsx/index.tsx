@@ -1,7 +1,5 @@
+import { FaRegBookmark, FaRegUser, MdEdit, RiDeleteBin6Fill } from "@/components/common/Icons";
 import { useGetQuestionContent } from "@/hooks/api/useGetQuestionContent";
-import { MdEdit } from "react-icons/md";
-import { RiDeleteBin6Fill } from "react-icons/ri";
-import { FaRegBookmark, FaRegUser } from "react-icons/fa";
 
 const QuestionTitle = ({ questionId }: { questionId: string }) => {
   const { data: question } = useGetQuestionContent(Number(questionId));
@@ -13,10 +11,10 @@ const QuestionTitle = ({ questionId }: { questionId: string }) => {
         <h3 className="text-semibold-l">{question.title}</h3>
         <div className="flex gap-3 text-gray-500 dark:text-gray-200">
           <button>
-            <MdEdit className="w-6 h-6 hover:text-gray-black dark:hover:text-white" />
+            <MdEdit size={6} className="hover:text-gray-black" />
           </button>
           <button>
-            <RiDeleteBin6Fill className="w-6 h-6 hover:text-gray-black dark:hover:text-white" />
+            <RiDeleteBin6Fill size={6} className="hover:text-gray-black" />
           </button>
         </div>
       </div>
