@@ -1,42 +1,6 @@
 import { Socket } from "socket.io-client";
 import { SIGNAL_EMIT_EVENT } from "@/constants/WebSocket/SignalingEvent";
-
-interface User {
-  id: string;
-  nickname: string;
-  isHost: boolean;
-}
-
-interface PeerConnection {
-  peerId: string;
-  peerNickname: string;
-  stream: MediaStream;
-  isHost: boolean;
-  reaction: string;
-}
-
-interface PeerMediaStatus {
-  audio: boolean;
-  video: boolean;
-}
-
-interface PeerMediaStatuses {
-  [peerId: string]: PeerMediaStatus;
-}
-
-interface Participant {
-  id: string;
-  nickname: string;
-  isHost: boolean;
-}
-
-interface PeerConnections {
-  [key: string]: RTCPeerConnection;
-}
-
-interface DataChannels {
-  [peerId: string]: RTCDataChannel;
-}
+import { DataChannels, Participant, PeerConnection, PeerConnections, PeerMediaStatus, PeerMediaStatuses, User } from "./WebRTCManager.d";
 
 const RETRY_CONNECTION_MS = 2000;
 

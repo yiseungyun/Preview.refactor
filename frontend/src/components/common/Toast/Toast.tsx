@@ -1,4 +1,4 @@
-import { IoIosClose } from "react-icons/io";
+import { IoIosClose } from "../Icons";
 import ProgressBar from "../ProgressBar.tsx";
 
 interface ToastProps {

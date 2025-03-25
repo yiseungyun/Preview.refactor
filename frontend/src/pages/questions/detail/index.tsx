@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import QuestionTitle from "@components/questions/detail/QuestionTitle.tsx";
 import QuestionList from "@components/questions/detail/QuestionList.tsx";
 import { useGetQuestionContent } from "@hooks/api/useGetQuestionContent.ts";
-import ButtonSection from "@components/questions/detail/ButtonSection.tsx";
+import ButtonSection from "@/components/questions/detail/ButtonSection.tsx";
 import { useEffect } from "react";
 import useToast from "@hooks/useToast.ts";
 

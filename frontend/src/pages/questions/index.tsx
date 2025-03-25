@@ -9,9 +9,9 @@ import TabItem from "@components/common/Tab/TabItem.tsx";
 import { options } from "@/constants/CategoryData.ts";
 import TabListContent from "@components/common/Tab/TabListContent.tsx";
 import { Link } from "react-router-dom";
-import { IoMdAdd } from "react-icons/io";
 import TabPanel from "@components/common/Tab/TabPanel.tsx";
 import SkeletonQuestionList from "./SkeletonQuestionList.tsx";
+import { IoMdAdd } from "@/components/common/Icons";
 
 const QuestionListPage = () => {
   const { selectedCategory, setSelectedCategory } = useCategory();

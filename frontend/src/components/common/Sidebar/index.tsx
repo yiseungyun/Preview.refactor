@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaGithub } from "react-icons/fa6";
 import useAuth from "@/hooks/useAuth";
 import {
   authenticatedRoutes,
@@ -8,6 +7,7 @@ import {
   unauthenticatedRoutes,
 } from "./routesConfig";
 import SidebarMenu from "./SidebarMenu";
+import { FaGithub } from "../Icons";
 
 const Sidebar = () => {
   const { isLoggedIn, logOut } = useAuth();
@@ -34,7 +34,7 @@ const Sidebar = () => {
     <nav className="min-w-sidebar w-sidebar h-screen flex flex-col border-r-custom-s justify-between overflow-y-hidden bg-white transition-colors">
       <div>
         <header className="py-7">
-          <img className="w-full px-9" src="/preview-logo2.png" alt="Preview 로고" />
+          <img width={300} height={180} className="px-9" src="/preview-logo2-low.webp" alt="Preview 로고" />
         </header>
         <hr className="mx-3" />
         <ul

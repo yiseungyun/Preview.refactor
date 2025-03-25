@@ -10,7 +10,7 @@ WORKDIR /app
 
 COPY frontend/package*.json pnpm-lock.yaml ./
 
-RUN pnpm install
+RUN pnpm install 
 
 COPY frontend frontend/
 

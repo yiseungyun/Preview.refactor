@@ -4,7 +4,7 @@ import DrawingSnowman from "@components/common/Animate/DrawingSnowman.tsx";
 import { useEffect, useState } from "react";
 import LoginTitle from "@/pages/login/LoginTitle";
 import LoginForm from "@/pages/login/LoginForm";
-import { FaHome } from "react-icons/fa";
+import { FaHome } from "@/components/common/Icons";
 
 const LoginPage = () => {
   const { isLoggedIn } = useAuth();
@@ -25,7 +25,7 @@ const LoginPage = () => {
             to={"/"}
             className="group absolute top-4 left-4 flex items-center gap-4 text-gray-black text-medium-l z-10"
           >
-            <FaHome className="w-5 h-5 text-green-100 hover:text-green-50" />
+            <FaHome size={5} className="text-green-100 hover:text-green-50" />
             <span
               className={
                 "bg-gray-white bg-opacity-50 rounded-md px-1  hidden group-hover:block font-light text-sm"

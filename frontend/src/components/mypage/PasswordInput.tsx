@@ -1,4 +1,4 @@
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { IoEyeOffOutline, IoEyeOutline } from "../common/Icons";
 
 interface PasswordInputProps {
   placeholder: string;

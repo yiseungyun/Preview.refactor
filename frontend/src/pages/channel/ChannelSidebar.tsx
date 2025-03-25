@@ -1,6 +1,4 @@
-import { FaClipboardList, FaFolder } from "react-icons/fa";
-import { FaUserGroup } from "react-icons/fa6";
-import { TbCrown } from "react-icons/tb";
+import { FaClipboardList, FaUserGroup, TbCrown, FaFolder } from "@/components/common/Icons";
 import { useSessionStore } from "./stores/useSessionStore";
 
 const ChannelSidebar = () => {
@@ -30,8 +28,7 @@ const ChannelSidebar = () => {
           </div>
           <div className="flex flex-col gap-3 mt-4">
             <h2 className="inline-flex gap-1 items-center text-semibold-m">
-              <FaUserGroup />
-              참가자
+              <FaUserGroup />참가자
             </h2>
             <ul>
               {participants.map((participant, index) => (
