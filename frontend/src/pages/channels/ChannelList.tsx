@@ -1,5 +1,5 @@
 import ChannelCard from "./ChannelCard";
-import NotFound from "@components/common/Animate/NotFound.tsx";
+import NotFound from "@/components/Animate/NotFound";
 import { useGetChannelList } from "@hooks/api/useGetChannelList";
 
 interface ChannelListProps {

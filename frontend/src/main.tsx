@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { RouterProvider } from "react-router-dom";
-import ToastProvider from "./components/common/Toast/ToastProvider.tsx";
+import ToastProvider from "./components/Toast/ToastProvider.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 //import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { router } from "./router.tsx";

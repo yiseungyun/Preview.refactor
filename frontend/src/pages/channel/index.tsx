@@ -5,7 +5,7 @@ import ChannelHeader from "./ChannelHeader";
 import useToast from "@hooks/useToast";
 import SidebarContainer from "./SidebarContainer";
 import VideoLayout from "./VideoLayout";
-import MediaPreviewModal from "@/components/channel/MediaPreviewModal";
+import MediaPreviewModal from "./components/MediaPreviewModal";
 import useSocket from "@/hooks/useSocket";
 import { useMediaStore } from "./stores/useMediaStore";
 import { useSessionStore } from "./stores/useSessionStore";

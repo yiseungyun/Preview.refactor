@@ -1,4 +1,4 @@
-import DeferredComponent from "@/components/common/Wrapper/DeferredComponent"
+import DeferredComponent from "@/components/Wrapper/DeferredComponent"
 import SkeletonChannelCard from "./SkeletonChannelCard"
 
 const SkeletonChannelList = () => {

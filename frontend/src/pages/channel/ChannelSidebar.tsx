@@ -1,4 +1,4 @@
-import { FaClipboardList, FaUserGroup, TbCrown, FaFolder } from "@/components/common/Icons";
+import { FaClipboardList, FaUserGroup, TbCrown, FaFolder } from "@/components/Icons";
 import { useSessionStore } from "./stores/useSessionStore";
 
 const ChannelSidebar = () => {

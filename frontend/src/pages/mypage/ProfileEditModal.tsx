@@ -1,11 +1,11 @@
-import TitleInput from "@components/common/Input/TitleInput";
-import ButtonSection from "@components/mypage/ButtonSection";
+import TitleInput from "@components/Input/TitleInput";
+import ButtonSection from "./components/ButtonSection";
 import { useEffect, useState } from "react";
 import useToast from "@hooks/useToast";
-import PasswordInput from "@components/mypage/PasswordInput";
+import PasswordInput from "./components/PasswordInput";
 import { useGetUserData } from "./hooks/useGetUserData";
 import { useEditUserData } from "./hooks/useEditUserData";
-import { IoMdClose } from "@/components/common/Icons";
+import { IoMdClose } from "@/components/Icons";
 
 interface UseModalReturn {
   dialogRef: React.RefObject<HTMLDialogElement>;

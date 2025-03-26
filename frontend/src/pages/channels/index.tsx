@@ -1,13 +1,13 @@
 import { Suspense, useState } from "react";
-import SearchBar from "@components/common/Input/SearchBar";
-import CategorySelect from "@components/common/Select/CategorySelect";
+import SearchBar from "@components/Input/SearchBar";
+import CategorySelect from "@components/Select/CategorySelect";
 import { options } from "@/constants/CategoryData.ts";
 import { Link } from "react-router-dom";
 import ChannelList from "./ChannelList";
-import { TabItem, TabList, TabPanel, TabProvider } from "@/components/common/Tab";
+import { TabItem, TabList, TabPanel, TabProvider } from "@/components/Tab";
 import SkeletonChannelList from "./SkeletonChannelList";
-import TabListContent from "@/components/common/Tab/TabListContent";
-import { IoMdAdd } from "@/components/common/Icons";
+import TabListContent from "@/components/Tab/TabListContent";
+import { IoMdAdd } from "@/components/Icons";
 
 const ChannelListPage = () => {
   const [_, setSelectedCategory] = useState<string>("전체");

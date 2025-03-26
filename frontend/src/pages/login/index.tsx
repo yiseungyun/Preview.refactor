@@ -1,10 +1,10 @@
 import useAuth from "@hooks/useAuth.ts";
 import { Link, useNavigate } from "react-router-dom";
-import DrawingSnowman from "@components/common/Animate/DrawingSnowman.tsx";
+import DrawingSnowman from "@/components/Animate/DrawingSnowman";
 import { useEffect, useState } from "react";
 import LoginTitle from "@/pages/login/LoginTitle";
 import LoginForm from "@/pages/login/LoginForm";
-import { FaHome } from "@/components/common/Icons";
+import { FaHome } from "@/components/Icons";
 
 const LoginPage = () => {
   const { isLoggedIn } = useAuth();

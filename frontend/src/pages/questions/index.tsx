@@ -1,17 +1,17 @@
 import useCategory from "./hooks/useCategory.ts";
 import { Suspense, useState } from "react";
 import QuestionList from "./QuestionList.tsx";
-import CategorySelect from "@components/common/Select/CategorySelect.tsx";
-import SearchBar from "@components/common/Input/SearchBar.tsx";
-import TabProvider from "@components/common/Tab/TabProvider.tsx";
-import TabList from "@components/common/Tab/TabList.tsx";
-import TabItem from "@components/common/Tab/TabItem.tsx";
+import CategorySelect from "@components/Select/CategorySelect.tsx";
+import SearchBar from "@components/Input/SearchBar.tsx";
+import TabProvider from "@/components/Tab/TabProvider.tsx";
+import TabList from "@/components/Tab/TabList.tsx";
+import TabItem from "@/components/Tab/TabItem.tsx";
 import { options } from "@/constants/CategoryData.ts";
-import TabListContent from "@components/common/Tab/TabListContent.tsx";
+import TabListContent from "@/components/Tab/TabListContent.tsx";
 import { Link } from "react-router-dom";
-import TabPanel from "@components/common/Tab/TabPanel.tsx";
+import TabPanel from "@/components/Tab/TabPanel.tsx";
 import SkeletonQuestionList from "./SkeletonQuestionList.tsx";
-import { IoMdAdd } from "@/components/common/Icons";
+import { IoMdAdd } from "@/components/Icons/index.ts";
 
 const QuestionListPage = () => {
   const { selectedCategory, setSelectedCategory } = useCategory();

@@ -1,4 +1,4 @@
-import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";

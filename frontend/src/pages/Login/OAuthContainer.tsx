@@ -1,7 +1,7 @@
 import useToast from "@hooks/useToast.ts";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@hooks/useAuth.ts";
-import { FaGithub, FaRegUserCircle } from "@/components/common/Icons";
+import { FaGithub, FaRegUserCircle } from "@/components/Icons";
 
 const OAuthContainer = () => {
   const toast = useToast();

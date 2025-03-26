@@ -1,5 +1,5 @@
 import DefaultAuthFormContainer from "@/pages/login/DefaultAuthFormContainer";
-import Divider from "@components/common/Divider.tsx";
+import Divider from "@/components/Divider";
 import OAuthContainer from "@/pages/login/OAuthContainer";
 
 interface LoginFormProps {

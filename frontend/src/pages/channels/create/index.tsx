@@ -2,7 +2,7 @@ import SessionForm from "./ChannelForm";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import useSessionFormStore from "./stores/useSessionFormStore";
-import { IoArrowBackSharp } from "@/components/common/Icons";
+import { IoArrowBackSharp } from "@/components/Icons";
 
 const CreateChannelPage = () => {
   const navigate = useNavigate();

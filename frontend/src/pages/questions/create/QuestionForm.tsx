@@ -1,8 +1,8 @@
 import useQuestionFormStore from "@/pages/questions/create/stores/useQuestionFormStore";
-import AccessSection from "@/components/questions/create/AccessSection";
-import CategorySection from "@/components/questions/create/CategorySection";
-import TitleSection from "@/components/questions/create/TitleSection";
-import QuestionInputSection from "@components/questions/create/QuestionInputSection";
+import AccessSection from "./components/AccessSection";
+import CategorySection from "./components/CategorySection";
+import TitleSection from "./components/TitleSection";
+import QuestionInputSection from "./components/QuestionInputSection";
 import { useCreateQuestionList } from "@hooks/api/useCreateQuestionList";
 
 const QuestionForm = () => {

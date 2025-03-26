@@ -1,9 +1,9 @@
-import AccessSection from "@/components/channels/create/ChannelForm/AccessSection";
-import CategorySection from "@/components/channels/create/ChannelForm/CategorySection";
-import ParticipantSection from "@/components/channels/create/ChannelForm/ParticipantSection";
-import TitleSection from "@/components/channels/create/ChannelForm/TitleSection";
-import QuestionListSection from "@/components/channels/create/ChannelForm/QuestionListSection";
-import ListSelectModal from "@/components/channels/create/ChannelForm/ListSelectModal";
+import AccessSection from "@/pages/channels/create/components/AccessSection";
+import CategorySection from "@/pages/channels/create/components/CategorySection";
+import ParticipantSection from "@/pages/channels/create/components/ParticipantSection";
+import TitleSection from "@/pages/channels/create/components/TitleSection";
+import QuestionListSection from "@/pages/channels/create/components/QuestionListSection";
+import ListSelectModal from "@/pages/channels/create/components/ListSelectModal";
 import useSessionFormStore from "./stores/useSessionFormStore";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";

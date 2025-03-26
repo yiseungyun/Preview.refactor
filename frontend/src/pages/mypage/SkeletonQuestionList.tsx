@@ -1,5 +1,5 @@
-import DeferredComponent from "@/components/common/Wrapper/DeferredComponent";
-import SkeletonQuestionItem from "@/components/mypage/SkeletonQuestionItem";
+import DeferredComponent from "@/components/Wrapper/DeferredComponent";
+import SkeletonQuestionItem from "./components/SkeletonQuestionItem";
 
 const SkeletonQuestionList = () => {
   return (

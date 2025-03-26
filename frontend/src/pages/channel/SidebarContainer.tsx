@@ -1,4 +1,4 @@
-import { MdArrowForwardIos } from "@/components/common/Icons";
+import { MdArrowForwardIos } from "@/components/Icons";
 import { ReactNode, useState } from "react";
 
 interface SidebarContainerProps {

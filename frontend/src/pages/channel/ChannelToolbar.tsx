@@ -1,5 +1,5 @@
-import HostOnlyTools from "@components/channel/HostOnlyTools";
-import CommonTools from "@components/channel/CommonTools";
+import HostOnlyTools from "./components/HostOnlyTools";
+import CommonTools from "./components/CommonTools";
 import { Socket } from "socket.io-client";
 
 interface ToolbarProps {

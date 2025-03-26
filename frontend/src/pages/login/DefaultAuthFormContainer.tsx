@@ -1,8 +1,8 @@
 import useToast from "@hooks/useToast.ts";
-import LoadingIndicator from "@components/common/LoadingIndicator.tsx";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import useValidate from "./hooks/useValidate";
 import { useState } from "react";
-import { MdOutlineVisibility, BiHide } from "@/components/common/Icons";
+import { MdOutlineVisibility, BiHide } from "@/components/Icons";
 
 interface DefaultAuthFormContainerProps {
   isSignUp: boolean;

@@ -1,7 +1,7 @@
 import { useGetMyQuestionList } from "@/hooks/api/useGetMyQuestionList";
-import QuestionItem from "@/components/mypage/QuestionItem";
+import QuestionItem from "./components/QuestionItem";
 import { useGetScrapQuestionList } from "@/hooks/api/useGetScrapQuestionList";
-import Pagination from "@/components/common/Pagination";
+import Pagination from "@/components/Pagination";
 import { useState } from "react";
 
 interface ListProps {

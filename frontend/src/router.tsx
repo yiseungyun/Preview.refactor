@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import ProtectedRouteLayout from "./components/common/Wrapper/ProtectedRouteLayout";
+import ProtectedRouteLayout from "./components/Wrapper/ProtectedRouteLayout";
 import App from "./App";
-import SidebarLayout from "./components/common/Wrapper/SidebarLayout";
+import SidebarLayout from "./components/Wrapper/SidebarLayout";
 const ErrorPage = lazy(() => import("./pages/error"));
 const IntroPage = lazy(() => import("./pages/intro"));
 const CreateChannelPage = lazy(() => import("./pages/channels/create"));

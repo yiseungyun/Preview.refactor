@@ -1,5 +1,5 @@
-import Pagination from "@/components/common/Pagination";
-import QuestionCard from "@/components/questions/QuestionCard";
+import Pagination from "@/components/Pagination";
+import QuestionCard from "./components/QuestionCard";
 import { useGetQuestionList } from "@/hooks/api/useGetQuestionList";
 
 interface Props {

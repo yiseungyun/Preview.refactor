@@ -1,7 +1,7 @@
-import PageTitle from "@components/common/Text/PageTitle";
+import PageTitle from "@/components/Text/PageTitle";
 import Profile from "./Profile";
 import useModal from "@hooks/useModal";
-import { TabItem, TabList, TabPanel, TabProvider } from "@components/common/Tab";
+import { TabItem, TabList, TabPanel, TabProvider } from "@/components/Tab";
 import { Suspense } from "react";
 import QuestionList from "./QuestionList";
 import SkeletonQuestionList from "./SkeletonQuestionList";
