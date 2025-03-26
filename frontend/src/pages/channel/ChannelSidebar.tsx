@@ -1,4 +1,4 @@
-import { FaClipboardList, FaUserGroup, TbCrown, FaFolder } from "@/components/Icons";
+import { FaClipboardList, FaUserGroup, TbCrown } from "@/components/Icons";
 import { useSessionStore } from "./stores/useSessionStore";
 
 const ChannelSidebar = () => {
@@ -40,24 +40,6 @@ const ChannelSidebar = () => {
                   </span>
                 </li>
               ))}
-            </ul>
-          </div>
-          <div className="flex flex-col gap-3 mt-4">
-            <h2 className="inline-flex gap-1 items-center text-semibold-m">
-              <FaFolder />이전 질문
-            </h2>
-            <ul>
-              {roomMetadata.currentIndex <= 0 && (
-                <li className="text-medium-s">이전 질문이 기록됩니다.</li>
-              )}
-              {roomMetadata.questionListContents.map((question, index) => {
-                if (index < roomMetadata.currentIndex)
-                  return (
-                    <li key={question.id}>
-                      Q{index + 1}. {question.content}
-                    </li>
-                  );
-              })}
             </ul>
           </div>
         </div>

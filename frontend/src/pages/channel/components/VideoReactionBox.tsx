@@ -6,7 +6,6 @@ const renderReaction = (reactionType: string) => {
   switch (reactionType) {
     case "thumbs_up":
       return "👍";
-    case "":
     default:
       return "";
   }
