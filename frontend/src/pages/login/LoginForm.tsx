@@ -1,6 +1,6 @@
-import DefaultAuthFormContainer from "@/pages/login/DefaultAuthFormContainer";
+import DefaultAuthFormContainer from "./DefaultAuthFormContainer";
 import Divider from "@/components/Divider";
-import OAuthContainer from "@/pages/login/OAuthContainer";
+import OAuthContainer from "./OAuthContainer";
 
 interface LoginFormProps {
   signUp: boolean;
