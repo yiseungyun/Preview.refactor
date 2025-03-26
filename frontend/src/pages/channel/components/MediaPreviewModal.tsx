@@ -5,11 +5,14 @@ import { useMediaStore } from "@/pages/channel/stores/useMediaStore";
 import { useSessionStore } from "@/pages/channel/stores/useSessionStore";
 import { mediaManager } from "@/pages/channel/services/MediaManager";
 import useAuth from "@/hooks/useAuth";
+import { useNavigate, useParams } from "react-router-dom";
+import { SESSION_EMIT_EVENT } from "@/constants/WebSocket/SessionEvent";
+import useSocket from "@/hooks/useSocket";
+import { Socket } from "socket.io-client";
+import useMediaStream from "../hooks/useMediaStream";
 
 interface MediaPreviewModalProps {
   modal: UseModalReturn;
-  onConfirm: (nickname: string) => Promise<void>;
-  onReject: () => void;
 }
 
 interface UseModalReturn {
@@ -20,18 +23,20 @@ interface UseModalReturn {
 }
 
 const MediaPreviewModal = ({
-  modal,
-  onConfirm,
-  onReject
+  modal
 }: MediaPreviewModalProps) => {
   const [preview, setPreview] = useState<MediaStream | null>(null);
   const toast = useToast();
+  const navigate = useNavigate();
+  const { socket } = useSocket();
   const { nickname: username } = useAuth();
+  const { channelId } = useParams();
 
   const isVideoOn = useMediaStore(state => state.isVideoOn);
   const setIsVideoOn = useMediaStore(state => state.setIsVideoOn);
   const { nickname, setNickname, setReady } = useSessionStore();
   const [tempNickname, setTempNickname] = useState("");
+  const { getMedia } = useMediaStream(socket!);
 
   useEffect(() => {
     if (username) {
@@ -62,7 +67,8 @@ const MediaPreviewModal = ({
       const handleEscape = (event: globalThis.KeyboardEvent) => {
         if (event.key === "Escape") {
           event.preventDefault();
-          onReject();
+          modal.closeModal();
+          navigate("/channels");
           setReady(false);
         }
       };
@@ -70,8 +76,41 @@ const MediaPreviewModal = ({
     }
   }, [modal.dialogRef.current]);
 
+  const isValidUser = (
+    socket: Socket | null,
+    nickname: string
+  ): socket is Socket => {
+    if (!socket) {
+      toast.error("소켓 연결이 필요합니다.");
+      return false;
+    }
+    if (!nickname) {
+      toast.error("닉네임을 입력해주세요.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const joinRoom = async (nickname: string) => {
+    if (!isValidUser(socket, nickname)) return;
+
+    const mediaStream = await getMedia();
+    if (!mediaStream) {
+      toast.error("미디어 스트림을 가져오지 못했습니다. 미디어 장치를 확인 후 다시 시도해주세요.");
+      return;
+    } else if (isVideoOn && mediaStream.getVideoTracks().length === 0) {
+      toast.error("비디오 장치를 찾을 수 없습니다. 비디오 장치 없이 채널에 참가합니다.");
+    } else if (mediaStream.getAudioTracks().length === 0) {
+      toast.error("오디오 장치를 찾을 수 없습니다. 오디오 장치 없이 채널에 참가합니다.");
+    }
+
+    socket.emit(SESSION_EMIT_EVENT.JOIN, { roomId: channelId, nickname });
+  };
+
   const handleReject = () => {
-    onReject();
+    modal.closeModal();
+    navigate("/channels");
     setReady(false);
     preview?.getTracks().forEach((track) => track.stop());
   }
@@ -79,7 +118,7 @@ const MediaPreviewModal = ({
   const handleConfirm = async () => {
     setNickname(tempNickname);
     setReady(true);
-    await onConfirm(tempNickname);
+    await joinRoom(tempNickname);
     modal.closeModal();
     preview?.getTracks().forEach((track) => track.stop());
   }

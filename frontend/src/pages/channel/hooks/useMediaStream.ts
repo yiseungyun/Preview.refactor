@@ -40,6 +40,7 @@ const useMediaStream = (socket: Socket) => {
       setPeerMediaStatus,
       setParticipants,
     )
+
     const initializeDevices = async () => {
       try {
         const { audioDevices, videoDevices, hasPermission } = await mediaManager.getUserDevices();

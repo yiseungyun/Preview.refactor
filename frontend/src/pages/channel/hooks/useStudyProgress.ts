@@ -50,7 +50,7 @@ const useStudyProgress = ({ socket, disconnect }: StudyProgressProps) => {
     const handleRoomProgress = () => {
       toast.error("해당 채널은 진행 중입니다.");
       setShouldBlock(false);
-      navigate("/sessions");
+      navigate("/channels");
     };
 
     socket.on(STUDY_LISTEN_EVENT.INDEX, handleChangeIndex);

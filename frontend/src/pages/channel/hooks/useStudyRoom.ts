@@ -30,7 +30,7 @@ export const useStudyRoom = (socket: Socket, disconnect: () => void) => {
     const handleRoomFinished = () => {
       toast.error("호스트가 스터디를 종료했습니다.");
       setShouldBlock(false);
-      navigate("/sessions");
+      navigate("/channels");
     };
 
     const handleHostChange = (data: ResponseMasterChanged) => {
@@ -57,14 +57,14 @@ export const useStudyRoom = (socket: Socket, disconnect: () => void) => {
     const handleRoomFull = () => {
       toast.error("해당 채널은 이미 유저가 가득 찼습니다.");
       setShouldBlock(false);
-      navigate("/sessions");
+      navigate("/channels");
     };
 
     const handleRoomNotFound = async () => {
       toast.error("해당 채널은 존재하지 않습니다.");
       setShouldBlock(false);
 
-      navigate("/sessions");
+      navigate("/channels");
     };
 
     socket.on(SESSION_LISTEN_EVENT.FINISH, handleRoomFinished);
