@@ -4,7 +4,9 @@ import VideoProfileOverlay from "./VideoProfileOverlay.tsx";
 import VideoReactionBox from "./VideoReactionBox.tsx";
 import { useMediaStore } from "@/pages/channel/stores/useMediaStore.tsx";
 import { usePeerStore } from "@/pages/channel/stores/usePeerStore.tsx";
-import { BsCameraVideoOff, BsCameraVideo, BsMic, BsMicMute } from "@/components/Icons/index.ts";
+import { BsCameraVideoOff, BsCameraVideo, BsMic, BsMicMute } from "@/components/Icons";
+import { useEffect, useMemo, useState } from "react";
+import { breakpoints } from "@/utils/breakpoints.ts";
 
 interface VideoContainerProps {
   nickname: string | null;
@@ -16,30 +18,37 @@ interface VideoContainerProps {
   isVideoOn?: boolean;
 }
 
-const getVideoLayoutClass = (count: number) => {
-  switch (count) {
-    case 1:
-      return "w-[calc(min(100%,((100vh-140px)*(4/3))))]";
-    case 2:
-      return `w-[calc(min(100%,((100vh-148px)*(2/3))))]
-              sm:w-[calc(min(calc(50%-0.5rem),((100vh-140px)*(4/3))))]
-             `;
-    case 3:
-      return `w-[calc(min(100%,((100vh-156px)*(4/9))))]
-              md:w-[calc(min(calc(50%-1rem),((100vh-146px)*(2/3))))]
-              2xl:w-[calc(min(calc(33.3%-1rem),((100vh-140px)*(4/3))))] 
-             `;
-    case 4:
-      return `w-[calc(min(100%,((100vh-164px)*(1/3))))]
-              md:w-[calc(min(calc(50%-0.5rem),((100vh-148px)*(2/3))))]
-             `;
-    case 5:
-      return `w-[calc(min(100%,((100vh-172px)*(4/15))))]
-              xs:w-[calc(min(calc(50%-0.5rem),((100vh-156px)*(4/9))))]
-              2xl:w-[calc(min(calc(33.3%-1rem),((100vh-148px)*(2/3))))]
-             `;
+interface LayoutConfig {
+  breakpoint: string;
+  maxVideoPerRow: Record<number, number>;
+}
+
+const layoutConfig: LayoutConfig[] = [{
+  breakpoint: "default",
+  maxVideoPerRow: {
+    1: 1, 2: 1, 3: 1, 4: 1, 5: 1
   }
-};
+}, {
+  breakpoint: "xs",
+  maxVideoPerRow: {
+    1: 1, 2: 1, 3: 1, 4: 1, 5: 2
+  }
+}, {
+  breakpoint: "sm",
+  maxVideoPerRow: {
+    1: 1, 2: 2, 3: 1, 4: 1, 5: 2
+  }
+}, {
+  breakpoint: "md",
+  maxVideoPerRow: {
+    1: 1, 2: 2, 3: 2, 4: 2, 5: 2
+  }
+}, {
+  breakpoint: "2xl",
+  maxVideoPerRow: {
+    1: 1, 2: 2, 3: 3, 4: 2, 5: 3
+  }
+}]
 
 const VideoContainer = ({
   nickname,
@@ -50,32 +59,49 @@ const VideoContainer = ({
   isVideoOn = false,
   isMicOn = false
 }: VideoContainerProps) => {
+  const [breakpoint, setBreakpoint] = useState("default");
   isMicOn = isLocal ? useMediaStore(state => state.isMicOn) : isMicOn;
   isVideoOn = isLocal ? useMediaStore(state => state.isVideoOn) : isVideoOn;
   const videoLoading = isLocal ? useMediaStore(state => state.videoLoading) : null;
   const peers = usePeerStore(state => state.peers);
   const videoCount = 1 + peers.length;
 
-  const renderMicIcon = () => {
-    return isMicOn
-      ? <BsMic className="text-white" />
-      : <BsMicMute className="text-point-1" />
-  };
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
 
-  const renderVideoIcon = () => {
-    return isVideoOn
-      ? <BsCameraVideo className="text-white" />
-      : <BsCameraVideoOff className="text-point-1" />
-  };
+      if (width >= breakpoints["2xl"]) setBreakpoint("2xl");
+      else if (width >= breakpoints["md"]) setBreakpoint("md");
+      else if (width >= breakpoints["sm"]) setBreakpoint("sm");
+      else if (width >= breakpoints["xs"]) setBreakpoint("xs");
+      else setBreakpoint("default");
+    };
 
-  const speakingEffect = isSpeaking
-    ? "ring-2 ring-green-100 transition-all duration-200"
-    : "transition-all duration-200";
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  const localNickName = isLocal ? "text-semibold-r" : "text-medium-m";
+  const getVideoStyle = useMemo(() => {
+    const restHeight = 172;
+    const gap = 8;
+    const config = layoutConfig.find(c => c.breakpoint === breakpoint) || layoutConfig[0];
+    const maxVideoPerRow = config.maxVideoPerRow[videoCount];
+    const rowCount = Math.ceil(videoCount / maxVideoPerRow);
+
+    const widthPercent = maxVideoPerRow > 1
+      ? `calc(${100 / maxVideoPerRow}% - ${gap * (maxVideoPerRow - 1)}px)`
+      : "100%";
+    const widthByHeight = `calc(((100vh - ${restHeight}px - ${gap * (rowCount - 1)}px) / ${rowCount}) * (4 / 3)) - ${gap * (maxVideoPerRow - 1)}px`;
+
+    return { width: `min(${widthPercent}, ${widthByHeight})`, aspectRatio: '4/3' };
+  }, [breakpoint, videoCount]);
 
   return (
-    <div className={`relative ${getVideoLayoutClass(videoCount)} ${speakingEffect} rounded-custom-l aspect-[4/3]`}>
+    <div
+      className={`relative ${speakingEffect(isSpeaking)} rounded-custom-l`}
+      style={getVideoStyle}
+    >
       <div className="absolute inset-0 bg-gray-black rounded-custom-l overflow-hidden z-10">
         <DisplayMediaStream mediaStream={stream} isLocal={isLocal} />
         <div className="inline-flex gap-4 absolute bottom-2 w-full justify-between px-2">
@@ -83,13 +109,13 @@ const VideoContainer = ({
             {isVideoOn && nickname}
           </p>
           <div className="inline-flex gap-4 px-2 items-center">
-            {renderMicIcon()}
-            {renderVideoIcon()}
+            {renderMicIcon(isMicOn)}
+            {renderVideoIcon(isVideoOn)}
           </div>
         </div>
         {videoLoading && (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white animate-pulse text-3xl">
-            <LoadingIndicator loadingState={videoLoading} type={"spinner"} />
+            <LoadingIndicator loadingState={videoLoading} type="spinner" />
           </div>
         )}
       </div>
@@ -101,6 +127,30 @@ const VideoContainer = ({
       <VideoReactionBox reaction={reaction} />
     </div>
   );
+};
+
+const localNickName = (isLocal: boolean) => {
+  return isLocal
+    ? "text-semibold-r"
+    : "text-medium-m";
+}
+
+const speakingEffect = (isSpeaking: boolean) => {
+  return isSpeaking
+    ? "ring-2 ring-green-100 transition-all duration-200"
+    : "transition-all duration-200";
+}
+
+const renderMicIcon = (isMicOn: boolean) => {
+  return isMicOn
+    ? <BsMic className="text-white" />
+    : <BsMicMute className="text-point-1" />
+};
+
+const renderVideoIcon = (isVideoOn: boolean) => {
+  return isVideoOn
+    ? <BsCameraVideo className="text-white" />
+    : <BsCameraVideoOff className="text-point-1" />
 };
 
 export default VideoContainer;

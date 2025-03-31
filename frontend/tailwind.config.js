@@ -1,16 +1,18 @@
+import { breakpoints } from './src/utils/breakpoints';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   darkMode: "class",
   theme: {
     screens: {
-      'xs': '32.5rem',
-      'sm': '40rem',
-      'md': '48rem',
-      'lg': '64rem',
-      'xl': '80rem',
-      '2xl': '96rem',
-      '3xl': '120rem',
+      'xs': `${breakpoints.xs/16}rem`,
+      'sm': `${breakpoints.sm/16}rem`,
+      'md': `${breakpoints.md/16}rem`,
+      'lg': `${breakpoints.lg/16}rem`,
+      'xl': `${breakpoints.xl/16}rem`,
+      '2xl': `${breakpoints['2xl']/16}rem`,
+      '3xl': `${breakpoints['3xl']/16}rem`
     },
     extend: {
       colors: {
