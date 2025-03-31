@@ -44,18 +44,18 @@ const HostOnlyTools = ({ socket, disconnect }: HostOnlyToolsProps) => {
 
   return (
     <>
-      <div className={"inline-flex gap-4 items-center mx-8"}>
+      <div className="inline-flex gap-4 items-center mx-8">
         {
           roomMetadata.inProgress ?
             <button
               className={studyButtonClass}
-              onClick={() => { stopStudySession() }}
+              onClick={stopStudySession}
             >
               스터디 종료하기
             </button>
             : <button
               className={studyButtonClass}
-              onClick={() => { startStudySession() }}
+              onClick={startStudySession}
             >
               스터디 시작하기
             </button>
@@ -71,7 +71,7 @@ const HostOnlyTools = ({ socket, disconnect }: HostOnlyToolsProps) => {
               disabled={changeCooldown || roomMetadata.currentIndex === 0}
             >
               <MdArrowBackIosNew />
-              {changeCooldown && <div className={disabledClass}></div>}
+              {changeCooldown && <div className={disabledClass} />}
             </button>
           </ToolTip>
           <ToolTip text="다음 질문">
@@ -82,7 +82,7 @@ const HostOnlyTools = ({ socket, disconnect }: HostOnlyToolsProps) => {
               disabled={changeCooldown || roomMetadata.currentIndex === maxQuestionLength - 1}
             >
               <MdArrowForwardIos />
-              {changeCooldown && <div className={disabledClass}></div>}
+              {changeCooldown && <div className={disabledClass} />}
             </button>
           </ToolTip>
         </div>
