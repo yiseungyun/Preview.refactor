@@ -11,7 +11,6 @@ class WebRTCManager {
   private pcConfig;
   private peerConnections: PeerConnections = {};
   private dataChannels: DataChannels = {};
-  private pendingIceCandidates: Map<string, RTCIceCandidate[]> = new Map();
   private setPeers;
   private setPeerMediaStatus;
   private setParticipants;
@@ -194,18 +193,6 @@ class WebRTCManager {
         candidate: e.candidate,
         candidateSendID: this.socket.id,
       });
-    };
-
-    pc.onsignalingstatechange = () => {
-      const candidates = this.pendingIceCandidates.get(peerSocketId) || [];
-      candidates.forEach(candidate => {
-        this.socket.emit(SIGNAL_EMIT_EVENT.CANDIDATE, {
-          candidateReceiveID: peerSocketId,
-          candidate,
-          candidateSendID: this.socket.id,
-        });
-      });
-      this.pendingIceCandidates.delete(peerSocketId);
     };
 
     const mediaDataChannel = pc.createDataChannel("media-status", {
