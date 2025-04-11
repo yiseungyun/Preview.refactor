@@ -10,14 +10,12 @@ const DEFAULT_EXCLUDE_CLASSES = ["hover", "transition", "ease", "animate"]; // �
 const DEFAULT_NOT_IN_ROOT = ["bg", "rounded", "border"]; // 루트에서 제거하면 안되는 항목
 
 export class SkeletonTransformer {
-  processedNodes;
   jsxElement = null;
   componentName = "";
 
   constructor(sourcePath, targetPath) {
     this.sourcePath = sourcePath;
     this.targetPath = targetPath;
-    this.processedNodes = new WeakMap();
   }
 
   generate() {
@@ -99,9 +97,6 @@ export default ${this.componentName};`;
   transformToSkeleton(ast) {
     traverse.default(ast, {
       JSXElement: (path) => {
-        if (this.processedNodes.get(path.node)) return;
-        this.processedNodes.set(path.node, true);
-        
         const hasExpressions = path.node.children.some(
           child => t.isJSXExpressionContainer(child)
         );
@@ -130,40 +125,6 @@ export default ${this.componentName};`;
           path.node.openingElement.attributes = path.node.openingElement.attributes.filter( // 필요한 속성만 유지
             attr => t.isJSXAttribute(attr) && (attr.name.name === "className" || attr.name.name === "class")
           );
-        }
-      },
-      
-      JSXExpressionContainer: (path) => {
-        if (this.processedNodes.get(path.node)) return;
-        this.processedNodes.set(path.node, true);
-        
-        const parentElement = path.findParent((p) => t.isJSXElement(p));
-        if (!parentElement || !parentElement.node.openingElement) return;
-
-        const existingClassName = this.getClassNameValue(parentElement.node.openingElement.attributes);
-        const filteredClasses = this.filterClassNames(existingClassName, DEFAULT_EXCLUDE_CLASSES, false, DEFAULT_NOT_IN_ROOT);
-        const combinedClassName = this.combineClassNames(filteredClasses, DEFAULT_SKELETON_STYLE, false);
-
-        this.updateClassNameAttribute(parentElement.node.openingElement, combinedClassName);
-        path.replaceWith(t.jsxText("채우기"));
-      },
-      
-      JSXText: (path) => {
-        if (this.processedNodes.get(path.node)) return;
-        
-        if (path.node.value.trim() !== "") { 
-          this.processedNodes.set(path.node, true); 
-
-          const parentPath = path.findParent(p => t.isJSXElement(p));
-          if (!parentPath || !parentPath.node.openingElement) return;
-          
-          const openingElement = parentPath.node.openingElement;
-          const existingClassName = this.getClassNameValue(openingElement.attributes);
-          const filteredClasses = this.filterClassNames(existingClassName, DEFAULT_EXCLUDE_CLASSES, false, DEFAULT_NOT_IN_ROOT);
-          const combinedClassName = this.combineClassNames(filteredClasses, DEFAULT_SKELETON_STYLE, false);
-
-          this.updateClassNameAttribute(openingElement, combinedClassName);
-          path.node.value = "채우기";
         }
       }
     });
