@@ -10,28 +10,28 @@ interface HostOnlyToolsProps {
   disconnect: () => void;
 }
 
-const COOLDOWN_TIME_MS = 2000;
+const BUTTON_LOCKED_TIME_MS = 2000;
 const studyButtonClass = "bg-transparent rounded-xl border h-10 px-3 py-2 text-medium-xs";
 const directionButtonClass = "relative inline-flex items-center bg-transparent rounded-full border-custom-s h-10 px-3 py-2 disabled:opacity-50 overflow-hidden";
 const disabledClass = "origin-left absolute w-full h-full bg-gray-400/50 top-0 left-0 animate-progress";
 
 const HostOnlyTools = ({ socket, disconnect }: HostOnlyToolsProps) => {
-  const [changeCooldown, setChangeCooldown] = useState(false);
+  const [buttonLocked, setButtonLocked] = useState(false);
   const { isHost, roomMetadata } = useSessionStore();
   const { requestChangeIndex, startStudySession, stopStudySession } = useStudyProgress({ socket, disconnect });
   const maxQuestionLength = roomMetadata.questionListContents.length;
 
   useEffect(() => {
-    if (!changeCooldown) return;
+    if (!buttonLocked) return;
 
     const timeout = setTimeout(() => {
-      setChangeCooldown(false);
-    }, COOLDOWN_TIME_MS);
+      setButtonLocked(false);
+    }, BUTTON_LOCKED_TIME_MS);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [changeCooldown]);
+  }, [buttonLocked]);
 
   if (!isHost) {
     return null;
@@ -39,7 +39,7 @@ const HostOnlyTools = ({ socket, disconnect }: HostOnlyToolsProps) => {
 
   const handleChangeIndex = (type: "next" | "prev") => {
     requestChangeIndex(type);
-    setChangeCooldown(true);
+    setButtonLocked(true);
   }
 
   return (
@@ -67,22 +67,22 @@ const HostOnlyTools = ({ socket, disconnect }: HostOnlyToolsProps) => {
             <button
               onClick={() => handleChangeIndex("prev")}
               className={directionButtonClass}
-              aria-label={"이전 질문 버튼"}
-              disabled={changeCooldown || roomMetadata.currentIndex === 0}
+              aria-label="이전 질문 버튼"
+              disabled={buttonLocked || roomMetadata.currentIndex === 0}
             >
               <MdArrowBackIosNew />
-              {changeCooldown && <div className={disabledClass} />}
+              {buttonLocked && <div className={disabledClass} />}
             </button>
           </ToolTip>
           <ToolTip text="다음 질문">
             <button
               onClick={() => handleChangeIndex("next")}
               className={directionButtonClass}
-              aria-label={"다음 질문 버튼"}
-              disabled={changeCooldown || roomMetadata.currentIndex === maxQuestionLength - 1}
+              aria-label="다음 질문 버튼"
+              disabled={buttonLocked || roomMetadata.currentIndex === maxQuestionLength - 1}
             >
               <MdArrowForwardIos />
-              {changeCooldown && <div className={disabledClass} />}
+              {buttonLocked && <div className={disabledClass} />}
             </button>
           </ToolTip>
         </div>
