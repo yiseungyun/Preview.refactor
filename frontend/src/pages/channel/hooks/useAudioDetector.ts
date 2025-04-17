@@ -12,7 +12,7 @@ interface AudioLevels {
 }
 
 const CHECK_PEERCONNECTION_MS = 1000;
-const TIMER_INTERVAL_MS = 100;
+const TIMER_INTERVAL_MS = 200;
 
 export const useAudioDetector = ({
   localStream,
