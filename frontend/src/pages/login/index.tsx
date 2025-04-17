@@ -26,11 +26,7 @@ const LoginPage = () => {
             className="group absolute top-4 left-4 flex items-center gap-4 text-gray-black text-medium-l z-10"
           >
             <FaHome size={5} className="text-green-100 hover:text-green-50" />
-            <span
-              className={
-                "bg-gray-white bg-opacity-50 rounded-md px-1  hidden group-hover:block font-light text-sm"
-              }
-            >
+            <span className="bg-gray-white bg-opacity-50 rounded-md px-1 hidden group-hover:block font-light text-sm">
               서비스 소개로
             </span>
           </Link>
