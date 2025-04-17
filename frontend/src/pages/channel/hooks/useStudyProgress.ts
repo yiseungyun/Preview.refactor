@@ -4,25 +4,21 @@ import { useSessionStore } from "../stores/useSessionStore";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useBlockNavigate from "./useBlockNavigate.ts";
-import { Socket } from "socket.io-client";
+import useSocket from "@/hooks/useSocket.ts";
 
 export interface ProgressResponse {
   status: "success" | "error";
   inProgress: boolean;
 }
 
-interface StudyProgressProps {
-  socket: Socket;
-  disconnect: () => void;
-}
-
-const useStudyProgress = ({ socket, disconnect }: StudyProgressProps) => {
+const useStudyProgress = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const isHost = useSessionStore(state => state.isHost);
   const roomId = useSessionStore(state => state.roomId);
   const roomMetadata = useSessionStore(state => state.roomMetadata);
   const setRoomMetadata = useSessionStore(state => state.setRoomMetadata);
+  const { socket, disconnect } = useSocket();
   const { setShouldBlock } = useBlockNavigate(disconnect);
 
   useEffect(() => {
