@@ -12,12 +12,12 @@ import useMediaStream from "@/pages/channel/hooks/useMediaStream";
 import { Socket } from "socket.io-client";
 import { IoChevronDownSharp, MdLink, MdMic, MdMicOff, MdThumbUp, MdVideocam, MdVideocamOff } from "@/components/Icons"
 
-interface CommonToolsProps {
+interface CommonToolProps {
   socket: Socket;
   disconnect: () => void;
 }
 
-const CommonTools = ({ socket, disconnect }: CommonToolsProps) => {
+const CommonTool = ({ socket, disconnect }: CommonToolProps) => {
   const navigate = useNavigate();
   const toast = useToast();
   const modal = useModal();
@@ -164,4 +164,4 @@ const CommonTools = ({ socket, disconnect }: CommonToolsProps) => {
   );
 };
 
-export default CommonTools;
+export default CommonTool;
