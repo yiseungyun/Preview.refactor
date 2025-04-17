@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client";
 import { SIGNAL_EMIT_EVENT } from "@/constants/WebSocket/SignalingEvent";
-import { DataChannels, Participant, PeerConnection, PeerConnections, PeerMediaStatus, PeerMediaStatuses, User } from "./WebRTCManager.d";
+import { DataChannels, Participant, PeerConnection, PeerConnections, PeerMediaStatus, PeerMediaStatuses, User } from "../types/WebRTCManager";
 
 const RETRY_CONNECTION_MS = 2000;
 

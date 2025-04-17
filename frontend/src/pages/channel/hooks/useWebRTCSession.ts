@@ -7,34 +7,12 @@ import { useSessionStore } from "../stores/useSessionStore.tsx";
 import useToast from "@/hooks/useToast";
 import { usePeerStore } from "../stores/usePeerStore.tsx";
 import { Socket } from "socket.io-client";
+import { RoomBase, UserInfo } from "../types/Channel";
 
-interface UserInfo {
-  socketId: string;
-  createdAt: number;
-  nickname: string;
-}
-
-interface Question {
-  id: number;
-  content: string;
-  index: number;
-  questionListId: number;
-}
-
-interface RoomJoinResponse {
-  category: string;
-  inProgress: boolean;
-  createdAt: number;
-  host: UserInfo;
-  participants: number;
-  maxParticipants: number;
-  status: "PUBLIC" | "PRIVATE";
-  title: string;
+interface RoomJoinResponse extends RoomBase {
   id: string;
   connectionMap: { [socketId: string]: UserInfo };
-  questionListId: number;
-  questionListContents: Question[];
-  currentIndex: number;
+  category: string;
 }
 
 const useWebRTCSession = (socket: Socket) => {

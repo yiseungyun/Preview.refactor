@@ -1,39 +1,6 @@
 import { create } from 'zustand';
-
-type RoomStatus = "PUBLIC" | "PRIVATE";
-
-interface RoomMetadata {
-  title: string;
-  status: RoomStatus;
-  participants: number;
-  maxParticipants: number;
-  createdAt: number;
-  inProgress: boolean;
-  host: UserInfo;
-  category: string | string[];
-  questionListId: number;
-  questionListContents: Question[];
-  currentIndex: number;
-}
-
-interface Question {
-  id: number;
-  content: string;
-  index: number;
-  questionListId: number;
-}
-
-interface UserInfo {
-  socketId: string;
-  createdAt: number;
-  nickname: string;
-}
-
-interface Participant {
-  id: string;
-  nickname: string;
-  isHost: boolean;
-}
+import { RoomMetadata } from '../types/Channel';
+import { Participant } from '../types/WebRTCManager';
 
 interface SessionState {
   nickname: string | null;

@@ -1,17 +1,5 @@
 import { create } from 'zustand';
-
-interface PeerConnection {
-  peerId: string;
-  peerNickname: string;
-  stream: MediaStream;
-  isHost: boolean;
-  reaction: string;
-}
-
-interface PeerMediaStatus {
-  audio: boolean;
-  video: boolean;
-}
+import { PeerConnection, PeerMediaStatus } from '../types/WebRTCManager';
 
 interface PeerState {
   peers: PeerConnection[];
